@@ -55,7 +55,7 @@ private:
     const int BPP;
     
     CCamera camera;
-    std::shared_ptr<CEntity> player;
+    CEntity* player;
     
     // Timer variables
     

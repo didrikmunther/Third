@@ -10,23 +10,23 @@
 #include "CEntityManager.h"
 #include "CCamera.h"
 
-CEntityManager::CEntityManager() {
+CEntityManager::CEntityManager() : entityID(0) {
 }
 
 void CEntityManager::addEntity(SDL_Rect rect, SDL_Color color) {
-    EntityVector.push_back(std::make_shared<CEntity>(rect, color));
+    EntityVector.push_back(new CEntity(rect, color));
 }
 
-void CEntityManager::addEntity(std::shared_ptr<CEntity> entity) {
+void CEntityManager::addEntity(CEntity* entity) {
     EntityVector.push_back(entity);
 }
 
 void CEntityManager::addParticle(SDL_Rect rect, SDL_Color color, int livingTime) {
-    ParticleVector.push_back(std::make_shared<CParticle>(rect, color, livingTime));
+    ParticleVector.push_back(new CParticle(rect, color, livingTime));
 }
 
 void CEntityManager::addParticleEmitter(SDL_Rect rect, SDL_Color color, int amount, int frequency, int livingTime, float velocity) {
-    ParticleEmitterVector.push_back(std::make_shared<CParticleEmitter>(rect, color, amount, frequency, livingTime, velocity));
+    ParticleEmitterVector.push_back(new CParticleEmitter(rect, color, amount, frequency, livingTime, velocity));
 }
 
 void CEntityManager::onRender(SDL_Renderer *renderer, CCamera* camera) {
@@ -70,12 +70,34 @@ void CEntityManager::onLoop() {
 }
 
 void CEntityManager::onCleanup() {
+    
+    auto i = EntityVector.begin();
+    while(i != EntityVector.end()) {
+        delete *i;
+        i = EntityVector.erase(i);
+    }
     EntityVector.clear();
+    
+    auto i2 = ParticleVector.begin();
+    while(i2 != ParticleVector.end()) {
+        delete *i2;
+        i2 = ParticleVector.erase(i2);
+    }
     ParticleVector.clear();
+    
+    auto i3 = ParticleEmitterVector.begin();
+    while(i3 != ParticleEmitterVector.end()) {
+        delete *i3;
+        ParticleEmitterVector.erase(i3);
+    }
     ParticleEmitterVector.clear();
 }
 
 void CEntityManager::particleCleanup() {
-    //ParticleVector.clear();
+    auto i3 = ParticleEmitterVector.begin();
+    while(i3 != ParticleEmitterVector.end()) {
+        delete *i3;
+        
+    }
     ParticleEmitterVector.clear();
 }

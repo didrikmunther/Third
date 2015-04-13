@@ -102,7 +102,7 @@ int CGame::onInit() {
     renderer = SDL_CreateRenderer(window, 0, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     
-    player = std::make_shared<CEntity>(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
+    player = new CEntity(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
     entityManager.addEntity(player);
     camera.setTarget(player);
     
@@ -166,7 +166,8 @@ void CGame::onEvent(SDL_Event* event) {
                     break;
                     
                 case keyMap::RESET:
-                    player = std::make_shared<CEntity>(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
+                    delete player;
+                    player = new CEntity(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
                     break;
             }
             break;

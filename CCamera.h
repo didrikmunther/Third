@@ -17,10 +17,10 @@
 class CCamera {
     
 public:
-    CCamera(std::shared_ptr<CEntity> target, int WIDTH, int HEIGHT);
+    CCamera(CEntity* target, int WIDTH, int HEIGHT);
     CCamera(int WIDTH, int HEIGHT);
     
-    void setTarget(std::shared_ptr<CEntity> target);
+    void setTarget(CEntity* target);
     bool collision(CEntity* entity);
     
     int offsetX();
@@ -30,7 +30,7 @@ private:
     SDL_Rect offset;
     SDL_Rect oldOffset;
     
-    std::shared_ptr<CEntity> target;
+    CEntity* target;
     
     
 };

@@ -15,7 +15,7 @@ CEntity::CEntity(SDL_Rect rect, SDL_Color color) : body(rect), color(color), toR
     
 }
 
-void CEntity::onLoop(std::vector<std::shared_ptr<CEntity>>* entities) {
+void CEntity::onLoop(std::vector<CEntity*>* entities) {
     
     doLogic();
     move(entities);
@@ -36,7 +36,7 @@ void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera) {
                          renderer, color.r, color.g, color.b);
 }
 
-bool CEntity::collision(int x, int y, std::vector<std::shared_ptr<CEntity>>* entities) {
+bool CEntity::collision(int x, int y, std::vector<CEntity*>* entities) {
     
     for (auto &i: *entities) {
         if (&*i == this) continue;
@@ -56,7 +56,7 @@ bool CEntity::collision(int x, int y, std::vector<std::shared_ptr<CEntity>>* ent
     return false;
 }
 
-void CEntity::move(std::vector<std::shared_ptr<CEntity>>* entities) {
+void CEntity::move(std::vector<CEntity*>* entities) {
     
     int MoveX = body.velX;
     int MoveY = body.velY;

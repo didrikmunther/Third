@@ -8,7 +8,7 @@
 
 #include "CCamera.h"
 
-CCamera::CCamera(std::shared_ptr<CEntity> target, int WIDTH, int HEIGHT) :
+CCamera::CCamera(CEntity* target, int WIDTH, int HEIGHT) :
     target(target), offset{0, 0, WIDTH, HEIGHT} {
 }
 CCamera::CCamera(int WIDTH, int HEIGHT) :
@@ -33,7 +33,7 @@ int CCamera::offsetY() {
     return offset.y;
 }
 
-void CCamera::setTarget(std::shared_ptr<CEntity> target) {
+void CCamera::setTarget(CEntity* target) {
     this->target = target;
 }
 
