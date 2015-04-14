@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <memory>
-#include <vector>
+#include <map>
 #include "CBody.h"
 
 class CCamera;
@@ -21,15 +21,16 @@ class CEntity {
     
 public:
     CEntity(SDL_Rect rect, SDL_Color color);
-    
-    void onLoop(std::vector<CEntity*>* entities);
+    void onLoop(std::map<int, CEntity*>* entities);
     virtual void doLogic();
-    void move(std::vector<CEntity*>* entities);
-    bool collision(int x, int y, std::vector<CEntity*>* entities);
+    void move(std::map<int, CEntity*>* entities);
+    bool collision(int x, int y, std::map<int, CEntity*>* entities);
     void onRender(SDL_Renderer *renderer, CCamera* camera);
     
     CBody body;
     bool toRemove;
+    
+    int constVelX, constVelY; // Is used by Player class for movement.
     
 protected:
     SDL_Color color;

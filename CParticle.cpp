@@ -7,6 +7,7 @@
 //
 
 #include "CParticle.h"
+#include "Define.h"
 
 CParticle::CParticle(SDL_Rect rect, SDL_Color color) :
     CEntity(rect, color), color(color), creationTime(SDL_GetTicks()), livingTime(5) {
@@ -22,7 +23,7 @@ void CParticle::doLogic() {
         toRemove = true;
     
     body.velX += rand() % 3 - 1;
-    body.velY += 0.2;
+    body.velY += GRAVITY;
     //body.velY += rand() % 3 - 1;
 }
 

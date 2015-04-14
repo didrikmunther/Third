@@ -14,11 +14,11 @@ CEntityManager::CEntityManager() : entityID(0) {
 }
 
 void CEntityManager::addEntity(SDL_Rect rect, SDL_Color color) {
-    EntityVector.push_back(new CEntity(rect, color));
+    EntityVector[entityID++] = new CEntity(rect, color);
 }
 
 void CEntityManager::addEntity(CEntity* entity) {
-    EntityVector.push_back(entity);
+    EntityVector[entityID++] = entity;
 }
 
 void CEntityManager::addParticle(SDL_Rect rect, SDL_Color color, int livingTime) {
@@ -34,7 +34,7 @@ void CEntityManager::onRender(SDL_Renderer *renderer, CCamera* camera) {
         i->onRender(renderer, camera);
     
     for (auto &i: EntityVector)
-        i->onRender(renderer, camera);
+        i.second->onRender(renderer, camera);
 }
 
 void CEntityManager::onLoop() {
@@ -42,9 +42,12 @@ void CEntityManager::onLoop() {
     
     auto i = EntityVector.begin();
     while(i != EntityVector.end()) {
-        (*i)->onLoop(&EntityVector);
-        if((*i)->toRemove)
-            EntityVector.erase(std::remove(EntityVector.begin(), EntityVector.end(), (*i)), EntityVector.end());
+        (*i).second->onLoop(&EntityVector);
+        if((*i).second->toRemove) {
+            delete (*i).second;
+            EntityVector.erase(i->first);
+            //EntityVector.erase(std::remove(EntityVector.begin(), EntityVector.end(), (*i)), EntityVector.end());
+        }
         else
             ++i;
     }
@@ -73,8 +76,10 @@ void CEntityManager::onCleanup() {
     
     auto i = EntityVector.begin();
     while(i != EntityVector.end()) {
-        delete *i;
-        i = EntityVector.erase(i);
+        delete i->second;
+        EntityVector.erase(i++->first);
+        //delete *i;
+        //i = EntityVector.erase(i);
     }
     EntityVector.clear();
     

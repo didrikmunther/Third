@@ -14,7 +14,7 @@
 #include <sstream>
 #include <string>
 #include "CEntityManager.h"
-#include "CEntity.h"
+#include "CPlayer.h"
 #include "CCamera.h"
 
 class CGame {
@@ -55,7 +55,7 @@ private:
     const int BPP;
     
     CCamera camera;
-    CEntity* player;
+    CPlayer* player;
     
     // Timer variables
     

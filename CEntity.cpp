@@ -10,17 +10,18 @@
 #include "CSurface.h"
 #include <iostream>
 #include "CCamera.h"
+#include "Define.h"
 
-CEntity::CEntity(SDL_Rect rect, SDL_Color color) : body(rect), color(color), toRemove(false){
-    
+CEntity::CEntity(SDL_Rect rect, SDL_Color color) :
+    body(rect), color(color), toRemove(false), constVelX(0), constVelY(0) {
 }
 
-void CEntity::onLoop(std::vector<CEntity*>* entities) {
+void CEntity::onLoop(std::map<int, CEntity*>* entities) {
     
     doLogic();
     move(entities);
     
-    if(body.rect.y > 10000) {
+    if(body.rect.y > DESPAWN_HEIGHT) {
         toRemove = true;
         std::cout << body.rect.y;
     }
@@ -36,18 +37,18 @@ void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera) {
                          renderer, color.r, color.g, color.b);
 }
 
-bool CEntity::collision(int x, int y, std::vector<CEntity*>* entities) {
+bool CEntity::collision(int x, int y, std::map<int, CEntity*>* entities) {
     
     for (auto &i: *entities) {
-        if (&*i == this) continue;
+        if (i.second == this) continue;
     
-        if(x > i->body.getX() + i->body.getWidth())
+        if(x > (i.second->body.getX() + i.second->body.getWidth()))
             continue;
-        if(x + body.getWidth() < i->body.getX())
+        if(x + body.getWidth() < i.second->body.getX())
             continue;
-        if(y > i->body.getY() + i->body.getHeight())
+        if(y > i.second->body.getY() + i.second->body.getHeight())
             continue;
-        if(y + body.getHeight() < i->body.getY())
+        if(y + body.getHeight() < i.second->body.getY())
             continue;
         else
             return true;
@@ -56,10 +57,10 @@ bool CEntity::collision(int x, int y, std::vector<CEntity*>* entities) {
     return false;
 }
 
-void CEntity::move(std::vector<CEntity*>* entities) {
+void CEntity::move(std::map<int, CEntity*>* entities) {
     
-    int MoveX = body.velX;
-    int MoveY = body.velY;
+    int MoveX = body.velX + (float)constVelX;
+    int MoveY = body.velY + (float)constVelY;
     
     int StopX = body.getX();
     int StopY = body.getY();
@@ -76,10 +77,6 @@ void CEntity::move(std::vector<CEntity*>* entities) {
         if(MoveY >= 0) 	NewY =  1;
         else 			NewY = -1;
     }
-    
-    //body.rect.x += MoveX;
-    //body.rect.y += MoveY;
-    //return;
     
     while(true) {
         if(!collision(StopX + NewX, StopY, entities)) {
@@ -115,6 +112,6 @@ void CEntity::move(std::vector<CEntity*>* entities) {
 }
 
 void CEntity::doLogic() {
-    body.velY += 0.5;
+    body.velY += GRAVITY;
 }
 

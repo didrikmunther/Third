@@ -28,7 +28,7 @@ int CGame::onExecute() {
     
     std::cout << "Initializing game...\n";
     
-    switch(onInit()) {
+    switch(onInit()){
         case -1:
             std::cout << "Initializing failed!\n";
             return 1;
@@ -44,6 +44,8 @@ int CGame::onExecute() {
         while(SDL_PollEvent(&event)){
             onEvent(&event);
         }
+        
+        std::cout << "X: " << player->body.velX << ", Y: " << player->body.velY << " \n";
         
         float now = SDL_GetTicks();
         delta += (now - lastTime) / ns;
@@ -74,7 +76,7 @@ int CGame::onExecute() {
             frames = 0;
         }
         
-        //SDL_Delay(5);
+        //SDL_Delay(7);
         
     }
     
@@ -99,10 +101,10 @@ int CGame::onInit() {
         return -1;
     }
     
-    renderer = SDL_CreateRenderer(window, 0, SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(window, 0, RENDERER_FLAGS);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     
-    player = new CEntity(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
+    player = new CPlayer(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
     entityManager.addEntity(player);
     camera.setTarget(player);
     
@@ -126,29 +128,35 @@ void CGame::onEvent(SDL_Event* event) {
 //    if(keystate[SDL_SCANCODE_S])
 //        player->body.velY += 5;
     
+    if(event->key.repeat != 0) return;
+    
     switch(event->type) {
         case SDL_QUIT:
             running = false;
             break;
             
         case SDL_KEYDOWN:
-            switch(event->key.keysym.sym){
+            switch(event->key.keysym.sym) {
                     
                 case keyMap::EXIT:
                     running = false;
                     break;
                     
                 case keyMap::LEFT:
+                    //player->constVelX -= 10;
                     player->body.velX -= 10;
                     break;
                 case keyMap::RIGHT:
+                    //player->constVelX += 10;
                     player->body.velX += 10;
                     break;
                 case keyMap::UP:
-                    player->body.velY -= 10;
+                    //player->constVelY -= 100;
+                    player->body.velY -= 50;
                     break;
                 case keyMap::DOWN:
-                    player->body.velY += 10;
+                    //player->constVelY += 10;
+                    player->body.velY += 50;
                     break;
                     
                 case keyMap::BLOCK:
@@ -166,8 +174,29 @@ void CGame::onEvent(SDL_Event* event) {
                     break;
                     
                 case keyMap::RESET:
-                    delete player;
-                    player = new CEntity(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
+                    *player = CPlayer(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
+                    break;
+            }
+            break;
+        
+        case SDL_KEYUP:
+            switch(event->key.keysym.sym) {
+                    
+                case keyMap::LEFT:
+                    //player->constVelX += 10;
+                    player->body.velX += 10;
+                    break;
+                case keyMap::RIGHT:
+                    //player->constVelX -= 10;
+                    player->body.velX -= 10;
+                    break;
+                case keyMap::UP:
+                    //player->constVelY += 100;
+                    player->body.velY += 50;
+                    break;
+                case keyMap::DOWN:
+                    //player->constVelY -= 10;
+                    player->body.velY -= 50;
                     break;
             }
             break;

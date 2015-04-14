@@ -17,11 +17,12 @@ class CParticle : public CEntity {
 public:
     CParticle(SDL_Rect rect, SDL_Color color);
     CParticle(SDL_Rect rect, SDL_Color color, int livingTime);
-    virtual void doLogic();
 private:
     SDL_Color color;
     int creationTime;
     int livingTime;
+    
+    virtual void doLogic();
 };
 
 

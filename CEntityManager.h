@@ -38,8 +38,8 @@ public:
     
 private:
     //std::vector<std::shared_ptr<CEntity>> EntityVector;
-    std::vector<CEntity*> EntityVector;
-    //std::map<int, CEntity*> EntityVector;
+    //std::vector<CEntity*> EntityVector;
+    std::map<int, CEntity*> EntityVector;
     //std::vector<std::shared_ptr<CParticle>> ParticleVector;
     std::vector<CParticle*> ParticleVector;
     //std::vector<std::shared_ptr<CParticleEmitter>> ParticleEmitterVector;
