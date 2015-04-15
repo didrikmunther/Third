@@ -13,29 +13,48 @@
 #include "Define.h"
 
 CEntity::CEntity(SDL_Rect rect, SDL_Color color) :
-    body(rect), color(color), toRemove(false), constVelX(0), constVelY(0) {
+body(rect), color(color), toRemove(false), properties(EntityProperty::COLLIDABLE) {
 }
 
 void CEntity::onLoop(std::map<int, CEntity*>* entities) {
     
+    if(!hasProperty(EntityProperty::FLYING))
+        body.velY += GRAVITY;
+    
     doLogic();
     move(entities);
-    
-    //body.rect.x += body.velX;
-    //body.rect.y += body.velY;
 }
 
 void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera) {
-    if(camera->collision(this))
+    if(camera->collision(this) && !(hasProperty(EntityProperty::HIDDEN)))
         CSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(),
                          body.getWidth(), body.getHeight(),
                          renderer, color.r, color.g, color.b);
 }
 
+bool CEntity::hasProperty(int property) {
+    return properties & property;
+}
+
+void CEntity::toggleProperty(int property) {
+    properties ^= property;
+}
+
+void CEntity::addProperty(int property) {
+    properties |= property;
+}
+
+void CEntity::removeProperty(int property) {
+    properties = ~(properties & property);
+}
+
 bool CEntity::collision(int x, int y, std::map<int, CEntity*>* entities) {
+    
+    if(!(properties & EntityProperty::COLLIDABLE)) return false;
     
     for (auto &i: *entities) {
         if (i.second == this) continue;
+        if (!(i.second->properties & EntityProperty::COLLIDABLE)) continue;
     
         if(x > (i.second->body.getX() + i.second->body.getWidth()))
             continue;
@@ -54,8 +73,8 @@ bool CEntity::collision(int x, int y, std::map<int, CEntity*>* entities) {
 
 void CEntity::move(std::map<int, CEntity*>* entities) {
     
-    int MoveX = body.velX + (float)constVelX;
-    int MoveY = body.velY + (float)constVelY;
+    int MoveX = body.velX;
+    int MoveY = body.velY;
     
     int StopX = body.getX();
     int StopY = body.getY();
@@ -107,8 +126,6 @@ void CEntity::move(std::map<int, CEntity*>* entities) {
 }
 
 void CEntity::doLogic() {
-    body.velY += GRAVITY;
-    
     if(body.rect.y > DESPAWN_HEIGHT)
         toRemove = true;
 }

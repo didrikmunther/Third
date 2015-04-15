@@ -10,11 +10,9 @@
 #include "Define.h"
 
 CPlayer::CPlayer(SDL_Rect rect, SDL_Color color) :
-    CEntity(rect, color), maxSpeed(10.0f), accelerationX(1.0f), accelerationY(100.0f),
-    stoppingAccelerationX(accelerationX * 4) {
+    CEntity(rect, color), maxSpeed(10.0f), accelerationX(1.5f), accelerationY(100.0f),
+    stoppingAccelerationX(accelerationX * 2) {
 }
 
 void CPlayer::doLogic() {
-    
-    body.velY += GRAVITY;
 }

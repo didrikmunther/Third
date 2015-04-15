@@ -26,11 +26,16 @@ public:
     void move(std::map<int, CEntity*>* entities);
     bool collision(int x, int y, std::map<int, CEntity*>* entities);
     void onRender(SDL_Renderer *renderer, CCamera* camera);
+    int properties;
+    
+    bool hasProperty(int property);
+    void toggleProperty(int property);
+    void addProperty(int property);
+    void removeProperty(int property);
+    
     
     CBody body;
     bool toRemove;
-    
-    int constVelX, constVelY; // Is used by Player class for movement.
     
 protected:
     SDL_Color color;

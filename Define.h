@@ -26,7 +26,16 @@ enum keyMap {
     
     BLOCK = SDLK_l,
     PARTICLEEM = SDLK_i,
-    PARTICLE = SDLK_k,
-    RESET = SDLK_j
+    RESET = SDLK_j,
     
+    TOGGLE_COLLIDE = SDLK_1,
+    TOGGLE_HIDDEN = SDLK_2,
+    TOGGLE_FLYING = SDLK_3
+    
+};
+
+enum EntityProperty {
+    COLLIDABLE  = 0x1,
+    FLYING      = 0x2,
+    HIDDEN      = 0x4
 };

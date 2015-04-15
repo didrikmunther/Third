@@ -38,13 +38,13 @@ void CCamera::setTarget(CEntity* target) {
 }
 
 bool CCamera::collision(CEntity* entity) {
-    if(offset.x > entity->body.getX() + entity->body.getWidth())
+    if(offsetX() > entity->body.getX() + entity->body.getWidth())
         return false;
-    if(offset.x + offset.w < entity->body.getX())
+    if(offsetX() + offset.w < entity->body.getX())
         return false;
-    if(offset.y > entity->body.getY() + entity->body.getHeight())
+    if(offsetY() > entity->body.getY() + entity->body.getHeight())
         return false;
-    if(offset.y + offset.h < entity->body.getY())
+    if(offsetY() + offset.h < entity->body.getY())
         return false;
     else
         return true;

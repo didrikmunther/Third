@@ -47,7 +47,7 @@ int CGame::onExecute() {
         
         handleKeyStates();
         
-        std::cout << "X: " << player->body.velX << ", Y: " << player->body.velY << " \n";
+        //std::cout << "CameraX: " << camera.offsetX() << ", CameraY: " << camera.offsetY() << " \n";
         
         float now = SDL_GetTicks();
         delta += (now - lastTime) / ns;
@@ -121,36 +121,38 @@ void CGame::handleKeyStates() {
     
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
     
-    bool keyPressed = false;              // To stop movement if no keys are pressed
+    bool keyPressedX = false;              // To stop movement if no keys are pressed
+    bool keyPressedY = false;
     if(keystate[SDL_SCANCODE_D]) {
         player->body.velX += player->accelerationX;
         if(player->body.velX > player->maxSpeed)
             player->body.velX = player->maxSpeed;
-        keyPressed = true;
+        keyPressedX = true;
     }
     if(keystate[SDL_SCANCODE_A]) {
         player->body.velX -= player->accelerationX;
         if(player->body.velX < -player->maxSpeed)
             player->body.velX = -player->maxSpeed;
-        keyPressed = true;
+        keyPressedX = true;
     }
     if(keystate[SDL_SCANCODE_W]) {
         player->body.velY -= player->accelerationY;
         if(player->body.velY < -player->maxSpeed)
             player->body.velY = -player->maxSpeed;
-        keyPressed = true;
+        keyPressedY = true;
     }
-    if(keystate[SDL_SCANCODE_S]) {
-        player->body.velY += player->accelerationY;
-        if(player->body.velY > player->maxSpeed)
-            player->body.velY = player->maxSpeed;
-        keyPressed = true;
+    if(player->hasProperty(EntityProperty::FLYING)) {           // Only handle the down button if flying
+        if(keystate[SDL_SCANCODE_S]) {
+            player->body.velY += player->accelerationY;
+            if(player->body.velY > player->maxSpeed)
+                player->body.velY = player->maxSpeed;
+            keyPressedY = true;
+        }
     }
     
-    if(!keyPressed) {
-        CBody* body = &player->body;
+    CBody* body = &player->body;
+    if(!keyPressedX) {
         if(body->velX < 0) {
-            std::cout << "here\n";
             body->velX += player->stoppingAccelerationX;
             if(body->velX >= 0)
                 body->velX = 0.0f;
@@ -159,16 +161,19 @@ void CGame::handleKeyStates() {
             if(body->velX <= 0)
                 body->velX = 0.0f;
         }
-        
-//        if(body->velY < 0) {
-//            body->velY += player->accelerationY;
-//            if(body->velY >= 0)
-//                body->velY = 0.0f;
-//        } else {
-//            body->velY -= player->accelerationY;
-//            if(body->velY <= 0)
-//                body->velY = 0.0f;
-//        }
+    }
+    if(!keyPressedY) {
+        if(player->hasProperty(EntityProperty::FLYING)) {
+            if(body->velY < 0) {
+                body->velY += player->accelerationY;
+                if(body->velY >= 0)
+                    body->velY = 0.0f;
+            } else {
+                body->velY -= player->accelerationY;
+                if(body->velY <= 0)
+                    body->velY = 0.0f;
+            }
+        }
     }
     
 }
@@ -197,16 +202,22 @@ void CGame::onEvent(SDL_Event* event) {
 
                     break;
                     
-                case keyMap::PARTICLE:
-                    entityManager.addParticle(SDL_Rect{mouseX - 20 / 2, mouseY - 20 / 2, 20, 20}, SDL_Color{(Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, 5);
-                    break;
-                    
                 case keyMap::PARTICLEEM:
                     entityManager.addParticleEmitter(SDL_Rect{mouseX - 4 / 2, mouseY - 4 / 2, 10, 10}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, 20, 2, 6, 0.3);
                     break;
                     
                 case keyMap::RESET:
                     *player = CPlayer(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
+                    break;
+                    
+                case keyMap::TOGGLE_COLLIDE:
+                    player->toggleProperty(EntityProperty::COLLIDABLE);
+                    break;
+                case keyMap::TOGGLE_HIDDEN:
+                    player->toggleProperty(EntityProperty::HIDDEN);
+                    break;
+                case keyMap::TOGGLE_FLYING:
+                    player->toggleProperty(EntityProperty::FLYING);
                     break;
             }
             break;
