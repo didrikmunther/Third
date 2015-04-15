@@ -13,5 +13,6 @@ CPlayer::CPlayer(SDL_Rect rect, SDL_Color color) : CEntity(rect, color) {
 }
 
 void CPlayer::doLogic() {
+    
     body.velY += GRAVITY;
 }

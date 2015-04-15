@@ -21,11 +21,6 @@ void CEntity::onLoop(std::map<int, CEntity*>* entities) {
     doLogic();
     move(entities);
     
-    if(body.rect.y > DESPAWN_HEIGHT) {
-        toRemove = true;
-        std::cout << body.rect.y;
-    }
-    
     //body.rect.x += body.velX;
     //body.rect.y += body.velY;
 }
@@ -113,5 +108,8 @@ void CEntity::move(std::map<int, CEntity*>* entities) {
 
 void CEntity::doLogic() {
     body.velY += GRAVITY;
+    
+    if(body.rect.y > DESPAWN_HEIGHT)
+        toRemove = true;
 }
 

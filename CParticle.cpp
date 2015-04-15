@@ -25,5 +25,8 @@ void CParticle::doLogic() {
     body.velX += rand() % 3 - 1;
     body.velY += GRAVITY;
     //body.velY += rand() % 3 - 1;
+    
+    if(body.rect.y > DESPAWN_HEIGHT)
+        toRemove = true;
 }
 
