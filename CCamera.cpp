@@ -23,6 +23,8 @@ void CCamera::onLoop() {
         offset.y = 0;
     }
     
+    std::cout << ", Target: " << target->properties << std::endl;
+    
     //offset.x = (target->body.getX() + target->body.getWidth() / 2) - offset.w / 2;
     offset.x += (((target->body.getX() + target->body.getWidth() / 2) - offset.w / 2) - offset.x) / CAMERA_SWAY;
     

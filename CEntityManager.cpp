@@ -39,7 +39,7 @@ void CEntityManager::onRender(SDL_Renderer *renderer, CCamera* camera) {
 }
 
 void CEntityManager::onLoop() {
-    std::cout << "Entities: " << EntityVector.size() << ", Particles: " << ParticleVector.size()  << ", Emittors: " << ParticleEmitterVector.size() << std::endl;
+    std::cout << "Entities: " << EntityVector.size() << ", Particles: " << ParticleVector.size();
     
     auto i = EntityVector.begin();
     while(i != EntityVector.end()) {
