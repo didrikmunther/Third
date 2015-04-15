@@ -13,8 +13,9 @@
 CEntityManager::CEntityManager() : entityID(0) {
 }
 
-void CEntityManager::addEntity(SDL_Rect rect, SDL_Color color) {
-    EntityVector[entityID++] = new CEntity(rect, color);
+CEntity* CEntityManager::addEntity(SDL_Rect rect, SDL_Color color) {
+    EntityVector[++entityID] = new CEntity(rect, color);
+    return EntityVector[entityID];
 }
 
 void CEntityManager::addEntity(CEntity* entity) {

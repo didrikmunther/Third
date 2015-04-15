@@ -79,6 +79,10 @@ private:
     
     CEntityManager entityManager;
     
+    // Temp variables
+    
+    CEntity* block;
+    
     
 };
 

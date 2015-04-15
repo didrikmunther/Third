@@ -12,13 +12,19 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include "CEntity.h"
-#include <memory>
+
+typedef struct CameraOffset {
+    float x, y;
+    int w, h;
+} CameraOffset;
 
 class CCamera {
     
 public:
     CCamera(CEntity* target, int WIDTH, int HEIGHT);
     CCamera(int WIDTH, int HEIGHT);
+    
+    void onLoop();
     
     void setTarget(CEntity* target);
     bool collision(CEntity* entity);
@@ -27,8 +33,7 @@ public:
     int offsetY();
     
 private:
-    SDL_Rect offset;
-    SDL_Rect oldOffset;
+    CameraOffset offset;
     
     CEntity* target;
     

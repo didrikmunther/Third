@@ -113,6 +113,7 @@ int CGame::onInit() {
     entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, SDL_Color{255, 0, 0, 0});
     entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 500, 30, 500}, SDL_Color{255, 0, 0, 0});
     entityManager.addEntity(SDL_Rect{0 + 500, 480 - 500, 30, 500}, SDL_Color{255, 0, 0, 0});
+    block = entityManager.addEntity(SDL_Rect{200, 200, 40, 40}, SDL_Color{255, 0, 255, 0});
 
     return 0;
 }
@@ -219,6 +220,14 @@ void CGame::onEvent(SDL_Event* event) {
                 case keyMap::TOGGLE_FLYING:
                     player->toggleProperty(EntityProperty::FLYING);
                     break;
+                    
+                case keyMap::TARGET_PLAYER:
+                    camera.setTarget(player);
+                    break;
+                case keyMap::TARGET_BLOCK:
+                    camera.setTarget(block);
+                    break;
+                    
             }
             break;
         
@@ -238,6 +247,7 @@ void CGame::onEvent(SDL_Event* event) {
 
 void CGame::onLoop() {
     entityManager.onLoop();
+    camera.onLoop();
 }
 
 void CGame::onRender() {

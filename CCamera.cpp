@@ -7,6 +7,8 @@
 //
 
 #include "CCamera.h"
+#include <iostream>
+#include "Define.h"
 
 CCamera::CCamera(CEntity* target, int WIDTH, int HEIGHT) :
     target(target), offset{0, 0, WIDTH, HEIGHT} {
@@ -15,22 +17,25 @@ CCamera::CCamera(int WIDTH, int HEIGHT) :
     offset{0, 0, WIDTH, HEIGHT} {
 }
 
-int CCamera::offsetX() {
-    if(target == nullptr) {
-        return 0;
+void CCamera::onLoop() {
+    if (target == nullptr) {
+        offset.x = 0;
+        offset.y = 0;
     }
-    oldOffset.x = offset.x;
-    offset.x = (target->body.getX() + target->body.getWidth() / 2) - offset.w / 2;
-    return offset.x;
+    
+    //offset.x = (target->body.getX() + target->body.getWidth() / 2) - offset.w / 2;
+    offset.x += (((target->body.getX() + target->body.getWidth() / 2) - offset.w / 2) - offset.x) / CAMERA_SWAY;
+    
+    //offset.y = (target->body.getY() + target->body.getHeight() / 2) - offset.h / 2;
+    offset.y += (((target->body.getY() + target->body.getHeight() / 2) - offset.h / 2) - offset.y) / CAMERA_SWAY;
+}
+
+int CCamera::offsetX() {
+    return (int)floor(offset.x);
 }
 
 int CCamera::offsetY() {
-    if(target == nullptr) {
-        return 0;
-    }
-    oldOffset.y = offset.y;
-    offset.y = (target->body.getY() + target->body.getHeight() / 2) - offset.h / 2;
-    return offset.y;
+    return (int)floor(offset.y);
 }
 
 void CCamera::setTarget(CEntity* target) {
