@@ -34,6 +34,8 @@ private:
     
     void onEvent(SDL_Event* event);
     
+    void handleKeyStates();
+    
     void onLoop();
     
     void onRender();

@@ -9,7 +9,9 @@
 #include "CPlayer.h"
 #include "Define.h"
 
-CPlayer::CPlayer(SDL_Rect rect, SDL_Color color) : CEntity(rect, color) {
+CPlayer::CPlayer(SDL_Rect rect, SDL_Color color) :
+    CEntity(rect, color), maxSpeed(10.0f), accelerationX(1.0f), accelerationY(100.0f),
+    stoppingAccelerationX(accelerationX * 4) {
 }
 
 void CPlayer::doLogic() {

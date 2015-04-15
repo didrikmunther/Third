@@ -17,6 +17,11 @@ class CPlayer : public CEntity {
 public:
     CPlayer(SDL_Rect rect, SDL_Color color);
     
+    float maxSpeed;
+    float accelerationX, accelerationY;
+    float stoppingAccelerationX;
+    
+    
 private:
     virtual void doLogic();
     

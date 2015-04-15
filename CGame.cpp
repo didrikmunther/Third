@@ -45,6 +45,8 @@ int CGame::onExecute() {
             onEvent(&event);
         }
         
+        handleKeyStates();
+        
         std::cout << "X: " << player->body.velX << ", Y: " << player->body.velY << " \n";
         
         float now = SDL_GetTicks();
@@ -115,20 +117,67 @@ int CGame::onInit() {
     return 0;
 }
 
+void CGame::handleKeyStates() {
+    
+    const Uint8* keystate = SDL_GetKeyboardState(NULL);
+    
+    bool keyPressed = false;              // To stop movement if no keys are pressed
+    if(keystate[SDL_SCANCODE_D]) {
+        player->body.velX += player->accelerationX;
+        if(player->body.velX > player->maxSpeed)
+            player->body.velX = player->maxSpeed;
+        keyPressed = true;
+    }
+    if(keystate[SDL_SCANCODE_A]) {
+        player->body.velX -= player->accelerationX;
+        if(player->body.velX < -player->maxSpeed)
+            player->body.velX = -player->maxSpeed;
+        keyPressed = true;
+    }
+    if(keystate[SDL_SCANCODE_W]) {
+        player->body.velY -= player->accelerationY;
+        if(player->body.velY < -player->maxSpeed)
+            player->body.velY = -player->maxSpeed;
+        keyPressed = true;
+    }
+    if(keystate[SDL_SCANCODE_S]) {
+        player->body.velY += player->accelerationY;
+        if(player->body.velY > player->maxSpeed)
+            player->body.velY = player->maxSpeed;
+        keyPressed = true;
+    }
+    
+    if(!keyPressed) {
+        CBody* body = &player->body;
+        if(body->velX < 0) {
+            std::cout << "here\n";
+            body->velX += player->stoppingAccelerationX;
+            if(body->velX >= 0)
+                body->velX = 0.0f;
+        } else {
+            body->velX -= player->stoppingAccelerationX;
+            if(body->velX <= 0)
+                body->velX = 0.0f;
+        }
+        
+//        if(body->velY < 0) {
+//            body->velY += player->accelerationY;
+//            if(body->velY >= 0)
+//                body->velY = 0.0f;
+//        } else {
+//            body->velY -= player->accelerationY;
+//            if(body->velY <= 0)
+//                body->velY = 0.0f;
+//        }
+    }
+    
+}
+
 void CGame::onEvent(SDL_Event* event) {
     
-//     const Uint8* keystate = SDL_GetKeyboardState(NULL);
-//    
-//    if(keystate[SDL_SCANCODE_D])
-//        player->body.velX += 5;
-//    if(keystate[SDL_SCANCODE_A])
-//        player->body.velX -= 5;
-//    if(keystate[SDL_SCANCODE_W])
-//        player->body.velY -= 5;
-//    if(keystate[SDL_SCANCODE_S])
-//        player->body.velY += 5;
     
-    if(event->key.repeat != 0) return;
+    
+    //if(event->key.repeat != 0) return;
     
     switch(event->type) {
         case SDL_QUIT:
@@ -140,23 +189,6 @@ void CGame::onEvent(SDL_Event* event) {
                     
                 case keyMap::EXIT:
                     running = false;
-                    break;
-                    
-                case keyMap::LEFT:
-                    //player->constVelX -= 10;
-                    player->body.velX -= 10;
-                    break;
-                case keyMap::RIGHT:
-                    //player->constVelX += 10;
-                    player->body.velX += 10;
-                    break;
-                case keyMap::UP:
-                    //player->constVelY -= 100;
-                    player->body.velY -= 50;
-                    break;
-                case keyMap::DOWN:
-                    //player->constVelY += 10;
-                    player->body.velY += 50;
                     break;
                     
                 case keyMap::BLOCK:
@@ -182,22 +214,6 @@ void CGame::onEvent(SDL_Event* event) {
         case SDL_KEYUP:
             switch(event->key.keysym.sym) {
                     
-                case keyMap::LEFT:
-                    //player->constVelX += 10;
-                    player->body.velX += 10;
-                    break;
-                case keyMap::RIGHT:
-                    //player->constVelX -= 10;
-                    player->body.velX -= 10;
-                    break;
-                case keyMap::UP:
-                    //player->constVelY += 100;
-                    player->body.velY += 50;
-                    break;
-                case keyMap::DOWN:
-                    //player->constVelY -= 10;
-                    player->body.velY -= 50;
-                    break;
             }
             break;
         
