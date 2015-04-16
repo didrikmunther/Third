@@ -73,8 +73,6 @@ private:
     std::stringstream title;
     std::string intro;
     
-    int mouseX, mouseY;
-    
     // Game variables
     
     CEntityManager entityManager;

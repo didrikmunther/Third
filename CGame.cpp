@@ -8,17 +8,17 @@
 
 #include "CGame.h"
 #include <iostream>
-#include "CSurface.h"
+#include "NSurface.h"
 #include <cmath>
 #include "Define.h"
+#include "NMouse.h"
 
 CGame::CGame() :
 running(true), window(nullptr), intro("Physics"),
 //WIDTH(640), HEIGHT(480), BPP(32), camera(WIDTH, HEIGHT),
 WIDTH(1280), HEIGHT(720), BPP(32), camera(WIDTH, HEIGHT),
 lastTime(SDL_GetTicks()), timer(SDL_GetTicks()),
-ns(1000.0f / (float)GAMEINTERVAL), delta(0), frames(0), updates(0),
-mouseX(0), mouseY(0) {
+ns(1000.0f / (float)GAMEINTERVAL), delta(0), frames(0), updates(0) {
 }
 
 CGame::~CGame() {
@@ -204,13 +204,15 @@ void CGame::onEvent(SDL_Event* event) {
                     break;
                     
                 case keyMap::BLOCK:
+                {
                     //entityManager.onCleanup();
-                    entityManager.addEntity(SDL_Rect{mouseX - 30 / 2, mouseY - 30 / 2, 40, 40}, SDL_Color{255, 0, 0, 0});
-
+                    CEntity* temp = entityManager.addEntity(SDL_Rect{NMouse::relativeMouseX(&camera) - 30 / 2, NMouse::relativeMouseY(&camera) - 30 / 2, 40, 40}, SDL_Color{255, 0, 0, 0});
+                    temp->addProperty(EntityProperty::STATIC);
+                }
                     break;
                     
                 case keyMap::PARTICLEEM:
-                    entityManager.addParticleEmitter(SDL_Rect{mouseX - 4 / 2, mouseY - 4 / 2, 10, 10}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, 20, 2, 4, 6, 0.3);
+                    entityManager.addParticleEmitter(SDL_Rect{NMouse::relativeMouseX(&camera) - 4 / 2, NMouse::relativeMouseY(&camera) - 4 / 2, 10, 10}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, 20, 2, 4, 6, 0.3);
                     break;
                     
                 case keyMap::RESET:
@@ -248,11 +250,6 @@ void CGame::onEvent(SDL_Event* event) {
             switch(event->key.keysym.sym) {
                     
             }
-            break;
-        
-        case SDL_MOUSEMOTION:
-            mouseX = event->motion.x + camera.offsetX();
-            mouseY = event->motion.y + camera.offsetY();
             break;
     }
     

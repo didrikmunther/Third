@@ -1,18 +1,18 @@
 //
-//  CSurface.h
+//  NSurface.h
 //  Third
 //
 //  Created by Didrik Munther on 12/03/15.
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#ifndef __Third__CSurface__
-#define __Third__CSurface__
+#ifndef __Third__NSurface__
+#define __Third__NSurface__
 
 #include <stdio.h>
 #include <SDL2/SDL.h>
 
-namespace CSurface {
+namespace NSurface {
 
     void renderRect(int x, int y, int w, int h, SDL_Renderer *renderer, int r, int g, int b);
     
@@ -22,4 +22,4 @@ namespace CSurface {
 };
 
 
-#endif /* defined(__Third__CSurface__) */
+#endif /* defined(__Third__NSurface__) */

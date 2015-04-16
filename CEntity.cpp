@@ -7,7 +7,7 @@
 //
 
 #include "CEntity.h"
-#include "CSurface.h"
+#include "NSurface.h"
 #include <iostream>
 #include "CCamera.h"
 #include "Define.h"
@@ -32,7 +32,7 @@ void CEntity::onLoop(std::map<int, CEntity*>* entities) {
 
 void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera) {
     if(camera->collision(this) && !(hasProperty(EntityProperty::HIDDEN)))
-        CSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(),
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(),
                          body.getWidth(), body.getHeight(),
                          renderer, color.r, color.g, color.b);
 }
