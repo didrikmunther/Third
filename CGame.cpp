@@ -89,7 +89,7 @@ int CGame::onExecute() {
 
 int CGame::onInit() {
     
-    srand(time(nullptr));
+    srand((Uint16)time(nullptr));
     
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         puts("SDL_Init error");
@@ -153,7 +153,6 @@ void CGame::handleKeyStates() {
         }
     } else {
         if(keystate[SDL_SCANCODE_W]) {
-            std::cout << "COLLISION BOTTOM: " << player->collisionBottom << std::endl;
             player->jump();
             keyPressedY = true;
         }

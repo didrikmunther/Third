@@ -46,3 +46,4 @@ enum EntityProperty {
     HIDDEN      = 0x4,
     STATIC      = 0x8
 };
+
