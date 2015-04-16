@@ -14,12 +14,12 @@ CEntityManager::CEntityManager() : entityID(0) {
 }
 
 CEntity* CEntityManager::addEntity(SDL_Rect rect, SDL_Color color) {
-    EntityVector[++entityID] = new CEntity(rect, color);
-    return EntityVector[entityID];
+    EntityVector[std::to_string(++entityID)] = new CEntity(rect, color);
+    return EntityVector[std::to_string(entityID)];
 }
 
 void CEntityManager::addEntity(CEntity* entity) {
-    EntityVector[entityID++] = entity;
+    EntityVector[std::to_string(++entityID)] = entity;
 }
 
 void CEntityManager::addParticle(SDL_Rect rect, SDL_Color color, int livingTime) {
@@ -75,6 +75,12 @@ void CEntityManager::onLoop() {
 
 void CEntityManager::onCleanup() {
     
+    entityCleanup();
+    particleEmitterCleanup();
+    particleCleanup();
+}
+
+void CEntityManager::entityCleanup() {
     auto i = EntityVector.begin();
     while(i != EntityVector.end()) {
         delete i->second;
@@ -83,27 +89,26 @@ void CEntityManager::onCleanup() {
         //i = EntityVector.erase(i);
     }
     EntityVector.clear();
-    
-    auto i2 = ParticleVector.begin();
-    while(i2 != ParticleVector.end()) {
-        delete *i2;
-        i2 = ParticleVector.erase(i2);
-    }
-    ParticleVector.clear();
-    
-    auto i3 = ParticleEmitterVector.begin();
-    while(i3 != ParticleEmitterVector.end()) {
-        delete *i3;
-        ParticleEmitterVector.erase(i3);
+}
+
+void CEntityManager::particleEmitterCleanup() {
+    auto i = ParticleEmitterVector.begin();
+    while(i != ParticleEmitterVector.end()) {
+        
+        delete *i;
+        i = ParticleEmitterVector.erase(i);
+        
     }
     ParticleEmitterVector.clear();
 }
 
 void CEntityManager::particleCleanup() {
-    auto i3 = ParticleEmitterVector.begin();
-    while(i3 != ParticleEmitterVector.end()) {
-        delete *i3;
+    auto i = ParticleVector.begin();
+    while(i != ParticleVector.end()) {
+        
+        delete *i;
+        i = ParticleVector.erase(i);
         
     }
-    ParticleEmitterVector.clear();
+    ParticleVector.clear();
 }

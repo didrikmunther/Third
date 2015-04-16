@@ -17,6 +17,7 @@
 #include "CParticle.h"
 #include "CParticleEmitter.h"
 #include <map>
+#include <string>
 
 class CCamera;
 
@@ -32,6 +33,9 @@ public:
     void onRender(SDL_Renderer *renderer, CCamera* camera);
     void onLoop();
     void onCleanup();
+    
+    void entityCleanup();
+    void particleEmitterCleanup();
     void particleCleanup();
     
     int entityID;
@@ -39,7 +43,7 @@ public:
 private:
     //std::vector<std::shared_ptr<CEntity>> EntityVector;
     //std::vector<CEntity*> EntityVector;
-    std::map<int, CEntity*> EntityVector;
+    std::map<std::string, CEntity*> EntityVector;
     //std::vector<std::shared_ptr<CParticle>> ParticleVector;
     std::vector<CParticle*> ParticleVector;
     //std::vector<std::shared_ptr<CParticleEmitter>> ParticleEmitterVector;

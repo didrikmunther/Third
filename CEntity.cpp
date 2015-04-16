@@ -18,7 +18,7 @@ CEntity::CEntity(SDL_Rect rect, SDL_Color color) :
     collisionRight(false), collisionLeft(false) {
 }
 
-void CEntity::onLoop(std::map<int, CEntity*>* entities) {
+void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
     
     if(!hasProperty(EntityProperty::FLYING))
         body.velY += GRAVITY;
@@ -53,7 +53,7 @@ void CEntity::removeProperty(int property) {
     properties = ~(properties & property);
 }
 
-bool CEntity::collision(int x, int y, std::map<int, CEntity*>* entities) {
+bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities) {
     
     if(!(properties & EntityProperty::COLLIDABLE)) return false;
     
@@ -85,7 +85,7 @@ bool CEntity::collision(int x, int y, std::map<int, CEntity*>* entities) {
     return false;
 }
 
-void CEntity::move(std::map<int, CEntity*>* entities) {
+void CEntity::move(std::map<std::string, CEntity*>* entities) {
     
     int MoveX = body.velX;
     int MoveY = body.velY;

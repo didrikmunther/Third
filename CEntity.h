@@ -21,10 +21,10 @@ class CEntity {
     
 public:
     CEntity(SDL_Rect rect, SDL_Color color);
-    void onLoop(std::map<int, CEntity*>* entities);
+    void onLoop(std::map<std::string, CEntity*>* entities);
     virtual void doLogic();
-    void move(std::map<int, CEntity*>* entities);
-    bool collision(int x, int y, std::map<int, CEntity*>* entities);
+    void move(std::map<std::string, CEntity*>* entities);
+    bool collision(int x, int y, std::map<std::string, CEntity*>* entities);
     void onRender(SDL_Renderer *renderer, CCamera* camera);
     int properties;
     
