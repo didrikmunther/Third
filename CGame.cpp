@@ -121,6 +121,10 @@ int CGame::onInit() {
 
 void CGame::handleKeyStates() {
     
+//    SDL_GetMouseState(&mouseX, &mouseY);
+//    relativeMouseX = mouseX + camera.offsetX();
+//    relativeMouseY = mouseY + camera.offsetY();
+    
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
     
     bool keyPressedX = false;              // To stop movement if no keys are pressed
@@ -205,12 +209,12 @@ void CGame::onEvent(SDL_Event* event) {
                     
                 case keyMap::BLOCK:
                     //entityManager.onCleanup();
-                    entityManager.addEntity(SDL_Rect{mouseX - 30 / 2, mouseY - 30 / 2, 40, 40}, SDL_Color{255, 0, 0, 0});
+                    entityManager.addEntity(SDL_Rect{relativeMouseX - 30 / 2, relativeMouseY - 30 / 2, 40, 40}, SDL_Color{255, 0, 0, 0});
 
                     break;
                     
                 case keyMap::PARTICLEEM:
-                    entityManager.addParticleEmitter(SDL_Rect{mouseX - 4 / 2, mouseY - 4 / 2, 10, 10}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, 20, 2, 4, 6, 0.3);
+                    entityManager.addParticleEmitter(SDL_Rect{relativeMouseX - 4 / 2, relativeMouseY - 4 / 2, 10, 10}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, 20, 2, 4, 6, 0.3);
                     break;
                     
                 case keyMap::RESET:
@@ -250,10 +254,9 @@ void CGame::onEvent(SDL_Event* event) {
             }
             break;
         
-        case SDL_MOUSEMOTION:
-            mouseX = event->motion.x + camera.offsetX();
-            mouseY = event->motion.y + camera.offsetY();
-            break;
+        //case SDL_MOUSEMOTION:
+            
+        //    break;
     }
     
 }

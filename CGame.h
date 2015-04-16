@@ -74,6 +74,7 @@ private:
     std::string intro;
     
     int mouseX, mouseY;
+    int relativeMouseX, relativeMouseY;
     
     // Game variables
     
