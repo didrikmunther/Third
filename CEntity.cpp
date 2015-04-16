@@ -13,7 +13,9 @@
 #include "Define.h"
 
 CEntity::CEntity(SDL_Rect rect, SDL_Color color) :
-body(rect), color(color), toRemove(false), properties(EntityProperty::COLLIDABLE) {
+    body(rect), color(color), toRemove(false), properties(EntityProperty::COLLIDABLE),
+    collisionTop(false), collisionBottom(false),
+    collisionRight(false), collisionLeft(false) {
 }
 
 void CEntity::onLoop(std::map<int, CEntity*>* entities) {
@@ -53,6 +55,12 @@ bool CEntity::collision(int x, int y, std::map<int, CEntity*>* entities) {
     if(!(properties & EntityProperty::COLLIDABLE)) return false;
     
     for (auto &i: *entities) {
+        
+        collisionLeft = false;
+        collisionRight = false;
+        collisionTop = false;
+        collisionBottom = false;
+        
         if (i.second == this) continue;
         if (!(i.second->properties & EntityProperty::COLLIDABLE)) continue;
     
@@ -64,8 +72,20 @@ bool CEntity::collision(int x, int y, std::map<int, CEntity*>* entities) {
             continue;
         if(y + body.getHeight() < i.second->body.getY())
             continue;
-        else
-            return true;
+        
+        if(y <= i.second->body.getY() - (i.second->body.getHeight()/2))
+            collisionBottom = true;
+            
+        if(y >= i.second->body.getY() + (i.second->body.getHeight()/2))
+            collisionTop = true;
+                
+        if(x < i.second->body.getX())
+            collisionLeft = true;
+                    
+        if(x > i.second->body.getX())
+            collisionRight = true;
+        
+        return true;
     }
     
     return false;
@@ -126,7 +146,7 @@ void CEntity::move(std::map<int, CEntity*>* entities) {
 }
 
 void CEntity::doLogic() {
-    if(body.rect.y > DESPAWN_HEIGHT)
-        toRemove = true;
+    //if(body.rect.y > DESPAWN_HEIGHT)
+        //toRemove = true;
 }
 

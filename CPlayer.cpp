@@ -14,5 +14,15 @@ CPlayer::CPlayer(SDL_Rect rect, SDL_Color color) :
     stoppingAccelerationX(accelerationX * 2) {
 }
 
+void CPlayer::jump() {
+    if (!collisionBottom)
+        return;
+    
+    body.velY -= accelerationY;
+    if(body.velY < -maxSpeed)
+        body.velY = -maxSpeed;
+    
+}
+
 void CPlayer::doLogic() {
 }

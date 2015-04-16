@@ -33,6 +33,9 @@ public:
     void addProperty(int property);
     void removeProperty(int property);
     
+    bool collisionLeft, collisionRight;
+    bool collisionTop, collisionBottom;
+    
     
     CBody body;
     bool toRemove;

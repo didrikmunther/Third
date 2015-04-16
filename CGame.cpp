@@ -45,8 +45,6 @@ int CGame::onExecute() {
             onEvent(&event);
         }
         
-        handleKeyStates();
-        
         //std::cout << "CameraX: " << camera.offsetX() << ", CameraY: " << camera.offsetY() << " \n";
         
         float now = SDL_GetTicks();
@@ -59,6 +57,7 @@ int CGame::onExecute() {
                 entityManager.particleCleanup();
             }
             
+            handleKeyStates();
             onLoop();
             
             updates++;
@@ -136,17 +135,23 @@ void CGame::handleKeyStates() {
             player->body.velX = -player->maxSpeed;
         keyPressedX = true;
     }
-    if(keystate[SDL_SCANCODE_W]) {
-        player->body.velY -= player->accelerationY;
-        if(player->body.velY < -player->maxSpeed)
-            player->body.velY = -player->maxSpeed;
-        keyPressedY = true;
-    }
+    
     if(player->hasProperty(EntityProperty::FLYING)) {           // Only handle the down button if flying
+        if(keystate[SDL_SCANCODE_W]) {
+            player->body.velY -= player->accelerationY;
+            if(player->body.velY < -player->maxSpeed)
+                player->body.velY = -player->maxSpeed;
+            keyPressedY = true;
+        }
         if(keystate[SDL_SCANCODE_S]) {
             player->body.velY += player->accelerationY;
             if(player->body.velY > player->maxSpeed)
                 player->body.velY = player->maxSpeed;
+            keyPressedY = true;
+        }
+    } else {
+        if(keystate[SDL_SCANCODE_W]) {
+            player->jump();
             keyPressedY = true;
         }
     }
@@ -176,7 +181,6 @@ void CGame::handleKeyStates() {
             }
         }
     }
-    
 }
 
 void CGame::onEvent(SDL_Event* event) {
