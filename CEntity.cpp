@@ -59,15 +59,10 @@ bool CEntity::collision(int x, int y, std::map<int, CEntity*>* entities) {
     
     for (auto &i: *entities) {
         
-        collisionLeft = false;
-        collisionRight = false;
-        collisionTop = false;
-        collisionBottom = false;
-        
         if (i.second == this) continue;
         if (!(i.second->properties & EntityProperty::COLLIDABLE)) continue;
     
-        if(x > (i.second->body.getX() + i.second->body.getWidth()))
+        if(x > i.second->body.getX() + i.second->body.getWidth())
             continue;
         if(x + body.getWidth() < i.second->body.getX())
             continue;
@@ -78,20 +73,14 @@ bool CEntity::collision(int x, int y, std::map<int, CEntity*>* entities) {
         
         if(y <= i.second->body.getY() - (i.second->body.getHeight()/2))
             collisionBottom = true;
-            
         if(y >= i.second->body.getY() + (i.second->body.getHeight()/2))
             collisionTop = true;
-                
         if(x < i.second->body.getX())
             collisionLeft = true;
-                    
         if(x > i.second->body.getX())
             collisionRight = true;
-        
         return true;
     }
-    
-    if(hasProperty(EntityProperty::HIDDEN)) std::cout << "no collision" << std::endl;
     
     return false;
 }
@@ -116,6 +105,9 @@ void CEntity::move(std::map<int, CEntity*>* entities) {
         if(MoveY >= 0) 	NewY =  1;
         else 			NewY = -1;
     }
+    
+    collisionLeft = collisionRight = false;
+    collisionTop = collisionBottom = false;
     
     while(true) {
         if(!collision(StopX + NewX, StopY, entities)) {

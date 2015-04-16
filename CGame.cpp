@@ -89,6 +89,8 @@ int CGame::onExecute() {
 
 int CGame::onInit() {
     
+    srand(time(nullptr));
+    
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         puts("SDL_Init error");
         return -1;
@@ -209,13 +211,17 @@ void CGame::onEvent(SDL_Event* event) {
                     break;
                     
                 case keyMap::PARTICLEEM:
-                    entityManager.addParticleEmitter(SDL_Rect{mouseX - 4 / 2, mouseY - 4 / 2, 10, 10}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, 20, 2, 3, 6, 0.3);
+                    entityManager.addParticleEmitter(SDL_Rect{mouseX - 4 / 2, mouseY - 4 / 2, 10, 10}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, 20, 2, 4, 6, 0.3);
                     break;
                     
                 case keyMap::RESET:
                     *player = CPlayer(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
                     break;
                     
+                case keyMap::TOGGLE_NOCLIP:
+                    player->toggleProperty(EntityProperty::COLLIDABLE);
+                    player->toggleProperty(EntityProperty::FLYING);
+                    break;
                 case keyMap::TOGGLE_COLLIDE:
                     player->toggleProperty(EntityProperty::COLLIDABLE);
                     break;
