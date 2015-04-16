@@ -14,8 +14,8 @@
 
 CGame::CGame() :
 running(true), window(nullptr), intro("Physics"),
-WIDTH(640), HEIGHT(480), BPP(32), camera(WIDTH, HEIGHT),
-//WIDTH(1280), HEIGHT(720), BPP(32),
+//WIDTH(640), HEIGHT(480), BPP(32), camera(WIDTH, HEIGHT),
+WIDTH(1280), HEIGHT(720), BPP(32), camera(WIDTH, HEIGHT),
 lastTime(SDL_GetTicks()), timer(SDL_GetTicks()),
 ns(1000.0f / (float)GAMEINTERVAL), delta(0), frames(0), updates(0),
 mouseX(0), mouseY(0) {
