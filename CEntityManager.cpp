@@ -26,8 +26,8 @@ void CEntityManager::addParticle(SDL_Rect rect, SDL_Color color, int livingTime)
     ParticleVector.push_back(new CParticle(rect, color, livingTime));
 }
 
-void CEntityManager::addParticleEmitter(SDL_Rect rect, SDL_Color color, int amount, int frequency, int livingTime, float velocity) {
-    ParticleEmitterVector.push_back(new CParticleEmitter(rect, color, amount, frequency, livingTime, velocity));
+void CEntityManager::addParticleEmitter(SDL_Rect rect, SDL_Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity) {
+    ParticleEmitterVector.push_back(new CParticleEmitter(rect, color, amount, frequency, livingTime, particleLivingTime, velocity));
 }
 
 void CEntityManager::onRender(SDL_Renderer *renderer, CCamera* camera) {

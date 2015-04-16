@@ -32,6 +32,7 @@ enum keyMap {
     TOGGLE_COLLIDE = SDLK_1,
     TOGGLE_HIDDEN = SDLK_2,
     TOGGLE_FLYING = SDLK_3,
+    TOGGLE_STATIC = SDLK_4,
     
     TARGET_PLAYER = SDLK_COMMA,
     TARGET_BLOCK = SDLK_PERIOD
@@ -41,5 +42,6 @@ enum keyMap {
 enum EntityProperty {
     COLLIDABLE  = 0x1,
     FLYING      = 0x2,
-    HIDDEN      = 0x4
+    HIDDEN      = 0x4,
+    STATIC      = 0x8
 };

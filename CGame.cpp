@@ -151,6 +151,7 @@ void CGame::handleKeyStates() {
         }
     } else {
         if(keystate[SDL_SCANCODE_W]) {
+            std::cout << "COLLISION BOTTOM: " << player->collisionBottom << std::endl;
             player->jump();
             keyPressedY = true;
         }
@@ -208,7 +209,7 @@ void CGame::onEvent(SDL_Event* event) {
                     break;
                     
                 case keyMap::PARTICLEEM:
-                    entityManager.addParticleEmitter(SDL_Rect{mouseX - 4 / 2, mouseY - 4 / 2, 10, 10}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, 20, 2, 6, 0.3);
+                    entityManager.addParticleEmitter(SDL_Rect{mouseX - 4 / 2, mouseY - 4 / 2, 10, 10}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, 20, 2, 3, 6, 0.3);
                     break;
                     
                 case keyMap::RESET:
@@ -223,6 +224,9 @@ void CGame::onEvent(SDL_Event* event) {
                     break;
                 case keyMap::TOGGLE_FLYING:
                     player->toggleProperty(EntityProperty::FLYING);
+                    break;
+                case keyMap::TOGGLE_STATIC:
+                    player->toggleProperty(EntityProperty::STATIC);
                     break;
                     
                 case keyMap::TARGET_PLAYER:

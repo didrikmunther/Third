@@ -28,7 +28,7 @@ public:
     CEntity* addEntity(SDL_Rect rect, SDL_Color color);
     void addEntity(CEntity* entity);
     void addParticle(SDL_Rect rect, SDL_Color color, int livingTime);
-    void addParticleEmitter(SDL_Rect rect, SDL_Color color, int amount, int frequency, int livingTime, float velocity);
+    void addParticleEmitter(SDL_Rect rect, SDL_Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity);
     void onRender(SDL_Renderer *renderer, CCamera* camera);
     void onLoop();
     void onCleanup();

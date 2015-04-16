@@ -24,7 +24,10 @@ void CEntity::onLoop(std::map<int, CEntity*>* entities) {
         body.velY += GRAVITY;
     
     doLogic();
-    move(entities);
+    if(!hasProperty(EntityProperty::STATIC))
+        move(entities);
+    else
+        body.velY = body.velX = 0;
 }
 
 void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera) {
@@ -87,6 +90,8 @@ bool CEntity::collision(int x, int y, std::map<int, CEntity*>* entities) {
         
         return true;
     }
+    
+    if(hasProperty(EntityProperty::HIDDEN)) std::cout << "no collision" << std::endl;
     
     return false;
 }
