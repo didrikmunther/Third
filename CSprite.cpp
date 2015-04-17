@@ -7,3 +7,16 @@
 //
 
 #include "CSprite.h"
+
+CSprite::CSprite(CSpriteSheet* spriteSheet, SDL_Rect source) :
+    spriteSheet(spriteSheet), source(source) {
+    
+}
+
+CSpriteSheet* CSprite::getSpriteSheet() {
+    return spriteSheet;
+}
+
+SDL_Rect* CSprite::getSource() {
+    return &source;
+}

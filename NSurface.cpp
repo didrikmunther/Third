@@ -25,3 +25,9 @@ void NSurface::renderRect(SDL_Rect rect, SDL_Renderer *renderer, int r, int g, i
     SDL_SetRenderDrawColor(renderer, r, g, b, 255);
     SDL_RenderFillRect(renderer, &rect);
 }
+
+void NSurface::renderSprite(CSprite* sprite, SDL_Renderer* renderer, SDL_Rect playerRect) {
+    
+    SDL_Rect src{sprite->getSource()->x, sprite->getSource()->y, sprite->getSource()->w, sprite->getSource()->h};
+    SDL_RenderCopy(renderer, sprite->getSpriteSheet()->getTexture(), &src, &playerRect);
+}

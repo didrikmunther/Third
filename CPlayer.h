@@ -11,11 +11,13 @@
 
 #include <stdio.h>
 #include "CEntity.h"
+#include "CSprite.h"
 
 class CPlayer : public CEntity {
     
 public:
     CPlayer(SDL_Rect rect, SDL_Color color);
+    CPlayer(SDL_Rect rect, CSprite* sprite);
     
     void jump();
     

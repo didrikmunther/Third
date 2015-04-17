@@ -14,6 +14,11 @@ CPlayer::CPlayer(SDL_Rect rect, SDL_Color color) :
     stoppingAccelerationX(accelerationX * 2) {
 }
 
+CPlayer::CPlayer(SDL_Rect rect, CSprite* sprite) :
+    CEntity(rect, sprite), maxSpeed(10.0f), accelerationX(1.5f), accelerationY(100.0f),
+stoppingAccelerationX(accelerationX * 2) {
+}
+
 void CPlayer::jump() {
     if (!collisionBottom)
         return;

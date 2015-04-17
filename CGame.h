@@ -14,6 +14,7 @@
 #include <sstream>
 #include <string>
 #include "CEntityManager.h"
+#include "CAssetManager.h"
 #include "CPlayer.h"
 #include "CCamera.h"
 
@@ -52,10 +53,6 @@ private:
     
     bool running;
     
-    const int WIDTH;
-    const int HEIGHT;
-    const int BPP;
-    
     CCamera camera;
     CPlayer* player;
     
@@ -76,6 +73,7 @@ private:
     // Game variables
     
     CEntityManager entityManager;
+    CAssetManager assetManager;
     
     // Temp variables
     

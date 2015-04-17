@@ -14,6 +14,7 @@
 #include <memory>
 #include <map>
 #include "CBody.h"
+#include "CSprite.h"
 
 class CCamera;
 
@@ -21,6 +22,7 @@ class CEntity {
     
 public:
     CEntity(SDL_Rect rect, SDL_Color color);
+    CEntity(SDL_Rect rect, CSprite* sprite);
     void onLoop(std::map<std::string, CEntity*>* entities);
     virtual void doLogic();
     void move(std::map<std::string, CEntity*>* entities);
@@ -36,9 +38,11 @@ public:
     bool collisionLeft, collisionRight;
     bool collisionTop, collisionBottom;
     
-    
     CBody body;
     bool toRemove;
+    
+    int setSprite(CSprite* sprite);
+    CSprite* sprite;
     
 protected:
     SDL_Color color;

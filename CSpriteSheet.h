@@ -16,13 +16,15 @@
 class CSpriteSheet {
     
 public:
-    CSpriteSheet(std::string file);
+    CSpriteSheet(SDL_Renderer* renderer, std::string fileName);
+    void openFile(SDL_Renderer* renderer, std::string fileName);
+    void onCleanup();
     
-    SDL_Texture* getSpriteSheet();
+    SDL_Texture* getTexture();
     
 private:
     
-    //SDL_Texture* spriteSheet;
+    SDL_Texture* texture;
     
 };
 

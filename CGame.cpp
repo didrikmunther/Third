@@ -12,11 +12,12 @@
 #include <cmath>
 #include "Define.h"
 #include "NMouse.h"
+#include <SDL2_image/SDL_image.h>
 
 CGame::CGame() :
 running(true), window(nullptr), intro("Physics"),
 //WIDTH(640), HEIGHT(480), BPP(32), camera(WIDTH, HEIGHT),
-WIDTH(1280), HEIGHT(720), BPP(32), camera(WIDTH, HEIGHT),
+camera(SCREEN_WIDTH, SCREEN_HEIGHT),
 lastTime(SDL_GetTicks()), timer(SDL_GetTicks()),
 ns(1000.0f / (float)GAMEINTERVAL), delta(0), frames(0), updates(0) {
 }
@@ -52,7 +53,7 @@ int CGame::onExecute() {
         lastTime = now;
         
         while(delta >= 1) {
-            std::cout << (int)floor(delta) << " | ";
+            //std::cout << (int)floor(delta) << " | ";
             if(delta > 20) {       // To make sure it doesn't freeze
                 entityManager.particleCleanup();
             }
@@ -96,8 +97,13 @@ int CGame::onInit() {
         return -1;
     }
     
+    if(!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+        puts("IMG_Init error");
+        return -1;
+    }
+    
     window = SDL_CreateWindow(intro.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                              WIDTH, HEIGHT, SCREEN_FLAGS);
+                              SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_FLAGS);
     
     if(window == nullptr) {
         puts("SDL_CreateWindow Error");
@@ -107,14 +113,24 @@ int CGame::onInit() {
     renderer = SDL_CreateRenderer(window, 0, RENDERER_FLAGS);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     
-    player = new CPlayer(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
+    assetManager.addSpriteSheet("MAIN", "resources/gfx.png", renderer);
+    assetManager.addSprite("player", "MAIN", SDL_Rect{11,5,43,53});
+    assetManager.addSprite("bush", "MAIN", SDL_Rect{160, 91, 30, 28});
+    assetManager.addSpriteSheet("BG", "resources/bg.png", renderer);
+    assetManager.addSprite("background", "BG", SDL_Rect{0,0,128,64});
+    
+    //player = new CPlayer(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
+    auto bg = entityManager.addEntity(SDL_Rect{0,0,SCREEN_WIDTH, SCREEN_HEIGHT}, assetManager.getSprite("background"));
+    bg->removeProperty(EntityProperty::COLLIDABLE);
+    bg->addProperty(EntityProperty::STATIC);
+    player = new CPlayer(SDL_Rect{30, 30, 43, 53}, assetManager.getSprite("player"));
     entityManager.addEntity(player);
     camera.setTarget(player);
     
     entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, SDL_Color{255, 0, 0, 0});
     entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 500, 30, 500}, SDL_Color{255, 0, 0, 0});
     entityManager.addEntity(SDL_Rect{0 + 500, 480 - 500, 30, 500}, SDL_Color{255, 0, 0, 0});
-    block = entityManager.addEntity(SDL_Rect{200, 200, 40, 40}, SDL_Color{255, 0, 255, 0});
+    block = entityManager.addEntity(SDL_Rect{200, 200, 30, 28}, assetManager.getSprite("bush"));
 
     return 0;
 }
@@ -273,8 +289,11 @@ void CGame::onRender() {
 
 int CGame::onCleanup() {
     entityManager.onCleanup();
+    assetManager.onCleanup();
     
     SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer);
+    IMG_Quit();
     SDL_Quit();
     return 0;
 }

@@ -13,7 +13,15 @@
 #include "Define.h"
 
 CEntity::CEntity(SDL_Rect rect, SDL_Color color) :
-    body(rect), color(color), toRemove(false), properties(EntityProperty::COLLIDABLE),
+    sprite(nullptr), body(rect), color(color),
+    toRemove(false), properties(EntityProperty::COLLIDABLE),
+    collisionTop(false), collisionBottom(false),
+    collisionRight(false), collisionLeft(false) {
+}
+
+CEntity::CEntity(SDL_Rect rect, CSprite* sprite) :
+    sprite(sprite), body(rect), color(SDL_Color{255,0,255,0}),
+    toRemove(false), properties(EntityProperty::COLLIDABLE),
     collisionTop(false), collisionBottom(false),
     collisionRight(false), collisionLeft(false) {
 }
@@ -31,10 +39,14 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
 }
 
 void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera) {
-    if(camera->collision(this) && !(hasProperty(EntityProperty::HIDDEN)))
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(),
+    if(camera->collision(this) && !(hasProperty(EntityProperty::HIDDEN))) {
+        if(sprite == nullptr)
+            NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(),
                          body.getWidth(), body.getHeight(),
                          renderer, color.r, color.g, color.b);
+        else
+            NSurface::renderSprite(sprite, renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h});
+    }
 }
 
 bool CEntity::hasProperty(int property) {
@@ -50,7 +62,15 @@ void CEntity::addProperty(int property) {
 }
 
 void CEntity::removeProperty(int property) {
-    properties = ~(properties & property);
+    if(hasProperty(property)) toggleProperty(property);
+}
+
+int CEntity::setSprite(CSprite *sprite) {
+    if(sprite == nullptr)
+        return -1;
+    else
+        this->sprite = sprite;
+    return 0;
 }
 
 bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities) {

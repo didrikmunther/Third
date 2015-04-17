@@ -18,6 +18,11 @@ CEntity* CEntityManager::addEntity(SDL_Rect rect, SDL_Color color) {
     return EntityVector[std::to_string(entityID)];
 }
 
+CEntity* CEntityManager::addEntity(SDL_Rect rect, CSprite* sprite) {
+    EntityVector[std::to_string(++entityID)] = new CEntity(rect, sprite);
+    return EntityVector[std::to_string(entityID)];
+}
+
 void CEntityManager::addEntity(CEntity* entity) {
     EntityVector[std::to_string(++entityID)] = entity;
 }
@@ -39,7 +44,6 @@ void CEntityManager::onRender(SDL_Renderer *renderer, CCamera* camera) {
 }
 
 void CEntityManager::onLoop() {
-    std::cout << "Entities: " << EntityVector.size() << ", Particles: " << ParticleVector.size();
     
     auto i = EntityVector.begin();
     while(i != EntityVector.end()) {
@@ -85,8 +89,6 @@ void CEntityManager::entityCleanup() {
     while(i != EntityVector.end()) {
         delete i->second;
         EntityVector.erase(i++->first);
-        //delete *i;
-        //i = EntityVector.erase(i);
     }
     EntityVector.clear();
 }
