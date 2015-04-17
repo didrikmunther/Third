@@ -32,6 +32,8 @@ public:
     int offsetX();
     int offsetY();
     
+    int cameraSway;
+    
 private:
     CameraOffset offset;
     

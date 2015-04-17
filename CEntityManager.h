@@ -43,12 +43,8 @@ public:
     int entityID;
     
 private:
-    //std::vector<std::shared_ptr<CEntity>> EntityVector;
-    //std::vector<CEntity*> EntityVector;
     std::map<std::string, CEntity*> EntityVector;
-    //std::vector<std::shared_ptr<CParticle>> ParticleVector;
     std::vector<CParticle*> ParticleVector;
-    //std::vector<std::shared_ptr<CParticleEmitter>> ParticleEmitterVector;
     std::vector<CParticleEmitter*> ParticleEmitterVector;
     
 };

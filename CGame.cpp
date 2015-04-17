@@ -110,6 +110,15 @@ int CGame::onInit() {
         return -1;
     }
     
+    
+    SDL_Rect playerRect{0,-10,10,10};
+    SDL_Rect objectRect{0,0,10,10};
+    for (int i = 0; i < 100; i++) {
+        bool theIf = (playerRect.y <= objectRect.y - objectRect.h / 2);
+        std::cout << objectRect.h++ << " | " << theIf << std::endl;
+    }                                                                       // Proof that my collision detection is not working
+    
+    
     renderer = SDL_CreateRenderer(window, 0, RENDERER_FLAGS);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     
@@ -130,7 +139,9 @@ int CGame::onInit() {
     entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, SDL_Color{255, 0, 0, 0});
     entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 500, 30, 500}, SDL_Color{255, 0, 0, 0});
     entityManager.addEntity(SDL_Rect{0 + 500, 480 - 500, 30, 500}, SDL_Color{255, 0, 0, 0});
-    block = entityManager.addEntity(SDL_Rect{200, 200, 30, 28}, assetManager.getSprite("bush"));
+    block = entityManager.addEntity(SDL_Rect{200, 355, 60 * 2, 54 * 2}, assetManager.getSprite("bush"));
+    block->removeProperty(EntityProperty::COLLIDABLE);
+    block->addProperty(EntityProperty::STATIC);
 
     return 0;
 }
@@ -257,6 +268,16 @@ void CGame::onEvent(SDL_Event* event) {
                     break;
                 case keyMap::TARGET_BLOCK:
                     camera.setTarget(block);
+                    break;
+                    
+                case keyMap::CHANGE_CAMERA_SWAY_UP:
+                        camera.cameraSway += 10;
+                    break;
+                case keyMap::CHANGE_CAMERA_SWAY_DOWN:
+                    if(camera.cameraSway <= 10)
+                        camera.cameraSway = 1;
+                    else
+                        camera.cameraSway -= 10;
                     break;
                     
             }
