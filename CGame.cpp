@@ -110,21 +110,13 @@ int CGame::onInit() {
         return -1;
     }
     
-    
-    SDL_Rect playerRect{0,-10,10,10};
-    SDL_Rect objectRect{0,0,10,10};
-    for (int i = 0; i < 100; i++) {
-        bool theIf = (playerRect.y <= objectRect.y - objectRect.h / 2);
-        std::cout << objectRect.h++ << " | " << theIf << std::endl;
-    }                                                                       // Proof that my collision detection is not working
-    
-    
     renderer = SDL_CreateRenderer(window, 0, RENDERER_FLAGS);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     
-    assetManager.addSpriteSheet("MAIN", "resources/gfx.png", renderer);
-    assetManager.addSprite("player", "MAIN", SDL_Rect{11,5,43,53});
+    assetManager.addSpriteSheet("MAIN", "resources/gfx.png", renderer);                 // All these are temporary for testing
+    assetManager.addSprite("player", "MAIN", SDL_Rect{11,5,43,53});                     // Will have a system that loads from text file
     assetManager.addSprite("bush", "MAIN", SDL_Rect{160, 91, 30, 28});
+    assetManager.addSprite("tree", "MAIN", SDL_Rect{7,64,23,59});
     assetManager.addSpriteSheet("BG", "resources/bg.png", renderer);
     assetManager.addSprite("background", "BG", SDL_Rect{0,0,128,64});
     
@@ -132,13 +124,16 @@ int CGame::onInit() {
     auto bg = entityManager.addEntity(SDL_Rect{0,0,SCREEN_WIDTH, SCREEN_HEIGHT}, assetManager.getSprite("background"));
     bg->removeProperty(EntityProperty::COLLIDABLE);
     bg->addProperty(EntityProperty::STATIC);
+    
     player = new CPlayer(SDL_Rect{30, 30, 43, 53}, assetManager.getSprite("player"));
     entityManager.addEntity(player);
     camera.setTarget(player);
     
     entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, SDL_Color{255, 0, 0, 0});
     entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 500, 30, 500}, SDL_Color{255, 0, 0, 0});
-    entityManager.addEntity(SDL_Rect{0 + 500, 480 - 500, 30, 500}, SDL_Color{255, 0, 0, 0});
+    auto tree = entityManager.addEntity(SDL_Rect{500, 228, 23 * 4, 59 * 4}, assetManager.getSprite("tree"));
+    tree->removeProperty(EntityProperty::COLLIDABLE);
+    tree->addProperty(EntityProperty::STATIC);
     block = entityManager.addEntity(SDL_Rect{200, 355, 60 * 2, 54 * 2}, assetManager.getSprite("bush"));
     block->removeProperty(EntityProperty::COLLIDABLE);
     block->addProperty(EntityProperty::STATIC);

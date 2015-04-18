@@ -91,13 +91,13 @@ bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities)
         if(y + body.getHeight() < i.second->body.getY())
             continue;
         
-        if(y <= i.second->body.getY() - (i.second->body.getHeight()/2))
+        if(y <= i.second->body.getY() && y + body.getHeight() <= i.second->body.getY())
             collisionBottom = true;
-        if(y >= i.second->body.getY() + (i.second->body.getHeight()/2))
+        if(y >= i.second->body.getY() + i.second->body.getHeight())
             collisionTop = true;
-        if(x < i.second->body.getX())
+        if(x > i.second->body.getX() && y + body.getHeight() > i.second->body.getY() && y < i.second->body.getY() + i.second->body.getHeight())
             collisionLeft = true;
-        if(x > i.second->body.getX())
+        if(x < i.second->body.getX() && y + body.getHeight() > i.second->body.getY())
             collisionRight = true;
         return true;
     }
