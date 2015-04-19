@@ -64,6 +64,8 @@ void CAssetManager::onCleanup() {
         auto i = SpriteVector.begin();
         while(i != SpriteVector.end()) {
             delete i->second;
+            i->second = nullptr;
+            std::cout << i->first << std::endl;
             SpriteVector.erase(i++->first);
         }
         SpriteVector.clear();
@@ -74,6 +76,7 @@ void CAssetManager::onCleanup() {
         while(i != SpriteSheetVector.end()) {
             i->second->onCleanup();
             delete i->second;
+            i->second = nullptr;
             SpriteSheetVector.erase(i++->first);
         }
         SpriteSheetVector.clear();

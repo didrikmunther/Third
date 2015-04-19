@@ -10,11 +10,12 @@
 #include <iostream>
 #include "Define.h"
 
-CCamera::CCamera(CEntity* target, int WIDTH, int HEIGHT) :
-    target(target), offset{0, 0, WIDTH, HEIGHT}, cameraSway(10) {
+CCamera::CCamera() :
+    offset{0, 0, 0, 0}, cameraSway(10) {
 }
-CCamera::CCamera(int WIDTH, int HEIGHT) :
-    offset{0, 0, WIDTH, HEIGHT}, cameraSway(10) {
+
+void CCamera::onInit(CWindow* window) {
+    offset = {0, 0, window->getWidth(), window->getHeight()};
 }
 
 void CCamera::onLoop() {
@@ -23,10 +24,7 @@ void CCamera::onLoop() {
         offset.y = 0;
     }
     
-    //offset.x = (target->body.getX() + target->body.getWidth() / 2) - offset.w / 2;
     offset.x += (((target->body.getX() + target->body.getWidth() / 2) - offset.w / 2) - offset.x) / cameraSway;
-    
-    //offset.y = (target->body.getY() + target->body.getHeight() / 2) - offset.h / 2;
     offset.y += (((target->body.getY() + target->body.getHeight() / 2) - offset.h / 2) - offset.y) / cameraSway;
 }
 

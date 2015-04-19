@@ -40,6 +40,7 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
 
 void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera) {
     if(camera->collision(this) && !(hasProperty(EntityProperty::HIDDEN))) {
+        //std::cout << sprite << std::endl;
         if(sprite == nullptr)
             NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(),
                          body.getWidth(), body.getHeight(),

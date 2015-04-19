@@ -12,18 +12,20 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include "CEntity.h"
+#include "CWindow.h"
 
 typedef struct CameraOffset {
     float x, y;
-    int w, h;
+    int w;
+    int h;
 } CameraOffset;
 
 class CCamera {
     
 public:
-    CCamera(CEntity* target, int WIDTH, int HEIGHT);
-    CCamera(int WIDTH, int HEIGHT);
+    CCamera();
     
+    void onInit(CWindow* window);
     void onLoop();
     
     void setTarget(CEntity* target);

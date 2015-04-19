@@ -15,9 +15,8 @@
 #include <SDL2_image/SDL_image.h>
 
 CGame::CGame() :
-running(true), window(nullptr), intro("Physics"),
+running(true), intro("Physics"),
 //WIDTH(640), HEIGHT(480), BPP(32), camera(WIDTH, HEIGHT),
-camera(SCREEN_WIDTH, SCREEN_HEIGHT),
 lastTime(SDL_GetTicks()), timer(SDL_GetTicks()),
 ns(1000.0f / (float)GAMEINTERVAL), delta(0), frames(0), updates(0) {
 }
@@ -73,7 +72,7 @@ int CGame::onExecute() {
             timer += 1000;
             title.str("");
             title << intro << " | " << updates << " ups, " << frames << " fps";
-            SDL_SetWindowTitle(window, title.str().c_str());
+            window.setTitle(title.str());
             updates = 0;
             frames = 0;
         }
@@ -102,26 +101,19 @@ int CGame::onInit() {
         return -1;
     }
     
-    window = SDL_CreateWindow(intro.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                              SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_FLAGS);
-    
-    if(window == nullptr) {
-        puts("SDL_CreateWindow Error");
+    if(window.onInit(intro, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_FLAGS, RENDERER_FLAGS))
         return -1;
-    }
+    camera.onInit(&window);
     
-    renderer = SDL_CreateRenderer(window, 0, RENDERER_FLAGS);
-    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-    
-    assetManager.addSpriteSheet("MAIN", "resources/gfx.png", renderer);                 // All these are temporary for testing
+    assetManager.addSpriteSheet("MAIN", "resources/gfx.png", window.getRenderer());                 // All these are temporary for testing
     assetManager.addSprite("player", "MAIN", SDL_Rect{11,5,43,53});                     // Will have a system that loads from text file
     assetManager.addSprite("bush", "MAIN", SDL_Rect{160, 91, 30, 28});
     assetManager.addSprite("tree", "MAIN", SDL_Rect{7,64,23,59});
-    assetManager.addSpriteSheet("BG", "resources/bg.png", renderer);
+    assetManager.addSpriteSheet("BG", "resources/bg.png", window.getRenderer());
     assetManager.addSprite("background", "BG", SDL_Rect{0,0,128,64});
     
     //player = new CPlayer(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
-    auto bg = entityManager.addEntity(SDL_Rect{0,0,SCREEN_WIDTH, SCREEN_HEIGHT}, assetManager.getSprite("background"));
+    auto bg = entityManager.addEntity(SDL_Rect{0,0,1000, 1000}, assetManager.getSprite("background"));
     bg->removeProperty(EntityProperty::COLLIDABLE);
     bg->addProperty(EntityProperty::STATIC);
     
@@ -255,7 +247,12 @@ void CGame::onEvent(SDL_Event* event) {
                     player->toggleProperty(EntityProperty::FLYING);
                     break;
                 case keyMap::TOGGLE_STATIC:
-                    player->toggleProperty(EntityProperty::STATIC);
+                {
+                    //player->toggleProperty(EntityProperty::STATIC);
+                    window.newWindow(intro, 600, 400, SCREEN_FLAGS, RENDERER_FLAGS);
+                    camera.onInit(&window);
+                    assetManager.onCleanup();
+            }
                     break;
                     
                 case keyMap::TARGET_PLAYER:
@@ -294,12 +291,12 @@ void CGame::onLoop() {
 
 void CGame::onRender() {
     
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(window.getRenderer(), 255, 255, 255, 255);
+    SDL_RenderClear(window.getRenderer());
     
-    entityManager.onRender(renderer, &camera);
+    entityManager.onRender(window.getRenderer(), &camera);
     
-    SDL_RenderPresent(renderer);
+    SDL_RenderPresent(window.getRenderer());
     
 }
 
@@ -307,8 +304,7 @@ int CGame::onCleanup() {
     entityManager.onCleanup();
     assetManager.onCleanup();
     
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
+    window.onCleanup();
     IMG_Quit();
     SDL_Quit();
     return 0;

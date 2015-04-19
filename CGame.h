@@ -15,6 +15,7 @@
 #include <string>
 #include "CEntityManager.h"
 #include "CAssetManager.h"
+#include "CWindow.h"
 #include "CPlayer.h"
 #include "CCamera.h"
 
@@ -45,10 +46,6 @@ private:
     
     // Main variables
     
-    SDL_Window* window;
-    SDL_Surface* surface;
-    SDL_Renderer* renderer;
-    
     SDL_Event event;
     
     bool running;
@@ -74,6 +71,7 @@ private:
     
     CEntityManager entityManager;
     CAssetManager assetManager;
+    CWindow window;
     
     // Temp variables
     
