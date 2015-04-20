@@ -19,6 +19,7 @@
 #include "CSprite.h"
 #include <map>
 #include <string>
+#include "CAssetManager.h"
 
 class CCamera;
 
@@ -28,7 +29,8 @@ public:
     CEntityManager();
     
     CEntity* addEntity(SDL_Rect rect, SDL_Color color);
-    CEntity* addEntity(SDL_Rect rect, CSprite* sprite);
+    //CEntity* addEntity(SDL_Rect rect, CSprite* sprite);
+    CEntity* addEntity(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager);
     void addEntity(CEntity* entity);
     void addParticle(SDL_Rect rect, SDL_Color color, int livingTime);
     void addParticleEmitter(SDL_Rect rect, SDL_Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity);

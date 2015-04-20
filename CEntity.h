@@ -15,6 +15,7 @@
 #include <map>
 #include "CBody.h"
 #include "CSprite.h"
+#include "CAssetManager.h"
 
 class CCamera;
 
@@ -22,7 +23,8 @@ class CEntity {
     
 public:
     CEntity(SDL_Rect rect, SDL_Color color);
-    CEntity(SDL_Rect rect, CSprite* sprite);
+    //CEntity(SDL_Rect rect, CSprite* sprite);
+    CEntity(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager);
     void onLoop(std::map<std::string, CEntity*>* entities);
     virtual void doLogic();
     void move(std::map<std::string, CEntity*>* entities);
@@ -41,8 +43,11 @@ public:
     CBody body;
     bool toRemove;
     
-    int setSprite(CSprite* sprite);
-    CSprite* sprite;
+    //int setSprite(CSprite* sprite);
+    int setSprite(std::string spriteKey);
+    //CSprite* sprite;
+    std::string spriteKey;
+    CAssetManager* assetManager;
     
 protected:
     SDL_Color color;

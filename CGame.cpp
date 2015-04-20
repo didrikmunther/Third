@@ -106,27 +106,28 @@ int CGame::onInit() {
     camera.onInit(&window);
     
     assetManager.addSpriteSheet("MAIN", "resources/gfx.png", window.getRenderer());                 // All these are temporary for testing
-    assetManager.addSprite("player", "MAIN", SDL_Rect{11,5,43,53});                     // Will have a system that loads from text file
+    //assetManager.addSprite("player", "MAIN", SDL_Rect{11,5,43,53});                     // Will have a system that loads from text file
+    assetManager.addSprite("player", "MAIN", SDL_Rect{90,220,18,30});
     assetManager.addSprite("bush", "MAIN", SDL_Rect{160, 91, 30, 28});
     assetManager.addSprite("tree", "MAIN", SDL_Rect{7,64,23,59});
     assetManager.addSpriteSheet("BG", "resources/bg.png", window.getRenderer());
     assetManager.addSprite("background", "BG", SDL_Rect{0,0,128,64});
     
     //player = new CPlayer(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
-    auto bg = entityManager.addEntity(SDL_Rect{0,0,1000, 1000}, assetManager.getSprite("background"));
-    bg->removeProperty(EntityProperty::COLLIDABLE);
-    bg->addProperty(EntityProperty::STATIC);
+//    auto bg = entityManager.addEntity(SDL_Rect{0,0,1000, 1000}, "background", &assetManager);
+//    bg->removeProperty(EntityProperty::COLLIDABLE);
+//    bg->addProperty(EntityProperty::STATIC);
     
-    player = new CPlayer(SDL_Rect{30, 30, 43, 53}, assetManager.getSprite("player"));
+    player = new CPlayer(SDL_Rect{30, 30, 18 * 3, 30 * 3}, "player", &assetManager);
     entityManager.addEntity(player);
     camera.setTarget(player);
     
     entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, SDL_Color{255, 0, 0, 0});
     entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 500, 30, 500}, SDL_Color{255, 0, 0, 0});
-    auto tree = entityManager.addEntity(SDL_Rect{500, 228, 23 * 4, 59 * 4}, assetManager.getSprite("tree"));
+    auto tree = entityManager.addEntity(SDL_Rect{500, 228, 23 * 4, 59 * 4}, "tree", &assetManager);
     tree->removeProperty(EntityProperty::COLLIDABLE);
     tree->addProperty(EntityProperty::STATIC);
-    block = entityManager.addEntity(SDL_Rect{200, 355, 60 * 2, 54 * 2}, assetManager.getSprite("bush"));
+    block = entityManager.addEntity(SDL_Rect{200, 355, 60 * 2, 54 * 2}, "bush", &assetManager);
     block->removeProperty(EntityProperty::COLLIDABLE);
     block->addProperty(EntityProperty::STATIC);
 
@@ -238,7 +239,15 @@ void CGame::onEvent(SDL_Event* event) {
                     player->toggleProperty(EntityProperty::FLYING);
                     break;
                 case keyMap::TOGGLE_COLLIDE:
-                    player->toggleProperty(EntityProperty::COLLIDABLE);
+                    //player->toggleProperty(EntityProperty::COLLIDABLE);
+                    
+                    assetManager.addSpriteSheet("MAIN", "resources/gfx.png", window.getRenderer());                 // All these are temporary for testing
+                    //assetManager.addSprite("player", "MAIN", SDL_Rect{11,5,43,53});                     // Will have a system that loads from text file
+                    assetManager.addSprite("player", "MAIN", SDL_Rect{90,220,18,30});
+                    assetManager.addSprite("bush", "MAIN", SDL_Rect{160, 91, 30, 28});
+                    assetManager.addSprite("tree", "MAIN", SDL_Rect{7,64,23,59});
+                    assetManager.addSpriteSheet("BG", "resources/bg.png", window.getRenderer());
+                    assetManager.addSprite("background", "BG", SDL_Rect{0,0,128,64});
                     break;
                 case keyMap::TOGGLE_HIDDEN:
                     player->toggleProperty(EntityProperty::HIDDEN);
@@ -303,8 +312,8 @@ void CGame::onRender() {
 int CGame::onCleanup() {
     entityManager.onCleanup();
     assetManager.onCleanup();
-    
     window.onCleanup();
+    
     IMG_Quit();
     SDL_Quit();
     return 0;

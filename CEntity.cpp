@@ -13,14 +13,14 @@
 #include "Define.h"
 
 CEntity::CEntity(SDL_Rect rect, SDL_Color color) :
-    sprite(nullptr), body(rect), color(color),
+    /*sprite(nullptr),*/ spriteKey(""), assetManager(nullptr), body(rect), color(color),
     toRemove(false), properties(EntityProperty::COLLIDABLE),
     collisionTop(false), collisionBottom(false),
     collisionRight(false), collisionLeft(false) {
 }
 
-CEntity::CEntity(SDL_Rect rect, CSprite* sprite) :
-    sprite(sprite), body(rect), color(SDL_Color{255,0,255,0}),
+CEntity::CEntity(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager) :
+    /*sprite(sprite),*/ spriteKey(spriteKey), assetManager(assetManager), body(rect), color(SDL_Color{255,0,255,0}),
     toRemove(false), properties(EntityProperty::COLLIDABLE),
     collisionTop(false), collisionBottom(false),
     collisionRight(false), collisionLeft(false) {
@@ -41,12 +41,12 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
 void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera) {
     if(camera->collision(this) && !(hasProperty(EntityProperty::HIDDEN))) {
         //std::cout << sprite << std::endl;
-        if(sprite == nullptr)
-            NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(),
-                         body.getWidth(), body.getHeight(),
-                         renderer, color.r, color.g, color.b);
+        if(assetManager == nullptr || assetManager->getSprite(spriteKey) == nullptr)
+                NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(),
+                                     body.getWidth(), body.getHeight(),
+                                     renderer, color.r, color.g, color.b);
         else
-            NSurface::renderSprite(sprite, renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h});
+            NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h});
     }
 }
 
@@ -66,11 +66,11 @@ void CEntity::removeProperty(int property) {
     if(hasProperty(property)) toggleProperty(property);
 }
 
-int CEntity::setSprite(CSprite *sprite) {
-    if(sprite == nullptr)
+int CEntity::setSprite(std::string spriteKey) {
+    if(assetManager == nullptr)
         return -1;
     else
-        this->sprite = sprite;
+        this->spriteKey = spriteKey;
     return 0;
 }
 

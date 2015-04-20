@@ -12,12 +12,14 @@
 #include <stdio.h>
 #include "CEntity.h"
 #include "CSprite.h"
+#include "CAssetManager.h"
 
 class CPlayer : public CEntity {
     
 public:
     CPlayer(SDL_Rect rect, SDL_Color color);
-    CPlayer(SDL_Rect rect, CSprite* sprite);
+    //CPlayer(SDL_Rect rect, CSprite* sprite);
+    CPlayer(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager);
     
     void jump();
     

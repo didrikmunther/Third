@@ -18,8 +18,8 @@ CEntity* CEntityManager::addEntity(SDL_Rect rect, SDL_Color color) {
     return EntityVector[std::to_string(entityID)];
 }
 
-CEntity* CEntityManager::addEntity(SDL_Rect rect, CSprite* sprite) {
-    EntityVector[std::to_string(++entityID)] = new CEntity(rect, sprite);
+CEntity* CEntityManager::addEntity(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager) {
+    EntityVector[std::to_string(++entityID)] = new CEntity(rect, spriteKey, assetManager);
     return EntityVector[std::to_string(entityID)];
 }
 

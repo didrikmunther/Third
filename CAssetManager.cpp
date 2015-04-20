@@ -37,6 +37,7 @@ CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, std::string fileNa
             std::cout << "w: Couldn't add spritesheet: \"" << name << "\", could not open file \"" << fileName << "\".\n";
             return nullptr;
         } else {
+            std::cout << "Loaded asset: \"" << fileName << "\" as \"" << name << "\"\n";
             SpriteSheetVector[name] = temp;
             return SpriteSheetVector[name];
         }
@@ -65,7 +66,6 @@ void CAssetManager::onCleanup() {
         while(i != SpriteVector.end()) {
             delete i->second;
             i->second = nullptr;
-            std::cout << i->first << std::endl;
             SpriteVector.erase(i++->first);
         }
         SpriteVector.clear();
@@ -77,6 +77,7 @@ void CAssetManager::onCleanup() {
             i->second->onCleanup();
             delete i->second;
             i->second = nullptr;
+            std::cout << "Unloaded asset: \"" << i->first << "\"\n";
             SpriteSheetVector.erase(i++->first);
         }
         SpriteSheetVector.clear();
