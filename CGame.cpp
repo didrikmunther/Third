@@ -137,65 +137,19 @@ void CGame::handleKeyStates() {
     
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
     
-    bool keyPressedX = false;              // To stop movement if no keys are pressed
-    bool keyPressedY = false;
     if(keystate[SDL_SCANCODE_D]) {
-        player->body.velX += player->accelerationX;
-        if(player->body.velX > player->maxSpeed)
-            player->body.velX = player->maxSpeed;
-        keyPressedX = true;
+        player->goRight();
     }
     if(keystate[SDL_SCANCODE_A]) {
-        player->body.velX -= player->accelerationX;
-        if(player->body.velX < -player->maxSpeed)
-            player->body.velX = -player->maxSpeed;
-        keyPressedX = true;
+        player->goLeft();
     }
     
-    if(player->hasProperty(EntityProperty::FLYING)) {           // Only handle the down button if flying
-        if(keystate[SDL_SCANCODE_W]) {
-            player->body.velY -= player->accelerationY;
-            if(player->body.velY < -player->maxSpeed)
-                player->body.velY = -player->maxSpeed;
-            keyPressedY = true;
-        }
-        if(keystate[SDL_SCANCODE_S]) {
-            player->body.velY += player->accelerationY;
-            if(player->body.velY > player->maxSpeed)
-                player->body.velY = player->maxSpeed;
-            keyPressedY = true;
-        }
-    } else {
-        if(keystate[SDL_SCANCODE_W]) {
-            player->jump();
-            keyPressedY = true;
-        }
+    if(keystate[SDL_SCANCODE_W]) {
+        player->goUp();
     }
     
-    CBody* body = &player->body;
-    if(!keyPressedX) {
-        if(body->velX < 0) {
-            body->velX += player->stoppingAccelerationX;
-            if(body->velX >= 0)
-                body->velX = 0.0f;
-        } else {
-            body->velX -= player->stoppingAccelerationX;
-            if(body->velX <= 0)
-                body->velX = 0.0f;
-        }
-    }
-    if(!keyPressedY) {
-        if(player->hasProperty(EntityProperty::FLYING)) {
-            if(body->velY < 0) {
-                body->velY += player->accelerationY;
-                if(body->velY >= 0)
-                    body->velY = 0.0f;
-            } else {
-                body->velY -= player->accelerationY;
-                if(body->velY <= 0)
-                    body->velY = 0.0f;
-            }
-        }
+    if(keystate[SDL_SCANCODE_S]) {
+        player->goDown();
     }
 }
 
@@ -217,9 +171,12 @@ void CGame::onEvent(SDL_Event* event) {
                     running = false;
                     break;
                     
+                case keyMap::SNEAK:
+                    player->isSneaking = true;
+                    break;
+                    
                 case keyMap::BLOCK:
                 {
-                    //entityManager.onCleanup();
                     CEntity* temp = entityManager.addEntity(SDL_Rect{NMouse::relativeMouseX(&camera) - 30 / 2, NMouse::relativeMouseY(&camera) - 30 / 2, 40, 40}, SDL_Color{0, 0, 255, 0});
                     temp->addProperty(EntityProperty::STATIC);
                 }
@@ -286,7 +243,9 @@ void CGame::onEvent(SDL_Event* event) {
         
         case SDL_KEYUP:
             switch(event->key.keysym.sym) {
-                    
+                case keyMap::SNEAK:
+                    player->isSneaking = false;
+                    break;
             }
             break;
     }

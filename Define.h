@@ -27,6 +27,7 @@ enum keyMap {
     RIGHT = SDLK_d,
     DOWN = SDLK_s,
     UP = SDLK_w,
+    SNEAK = SDLK_LSHIFT,
     
     BLOCK = SDLK_l,
     PARTICLEEM = SDLK_i,

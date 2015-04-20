@@ -20,12 +20,21 @@ public:
     CPlayer(SDL_Rect rect, SDL_Color color);
     //CPlayer(SDL_Rect rect, CSprite* sprite);
     CPlayer(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager);
+    void initValues();
+    
+    void goRight();
+    void goLeft();
+    void goUp();
+    void goDown();
+    bool hasWalkedX, hasWalkedY;
     
     void jump();
+    bool isSneaking;
     
     float maxSpeed;
     float accelerationX, accelerationY;
     float stoppingAccelerationX;
+    float sneakSpeed;
     
     
 private:
