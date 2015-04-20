@@ -15,8 +15,9 @@ CEntityManager::CEntityManager() : entityID(0), renderFlags(0) {
 
 CEntity* CEntityManager::addEntity(SDL_Rect rect, SDL_Color color, std::string name /* = "" */) {
     if(name == "") {
-        EntityVector[std::to_string(++entityID)] = new CEntity(rect, color);
-        return EntityVector[std::to_string(entityID)];
+        std::string id = "5:" + std::to_string(++entityID);
+        EntityVector[id] = new CEntity(rect, color);
+        return EntityVector[id];
     }
     else {
         EntityVector[name] = new CEntity(rect, color);
@@ -26,8 +27,9 @@ CEntity* CEntityManager::addEntity(SDL_Rect rect, SDL_Color color, std::string n
 
 CEntity* CEntityManager::addEntity(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager, std::string name /* = "" */) {
     if(name == "") {
-        EntityVector[std::to_string(++entityID)] = new CEntity(rect, spriteKey, assetManager);
-        return EntityVector[std::to_string(entityID)];
+        std::string id = "5:" + std::to_string(++entityID);
+        EntityVector[id] = new CEntity(rect, spriteKey, assetManager);
+        return EntityVector[id];
     }
     else {
         EntityVector[name] = new CEntity(rect, spriteKey, assetManager);
@@ -36,8 +38,10 @@ CEntity* CEntityManager::addEntity(SDL_Rect rect, std::string spriteKey, CAssetM
 }
 
 void CEntityManager::addEntity(CEntity* entity, std::string name /* = "" */) {
-    if(name == "")
-        EntityVector[std::to_string(++entityID)] = entity;
+    if(name == "") {
+        std::string id = "5:" + std::to_string(++entityID);
+        EntityVector[id] = entity;
+    }
     else
         EntityVector[name] = entity;
 }

@@ -118,7 +118,7 @@ int CGame::onInit() {
 //    bg->addProperty(EntityProperty::STATIC);
     
     player = new CPlayer(SDL_Rect{30, 30, 18 * 3, 30 * 3}, "player", &assetManager);
-    entityManager.addEntity(player, "player");
+    entityManager.addEntity(player, "4:player");
     camera.setTarget(player);
     
     entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, SDL_Color{255, 0, 0, 0});
