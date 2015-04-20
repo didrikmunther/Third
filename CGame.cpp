@@ -113,13 +113,12 @@ int CGame::onInit() {
     assetManager.addSpriteSheet("BG", "resources/bg.png", window.getRenderer());
     assetManager.addSprite("background", "BG", SDL_Rect{0,0,128,64});
     
-    //player = new CPlayer(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
 //    auto bg = entityManager.addEntity(SDL_Rect{0,0,1000, 1000}, "background", &assetManager);
 //    bg->removeProperty(EntityProperty::COLLIDABLE);
 //    bg->addProperty(EntityProperty::STATIC);
     
     player = new CPlayer(SDL_Rect{30, 30, 18 * 3, 30 * 3}, "player", &assetManager);
-    entityManager.addEntity(player);
+    entityManager.addEntity(player, "player");
     camera.setTarget(player);
     
     entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, SDL_Color{255, 0, 0, 0});
@@ -221,7 +220,7 @@ void CGame::onEvent(SDL_Event* event) {
                 case keyMap::BLOCK:
                 {
                     //entityManager.onCleanup();
-                    CEntity* temp = entityManager.addEntity(SDL_Rect{NMouse::relativeMouseX(&camera) - 30 / 2, NMouse::relativeMouseY(&camera) - 30 / 2, 40, 40}, SDL_Color{255, 0, 0, 0});
+                    CEntity* temp = entityManager.addEntity(SDL_Rect{NMouse::relativeMouseX(&camera) - 30 / 2, NMouse::relativeMouseY(&camera) - 30 / 2, 40, 40}, SDL_Color{0, 0, 255, 0});
                     temp->addProperty(EntityProperty::STATIC);
                 }
                     break;

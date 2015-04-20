@@ -22,6 +22,7 @@ void CCamera::onLoop() {
     if (target == nullptr) {
         offset.x = 0;
         offset.y = 0;
+        return;
     }
     
     offset.x += (((target->body.getX() + target->body.getWidth() / 2) - offset.w / 2) - offset.x) / cameraSway;

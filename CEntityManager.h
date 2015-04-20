@@ -28,10 +28,12 @@ class CEntityManager {
 public:
     CEntityManager();
     
-    CEntity* addEntity(SDL_Rect rect, SDL_Color color);
-    //CEntity* addEntity(SDL_Rect rect, CSprite* sprite);
-    CEntity* addEntity(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager);
-    void addEntity(CEntity* entity);
+    //CEntity* addEntity(SDL_Rect rect, SDL_Color color);
+    CEntity* addEntity(SDL_Rect rect, SDL_Color color, std::string name = "");
+    //CEntity* addEntity(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager);
+    CEntity* addEntity(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager, std::string name = "");
+    //void addEntity(CEntity* entity);
+    void addEntity(CEntity* entity, std::string name = "");
     void addParticle(SDL_Rect rect, SDL_Color color, int livingTime);
     void addParticleEmitter(SDL_Rect rect, SDL_Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity);
     void onRender(SDL_Renderer *renderer, CCamera* camera);
