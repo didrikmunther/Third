@@ -253,7 +253,8 @@ void CGame::onEvent(SDL_Event* event) {
                     player->toggleProperty(EntityProperty::HIDDEN);
                     break;
                 case keyMap::TOGGLE_FLYING:
-                    player->toggleProperty(EntityProperty::FLYING);
+                    //player->toggleProperty(EntityProperty::FLYING);
+                    entityManager.toggleRenderFlag(RenderFlags::COLLISION_BORDERS);
                     break;
                 case keyMap::TOGGLE_STATIC:
                 {

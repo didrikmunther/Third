@@ -44,6 +44,11 @@ public:
     
     int entityID;
     
+    int renderFlags;
+    void addRenderFlag(int renderFlag);
+    void removeRenderFlag(int renderFlag);
+    void toggleRenderFlag(int renderFlag);
+    
 private:
     std::map<std::string, CEntity*> EntityVector;
     std::vector<CParticle*> ParticleVector;

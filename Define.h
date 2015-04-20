@@ -47,9 +47,12 @@ enum keyMap {
 };
 
 enum EntityProperty {
-    COLLIDABLE  = 0x1,
-    FLYING      = 0x2,
-    HIDDEN      = 0x4,
-    STATIC      = 0x8
+    COLLIDABLE  = 1 << 0,
+    FLYING      = 1 << 1,
+    HIDDEN      = 1 << 2,
+    STATIC      = 1 << 3
 };
 
+enum RenderFlags {
+    COLLISION_BORDERS = 1 << 0
+};

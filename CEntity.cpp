@@ -38,7 +38,7 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
         body.velY = body.velX = 0;
 }
 
-void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera) {
+void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera, int renderFlags) {
     if(camera->collision(this) && !(hasProperty(EntityProperty::HIDDEN))) {
         //std::cout << sprite << std::endl;
         if(assetManager == nullptr || assetManager->getSprite(spriteKey) == nullptr)
@@ -47,6 +47,13 @@ void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera) {
                                      renderer, color.r, color.g, color.b);
         else
             NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h});
+        
+        if(renderFlags & RenderFlags::COLLISION_BORDERS) {
+            NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), 1, body.rect.h - 1, renderer, 255, 0, 0);
+            NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w - 1, 1, renderer, 255, 0, 0);
+            NSurface::renderRect(body.getX() + body.rect.w - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.rect.h, renderer, 255, 0, 0);
+            NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.rect.h - camera->offsetY() - 1, body.rect.w, 1, renderer, 255, 0, 0);
+        }
     }
 }
 
@@ -83,22 +90,22 @@ bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities)
         if (i.second == this) continue;
         if (!(i.second->properties & EntityProperty::COLLIDABLE)) continue;
     
-        if(x > i.second->body.getX() + i.second->body.getWidth())
+        if(x + 1 > i.second->body.getX() + i.second->body.getWidth())
             continue;
-        if(x + body.getWidth() < i.second->body.getX())
+        if(x - 1 + body.getWidth() < i.second->body.getX())
             continue;
-        if(y > i.second->body.getY() + i.second->body.getHeight())
+        if(y + 1 > i.second->body.getY() + i.second->body.getHeight())
             continue;
-        if(y + body.getHeight() < i.second->body.getY())
+        if(y - 1 + body.getHeight() < i.second->body.getY())
             continue;
         
-        if(y + body.getHeight() <= i.second->body.getY() && x + body.getWidth() > i.second->body.getX() && x < i.second->body.getX() + i.second->body.getWidth())
+        if(y - 1 + body.getHeight() <= i.second->body.getY() && x + body.getWidth() > i.second->body.getX() && x < i.second->body.getX() + i.second->body.getWidth())
             collisionBottom = true;
-        if(y >= i.second->body.getY() + i.second->body.getHeight())
+        if(y - 1 >= i.second->body.getY() + i.second->body.getHeight())
             collisionTop = true;
-        if(x > i.second->body.getX() && y + body.getHeight() > i.second->body.getY() && y < i.second->body.getY() + i.second->body.getHeight())
+        if(x + 1> i.second->body.getX() && y + body.getHeight() > i.second->body.getY() && y < i.second->body.getY() + i.second->body.getHeight())
             collisionLeft = true;
-        if(x < i.second->body.getX() && y + body.getHeight() > i.second->body.getY())
+        if(x + 1 < i.second->body.getX() && y + body.getHeight() > i.second->body.getY())
             collisionRight = true;
         return true;
     }

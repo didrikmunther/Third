@@ -10,7 +10,7 @@
 #include "CEntityManager.h"
 #include "CCamera.h"
 
-CEntityManager::CEntityManager() : entityID(0) {
+CEntityManager::CEntityManager() : entityID(0), renderFlags(0) {
 }
 
 CEntity* CEntityManager::addEntity(SDL_Rect rect, SDL_Color color) {
@@ -35,45 +35,60 @@ void CEntityManager::addParticleEmitter(SDL_Rect rect, SDL_Color color, int amou
     ParticleEmitterVector.push_back(new CParticleEmitter(rect, color, amount, frequency, livingTime, particleLivingTime, velocity));
 }
 
+void CEntityManager::addRenderFlag(int renderFlag) {
+    renderFlags |= renderFlag;
+}
+void CEntityManager::removeRenderFlag(int renderFlag) {
+    if(renderFlags & renderFlag) toggleRenderFlag(renderFlag);
+}
+void CEntityManager::toggleRenderFlag(int renderFlag) {
+    renderFlags ^= renderFlag;
+}
+
 void CEntityManager::onRender(SDL_Renderer *renderer, CCamera* camera) {
     for (auto &i: ParticleVector)
-        i->onRender(renderer, camera);
+        i->onRender(renderer, camera, renderFlags);
     
     for (auto &i: EntityVector)
-        i.second->onRender(renderer, camera);
+        i.second->onRender(renderer, camera, renderFlags);
 }
 
 void CEntityManager::onLoop() {
-    
-    auto i = EntityVector.begin();
-    while(i != EntityVector.end()) {
-        (*i).second->onLoop(&EntityVector);
-        if((*i).second->toRemove) {
-            delete (*i).second;
-            EntityVector.erase(i->first);
-            //EntityVector.erase(std::remove(EntityVector.begin(), EntityVector.end(), (*i)), EntityVector.end());
+    {
+        auto i = EntityVector.begin();
+        while(i != EntityVector.end()) {
+            (*i).second->onLoop(&EntityVector);
+            if((*i).second->toRemove) {
+                delete (*i).second;
+                EntityVector.erase(i->first);
+                //EntityVector.erase(std::remove(EntityVector.begin(), EntityVector.end(), (*i)), EntityVector.end());
+            }
+            else
+                ++i;
         }
-        else
-            ++i;
     }
     
-    auto i3 = ParticleEmitterVector.begin();
-    while(i3 != ParticleEmitterVector.end()) {
-        (*i3)->onLoop(this);
-        if((*i3)->toRemove)
-            ParticleEmitterVector.erase(std::remove(ParticleEmitterVector.begin(), ParticleEmitterVector.end(), (*i3)), ParticleEmitterVector.end());
-        else
-            ++i3;
-            
+    {
+        auto i = ParticleEmitterVector.begin();
+        while(i != ParticleEmitterVector.end()) {
+            (*i)->onLoop(this);
+            if((*i)->toRemove)
+                ParticleEmitterVector.erase(std::remove(ParticleEmitterVector.begin(), ParticleEmitterVector.end(), (*i)), ParticleEmitterVector.end());
+            else
+                ++i;
+                
+        }
     }
     
-    auto i2 = ParticleVector.begin();
-    while(i2 != ParticleVector.end()) {
-        (*i2)->onLoop(&EntityVector);
-        if((*i2)->toRemove)
-            ParticleVector.erase(std::remove(ParticleVector.begin(), ParticleVector.end(), (*i2)), ParticleVector.end());
-        else
-            ++i2;
+    {
+        auto i = ParticleVector.begin();
+        while(i != ParticleVector.end()) {
+            (*i)->onLoop(&EntityVector);
+            if((*i)->toRemove)
+                ParticleVector.erase(std::remove(ParticleVector.begin(), ParticleVector.end(), (*i)), ParticleVector.end());
+            else
+                ++i;
+        }
     }
 }
 

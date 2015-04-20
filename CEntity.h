@@ -29,7 +29,7 @@ public:
     virtual void doLogic();
     void move(std::map<std::string, CEntity*>* entities);
     bool collision(int x, int y, std::map<std::string, CEntity*>* entities);
-    void onRender(SDL_Renderer *renderer, CCamera* camera);
+    void onRender(SDL_Renderer *renderer, CCamera* camera, int renderFlags);
     int properties;
     
     bool hasProperty(int property);
