@@ -118,15 +118,15 @@ int CGame::onInit() {
 //    bg->addProperty(EntityProperty::STATIC);
     
     player = new CPlayer(SDL_Rect{30, 30, 18 * 3, 30 * 3}, "player", &assetManager);
-    entityManager.addEntity(player, "4:player");
+    entityManager.addEntity(player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
     camera.setTarget(player);
     
     entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, SDL_Color{255, 0, 0, 0});
     entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 500, 30, 500}, SDL_Color{255, 0, 0, 0});
-    auto tree = entityManager.addEntity(SDL_Rect{500, 228, 23 * 4, 59 * 4}, "tree", &assetManager);
+    auto tree = entityManager.addEntity(SDL_Rect{276, 229, 23 * 4, 59 * 4}, "tree", &assetManager, "l:tree");
     tree->removeProperty(EntityProperty::COLLIDABLE);
     tree->addProperty(EntityProperty::STATIC);
-    block = entityManager.addEntity(SDL_Rect{200, 355, 60 * 2, 54 * 2}, "bush", &assetManager);
+    block = entityManager.addEntity(SDL_Rect{200, 357, 60 * 2, 54 * 2}, "bush", &assetManager, "n:bush");
     block->removeProperty(EntityProperty::COLLIDABLE);
     block->addProperty(EntityProperty::STATIC);
 
