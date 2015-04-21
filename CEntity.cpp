@@ -13,17 +13,25 @@
 #include "Define.h"
 
 CEntity::CEntity(SDL_Rect rect, SDL_Color color) :
-    /*sprite(nullptr),*/ spriteKey(""), assetManager(nullptr), body(rect), color(color),
-    toRemove(false), properties(EntityProperty::COLLIDABLE),
-    collisionTop(false), collisionBottom(false),
-    collisionRight(false), collisionLeft(false) {
+    /*sprite(nullptr),*/ spriteKey(""), assetManager(nullptr), body(rect), color(color) {
+        initValues();
 }
 
 CEntity::CEntity(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager) :
-    /*sprite(sprite),*/ spriteKey(spriteKey), assetManager(assetManager), body(rect), color(SDL_Color{255,0,255,0}),
-    toRemove(false), properties(EntityProperty::COLLIDABLE),
-    collisionTop(false), collisionBottom(false),
-    collisionRight(false), collisionLeft(false) {
+    /*sprite(sprite),*/ spriteKey(spriteKey), assetManager(assetManager), body(rect), color(SDL_Color{255,0,255,0}) {
+        initValues();
+}
+
+void CEntity::initValues() {
+    toRemove            = false;
+    properties          = EntityProperty::COLLIDABLE;
+    collisionTop        = false;
+    collisionBottom     = false;
+    collisionRight      = false;
+    collisionLeft       = false;
+    angle               = 0;
+    center              = {body.rect.w/2, body.rect.h/2};
+    flip                = (SDL_RendererFlip)(SDL_FLIP_NONE);
 }
 
 void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
@@ -46,7 +54,8 @@ void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera, int renderFlags)
                                      body.getWidth(), body.getHeight(),
                                      renderer, color.r, color.g, color.b);
         else
-            NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h});
+            //NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h});
+            NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h}, angle, &center, flip);
         
         if(renderFlags & RenderFlags::COLLISION_BORDERS) {
             int r, g, b = 0;

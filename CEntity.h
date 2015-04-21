@@ -25,6 +25,7 @@ public:
     CEntity(SDL_Rect rect, SDL_Color color);
     //CEntity(SDL_Rect rect, CSprite* sprite);
     CEntity(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager);
+    void initValues();
     void onLoop(std::map<std::string, CEntity*>* entities);
     virtual void doLogic();
     void move(std::map<std::string, CEntity*>* entities);
@@ -48,6 +49,10 @@ public:
     //CSprite* sprite;
     std::string spriteKey;
     CAssetManager* assetManager;
+    
+    double angle;
+    SDL_Point center;
+    SDL_RendererFlip flip;
     
 protected:
     SDL_Color color;

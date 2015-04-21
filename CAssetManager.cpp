@@ -20,7 +20,7 @@ CSprite* CAssetManager::addSprite(std::string name, std::string spriteSheetKey, 
         return SpriteVector[name];
     } else if(SpriteSheetVector.find(spriteSheetKey) == SpriteSheetVector.end()) {
         std::cout << "!: Couldn't add sprite: \"" << name << "\", because the spritesheet \"" << spriteSheetKey << "\" didn't exist.\n";
-        return nullptr;     // Replace with null texture
+        return nullptr;
     } else {
         SpriteVector[name] = new CSprite(SpriteSheetVector[spriteSheetKey], source);
         return SpriteVector[name];

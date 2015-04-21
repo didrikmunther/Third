@@ -128,4 +128,11 @@ void CPlayer::doLogic() {
         }
     }
     hasWalkedY = false;
+    
+//    if(body.velX > 0)
+//        facingRight = true;
+//    else if(body.velX < 0)
+//        facingRight = false;
+//    else
+//        facingRight = false;
 }

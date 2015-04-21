@@ -18,6 +18,7 @@ namespace NSurface {
     void renderRect(int x, int y, int w, int h, SDL_Renderer *renderer, int r, int g, int b);
     void renderRect(SDL_Rect rect, SDL_Renderer *renderer, int r, int g, int b);
     void renderSprite(CSprite* sprite, SDL_Renderer* renderer, SDL_Rect playerRect);
+    void renderSprite(CSprite* sprite, SDL_Renderer* renderer, SDL_Rect playerRect, double angle, SDL_Point* center, SDL_RendererFlip flip);
     
 };
 

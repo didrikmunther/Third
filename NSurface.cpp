@@ -31,3 +31,8 @@ void NSurface::renderSprite(CSprite* sprite, SDL_Renderer* renderer, SDL_Rect pl
     SDL_Rect src{sprite->getSource()->x, sprite->getSource()->y, sprite->getSource()->w, sprite->getSource()->h};
     SDL_RenderCopy(renderer, sprite->getSpriteSheet()->getTexture(), &src, &playerRect);
 }
+
+void NSurface::renderSprite(CSprite* sprite, SDL_Renderer* renderer, SDL_Rect playerRect, double angle, SDL_Point* center, SDL_RendererFlip flip) {
+    SDL_Rect src{sprite->getSource()->x, sprite->getSource()->y, sprite->getSource()->w, sprite->getSource()->h};
+    SDL_RenderCopyEx(renderer, sprite->getSpriteSheet()->getTexture(), &src, &playerRect, angle, center, flip);
+}
