@@ -195,7 +195,7 @@ void CGame::onEvent(SDL_Event* event) {
                     player->toggleProperty(EntityProperty::COLLIDABLE);
                     player->toggleProperty(EntityProperty::FLYING);
                     break;
-                case keyMap::TOGGLE_COLLIDE:
+                case keyMap::LOAD_ASSETS:
                     //player->toggleProperty(EntityProperty::COLLIDABLE);
                     
                     assetManager.addSpriteSheet("MAIN", "resources/gfx.png", window.getRenderer());                 // All these are temporary for testing
@@ -209,11 +209,11 @@ void CGame::onEvent(SDL_Event* event) {
                 case keyMap::TOGGLE_HIDDEN:
                     player->toggleProperty(EntityProperty::HIDDEN);
                     break;
-                case keyMap::TOGGLE_FLYING:
+                case keyMap::TOGGLE_COLLISION_BOUNDS:
                     //player->toggleProperty(EntityProperty::FLYING);
                     entityManager.toggleRenderFlag(RenderFlags::COLLISION_BORDERS);
                     break;
-                case keyMap::TOGGLE_STATIC:
+                case keyMap::NEW_WINDOW:
                 {
                     //player->toggleProperty(EntityProperty::STATIC);
                     window.newWindow(intro, 600, 400, SCREEN_FLAGS, RENDERER_FLAGS);
