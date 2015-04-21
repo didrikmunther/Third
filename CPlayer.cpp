@@ -33,32 +33,28 @@ void CPlayer::initValues() {
 }
 
 void CPlayer::goRight() {
-    std::cout << collisionBottom << std::endl;
-    if(collisionBottom) {
-        body.velX += accelerationX;
-        if(isSneaking) {
-            if(body.velX > sneakSpeed)
-                body.velX = sneakSpeed;
-        } else {
-            if(body.velX > maxSpeed)
-                body.velX = maxSpeed;
-        }
-        hasWalkedX = true;
+    body.velX += accelerationX;
+    if(isSneaking) {
+        if(body.velX > sneakSpeed)
+            body.velX = sneakSpeed;
+    } else {
+        if(body.velX > maxSpeed)
+            body.velX = maxSpeed;
     }
+    
+    hasWalkedX = true;
 }
 
 void CPlayer::goLeft() {
-    if(collisionBottom) {
-        body.velX -= accelerationX;
-        if(isSneaking) {
-            if(body.velX < -sneakSpeed)
-                body.velX = -sneakSpeed;
-        } else {
-            if(body.velX < -maxSpeed)
-                body.velX = -maxSpeed;
-        }
-        hasWalkedX = true;
+    body.velX -= accelerationX;
+    if(isSneaking) {
+        if(body.velX < -sneakSpeed)
+            body.velX = -sneakSpeed;
+    } else {
+        if(body.velX < -maxSpeed)
+            body.velX = -maxSpeed;
     }
+    hasWalkedX = true;
 }
 
 void CPlayer::goUp() {
