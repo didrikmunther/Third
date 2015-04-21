@@ -107,7 +107,8 @@ int CGame::onInit() {
     
     assetManager.addSpriteSheet("MAIN", "resources/gfx.png", window.getRenderer());                 // All these are temporary for testing
     //assetManager.addSprite("player", "MAIN", SDL_Rect{11,5,43,53});                     // Will have a system that loads from text file
-    assetManager.addSprite("player", "MAIN", SDL_Rect{90,220,18,30});
+    assetManager.addSpriteSheet("MAIN2", "resources/gfx2.png", window.getRenderer());
+    assetManager.addSprite("player", "MAIN2", SDL_Rect{144,396,60,164});
     assetManager.addSprite("bush", "MAIN", SDL_Rect{160, 91, 30, 28});
     assetManager.addSprite("tree", "MAIN", SDL_Rect{7,64,23,59});
     assetManager.addSpriteSheet("BG", "resources/bg.png", window.getRenderer());
@@ -117,7 +118,7 @@ int CGame::onInit() {
 //    bg->removeProperty(EntityProperty::COLLIDABLE);
 //    bg->addProperty(EntityProperty::STATIC);
     
-    player = new CPlayer(SDL_Rect{30, 30, 18 * 3, 30 * 3}, "player", &assetManager);
+    player = new CPlayer(SDL_Rect{30, 30, 60, 164}, "player", &assetManager);
     entityManager.addEntity(player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
     camera.setTarget(player);
     

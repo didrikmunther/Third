@@ -33,28 +33,32 @@ void CPlayer::initValues() {
 }
 
 void CPlayer::goRight() {
-    body.velX += accelerationX;
-    if(isSneaking) {
-        if(body.velX > sneakSpeed)
-            body.velX = sneakSpeed;
-    } else {
-        if(body.velX > maxSpeed)
-            body.velX = maxSpeed;
+    std::cout << collisionBottom << std::endl;
+    if(collisionBottom) {
+        body.velX += accelerationX;
+        if(isSneaking) {
+            if(body.velX > sneakSpeed)
+                body.velX = sneakSpeed;
+        } else {
+            if(body.velX > maxSpeed)
+                body.velX = maxSpeed;
+        }
+        hasWalkedX = true;
     }
-    
-    hasWalkedX = true;
 }
 
 void CPlayer::goLeft() {
-    body.velX -= accelerationX;
-    if(isSneaking) {
-        if(body.velX < -sneakSpeed)
-            body.velX = -sneakSpeed;
-    } else {
-        if(body.velX < -maxSpeed)
-            body.velX = -maxSpeed;
+    if(collisionBottom) {
+        body.velX -= accelerationX;
+        if(isSneaking) {
+            if(body.velX < -sneakSpeed)
+                body.velX = -sneakSpeed;
+        } else {
+            if(body.velX < -maxSpeed)
+                body.velX = -maxSpeed;
+        }
+        hasWalkedX = true;
     }
-    hasWalkedX = true;
 }
 
 void CPlayer::goUp() {
@@ -129,10 +133,8 @@ void CPlayer::doLogic() {
     }
     hasWalkedY = false;
     
-//    if(body.velX > 0)
-//        facingRight = true;
-//    else if(body.velX < 0)
-//        facingRight = false;
-//    else
-//        facingRight = false;
+    if(body.velX > 0)
+        flip = SDL_FLIP_NONE;
+    else if(body.velX < 0)
+        flip = SDL_FLIP_HORIZONTAL;
 }
