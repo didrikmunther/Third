@@ -13,6 +13,8 @@
 #include "Define.h"
 #include "NMouse.h"
 #include <SDL2_image/SDL_image.h>
+#include <SDL2_ttf/SDL_ttf.h>
+#include "CText.h"
 
 CGame::CGame() :
 running(true), intro("Physics"),
@@ -31,11 +33,9 @@ int CGame::onExecute() {
     switch(onInit()){
         case -1:
             std::cout << "Initializing failed!\n";
-            return 1;
-            break;
+            running = false;
         case 0:
             std::cout << "Initializing succesful!\n";
-            break;
     }
     
     std::cout << "Starting game...\n";
@@ -100,6 +100,13 @@ int CGame::onInit() {
         puts("IMG_Init error");
         return -1;
     }
+    
+    if(TTF_Init() != 0) {
+        puts("TTF_Init error");
+        return -1;
+    }
+    
+    assetManager.addFont("TESTFONT", "resources/font.ttf", 20);
     
     if(window.onInit(intro, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_FLAGS, RENDERER_FLAGS))
         return -1;
@@ -264,6 +271,10 @@ void CGame::onRender() {
     SDL_RenderClear(window.getRenderer());
     
     entityManager.onRender(window.getRenderer(), &camera);
+    
+    CText text("Hello, this is a text.", assetManager.getFont("TESTFONT"), SDL_Color{255,0,0,255}, &assetManager);
+    
+    text.onRender(100, 100, window.getRenderer(), &camera);
     
     SDL_RenderPresent(window.getRenderer());
     

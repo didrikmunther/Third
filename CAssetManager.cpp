@@ -44,6 +44,23 @@ CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, std::string fileNa
     }
 }
 
+TTF_Font* CAssetManager::addFont(std::string name, std::string fileName, int size) {
+    if(FontVector.find(name) != FontVector.end()) {
+        std::cout << "!: Coudn't add font: \"" << name << "\", because it already exists.\n";
+        return FontVector[name];
+    } else {
+        TTF_Font *temp = TTF_OpenFont(fileName.c_str(), size);
+        if(temp == nullptr) {
+            std::cout << "!: Couldn't add font: \"" << name << "\", could not open file \"" << fileName << "\".\n";
+            return nullptr;
+        } else {
+            std::cout << "Loaded font: \"" << fileName << "\" as \"" << name << "\"\n";
+            FontVector[name] = temp;
+            return FontVector[name];
+        }
+    }
+}
+
 CSprite* CAssetManager::getSprite(std::string key) {
     auto it = SpriteVector.find(key);
     if(it == SpriteVector.end())
@@ -55,6 +72,14 @@ CSprite* CAssetManager::getSprite(std::string key) {
 CSpriteSheet* CAssetManager::getSpriteSheet(std::string key) {
     auto it = SpriteSheetVector.find(key);
     if(it == SpriteSheetVector.end())
+        return nullptr;
+    else
+        return it->second;
+}
+
+TTF_Font* CAssetManager::getFont(std::string key) {
+    auto it = FontVector.find(key);
+    if(it == FontVector.end())
         return nullptr;
     else
         return it->second;
@@ -81,6 +106,17 @@ void CAssetManager::onCleanup() {
             SpriteSheetVector.erase(i++->first);
         }
         SpriteSheetVector.clear();
+    }
+    
+    {
+        auto i = FontVector.begin();
+        while(i != FontVector.end()) {
+            TTF_CloseFont(i->second);
+            i->second = nullptr;
+            std::cout << "Unloaded font: \"" << i->first << "\"\n";
+            FontVector.erase(i++->first);
+        }
+        FontVector.clear();
     }
     
 }

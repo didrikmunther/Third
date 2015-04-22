@@ -55,7 +55,7 @@ void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera, int renderFlags)
                                      renderer, color.r, color.g, color.b);
         else
             //NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h});
-            NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h}, angle, &center, flip);
+            NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getWidth(), body.getHeight()}, angle, &center, flip);
         
         if(renderFlags & RenderFlags::COLLISION_BORDERS) {
             int r, g, b = 0;
