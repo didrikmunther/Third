@@ -203,7 +203,7 @@ void CGame::onEvent(SDL_Event* event) {
                     player->toggleProperty(EntityProperty::FLYING);
                     break;
                 case keyMap::LOAD_ASSETS:
-                    //player->toggleProperty(EntityProperty::COLLIDABLE);
+                    assetManager.addFont("TESTFONT", "resources/font.ttf", 20);
                     
                     assetManager.addSpriteSheet("MAIN", "resources/gfx.png", window.getRenderer());                 // All these are temporary for testing
                     //assetManager.addSprite("player", "MAIN", SDL_Rect{11,5,43,53});                     // Will have a system that loads from text file
@@ -272,9 +272,9 @@ void CGame::onRender() {
     
     entityManager.onRender(window.getRenderer(), &camera);
     
-    CText text("Hello, this is a text.", assetManager.getFont("TESTFONT"), SDL_Color{255,0,0,255}, &assetManager);
-    
-    text.onRender(100, 100, window.getRenderer(), &camera);
+    CText text("Hello, this is a text.", assetManager.getFont("TESTFONT"), SDL_Color{0,0,255,255}, &assetManager);
+    text.onRender(100, 100, window.getRenderer()/*, &camera);*/);
+    text.onRender(500, 500, window.getRenderer(), &camera);
     
     SDL_RenderPresent(window.getRenderer());
     

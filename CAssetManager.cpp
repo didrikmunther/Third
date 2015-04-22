@@ -46,7 +46,7 @@ CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, std::string fileNa
 
 TTF_Font* CAssetManager::addFont(std::string name, std::string fileName, int size) {
     if(FontVector.find(name) != FontVector.end()) {
-        std::cout << "!: Coudn't add font: \"" << name << "\", because it already exists.\n";
+        std::cout << "!: Couldn't add font: \"" << name << "\", because it already exists.\n";
         return FontVector[name];
     } else {
         TTF_Font *temp = TTF_OpenFont(fileName.c_str(), size);

@@ -14,7 +14,13 @@ CText::CText(std::string text, TTF_Font* font, SDL_Color color, CAssetManager* a
 }
 
 void CText::onRender(int x, int y, SDL_Renderer *renderer, CCamera* camera) {
-    NSurface::renderText(x - camera->offsetX(), y - camera->offsetY(), this, renderer);
+    if(font != nullptr)
+        NSurface::renderText(x - camera->offsetX(), y - camera->offsetY(), this, renderer);
+}
+
+void CText::onRender(int x, int y, SDL_Renderer *renderer) {
+    if(font != nullptr)
+        NSurface::renderText(x, y, this, renderer);
 }
 
 TTF_Font* CText::getFont() {

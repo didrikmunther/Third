@@ -22,6 +22,7 @@ public:
     CText(std::string text, TTF_Font* font, SDL_Color color, CAssetManager* assetManager);
     
     void onRender(int x, int y, SDL_Renderer *renderer, CCamera* camera);
+    void onRender(int x, int y, SDL_Renderer *renderer);
     
     TTF_Font* getFont();
     std::string* getText();
