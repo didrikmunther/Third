@@ -30,6 +30,7 @@ public:
     
     void setTarget(CEntity* target);
     bool collision(CEntity* entity);
+    bool collision(int x, int y, int w, int h);
     
     int offsetX();
     int offsetY();

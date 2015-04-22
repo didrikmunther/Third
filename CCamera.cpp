@@ -53,3 +53,16 @@ bool CCamera::collision(CEntity* entity) {
     else
         return true;
 }
+
+bool CCamera::collision(int x, int y, int w, int h) {
+    if(offsetX() > x + w)
+        return false;
+    if(offsetX() + offset.w < x)
+        return false;
+    if(offsetY() > y + h)
+        return false;
+    if(offsetY() + offset.h < y)
+        return false;
+    else
+        return true;
+}

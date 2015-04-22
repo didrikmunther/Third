@@ -14,9 +14,9 @@
 #include <iostream>
 
 CChatBubble::CChatBubble(std::string text, CEntity* target, TTF_Font* font, int type) :
-    target(target), type(type), CGuiText(0, 0, text, font), creationTime(SDL_GetTicks()) {
+    target(target), type(type), CGuiText(0, 0, text, font), creationTime(SDL_GetTicks()),
+    r(0), g(0), b(0), rB(220), gB(220), bB(220) {
     
-    int r = 0; int g = 0; int b = 0;
     switch(type) {
         case ChatBubbleType::SAY:
             r = g = b = 0;        // Black
@@ -87,16 +87,23 @@ void CChatBubble::onRender(SDL_Renderer *renderer, CCamera* camera) {
                          target->body.getY() - camera->offsetY() - totalHeight - floatOverHead,
                          widestLine,
                          totalHeight,
-                         renderer, 0, 255, 0);
+                         renderer, rB, gB, bB);
     
-    int currentLine = 0;
+    int currentLine = (int)TextVector.size() - 1;
     i = TextVector.begin();
     while(i != TextVector.end()) {
         TTF_SizeText(i->getFont(), i->getText()->c_str(), &width, &height);
-        i++->onRender(target->body.getX() + target->body.getWidth() / 2 - widestLine / 2 - camera->offsetX() + margin,
-                      target->body.getY() - camera->offsetY() - totalHeight + height * currentLine - floatOverHead,
+        int posX = target->body.getX() + target->body.getWidth() / 2 - widestLine / 2 + margin;
+        int posY = target->body.getY() - totalHeight + height * currentLine - floatOverHead;
+        if(!camera->collision(posX, posY, width, height + margin * 3)) {
+            currentLine--;
+            i++;
+            continue;
+        }
+        i++->onRender(posX - camera->offsetX(),
+                      posY - camera->offsetY(),
                       renderer);
-        currentLine++;
+        currentLine--;
     }
     
 }

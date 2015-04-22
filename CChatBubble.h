@@ -11,7 +11,6 @@
 
 #include <stdio.h>
 #include "CGuiText.h"
-#include "CEntity.h"
 #include "CText.h"
 #include <SDL2/SDL.h>
 #include <string>
@@ -27,6 +26,8 @@ public:
     
 private:
     CEntity* target;
+    int r, g, b;            // Foreground colors
+    int rB, gB, bB;         // Background colors
     int type;
     int livingTime;         // Seconds
     int creationTime;
