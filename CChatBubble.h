@@ -19,7 +19,7 @@
 class CChatBubble : public CGuiText{
 
 public:
-    CChatBubble(std::string text, CEntity* target, TTF_Font* font, int type);
+    CChatBubble(std::string text, CEntity* target, std::string fontKey, CAssetManager* assetManager, int type);
     
     void onLoop();
     void onRender(SDL_Renderer *renderer, CCamera* camera);

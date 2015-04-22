@@ -17,7 +17,7 @@
 
 class CGuiText {
 public:
-    CGuiText(int x, int y, std::string text, TTF_Font* font);
+    CGuiText(int x, int y, std::string text, std::string fontKey, CAssetManager* assetManager);
     
     virtual void onLoop();                                          // Pure virtual
     virtual void onRender(SDL_Renderer *renderer, CCamera* camera); //
@@ -25,7 +25,8 @@ public:
     bool toRemove;
     
 protected:
-    TTF_Font* font;
+    std::string fontKey;
+    CAssetManager* assetManager;
     std::string text;
     int x, y;
 };

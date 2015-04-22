@@ -9,8 +9,8 @@
 #include "CGuiText.h"
 #include "NSurface.h"
 
-CGuiText::CGuiText(int x, int y, std::string text, TTF_Font* font) :
-    x(x), y(y), text(text), font(font), toRemove(false) {
+CGuiText::CGuiText(int x, int y, std::string text, std::string fontKey, CAssetManager* assetManager) :
+    x(x), y(y), text(text), fontKey(fontKey), assetManager(assetManager), toRemove(false) {
 }
 
 void CGuiText::onLoop() {

@@ -13,8 +13,8 @@
 #include "Define.h"
 #include <iostream>
 
-CChatBubble::CChatBubble(std::string text, CEntity* target, TTF_Font* font, int type) :
-    target(target), type(type), CGuiText(0, 0, text, font), creationTime(SDL_GetTicks()),
+CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey, CAssetManager* assetManager, int type) :
+    target(target), type(type), CGuiText(0, 0, text, fontKey, assetManager), creationTime(SDL_GetTicks()),
     r(0), g(0), b(0), rB(220), gB(220), bB(220) {
     
     switch(type) {
@@ -42,7 +42,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, TTF_Font* font, int 
     std::string currentString = "";
     for(int i = 0; i < splittedText.size(); i++) {
         if(currentSize > 10) {
-            TextVector.push_back(CText(currentString, font, SDL_Color{(Uint8)r,(Uint8)g,(Uint8)b,255}));
+            TextVector.push_back(CText(currentString, fontKey, assetManager, SDL_Color{(Uint8)r,(Uint8)g,(Uint8)b,255}));
             currentString = "";
             currentSize = 0;
         }
@@ -50,7 +50,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, TTF_Font* font, int 
         currentString += splittedText[i] + " ";
     }
     if(currentSize > 0)                 // For when the loop quits but there is still text that should be added
-        TextVector.push_back(CText(currentString, font, SDL_Color{(Uint8)r,(Uint8)g,(Uint8)b,255}));
+        TextVector.push_back(CText(currentString, fontKey, assetManager, SDL_Color{(Uint8)r,(Uint8)g,(Uint8)b,255}));
         
     int letterPerSecond = 10;
     livingTime = (int)text.length() / letterPerSecond;
@@ -65,6 +65,8 @@ void CChatBubble::onLoop() {
 void CChatBubble::onRender(SDL_Renderer *renderer, CCamera* camera) {
     
     if(TextVector.size() <= 0)
+        return;
+    if(TextVector[0].getFont() == nullptr)
         return;
     
     int width, height;

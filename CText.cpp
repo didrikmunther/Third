@@ -9,22 +9,22 @@
 #include "CText.h"
 #include "NSurface.h"
 
-CText::CText(std::string text, TTF_Font* font, SDL_Color color) :
-    text(text), font(font), color(color) {
+CText::CText(std::string text, std::string fontKey, CAssetManager* assetManager, SDL_Color color) :
+    text(text), fontKey(fontKey), assetManager(assetManager), color(color) {
 }
 
 void CText::onRender(int x, int y, SDL_Renderer *renderer, CCamera* camera) {
-    if(font != nullptr)
+    if(assetManager->getFont(fontKey) != nullptr)
         NSurface::renderText(x - camera->offsetX(), y - camera->offsetY(), this, renderer);
 }
 
 void CText::onRender(int x, int y, SDL_Renderer *renderer) {
-    if(font != nullptr)
+    if(assetManager->getFont(fontKey) != nullptr)
         NSurface::renderText(x, y, this, renderer);
 }
 
 TTF_Font* CText::getFont() {
-    return font;
+    return assetManager->getFont(fontKey);
 }
 
 std::string* CText::getText() {

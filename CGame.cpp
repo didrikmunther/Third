@@ -241,14 +241,14 @@ void CGame::onEvent(SDL_Event* event) {
                     for(int i = 0; i < 100; i++) {
                         text += alphanum[rand() % (sizeof(alphanum) - 1)];
                     }
-                    CChatBubble* bubble = new CChatBubble(text, player, assetManager.getFont("TESTFONT"), ChatBubbleType::SAY);
+                    CChatBubble* bubble = new CChatBubble(text, player, "TESTFONT", &assetManager, ChatBubbleType::SAY);
                     entityManager.addGuiText(bubble);
                     
                     text = "";
                     for(int i = 0; i < 50; i++) {
                         text += alphanum[rand() % (sizeof(alphanum) - 1)];
                     }
-                    CChatBubble* bubble2 = new CChatBubble(text, block, assetManager.getFont("TESTFONT"), ChatBubbleType::YELL);
+                    CChatBubble* bubble2 = new CChatBubble(text, block, "TESTFONT", &assetManager, ChatBubbleType::YELL);
                     entityManager.addGuiText(bubble2);
                 }
                     break;
