@@ -97,26 +97,30 @@ void CAssetManager::onCleanup() {
     }
     
     {
+        std::cout << "Unloaded asset: ";
         auto i = SpriteSheetVector.begin();
         while(i != SpriteSheetVector.end()) {
             i->second->onCleanup();
             delete i->second;
             i->second = nullptr;
-            std::cout << "Unloaded asset: \"" << i->first << "\"\n";
+            std::cout << " \"" << i->first << "\",";
             SpriteSheetVector.erase(i++->first);
         }
         SpriteSheetVector.clear();
+        std::cout << "\n";
     }
     
     {
+        std::cout << "Unloaded font: ";
         auto i = FontVector.begin();
         while(i != FontVector.end()) {
             TTF_CloseFont(i->second);
             i->second = nullptr;
-            std::cout << "Unloaded font: \"" << i->first << "\"\n";
+            std::cout << "\"" << i->first << "\",";
             FontVector.erase(i++->first);
         }
         FontVector.clear();
+        std::cout << "\n";
     }
     
 }
