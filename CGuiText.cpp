@@ -10,7 +10,7 @@
 #include "NSurface.h"
 
 CGuiText::CGuiText(int x, int y, std::string text, TTF_Font* font) :
-    x(x), y(y), text(text), font(font) {
+    x(x), y(y), text(text), font(font), toRemove(false) {
 }
 
 void CGuiText::onLoop() {

@@ -20,6 +20,7 @@
 #include <map>
 #include <string>
 #include "CAssetManager.h"
+#include "CGuiText.h"
 
 class CCamera;
 
@@ -28,14 +29,13 @@ class CEntityManager {
 public:
     CEntityManager();
     
-    //CEntity* addEntity(SDL_Rect rect, SDL_Color color);
     CEntity* addEntity(SDL_Rect rect, SDL_Color color, std::string name = "");
-    //CEntity* addEntity(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager);
     CEntity* addEntity(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager, std::string name = "");
-    //void addEntity(CEntity* entity);
     void addEntity(CEntity* entity, std::string name = "");
     void addParticle(SDL_Rect rect, SDL_Color color, int livingTime);
     void addParticleEmitter(SDL_Rect rect, SDL_Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity);
+    void addGuiText(CGuiText* guiText);
+    
     void onRender(SDL_Renderer *renderer, CCamera* camera);
     void onLoop();
     void onCleanup();
@@ -43,6 +43,7 @@ public:
     void entityCleanup();
     void particleEmitterCleanup();
     void particleCleanup();
+    void guiTextCleanup();
     
     int entityID;
     
@@ -55,6 +56,7 @@ private:
     std::map<std::string, CEntity*> EntityVector;
     std::vector<CParticle*> ParticleVector;
     std::vector<CParticleEmitter*> ParticleEmitterVector;
+    std::vector<CGuiText*> GuiTextVector;
     
 };
 

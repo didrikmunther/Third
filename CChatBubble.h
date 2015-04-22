@@ -28,9 +28,12 @@ public:
 private:
     CEntity* target;
     int type;
-    int dissapearTime;
+    int livingTime;         // Seconds
+    int creationTime;
     
     std::vector<CText> TextVector;
+    int widestLine;
+    int totalHeight;
     
 };
 

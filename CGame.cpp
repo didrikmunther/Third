@@ -15,7 +15,6 @@
 #include <SDL2_image/SDL_image.h>
 #include <SDL2_ttf/SDL_ttf.h>
 #include "CText.h"
-#include "CChatBubble.h"
 
 CGame::CGame() :
 running(true), intro("Physics"),
@@ -227,7 +226,26 @@ void CGame::onEvent(SDL_Event* event) {
                     window.newWindow(intro, 600, 400, SCREEN_FLAGS, RENDERER_FLAGS);
                     camera.onInit(&window);
                     assetManager.onCleanup();
-            }
+                }
+                    break;
+                    
+                case keyMap::NEW_CHAT_BUBBLE:
+                {
+                    const char alphanum[] =                     // Randomize a string
+                    "0123456789"
+                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    "abcdefghijklmnopqrstuvwxyz"
+                    "                          "
+                    "     "              "     ";
+                    
+                    std::string text = "";
+                    for(int i = 0; i < 30; i++) {
+                        text += alphanum[rand() % (sizeof(alphanum) - 1)];
+                    }
+                    
+                    CChatBubble* bubble = new CChatBubble(text, player, assetManager.getFont("TESTFONT"), ChatBubbleType::SAY);
+                    entityManager.addGuiText(bubble);
+                }
                     break;
                     
                 case keyMap::TARGET_PLAYER:
@@ -276,9 +294,6 @@ void CGame::onRender() {
 //    CText text("Hello, this is a text.", assetManager.getFont("TESTFONT"), SDL_Color{0,0,255,255});
 //    text.onRender(100, 100, window.getRenderer()/*, &camera);*/);
 //    text.onRender(500, 500, window.getRenderer(), &camera);
-    
-    CChatBubble bubble("Hello this is a text that should hopefully split into two lines.", player, assetManager.getFont("TESTFONT"), ChatBubbleType::SAY);
-    bubble.onRender(window.getRenderer(), &camera);
     
     SDL_RenderPresent(window.getRenderer());
     

@@ -22,6 +22,8 @@ public:
     virtual void onLoop();                                          // Pure virtual
     virtual void onRender(SDL_Renderer *renderer, CCamera* camera); //
     
+    bool toRemove;
+    
 protected:
     TTF_Font* font;
     std::string text;

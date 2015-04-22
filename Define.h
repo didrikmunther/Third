@@ -39,6 +39,7 @@ enum keyMap {
     
     NEW_WINDOW = SDLK_4,
     LOAD_ASSETS = SDLK_5,
+    NEW_CHAT_BUBBLE = SDLK_6,
     
     TARGET_PLAYER = SDLK_COMMA,
     TARGET_BLOCK = SDLK_PERIOD,

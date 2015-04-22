@@ -54,6 +54,10 @@ void CEntityManager::addParticleEmitter(SDL_Rect rect, SDL_Color color, int amou
     ParticleEmitterVector.push_back(new CParticleEmitter(rect, color, amount, frequency, livingTime, particleLivingTime, velocity));
 }
 
+void CEntityManager::addGuiText(CGuiText* guiText) {
+    GuiTextVector.push_back(guiText);
+}
+
 void CEntityManager::addRenderFlag(int renderFlag) {
     renderFlags |= renderFlag;
 }
@@ -70,6 +74,9 @@ void CEntityManager::onRender(SDL_Renderer *renderer, CCamera* camera) {
     
     for (auto &i: EntityVector)
         i.second->onRender(renderer, camera, renderFlags);
+    
+    for (auto &i: GuiTextVector)
+        i->onRender(renderer, camera);
 }
 
 void CEntityManager::onLoop() {
@@ -105,6 +112,17 @@ void CEntityManager::onLoop() {
             (*i)->onLoop(&EntityVector);
             if((*i)->toRemove)
                 ParticleVector.erase(std::remove(ParticleVector.begin(), ParticleVector.end(), (*i)), ParticleVector.end());
+            else
+                ++i;
+        }
+    }
+    
+    {
+        auto i = GuiTextVector.begin();
+        while(i != GuiTextVector.end()) {
+            (*i)->onLoop();
+            if((*i)->toRemove)
+                GuiTextVector.erase(std::remove(GuiTextVector.begin(), GuiTextVector.end(), (*i)), GuiTextVector.end());
             else
                 ++i;
         }
@@ -147,4 +165,15 @@ void CEntityManager::particleCleanup() {
         
     }
     ParticleVector.clear();
+}
+
+void CEntityManager::guiTextCleanup() {
+    auto i = GuiTextVector.begin();
+    while(i != GuiTextVector.end()) {
+        
+        delete *i;
+        i = GuiTextVector.erase(i);
+        
+    }
+    GuiTextVector.clear();
 }

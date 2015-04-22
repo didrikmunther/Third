@@ -18,6 +18,7 @@
 #include "CWindow.h"
 #include "CPlayer.h"
 #include "CCamera.h"
+#include "CChatBubble.h"
 
 class CGame {
     
@@ -76,7 +77,6 @@ private:
     // Temp variables
     
     CEntity* block;
-    
     
 };
 
