@@ -9,8 +9,8 @@
 #include "CText.h"
 #include "NSurface.h"
 
-CText::CText(std::string text, TTF_Font* font, SDL_Color color, CAssetManager* assetManager) :
-    text(text), font(font), color(color), assetManager(assetManager) {
+CText::CText(std::string text, TTF_Font* font, SDL_Color color) :
+    text(text), font(font), color(color) {
 }
 
 void CText::onRender(int x, int y, SDL_Renderer *renderer, CCamera* camera) {

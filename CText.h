@@ -19,7 +19,7 @@
 class CText {
     
 public:
-    CText(std::string text, TTF_Font* font, SDL_Color color, CAssetManager* assetManager);
+    CText(std::string text, TTF_Font* font, SDL_Color color);
     
     void onRender(int x, int y, SDL_Renderer *renderer, CCamera* camera);
     void onRender(int x, int y, SDL_Renderer *renderer);
@@ -32,8 +32,6 @@ private:
     std::string text;
     TTF_Font* font;
     SDL_Color color;
-    
-    CAssetManager* assetManager;
     
 };
 

@@ -58,3 +58,13 @@ enum EntityProperty {
 enum RenderFlags {
     COLLISION_BORDERS = 1 << 0
 };
+
+enum ChatBubbleType {
+    SAY = 0,
+    YELL = 1,
+    WHISPER = 2
+};
+
+
+
+

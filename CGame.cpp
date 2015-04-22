@@ -15,6 +15,7 @@
 #include <SDL2_image/SDL_image.h>
 #include <SDL2_ttf/SDL_ttf.h>
 #include "CText.h"
+#include "CChatBubble.h"
 
 CGame::CGame() :
 running(true), intro("Physics"),
@@ -272,9 +273,12 @@ void CGame::onRender() {
     
     entityManager.onRender(window.getRenderer(), &camera);
     
-    CText text("Hello, this is a text.", assetManager.getFont("TESTFONT"), SDL_Color{0,0,255,255}, &assetManager);
-    text.onRender(100, 100, window.getRenderer()/*, &camera);*/);
-    text.onRender(500, 500, window.getRenderer(), &camera);
+//    CText text("Hello, this is a text.", assetManager.getFont("TESTFONT"), SDL_Color{0,0,255,255});
+//    text.onRender(100, 100, window.getRenderer()/*, &camera);*/);
+//    text.onRender(500, 500, window.getRenderer(), &camera);
+    
+    CChatBubble bubble("Hello this is a text that should hopefully split into two lines.", player, assetManager.getFont("TESTFONT"), ChatBubbleType::SAY);
+    bubble.onRender(window.getRenderer(), &camera);
     
     SDL_RenderPresent(window.getRenderer());
     
