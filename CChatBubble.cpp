@@ -82,7 +82,7 @@ void CChatBubble::onRender(SDL_Renderer *renderer, CCamera* camera) {
         i++;
     }
     
-    int margin = 3;
+    int margin = 4;
     int floatOverHead = 20;
     
     NSurface::renderRect(target->body.getX() + target->body.getWidth() / 2 - widestLine / 2 - camera->offsetX(),
@@ -94,8 +94,8 @@ void CChatBubble::onRender(SDL_Renderer *renderer, CCamera* camera) {
     int currentLine = (int)TextVector.size() - 1;
     i = TextVector.begin();
     while(i != TextVector.end()) {
-        TTF_SizeText(i->getFont(), i->getText()->c_str(), &width, &height);
-        int posX = target->body.getX() + target->body.getWidth() / 2 - widestLine / 2 + margin;
+        TTF_SizeText(i->getFont(), i->getText()->c_str(), &width, &height);                     // x = tX + tW / 2 - w / 2
+        int posX = target->body.getX() + target->body.getWidth() / 2 - width / 2 + (int)(margin / 2);
         int posY = target->body.getY() - totalHeight + height * currentLine - floatOverHead;
         if(!camera->collision(posX, posY, width, height + margin * 3)) {
             currentLine--;

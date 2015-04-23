@@ -11,6 +11,8 @@
 #include <iostream>
 #include "CCamera.h"
 #include "Define.h"
+#include "CChatBubble.h"
+#include "CEntityManager.h"
 
 CEntity::CEntity(SDL_Rect rect, SDL_Color color) :
     /*sprite(nullptr),*/ spriteKey(""), assetManager(nullptr), body(rect), color(color) {
@@ -68,6 +70,11 @@ void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera, int renderFlags)
             NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.rect.h - camera->offsetY() - 1, body.rect.w, 1, renderer, r, g, b);
         }
     }
+}
+
+void CEntity::say(std::string text, std::string fontKey, CAssetManager* assetManager, CEntityManager* entityManager, int type) {
+    CChatBubble* temp = new CChatBubble(text, this, fontKey, assetManager, type);
+    entityManager->addGuiText(temp);
 }
 
 bool CEntity::hasProperty(int property) {

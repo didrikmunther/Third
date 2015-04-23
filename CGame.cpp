@@ -235,21 +235,19 @@ void CGame::onEvent(SDL_Event* event) {
                     "0123456789"
                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                     "abcdefghijklmnopqrstuvwxyz"
-                    "                          ";
+                    "          ";
                     
                     std::string text = "";
                     for(int i = 0; i < 100; i++) {
                         text += alphanum[rand() % (sizeof(alphanum) - 1)];
                     }
-                    CChatBubble* bubble = new CChatBubble(text, player, "TESTFONT", &assetManager, ChatBubbleType::SAY);
-                    entityManager.addGuiText(bubble);
+                    player->say(text, "TESTFONT", &assetManager, &entityManager, ChatBubbleType::SAY);
                     
                     text = "";
                     for(int i = 0; i < 50; i++) {
                         text += alphanum[rand() % (sizeof(alphanum) - 1)];
                     }
-                    CChatBubble* bubble2 = new CChatBubble(text, block, "TESTFONT", &assetManager, ChatBubbleType::YELL);
-                    entityManager.addGuiText(bubble2);
+                    block->say(text, "TESTFONT", &assetManager, &entityManager, ChatBubbleType::YELL);
                 }
                     break;
                     

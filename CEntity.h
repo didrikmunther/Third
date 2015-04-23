@@ -18,6 +18,7 @@
 #include "CAssetManager.h"
 
 class CCamera;
+class CEntityManager;
 
 class CEntity {
     
@@ -32,6 +33,7 @@ public:
     bool collision(int x, int y, std::map<std::string, CEntity*>* entities);
     void onRender(SDL_Renderer *renderer, CCamera* camera, int renderFlags);
     int properties;
+    void say(std::string text, std::string fontKey, CAssetManager* assetManager, CEntityManager* entityManager, int type);
     
     bool hasProperty(int property);
     void toggleProperty(int property);

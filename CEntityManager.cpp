@@ -87,7 +87,6 @@ void CEntityManager::onLoop() {
             if((*i).second->toRemove) {
                 delete (*i).second;
                 EntityVector.erase(i->first);
-                //EntityVector.erase(std::remove(EntityVector.begin(), EntityVector.end(), (*i)), EntityVector.end());
             }
             else
                 ++i;
@@ -98,9 +97,10 @@ void CEntityManager::onLoop() {
         auto i = ParticleEmitterVector.begin();
         while(i != ParticleEmitterVector.end()) {
             (*i)->onLoop(this);
-            if((*i)->toRemove)
+            if((*i)->toRemove) {
+                delete *i;
                 ParticleEmitterVector.erase(std::remove(ParticleEmitterVector.begin(), ParticleEmitterVector.end(), (*i)), ParticleEmitterVector.end());
-            else
+            } else
                 ++i;
                 
         }
@@ -110,9 +110,10 @@ void CEntityManager::onLoop() {
         auto i = ParticleVector.begin();
         while(i != ParticleVector.end()) {
             (*i)->onLoop(&EntityVector);
-            if((*i)->toRemove)
+            if((*i)->toRemove) {
+                delete *i;
                 ParticleVector.erase(std::remove(ParticleVector.begin(), ParticleVector.end(), (*i)), ParticleVector.end());
-            else
+            } else
                 ++i;
         }
     }
@@ -121,8 +122,10 @@ void CEntityManager::onLoop() {
         auto i = GuiTextVector.begin();
         while(i != GuiTextVector.end()) {
             (*i)->onLoop();
-            if((*i)->toRemove)
+            if((*i)->toRemove) {
+                delete *i;
                 GuiTextVector.erase(std::remove(GuiTextVector.begin(), GuiTextVector.end(), (*i)), GuiTextVector.end());
+            }
             else
                 ++i;
         }
@@ -148,10 +151,8 @@ void CEntityManager::entityCleanup() {
 void CEntityManager::particleEmitterCleanup() {
     auto i = ParticleEmitterVector.begin();
     while(i != ParticleEmitterVector.end()) {
-        
         delete *i;
         i = ParticleEmitterVector.erase(i);
-        
     }
     ParticleEmitterVector.clear();
 }
@@ -159,10 +160,8 @@ void CEntityManager::particleEmitterCleanup() {
 void CEntityManager::particleCleanup() {
     auto i = ParticleVector.begin();
     while(i != ParticleVector.end()) {
-        
         delete *i;
         i = ParticleVector.erase(i);
-        
     }
     ParticleVector.clear();
 }
@@ -170,10 +169,8 @@ void CEntityManager::particleCleanup() {
 void CEntityManager::guiTextCleanup() {
     auto i = GuiTextVector.begin();
     while(i != GuiTextVector.end()) {
-        
         delete *i;
         i = GuiTextVector.erase(i);
-        
     }
     GuiTextVector.clear();
 }
