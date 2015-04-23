@@ -129,8 +129,10 @@ int CGame::onInit() {
     entityManager.addEntity(player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
     camera.setTarget(player);
     
-    entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, SDL_Color{255, 0, 0, 0});
-    entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 500, 30, 500}, SDL_Color{255, 0, 0, 0});
+    auto temp = entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, SDL_Color{255, 0, 0, 0});
+    temp->addProperty(EntityProperty::STATIC);
+    temp = entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 500, 30, 500}, SDL_Color{255, 0, 0, 0});
+    temp->addProperty(EntityProperty::STATIC);
     auto tree = entityManager.addEntity(SDL_Rect{276, 229, 23 * 4, 59 * 4}, "tree", &assetManager, "l:tree");
     tree->removeProperty(EntityProperty::COLLIDABLE);
     tree->addProperty(EntityProperty::STATIC);

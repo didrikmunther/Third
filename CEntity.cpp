@@ -58,17 +58,17 @@ void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera, int renderFlags)
         else
             //NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h});
             NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getWidth(), body.getHeight()}, angle, &center, flip);
+    }
+    
+    if(renderFlags & RenderFlags::COLLISION_BORDERS) {
+        int r, g, b = 0;
+        if(hasProperty(EntityProperty::COLLIDABLE)) {r = 255; g = 0; b = 0;  }
+        else                                        {r = 0; g = 255; b = 255;}
         
-        if(renderFlags & RenderFlags::COLLISION_BORDERS) {
-            int r, g, b = 0;
-            if(hasProperty(EntityProperty::COLLIDABLE)) {r = 255; g = 0; b = 0;  }
-            else                                        {r = 0; g = 255; b = 255;}
-            
-            NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), 1, body.rect.h - 1, renderer, r, g, b);
-            NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w - 1, 1, renderer, r, g, b);
-            NSurface::renderRect(body.getX() + body.rect.w - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.rect.h, renderer, r, g, b);
-            NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.rect.h - camera->offsetY() - 1, body.rect.w, 1, renderer, r, g, b);
-        }
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), 1, body.rect.h - 1, renderer, r, g, b);
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w - 1, 1, renderer, r, g, b);
+        NSurface::renderRect(body.getX() + body.rect.w - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.rect.h, renderer, r, g, b);
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.rect.h - camera->offsetY() - 1, body.rect.w, 1, renderer, r, g, b);
     }
 }
 
@@ -105,6 +105,8 @@ bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities)
     
     if(!(properties & EntityProperty::COLLIDABLE)) return false;
     
+    bool col = false;
+    
     for (auto &i: *entities) {
         
         if (i.second == this) continue;
@@ -127,8 +129,22 @@ bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities)
             collisionLeft = true;
         if(x + 1 < i.second->body.getX() && y + body.getHeight() > i.second->body.getY())
             collisionRight = true;
-        return true;
+        
+        if((collisionRight || collisionLeft) && collisionBottom) {
+            if((body.getY() + body.getWidth() - i.second->body.getY()) < 1 && i.second->body.getY() < x + body.getWidth()) {
+                body.rect.y = i.second->body.getY() - body.getHeight();
+                body.rect.x = x;
+            }
+        }
+        col = true;
+        
+        //return true;
     }
+    
+    std::cout << body.getX() << ": " << (collisionBottom || collisionLeft || collisionRight || collisionTop) << std::endl;
+    
+    if(col)
+        return true;
     
     return false;
 }
