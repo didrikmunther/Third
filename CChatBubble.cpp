@@ -91,21 +91,21 @@ void CChatBubble::onRender(SDL_Renderer *renderer, CCamera* camera) {
                          totalHeight,
                          renderer, rB, gB, bB);
     
-    int currentLine = (int)TextVector.size() - 1;
+    int currentLine = 0;
     i = TextVector.begin();
     while(i != TextVector.end()) {
         TTF_SizeText(i->getFont(), i->getText()->c_str(), &width, &height);                     // x = tX + tW / 2 - w / 2
         int posX = target->body.getX() + target->body.getWidth() / 2 - width / 2 + (int)(margin / 2);
         int posY = target->body.getY() - totalHeight + height * currentLine - floatOverHead;
-        if(!camera->collision(posX, posY, width, height + margin * 3)) {
-            currentLine--;
+        if(!camera->collision(posX, posY, width + margin * 3, height + margin * 3)) {
+            currentLine++;
             i++;
             continue;
         }
         i++->onRender(posX - camera->offsetX(),
                       posY - camera->offsetY(),
                       renderer);
-        currentLine--;
+        currentLine++;
     }
     
 }

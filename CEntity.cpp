@@ -58,17 +58,17 @@ void CEntity::onRender(SDL_Renderer *renderer, CCamera* camera, int renderFlags)
         else
             //NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h});
             NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getWidth(), body.getHeight()}, angle, &center, flip);
+    }
+    
+    if(renderFlags & RenderFlags::COLLISION_BORDERS) {
+        int r, g, b = 0;
+        if(hasProperty(EntityProperty::COLLIDABLE)) {r = 255; g = 0; b = 0;  }
+        else                                        {r = 0; g = 255; b = 255;}
         
-        if(renderFlags & RenderFlags::COLLISION_BORDERS) {
-            int r, g, b = 0;
-            if(hasProperty(EntityProperty::COLLIDABLE)) {r = 255; g = 0; b = 0;  }
-            else                                        {r = 0; g = 255; b = 255;}
-            
-            NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), 1, body.rect.h - 1, renderer, r, g, b);
-            NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w - 1, 1, renderer, r, g, b);
-            NSurface::renderRect(body.getX() + body.rect.w - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.rect.h, renderer, r, g, b);
-            NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.rect.h - camera->offsetY() - 1, body.rect.w, 1, renderer, r, g, b);
-        }
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), 1, body.rect.h - 1, renderer, r, g, b);
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w - 1, 1, renderer, r, g, b);
+        NSurface::renderRect(body.getX() + body.rect.w - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.rect.h, renderer, r, g, b);
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.rect.h - camera->offsetY() - 1, body.rect.w, 1, renderer, r, g, b);
     }
 }
 
