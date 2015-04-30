@@ -15,9 +15,8 @@
 #include "CWindow.h"
 
 typedef struct CameraOffset {
-    float x, y;
-    int w;
-    int h;
+    float   x, y;
+    int     w, h;
 } CameraOffset;
 
 class CCamera {

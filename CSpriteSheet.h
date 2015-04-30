@@ -10,21 +10,21 @@
 #define __Third__CSpriteSheet__
 
 #include <stdio.h>
-#include <SDL2/SDL.h>
+#include <SFML/Graphics.hpp>
 #include <string>
 
 class CSpriteSheet {
     
 public:
-    CSpriteSheet(SDL_Renderer* renderer, std::string fileName);
-    void openFile(SDL_Renderer* renderer, std::string fileName);
+    CSpriteSheet(std::string fileName);
+    void openFile(std::string fileName);
     void onCleanup();
     
-    SDL_Texture* getTexture();
+    sf::Texture* getTexture();
     
 private:
     
-    SDL_Texture* texture;
+    sf::Texture texture;
     
 };
 

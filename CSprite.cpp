@@ -8,15 +8,16 @@
 
 #include "CSprite.h"
 
-CSprite::CSprite(CSpriteSheet* spriteSheet, SDL_Rect source) :
-    spriteSheet(spriteSheet), source(source) {
-    
+CSprite::CSprite(CSpriteSheet* spriteSheet, sf::IntRect rect)
+{
+    sprite.setTexture(*spriteSheet->getTexture());
+    sprite.setTextureRect(rect);
 }
 
-CSpriteSheet* CSprite::getSpriteSheet() {
-    return spriteSheet;
+sf::Sprite* CSprite::getSprite() {
+    return &sprite;
 }
 
-SDL_Rect* CSprite::getSource() {
-    return &source;
+void CSprite::setPosition(int x, int y) {
+    sprite.setPosition(x, y);
 }

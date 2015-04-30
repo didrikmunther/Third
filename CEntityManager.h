@@ -9,7 +9,7 @@
 #ifndef __Third__CEntityManager__
 #define __Third__CEntityManager__
 
-#include <SDL2/SDL.h>
+#include <SFML/Graphics.hpp>
 #include <stdio.h>
 #include <memory>
 #include <vector>
@@ -36,7 +36,7 @@ public:
     void addParticleEmitter(SDL_Rect rect, SDL_Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity);
     void addGuiText(CGuiText* guiText);
     
-    void onRender(SDL_Renderer *renderer, CCamera* camera);
+    void onRender(sf::RenderWindow* window, CCamera* camera);
     void onLoop();
     void onCleanup();
     

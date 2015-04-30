@@ -10,7 +10,7 @@
 #define __Third__CEntity__
 
 #include <stdio.h>
-#include <SDL2/SDL.h>
+#include <SFML/Graphics.hpp>
 #include <memory>
 #include <map>
 #include "CBody.h"
@@ -31,7 +31,7 @@ public:
     virtual void doLogic();
     void move(std::map<std::string, CEntity*>* entities);
     bool collision(int x, int y, std::map<std::string, CEntity*>* entities);
-    void onRender(SDL_Renderer *renderer, CCamera* camera, int renderFlags);
+    void onRender(sf::RenderWindow* window, CCamera* camera, int renderFlags);
     int properties;
     void say(std::string text, std::string fontKey, CAssetManager* assetManager, CEntityManager* entityManager, int type);
     

@@ -10,26 +10,17 @@
 #include <iostream>
 
 CWindow::CWindow() :
-    window(nullptr), renderer(nullptr),
     screenWidth(0), screenHeight(0) {
 }
 
-int CWindow::onInit(std::string title, int width, int height, int window_flags, int renderer_flags) {
-    window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                              width, height, window_flags);
+int CWindow::onInit(std::string title, int width, int height) {
     
-    if(window == nullptr) {
-        puts("e:SDL_CreateWindow Error");
-        return -1;
-    }
-    
-    renderer = SDL_CreateRenderer(window, 0, renderer_flags);
-    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-    
-    if(renderer == nullptr) {
-        puts("e:SDL_CreateRenderer Error");
-        return -1;
-    }
+    window.create(sf::VideoMode(width, height), sf::String(title));
+    window.setVerticalSyncEnabled(true);
+//    if() {
+//        puts("e:Window creation error.");
+//        return -1;
+//    }
     
     screenWidth = width;
     screenHeight = height;
@@ -37,15 +28,20 @@ int CWindow::onInit(std::string title, int width, int height, int window_flags, 
     return 0;
 }
 
-int CWindow::newWindow(std::string title, int width, int height, int window_flags, int renderer_flags) {
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
+int CWindow::newWindow(std::string title, int width, int height) {
+
+//    sf::RenderWindow tempWindow(sf::VideoMode(width, height), sf::String(title));
+//    
+//    window = tempWindow;
+//    
+//    return onInit(title, width, height, window_flags, renderer_flags);
     
-    return onInit(title, width, height, window_flags, renderer_flags);
+    return 0;
+    
 }
 
 void CWindow::setTitle(std::string title) {
-    SDL_SetWindowTitle(window, title.c_str());
+    window.setTitle(sf::String(title));
 }
 
 int CWindow::getWidth() {
@@ -56,17 +52,13 @@ int CWindow::getHeight() {
     return screenHeight;
 }
 
-SDL_Renderer* CWindow::getRenderer() {
-    return renderer;
-}
 
-SDL_Window* CWindow::getWindow() {
-    return window;
+sf::RenderWindow* CWindow::getWindow() {
+    return &window;
 }
 
 void CWindow::onCleanup() {
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
+    
 }
 
 

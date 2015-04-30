@@ -11,21 +11,19 @@
 #define __Third__CSprite__
 
 #include <stdio.h>
-#include <SDL2/SDL.h>
 #include "CSpriteSheet.h"
+#include <SFML/Graphics.hpp>
 
 class CSprite {
     
 public:
-    CSprite(CSpriteSheet* spriteSheet, SDL_Rect source);
+    CSprite(CSpriteSheet* spriteSheet, sf::IntRect rect);
     
-    CSpriteSheet* getSpriteSheet();
-    virtual SDL_Rect* getSource();       // For later letting animation class inherit from this class
-    
+    sf::Sprite* getSprite();
+    void setPosition(int x, int y);
     
 private:
-    CSpriteSheet* spriteSheet;
-    SDL_Rect source;
+    sf::Sprite sprite;
     
 };
 

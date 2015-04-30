@@ -68,15 +68,15 @@ void CEntityManager::toggleRenderFlag(int renderFlag) {
     renderFlags ^= renderFlag;
 }
 
-void CEntityManager::onRender(SDL_Renderer *renderer, CCamera* camera) {
+void CEntityManager::onRender(sf::RenderWindow* window, CCamera* camera) {
     for (auto &i: ParticleVector)
-        i->onRender(renderer, camera, renderFlags);
+        i->onRender(window, camera, renderFlags);
     
     for (auto &i: EntityVector)
-        i.second->onRender(renderer, camera, renderFlags);
+        i.second->onRender(window, camera, renderFlags);
     
     for (auto &i: GuiTextVector)
-        i->onRender(renderer, camera);
+        i->onRender(window, camera);
 }
 
 void CEntityManager::onLoop() {

@@ -12,14 +12,13 @@
 #include <cmath>
 #include "Define.h"
 #include "NMouse.h"
-#include <SDL2_image/SDL_image.h>
-#include <SDL2_ttf/SDL_ttf.h>
+#include <SFML/Graphics.hpp>
 #include "CText.h"
 
 CGame::CGame() :
-running(true), intro("Physics"),
+intro("Physics"),
 //WIDTH(640), HEIGHT(480), BPP(32), camera(WIDTH, HEIGHT),
-lastTime(SDL_GetTicks()), timer(SDL_GetTicks()),
+lastTime(clock.getElapsedTime().asMicroseconds()), timer(clock.getElapsedTime().asMicroseconds()),
 ns(1000.0f / (float)GAMEINTERVAL), delta(0), frames(0), updates(0) {
 }
 
@@ -40,14 +39,15 @@ int CGame::onExecute() {
     
     std::cout << "Starting game...\n";
     
-    while(running) {
-        while(SDL_PollEvent(&event)){
+    while(window.getWindow()->isOpen()) {
+        sf::Event event;
+        while(window.getWindow()->pollEvent(event)){
             onEvent(&event);
         }
         
         //std::cout << "CameraX: " << camera.offsetX() << ", CameraY: " << camera.offsetY() << " \n";
         
-        float now = SDL_GetTicks();
+        float now = clock.getElapsedTime().asMicroseconds();
         delta += (now - lastTime) / ns;
         lastTime = now;
         
@@ -68,7 +68,7 @@ int CGame::onExecute() {
         
         frames++;
         
-        if(SDL_GetTicks() - timer > 1000) {
+        if(clock.getElapsedTime().asMicroseconds() - timer > 1000) {
             timer += 1000;
             title.str("");
             title << intro << " | " << updates << " ups, " << frames << " fps";
@@ -91,35 +91,20 @@ int CGame::onInit() {
     
     srand((Uint16)time(nullptr));
     
-    if(SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        puts("SDL_Init error");
-        return -1;
-    }
+    assetManager.addFont("TESTFONT", "resources/font.ttf");
     
-    if(!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
-        puts("IMG_Init error");
-        return -1;
-    }
-    
-    if(TTF_Init() != 0) {
-        puts("TTF_Init error");
-        return -1;
-    }
-    
-    assetManager.addFont("TESTFONT", "resources/font.ttf", 20);
-    
-    if(window.onInit(intro, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_FLAGS, RENDERER_FLAGS))
+    if(window.onInit(intro, SCREEN_WIDTH, SCREEN_HEIGHT))
         return -1;
     camera.onInit(&window);
     
-    assetManager.addSpriteSheet("MAIN", "resources/gfx.png", window.getRenderer());                 // All these are temporary for testing
+    assetManager.addSpriteSheet("MAIN", "resources/gfx.png");                 // All these are temporary for testing
     //assetManager.addSprite("player", "MAIN", SDL_Rect{11,5,43,53});                     // Will have a system that loads from text file
-    assetManager.addSpriteSheet("MAIN2", "resources/gfx2.png", window.getRenderer());
-    assetManager.addSprite("player", "MAIN2", SDL_Rect{144,396,60,164});
-    assetManager.addSprite("bush", "MAIN", SDL_Rect{160, 91, 30, 28});
-    assetManager.addSprite("tree", "MAIN", SDL_Rect{7,64,23,59});
-    assetManager.addSpriteSheet("BG", "resources/bg.png", window.getRenderer());
-    assetManager.addSprite("background", "BG", SDL_Rect{0,0,128,64});
+    assetManager.addSpriteSheet("MAIN2", "resources/gfx2.png");
+    assetManager.addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
+    assetManager.addSprite("bush", "MAIN", sf::IntRect{160, 91, 30, 28});
+    assetManager.addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});
+    assetManager.addSpriteSheet("BG", "resources/bg.png");
+    assetManager.addSprite("background", "BG", sf::IntRect{0,0,128,64});
     
 //    auto bg = entityManager.addEntity(SDL_Rect{0,0,1000, 1000}, "background", &assetManager);
 //    bg->removeProperty(EntityProperty::COLLIDABLE);
@@ -143,37 +128,35 @@ int CGame::onInit() {
 
 void CGame::handleKeyStates() {
     
-    const Uint8* keystate = SDL_GetKeyboardState(NULL);
-    
-    if(keystate[SDL_SCANCODE_D]) {
+    if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::RIGHT)) {
         player->goRight();
     }
-    if(keystate[SDL_SCANCODE_A]) {
+    if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::LEFT)) {
         player->goLeft();
     }
     
-    if(keystate[SDL_SCANCODE_W]) {
+    if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::UP)) {
         player->goUp();
     }
     
-    if(keystate[SDL_SCANCODE_S]) {
+    if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::DOWN)) {
         player->goDown();
     }
 }
 
-void CGame::onEvent(SDL_Event* event) {
+void CGame::onEvent(sf::Event* event) {
     
     
     
     //if(event->key.repeat != 0) return;
     
     switch(event->type) {
-        case SDL_QUIT:
-            running = false;
+        case sf::Event::Closed:
+            window.getWindow()->close();
             break;
             
-        case SDL_KEYDOWN:
-            switch(event->key.keysym.sym) {
+        case sf::Event::KeyPressed:
+            switch(event->key.code) {
                     
                 case keyMap::EXIT:
                     running = false;
@@ -203,15 +186,13 @@ void CGame::onEvent(SDL_Event* event) {
                     player->toggleProperty(EntityProperty::FLYING);
                     break;
                 case keyMap::LOAD_ASSETS:
-                    assetManager.addFont("TESTFONT", "resources/font.ttf", 20);
-                    
-                    assetManager.addSpriteSheet("MAIN", "resources/gfx.png", window.getRenderer());                 // All these are temporary for testing
-                    //assetManager.addSprite("player", "MAIN", SDL_Rect{11,5,43,53});                     // Will have a system that loads from text file
-                    assetManager.addSprite("player", "MAIN", SDL_Rect{90,220,18,30});
-                    assetManager.addSprite("bush", "MAIN", SDL_Rect{160, 91, 30, 28});
-                    assetManager.addSprite("tree", "MAIN", SDL_Rect{7,64,23,59});
-                    assetManager.addSpriteSheet("BG", "resources/bg.png", window.getRenderer());
-                    assetManager.addSprite("background", "BG", SDL_Rect{0,0,128,64});
+                    assetManager.addSpriteSheet("MAIN", "resources/gfx.png");
+                    assetManager.addSpriteSheet("MAIN2", "resources/gfx2.png");
+                    assetManager.addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
+                    assetManager.addSprite("bush", "MAIN", sf::IntRect{160, 91, 30, 28});
+                    assetManager.addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});
+                    assetManager.addSpriteSheet("BG", "resources/bg.png");
+                    assetManager.addSprite("background", "BG", sf::IntRect{0,0,128,64});
                     break;
                 case keyMap::TOGGLE_HIDDEN:
                     player->toggleProperty(EntityProperty::HIDDEN);
@@ -223,7 +204,7 @@ void CGame::onEvent(SDL_Event* event) {
                 case keyMap::NEW_WINDOW:
                 {
                     //player->toggleProperty(EntityProperty::STATIC);
-                    window.newWindow(intro, 600, 400, SCREEN_FLAGS, RENDERER_FLAGS);
+                    window.newWindow(intro, 600, 400);
                     camera.onInit(&window);
                     assetManager.onCleanup();
                 }
@@ -268,15 +249,23 @@ void CGame::onEvent(SDL_Event* event) {
                         camera.cameraSway -= 10;
                     break;
                     
+                default:
+                    break;
+                    
             }
             break;
         
-        case SDL_KEYUP:
-            switch(event->key.keysym.sym) {
+        case sf::Event::KeyReleased:
+            switch(event->key.code) {
                 case keyMap::SNEAK:
                     player->isSneaking = false;
                     break;
+                    
+                default:
+                    break;
             }
+            break;
+        default:
             break;
     }
     
@@ -289,16 +278,9 @@ void CGame::onLoop() {
 
 void CGame::onRender() {
     
-    SDL_SetRenderDrawColor(window.getRenderer(), 255, 255, 255, 255);
-    SDL_RenderClear(window.getRenderer());
+    entityManager.onRender(window.getWindow(), &camera);
     
-    entityManager.onRender(window.getRenderer(), &camera);
     
-//    CText text("Hello, this is a text.", assetManager.getFont("TESTFONT"), SDL_Color{0,0,255,255});
-//    text.onRender(100, 100, window.getRenderer()/*, &camera);*/);
-//    text.onRender(500, 500, window.getRenderer(), &camera);
-    
-    SDL_RenderPresent(window.getRenderer());
     
 }
 
@@ -307,7 +289,5 @@ int CGame::onCleanup() {
     assetManager.onCleanup();
     window.onCleanup();
     
-    IMG_Quit();
-    SDL_Quit();
     return 0;
 }

@@ -10,8 +10,7 @@
 #define __Third__CText__
 
 #include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2_ttf/SDL_ttf.h>
+#include <SFML/Graphics.hpp>
 #include "CCamera.h"
 #include <string>
 #include "CAssetManager.h"
@@ -19,21 +18,22 @@
 class CText {
     
 public:
-    CText(std::string text, std::string fontKey, CAssetManager* assetManager, SDL_Color color);
+    CText(std::string text, int size, std::string fontKey, CAssetManager* assetManager, sf::Color color);
     
-    void onRender(int x, int y, SDL_Renderer *renderer, CCamera* camera);
-    void onRender(int x, int y, SDL_Renderer *renderer);
+    void onRender(int x, int y, sf::RenderWindow* window, CCamera* camera);
+    void onRender(int x, int y, sf::RenderWindow* window);
     
-    TTF_Font* getFont();
+    sf::Font* getFont();
+    int getSize();
     std::string* getText();
-    SDL_Color* getColor();
+    sf::Color* getColor();
     
 private:
     std::string text;
-    //TTF_Font* font;
+    int size;
     std::string fontKey;
     CAssetManager* assetManager;
-    SDL_Color color;
+    sf::Color color;
     
 };
 

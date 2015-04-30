@@ -10,7 +10,7 @@
 #define __Third__CWindow__
 
 #include <stdio.h>
-#include <SDL2/SDL.h>
+#include <SFML/Graphics.hpp>
 #include <string>
 
 class CWindow {
@@ -18,22 +18,22 @@ class CWindow {
 public:
     CWindow();
     
-    int onInit(std::string title, int width, int height, int window_flags, int renderer_flags);
-    int newWindow(std::string title, int width, int height, int window_flags, int renderer_flags);
+    int onInit(std::string title, int width, int height);
+    int newWindow(std::string title, int width, int height);
     void setTitle(std::string title);
     void onCleanup();
     
     int getWidth();
     int getHeight();
     
-    SDL_Renderer* getRenderer();
-    SDL_Window* getWindow();
+    sf::RenderWindow window;
+    
+    sf::RenderWindow* getWindow();
     
 private:
     int screenHeight, screenWidth;
     
-    SDL_Renderer* renderer;
-    SDL_Window* window;
+    
     
     
 };

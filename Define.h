@@ -7,7 +7,7 @@
 //d
 
 #include <stdio.h>
-#include <SDL2/SDL.h>
+#include <SFML/Graphics.hpp>
 
 #define SCREEN_WIDTH   1280
 #define SCREEN_HEIGHT  720
@@ -17,35 +17,32 @@
 #define DESPAWN_HEIGHT  10000
 #define GRAVITY         0.5
 
-const int SCREEN_FLAGS = SDL_WINDOW_SHOWN;// | SDL_WINDOW_RESIZABLE; // | SDL_WINDOW_FULLSCREEN;
-const int RENDERER_FLAGS = SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED | SDL_RENDERER_SOFTWARE;
-
 enum keyMap {
-    EXIT = SDLK_ESCAPE,
+    EXIT = sf::Keyboard::Escape,
     
-    LEFT = SDLK_a,
-    RIGHT = SDLK_d,
-    DOWN = SDLK_s,
-    UP = SDLK_w,
-    SNEAK = SDLK_LSHIFT,
+    LEFT = sf::Keyboard::A,
+    RIGHT = sf::Keyboard::D,
+    DOWN = sf::Keyboard::S,
+    UP = sf::Keyboard::W,
+    SNEAK = sf::Keyboard::LShift,
     
-    BLOCK = SDLK_l,
-    PARTICLEEM = SDLK_i,
-    RESET = SDLK_j,
+    BLOCK = sf::Keyboard::L,
+    PARTICLEEM = sf::Keyboard::I,
+    RESET = sf::Keyboard::J,
     
-    TOGGLE_NOCLIP = SDLK_1,
-    TOGGLE_HIDDEN = SDLK_2,
-    TOGGLE_COLLISION_BOUNDS = SDLK_3,
+    TOGGLE_NOCLIP = sf::Keyboard::Num1,
+    TOGGLE_HIDDEN = sf::Keyboard::Num2,
+    TOGGLE_COLLISION_BOUNDS = sf::Keyboard::Num3,
     
-    NEW_WINDOW = SDLK_4,
-    LOAD_ASSETS = SDLK_5,
-    NEW_CHAT_BUBBLE = SDLK_6,
+    NEW_WINDOW = sf::Keyboard::Num4,
+    LOAD_ASSETS = sf::Keyboard::Num5,
+    NEW_CHAT_BUBBLE = sf::Keyboard::Num6,
     
-    TARGET_PLAYER = SDLK_COMMA,
-    TARGET_BLOCK = SDLK_PERIOD,
+    TARGET_PLAYER = sf::Keyboard::Comma,
+    TARGET_BLOCK = sf::Keyboard::Period,
     
-    CHANGE_CAMERA_SWAY_UP = SDLK_0,
-    CHANGE_CAMERA_SWAY_DOWN = SDLK_9
+    CHANGE_CAMERA_SWAY_UP = sf::Keyboard::Num0,
+    CHANGE_CAMERA_SWAY_DOWN = sf::Keyboard::Num9
     
 };
 

@@ -11,8 +11,7 @@
 
 #include <stdio.h>
 #include "CCamera.h"
-#include <SDL2/SDL.h>
-#include <SDL2_ttf/SDL_ttf.h>
+#include <SFML/Graphics.hpp>
 #include <string>
 
 class CGuiText {
@@ -20,7 +19,7 @@ public:
     CGuiText(int x, int y, std::string text, std::string fontKey, CAssetManager* assetManager);
     
     virtual void onLoop();                                          // Pure virtual
-    virtual void onRender(SDL_Renderer *renderer, CCamera* camera); //
+    virtual void onRender(sf::RenderWindow* window, CCamera* camera); //
     
     bool toRemove;
     

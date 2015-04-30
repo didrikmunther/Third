@@ -10,7 +10,6 @@
 #define __Third__NMouse__
 
 #include <stdio.h>
-#include <SDL2/SDL.h>
 #include "CCamera.h"
 
 namespace NMouse {

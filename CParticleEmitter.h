@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include "CParticle.h"
-//#include "CEntityManager.h"
+#include <SFML/Graphics.hpp>
 
 class CEntityManager;
 
@@ -24,6 +24,9 @@ public:
     bool toRemove;
     
 private:
+    
+    sf::Clock clock;
+    
     SDL_Rect rect;
     SDL_Color color;
     int amount;

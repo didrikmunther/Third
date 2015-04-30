@@ -10,16 +10,16 @@
 #include "Define.h"
 
 CParticle::CParticle(SDL_Rect rect, SDL_Color color) :
-    CEntity(rect, color), color(color), creationTime(SDL_GetTicks()), livingTime(5) {
+    CEntity(rect, color), color(color), creationTime(clock.getElapsedTime().asMicroseconds()), livingTime(5) {
 }
 
 CParticle::CParticle(SDL_Rect rect, SDL_Color color, int livingTime) :
-    CEntity(rect, color), color(color), creationTime(SDL_GetTicks()), livingTime(livingTime) {
+    CEntity(rect, color), color(color), creationTime(clock.getElapsedTime().asMicroseconds()), livingTime(livingTime) {
 }
 
 void CParticle::doLogic() {
     
-    if(SDL_GetTicks() - creationTime > livingTime * 1000)
+    if(clock.getElapsedTime().asMicroseconds() - creationTime > livingTime * 1000)
         toRemove = true;
     
     body.velX += rand() % 3 - 1;

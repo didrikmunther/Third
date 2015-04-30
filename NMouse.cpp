@@ -7,27 +7,24 @@
 //
 
 #include "NMouse.h"
+#include <SFML/Graphics.hpp>
 
 int NMouse::absoluteMouseX() {
-    int x, y;
-    SDL_GetMouseState(&x, &y);
-    return x;
+    sf::Vector2i position = sf::Mouse::getPosition();
+    return position.x;
 }
 
 int NMouse::absoluteMouseY() {
-    int x, y;
-    SDL_GetMouseState(&x, &y);
-    return y;
+    sf::Vector2i position = sf::Mouse::getPosition();
+    return position.y;
 }
 
 int NMouse::relativeMouseX(CCamera* camera) {
-    int x, y;
-    SDL_GetMouseState(&x, &y);
-    return x + camera->offsetX();
+    sf::Vector2i position = sf::Mouse::getPosition();
+    return position.x + camera->offsetX();
 }
 
 int NMouse::relativeMouseY(CCamera* camera) {
-    int x, y;
-    SDL_GetMouseState(&x, &y);
-    return y + camera->offsetY();
+    sf::Vector2i position = sf::Mouse::getPosition();
+    return position.y + camera->offsetY();
 }

@@ -13,17 +13,17 @@
 CParticleEmitter::CParticleEmitter(SDL_Rect rect, SDL_Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity) :
     rect(rect), color(color), amount(amount), frequency(frequency),
     livingTime(livingTime), particleLivingTime(particleLivingTime),
-    velocity(velocity), creationTime(SDL_GetTicks()),
-    toRemove(false), timer(SDL_GetTicks() - (frequency * 1000)) {
+    velocity(velocity), creationTime(clock.getElapsedTime().asMicroseconds()),
+    toRemove(false), timer(clock.getElapsedTime().asMicroseconds() - (frequency * 1000)) {
 }
 
 void CParticleEmitter::onLoop(CEntityManager *entityManager) {
-    if(SDL_GetTicks() - creationTime > livingTime * 1000) {
+    if(clock.getElapsedTime().asMicroseconds() - creationTime > livingTime * 1000) {
         toRemove = true;
         return;
     }
     
-    if(SDL_GetTicks() - timer > frequency * 1000) {
+    if(clock.getElapsedTime().asMicroseconds() - timer > frequency * 1000) {
         timer += 1000;
         for (int i = 0; i < amount; i++) {
             entityManager->addParticle(rect, color, particleLivingTime);

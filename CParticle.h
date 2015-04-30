@@ -10,6 +10,7 @@
 #define __Third__CParticle__
 
 #include <stdio.h>
+#include <SFML/Graphics.hpp>
 #include "CEntity.h"
 
 class CParticle : public CEntity {
@@ -18,6 +19,9 @@ public:
     CParticle(SDL_Rect rect, SDL_Color color);
     CParticle(SDL_Rect rect, SDL_Color color, int livingTime);
 private:
+    
+    sf::Clock clock;
+    
     SDL_Color color;
     int creationTime;
     int livingTime;

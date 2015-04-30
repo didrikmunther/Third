@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include "CGuiText.h"
 #include "CText.h"
-#include <SDL2/SDL.h>
+#include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
 
@@ -22,9 +22,12 @@ public:
     CChatBubble(std::string text, CEntity* target, std::string fontKey, CAssetManager* assetManager, int type);
     
     void onLoop();
-    void onRender(SDL_Renderer *renderer, CCamera* camera);
+    void onRender(sf::RenderWindow* window, CCamera* camera);
     
 private:
+    
+    sf::Clock clock;
+    
     CEntity* target;
     int r, g, b;            // Foreground colors
     int rB, gB, bB;         // Background colors

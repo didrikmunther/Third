@@ -8,50 +8,30 @@
 
 #include "NSurface.h"
 
-void NSurface::renderRect(int x, int y, int w, int h, SDL_Renderer *renderer, int r, int g, int b) {
-    SDL_Rect rect;
-    
-    rect.x = x;
-    rect.y = y;
-    rect.w = w;
-    rect.h = h;
-    
-    SDL_SetRenderDrawColor(renderer, r, g, b, 255);
-    SDL_RenderFillRect(renderer, &rect);
+void NSurface::renderRect(int x, int y, int w, int h, sf::RenderWindow* window, int r, int g, int b) {
+    renderRect(sf::IntRect{x,y,w,h}, window, r, g, b);
 }
 
-void NSurface::renderRect(SDL_Rect rect, SDL_Renderer *renderer, int r, int g, int b) {
-    
-    SDL_SetRenderDrawColor(renderer, r, g, b, 255);
-    SDL_RenderFillRect(renderer, &rect);
+void NSurface::renderRect(sf::IntRect rect, sf::RenderWindow* window, int r, int g, int b) {
+    sf::RectangleShape rectangle(sf::Vector2f(rect.left, rect.top));
+    rectangle.setPosition(rect.width, rect.height);
+    rectangle.setFillColor(sf::Color(r, g, b));
+    window->draw(rectangle);
 }
 
-void NSurface::renderSprite(CSprite* sprite, SDL_Renderer* renderer, SDL_Rect destination) {
-    
-    SDL_Rect src{sprite->getSource()->x, sprite->getSource()->y, sprite->getSource()->w, sprite->getSource()->h};
-    SDL_RenderCopy(renderer, sprite->getSpriteSheet()->getTexture(), &src, &destination);
+void NSurface::renderSprite(CSprite* sprite, sf::RenderWindow* window, sf::IntRect destination) {
+    sprite->setPosition(destination.left, destination.top);
+    window->draw(*sprite->getSprite());
 }
 
-void NSurface::renderSprite(CSprite* sprite, SDL_Renderer* renderer, SDL_Rect destination, double angle, SDL_Point* center, SDL_RendererFlip flip) {
-    SDL_Rect src{sprite->getSource()->x, sprite->getSource()->y, sprite->getSource()->w, sprite->getSource()->h};
-    SDL_RenderCopyEx(renderer, sprite->getSpriteSheet()->getTexture(), &src, &destination, angle, center, flip);
+//void NSurface::renderSprite(CSprite* sprite, SDL_Renderer* renderer, SDL_Rect destination, double angle, SDL_Point* center, SDL_RendererFlip flip) {
+//    SDL_Rect src{sprite->getSource()->x, sprite->getSource()->y, sprite->getSource()->w, sprite->getSource()->h};
+//    SDL_RenderCopyEx(renderer, sprite->getSpriteSheet()->getTexture(), &src, &destination, angle, center, flip);
+//}
+
+void NSurface::renderText(int x, int y, CText* textObj, sf::RenderWindow* window) {
+    sf::Text text(textObj->getText()->c_str(), *textObj->getFont(), 10);
+    window->draw(text);
 }
-
-void NSurface::renderText(int x, int y, CText* text, SDL_Renderer* renderer) {
-    SDL_Surface *surface = TTF_RenderText_Blended(text->getFont(), (*text->getText()).c_str(), *text->getColor());
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-    int w, h;
-    SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
-    renderTexture(renderer, SDL_Rect{x, y, w, h}, texture);
-    SDL_FreeSurface(surface);
-    SDL_DestroyTexture(texture);
-}
-
-void NSurface::renderTexture(SDL_Renderer* renderer, SDL_Rect destination, SDL_Texture *texture) {
-    SDL_RenderCopy(renderer, texture, nullptr, &destination);
-}
-
-
-
 
 

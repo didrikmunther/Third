@@ -9,7 +9,7 @@
 #ifndef __Third__CGame__
 #define __Third__CGame__
 
-#include <SDL2/SDL.h>
+#include <SFML/Graphics.hpp>
 #include <stdio.h>
 #include <sstream>
 #include <string>
@@ -35,7 +35,7 @@ private:
     
     int onInit();
     
-    void onEvent(SDL_Event* event);
+    void onEvent(sf::Event* event);
     
     void handleKeyStates();
     
@@ -55,6 +55,8 @@ private:
     CPlayer* player;
     
     // Timer variables
+    
+    sf::Clock clock;
     
     float lastTime;
     float timer;

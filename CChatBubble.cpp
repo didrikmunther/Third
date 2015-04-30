@@ -9,14 +9,15 @@
 #include "CChatBubble.h"
 #include <sstream>
 #include "NSurface.h"
-#include <SDL2/SDL.h>
 #include "Define.h"
 #include <iostream>
 
 CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey, CAssetManager* assetManager, int type) :
-    target(target), type(type), CGuiText(0, 0, text, fontKey, assetManager), creationTime(SDL_GetTicks()),
+    target(target), type(type), CGuiText(0, 0, text, fontKey, assetManager), creationTime(clock.getElapsedTime().asMicroseconds()),
     r(0), g(0), b(0), rB(220), gB(220), bB(220) {
     
+        int textSize = 10;
+        
     switch(type) {
         case ChatBubbleType::SAY:
             r = g = b = 0;        // Black
@@ -42,7 +43,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
     std::string currentString = "";
     for(int i = 0; i < splittedText.size(); i++) {
         if(currentSize > 10) {
-            TextVector.push_back(CText(currentString, fontKey, assetManager, SDL_Color{(Uint8)r,(Uint8)g,(Uint8)b,255}));
+            TextVector.push_back(CText(currentString, textSize, fontKey, assetManager, sf::Color{(Uint8)r,(Uint8)g,(Uint8)b,255}));
             currentString = "";
             currentSize = 0;
         }
@@ -50,7 +51,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
         currentString += splittedText[i] + " ";
     }
     if(currentSize > 0)                 // For when the loop quits but there is still text that should be added
-        TextVector.push_back(CText(currentString, fontKey, assetManager, SDL_Color{(Uint8)r,(Uint8)g,(Uint8)b,255}));
+        TextVector.push_back(CText(currentString, textSize, fontKey, assetManager, sf::Color{(Uint8)r,(Uint8)g,(Uint8)b,255}));
         
     int letterPerSecond = 10;
     livingTime = (int)text.length() / letterPerSecond;
@@ -58,11 +59,11 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
 }
 
 void CChatBubble::onLoop() {
-    if(SDL_GetTicks() > creationTime + livingTime * 1000)
+    if(clock.getElapsedTime().asMicroseconds() > creationTime + livingTime * 1000)
         toRemove = true;
 }
 
-void CChatBubble::onRender(SDL_Renderer *renderer, CCamera* camera) {
+void CChatBubble::onRender(sf::RenderWindow* window, CCamera* camera) {
     
     if(TextVector.size() <= 0)
         return;
@@ -75,7 +76,9 @@ void CChatBubble::onRender(SDL_Renderer *renderer, CCamera* camera) {
     int totalHeight = 0;
     auto i = TextVector.begin();
     while(i != TextVector.end()) {
-        TTF_SizeText(i->getFont(), i->getText()->c_str(), &width, &height);
+        sf::Text tempText(i->getText()->c_str(), *i->getFont(), i->getSize());
+        width = tempText.getLocalBounds().width;
+        height = tempText.getLocalBounds().height;
         if(width > widestLine)
             widestLine = width;
         totalHeight += height;
@@ -89,12 +92,14 @@ void CChatBubble::onRender(SDL_Renderer *renderer, CCamera* camera) {
                          target->body.getY() - camera->offsetY() - totalHeight - floatOverHead,
                          widestLine,
                          totalHeight,
-                         renderer, rB, gB, bB);
+                         window, rB, gB, bB);
     
     int currentLine = 0;
     i = TextVector.begin();
     while(i != TextVector.end()) {
-        TTF_SizeText(i->getFont(), i->getText()->c_str(), &width, &height);                     // x = tX + tW / 2 - w / 2
+        sf::Text tempText(i->getText()->c_str(), *i->getFont(), i->getSize());
+        width = tempText.getLocalBounds().width;
+        height = tempText.getLocalBounds().height;
         int posX = target->body.getX() + target->body.getWidth() / 2 - width / 2 + (int)(margin / 2);
         int posY = target->body.getY() - totalHeight + height * currentLine - floatOverHead;
         if(!camera->collision(posX, posY, width + margin * 3, height + margin * 3)) {
@@ -104,7 +109,7 @@ void CChatBubble::onRender(SDL_Renderer *renderer, CCamera* camera) {
         }
         i++->onRender(posX - camera->offsetX(),
                       posY - camera->offsetY(),
-                      renderer);
+                      window);
         currentLine++;
     }
     
