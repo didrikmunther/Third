@@ -20,9 +20,10 @@ public:
     CSprite(CSpriteSheet* spriteSheet, sf::IntRect rect);
     
     sf::Sprite* getSprite();
-    void setPosition(int x, int y);
+    sf::IntRect* getOffset();
     
 private:
+    sf::IntRect rect;
     sf::Sprite sprite;
     
 };

@@ -13,21 +13,28 @@ void NSurface::renderRect(int x, int y, int w, int h, sf::RenderWindow* window, 
 }
 
 void NSurface::renderRect(sf::IntRect rect, sf::RenderWindow* window, int r, int g, int b) {
-    sf::RectangleShape rectangle(sf::Vector2f(rect.left, rect.top));
-    rectangle.setPosition(rect.width, rect.height);
+    sf::RectangleShape rectangle(sf::Vector2f(rect.width, rect.height));
+    rectangle.setPosition(rect.left, rect.top);
     rectangle.setFillColor(sf::Color(r, g, b));
     window->draw(rectangle);
 }
 
 void NSurface::renderSprite(CSprite* sprite, sf::RenderWindow* window, sf::IntRect destination) {
-    sprite->setPosition(destination.left, destination.top);
-    window->draw(*sprite->getSprite());
+//    auto nsprite = *sprite->getSprite();
+//    nsprite.setPosition(destination.left, destination.top);
+//    nsprite.setScale(destination.width / sprite->getSprite()->getGlobalBounds().width, destination.height / sprite->getSprite()->getGlobalBounds().height);
+//    window->draw(nsprite);
+    
+    sf::RectangleShape rectangle(sf::Vector2f(destination.width, destination.height));
+    rectangle.setTexture(sprite->getSprite()->getTexture());
+    rectangle.setPosition(destination.left, destination.top);
+    rectangle.setTextureRect(sf::IntRect(sprite->getOffset()->left,
+                                         sprite->getOffset()->top,
+                                         sprite->getOffset()->width,
+                                         sprite->getOffset()->height));
+    window->draw(rectangle);
+    
 }
-
-//void NSurface::renderSprite(CSprite* sprite, SDL_Renderer* renderer, SDL_Rect destination, double angle, SDL_Point* center, SDL_RendererFlip flip) {
-//    SDL_Rect src{sprite->getSource()->x, sprite->getSource()->y, sprite->getSource()->w, sprite->getSource()->h};
-//    SDL_RenderCopyEx(renderer, sprite->getSpriteSheet()->getTexture(), &src, &destination, angle, center, flip);
-//}
 
 void NSurface::renderText(int x, int y, CText* textObj, sf::RenderWindow* window) {
     sf::Text text(textObj->getText()->c_str(), *textObj->getFont(), 10);

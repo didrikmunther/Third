@@ -274,6 +274,7 @@ void CGame::onLoop() {
 void CGame::onRender() {
     
     window.getWindow()->clear();
+    NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, window.getWindow(), 255, 255, 255);
     
     entityManager.onRender(window.getWindow(), &camera);
     

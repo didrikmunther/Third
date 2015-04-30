@@ -29,6 +29,7 @@ CSprite* CAssetManager::addSprite(std::string name, std::string spriteSheetKey, 
 }
 
 CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, std::string fileName) {
+    //fileName = resourcePath() + fileName;
     if(SpriteSheetVector.find(name) != SpriteSheetVector.end()) {
         std::cout << "!: Couldn't add spritesheet: \"" << name << "\", because it already exists.\n";
         return SpriteSheetVector[name];
@@ -46,6 +47,7 @@ CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, std::string fileNa
 }
 
 sf::Font* CAssetManager::addFont(std::string name, std::string fileName) {
+    //fileName = resourcePath() + fileName;
     if(FontVector.find(name) != FontVector.end()) {
         std::cout << "!: Couldn't add font: \"" << name << "\", because it already exists.\n";
         return &FontVector[name];

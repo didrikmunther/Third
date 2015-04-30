@@ -8,7 +8,7 @@
 
 #include "CSprite.h"
 
-CSprite::CSprite(CSpriteSheet* spriteSheet, sf::IntRect rect)
+CSprite::CSprite(CSpriteSheet* spriteSheet, sf::IntRect rect) : rect(rect)
 {
     sprite.setTexture(*spriteSheet->getTexture());
     sprite.setTextureRect(rect);
@@ -18,6 +18,6 @@ sf::Sprite* CSprite::getSprite() {
     return &sprite;
 }
 
-void CSprite::setPosition(int x, int y) {
-    sprite.setPosition(x, y);
+sf::IntRect* CSprite::getOffset() {
+    return &rect;
 }

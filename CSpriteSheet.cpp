@@ -14,7 +14,6 @@ CSpriteSheet::CSpriteSheet(std::string fileName) {
 
 void CSpriteSheet::openFile(std::string fileName) {
     texture.loadFromFile(fileName);
-    texture.setSmooth(1);
 }
 
 sf::Texture* CSpriteSheet::getTexture() {
