@@ -45,10 +45,6 @@ private:
     
     int onCleanup();
     
-    // Help functions
-    
-    int initGl();
-    
     // Main variables
     
     SDL_Event event;

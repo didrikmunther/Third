@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <string>
-#include <GLUT/GLUT.h>
 
 class CWindow {
     
@@ -29,14 +28,12 @@ public:
     
     SDL_Renderer* getRenderer();
     SDL_Window* getWindow();
-    SDL_GLContext* getGlContext();
     
 private:
     int screenHeight, screenWidth;
     
     SDL_Renderer* renderer;
     SDL_Window* window;
-    SDL_GLContext glContext;
     
     
 };

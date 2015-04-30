@@ -15,8 +15,6 @@
 #include <SDL2_image/SDL_image.h>
 #include <SDL2_ttf/SDL_ttf.h>
 #include "CText.h"
-#include <GLUT/GLUT.h>
-#include <OpenGL/OpenGL.h>
 
 CGame::CGame() :
 running(true), intro("Physics"),
@@ -108,13 +106,10 @@ int CGame::onInit() {
         return -1;
     }
     
+    assetManager.addFont("TESTFONT", "resources/font.ttf", 20);
     
-    
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    
-    if(window.newWindow(intro, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_FLAGS, RENDERER_FLAGS))
+    if(window.onInit(intro, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_FLAGS, RENDERER_FLAGS))
         return -1;
-    
     camera.onInit(&window);
     
     assetManager.addSpriteSheet("MAIN", "resources/gfx.png", window.getRenderer());                 // All these are temporary for testing
@@ -125,7 +120,6 @@ int CGame::onInit() {
     assetManager.addSprite("tree", "MAIN", SDL_Rect{7,64,23,59});
     assetManager.addSpriteSheet("BG", "resources/bg.png", window.getRenderer());
     assetManager.addSprite("background", "BG", SDL_Rect{0,0,128,64});
-    assetManager.addFont("TESTFONT", "resources/font.ttf", 20);
     
 //    auto bg = entityManager.addEntity(SDL_Rect{0,0,1000, 1000}, "background", &assetManager);
 //    bg->removeProperty(EntityProperty::COLLIDABLE);
@@ -144,20 +138,6 @@ int CGame::onInit() {
     block->removeProperty(EntityProperty::COLLIDABLE);
     block->addProperty(EntityProperty::STATIC);
 
-    return 0;
-}
-
-int CGame::initGl() {
-    GLenum error = GL_NO_ERROR;
-    
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    
-    error = glGetError();
-    if(error != GL_NO_ERROR) {
-        printf("GL error: ", gluErrorString(error));
-    }
-    
     return 0;
 }
 
