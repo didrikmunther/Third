@@ -15,6 +15,7 @@ CWindow::CWindow() :
 }
 
 int CWindow::onInit(std::string title, int width, int height, int window_flags, int renderer_flags) {
+    
     window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                               width, height, window_flags);
     
@@ -31,6 +32,14 @@ int CWindow::onInit(std::string title, int width, int height, int window_flags, 
         return -1;
     }
     
+    //    glContext = SDL_GL_CreateContext(window);
+    //    glOrtho(0.0, 4.0, 0.0, 3.0, -1.0, 1.0);
+    
+    if(glContext == nullptr) {
+        puts("e:SDL_GL_CreateContext Error");
+        return -1;
+    }
+    
     screenWidth = width;
     screenHeight = height;
     
@@ -38,8 +47,10 @@ int CWindow::onInit(std::string title, int width, int height, int window_flags, 
 }
 
 int CWindow::newWindow(std::string title, int width, int height, int window_flags, int renderer_flags) {
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
+    if(window != nullptr)
+        SDL_DestroyWindow(window);
+    if(renderer == nullptr)
+        SDL_DestroyRenderer(renderer);
     
     return onInit(title, width, height, window_flags, renderer_flags);
 }
@@ -65,6 +76,7 @@ SDL_Window* CWindow::getWindow() {
 }
 
 void CWindow::onCleanup() {
+    SDL_GL_DeleteContext(glContext);
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
 }
