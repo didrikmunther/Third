@@ -18,7 +18,7 @@ class CEntityManager;
 class CParticleEmitter {
     
 public:
-    CParticleEmitter(SDL_Rect rect, SDL_Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity);
+    CParticleEmitter(sf::IntRect rect, sf::Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity);
     void onLoop(CEntityManager *entityManager);
     
     bool toRemove;
@@ -27,8 +27,8 @@ private:
     
     sf::Clock clock;
     
-    SDL_Rect rect;
-    SDL_Color color;
+    sf::IntRect rect;
+    sf::Color color;
     int amount;
     int frequency;
     int creationTime;

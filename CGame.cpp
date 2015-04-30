@@ -18,7 +18,7 @@
 CGame::CGame() :
 intro("Physics"),
 //WIDTH(640), HEIGHT(480), BPP(32), camera(WIDTH, HEIGHT),
-lastTime(clock.getElapsedTime().asMicroseconds()), timer(clock.getElapsedTime().asMicroseconds()),
+lastTime(clock.getElapsedTime().asMilliseconds()), timer(clock.getElapsedTime().asMilliseconds()),
 ns(1000.0f / (float)GAMEINTERVAL), delta(0), frames(0), updates(0) {
 }
 
@@ -47,7 +47,7 @@ int CGame::onExecute() {
         
         //std::cout << "CameraX: " << camera.offsetX() << ", CameraY: " << camera.offsetY() << " \n";
         
-        float now = clock.getElapsedTime().asMicroseconds();
+        float now = clock.getElapsedTime().asMilliseconds();
         delta += (now - lastTime) / ns;
         lastTime = now;
         
@@ -68,7 +68,7 @@ int CGame::onExecute() {
         
         frames++;
         
-        if(clock.getElapsedTime().asMicroseconds() - timer > 1000) {
+        if(clock.getElapsedTime().asMilliseconds() - timer > 1000) {
             timer += 1000;
             title.str("");
             title << intro << " | " << updates << " ups, " << frames << " fps";
@@ -89,7 +89,7 @@ int CGame::onExecute() {
 
 int CGame::onInit() {
     
-    srand((Uint16)time(nullptr));
+    srand((sf::Uint16)time(nullptr));
     
     assetManager.addFont("TESTFONT", "resources/font.ttf");
     
@@ -97,8 +97,7 @@ int CGame::onInit() {
         return -1;
     camera.onInit(&window);
     
-    assetManager.addSpriteSheet("MAIN", "resources/gfx.png");                 // All these are temporary for testing
-    //assetManager.addSprite("player", "MAIN", SDL_Rect{11,5,43,53});                     // Will have a system that loads from text file
+    assetManager.addSpriteSheet("MAIN", "resources/gfx.png");
     assetManager.addSpriteSheet("MAIN2", "resources/gfx2.png");
     assetManager.addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
     assetManager.addSprite("bush", "MAIN", sf::IntRect{160, 91, 30, 28});
@@ -106,20 +105,16 @@ int CGame::onInit() {
     assetManager.addSpriteSheet("BG", "resources/bg.png");
     assetManager.addSprite("background", "BG", sf::IntRect{0,0,128,64});
     
-//    auto bg = entityManager.addEntity(SDL_Rect{0,0,1000, 1000}, "background", &assetManager);
-//    bg->removeProperty(EntityProperty::COLLIDABLE);
-//    bg->addProperty(EntityProperty::STATIC);
-    
-    player = new CPlayer(SDL_Rect{30, 30, 60, 164}, "player", &assetManager);
+    player = new CPlayer(sf::IntRect{30, 30, 60, 164}, "player", &assetManager);
     entityManager.addEntity(player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
     camera.setTarget(player);
     
-    entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, SDL_Color{255, 0, 0, 0});
-    entityManager.addEntity(SDL_Rect{0 - 30 / 2, 480 - 500, 30, 500}, SDL_Color{255, 0, 0, 0});
-    auto tree = entityManager.addEntity(SDL_Rect{276, 229, 23 * 4, 59 * 4}, "tree", &assetManager, "l:tree");
+    entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
+    entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 500, 30, 500}, sf::Color{255, 0, 0, 0});
+    auto tree = entityManager.addEntity(sf::IntRect{276, 229, 23 * 4, 59 * 4}, "tree", &assetManager, "l:tree");
     tree->removeProperty(EntityProperty::COLLIDABLE);
     tree->addProperty(EntityProperty::STATIC);
-    block = entityManager.addEntity(SDL_Rect{200, 357, 60 * 2, 54 * 2}, "bush", &assetManager, "n:bush");
+    block = entityManager.addEntity(sf::IntRect{200, 357, 60 * 2, 54 * 2}, "bush", &assetManager, "n:bush");
     block->removeProperty(EntityProperty::COLLIDABLE);
     block->addProperty(EntityProperty::STATIC);
 
@@ -159,7 +154,7 @@ void CGame::onEvent(sf::Event* event) {
             switch(event->key.code) {
                     
                 case keyMap::EXIT:
-                    running = false;
+                    window.getWindow()->close();
                     break;
                     
                 case keyMap::SNEAK:
@@ -168,17 +163,17 @@ void CGame::onEvent(sf::Event* event) {
                     
                 case keyMap::BLOCK:
                 {
-                    CEntity* temp = entityManager.addEntity(SDL_Rect{NMouse::relativeMouseX(&camera) - 30 / 2, NMouse::relativeMouseY(&camera) - 30 / 2, 40, 40}, SDL_Color{0, 0, 255, 0});
+                    CEntity* temp = entityManager.addEntity(sf::IntRect{NMouse::relativeMouseX(&camera) - 30 / 2, NMouse::relativeMouseY(&camera) - 30 / 2, 40, 40}, sf::Color{0, 0, 255, 0});
                     temp->addProperty(EntityProperty::STATIC);
                 }
                     break;
                     
                 case keyMap::PARTICLEEM:
-                    entityManager.addParticleEmitter(SDL_Rect{NMouse::relativeMouseX(&camera) - 4 / 2, NMouse::relativeMouseY(&camera) - 4 / 2, 10, 10}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, 20, 2, 4, 6, 0.3);
+                    entityManager.addParticleEmitter(sf::IntRect{NMouse::relativeMouseX(&camera) - 4 / 2, NMouse::relativeMouseY(&camera) - 4 / 2, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, 20, 2, 4, 6, 0.3);
                     break;
                     
                 case keyMap::RESET:
-                    *player = CPlayer(SDL_Rect{30, 30, 30, 30}, SDL_Color{255, 255, 0, 255});
+                    *player = CPlayer(sf::IntRect{30, 30, 30, 30}, sf::Color{255, 255, 0, 255});
                     break;
                     
                 case keyMap::TOGGLE_NOCLIP:
@@ -278,9 +273,11 @@ void CGame::onLoop() {
 
 void CGame::onRender() {
     
+    window.getWindow()->clear();
+    
     entityManager.onRender(window.getWindow(), &camera);
     
-    
+    window.getWindow()->display();
     
 }
 

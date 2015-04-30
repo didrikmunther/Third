@@ -29,11 +29,11 @@ class CEntityManager {
 public:
     CEntityManager();
     
-    CEntity* addEntity(SDL_Rect rect, SDL_Color color, std::string name = "");
-    CEntity* addEntity(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager, std::string name = "");
+    CEntity* addEntity(sf::IntRect rect, sf::Color color, std::string name = "");
+    CEntity* addEntity(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager, std::string name = "");
     void addEntity(CEntity* entity, std::string name = "");
-    void addParticle(SDL_Rect rect, SDL_Color color, int livingTime);
-    void addParticleEmitter(SDL_Rect rect, SDL_Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity);
+    void addParticle(sf::IntRect rect, sf::Color color, int livingTime);
+    void addParticleEmitter(sf::IntRect rect, sf::Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity);
     void addGuiText(CGuiText* guiText);
     
     void onRender(sf::RenderWindow* window, CCamera* camera);

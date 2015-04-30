@@ -47,8 +47,6 @@ private:
     
     // Main variables
     
-    SDL_Event event;
-    
     bool running;
     
     CCamera camera;

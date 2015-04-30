@@ -10,20 +10,20 @@
 #define __Third__CBody__
 
 #include <stdio.h>
-#include <SDL2/SDL.h>
+#include <SFML/Graphics.hpp>
 
 class CBody {
     
 public:
-    CBody(SDL_Rect rect);
+    CBody(sf::IntRect rect);
     float velX, velY;
     
     int getX();
     int getY();
-    int getWidth();
-    int getHeight();
+    int getW();
+    int getH();
 
-    SDL_Rect rect;
+    sf::IntRect rect;
     
 };
 

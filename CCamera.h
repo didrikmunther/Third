@@ -10,7 +10,6 @@
 #define __Third__CCamera__
 
 #include <stdio.h>
-#include <SDL2/SDL.h>
 #include "CEntity.h"
 #include "CWindow.h"
 

@@ -13,7 +13,7 @@
 #include <iostream>
 
 CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey, CAssetManager* assetManager, int type) :
-    target(target), type(type), CGuiText(0, 0, text, fontKey, assetManager), creationTime(clock.getElapsedTime().asMicroseconds()),
+    target(target), type(type), CGuiText(0, 0, text, fontKey, assetManager), creationTime(clock.getElapsedTime().asMilliseconds()),
     r(0), g(0), b(0), rB(220), gB(220), bB(220) {
     
         int textSize = 10;
@@ -43,7 +43,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
     std::string currentString = "";
     for(int i = 0; i < splittedText.size(); i++) {
         if(currentSize > 10) {
-            TextVector.push_back(CText(currentString, textSize, fontKey, assetManager, sf::Color{(Uint8)r,(Uint8)g,(Uint8)b,255}));
+            TextVector.push_back(CText(currentString, textSize, fontKey, assetManager, sf::Color{(sf::Uint8)r,(sf::Uint8)g,(sf::Uint8)b,255}));
             currentString = "";
             currentSize = 0;
         }
@@ -51,7 +51,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
         currentString += splittedText[i] + " ";
     }
     if(currentSize > 0)                 // For when the loop quits but there is still text that should be added
-        TextVector.push_back(CText(currentString, textSize, fontKey, assetManager, sf::Color{(Uint8)r,(Uint8)g,(Uint8)b,255}));
+        TextVector.push_back(CText(currentString, textSize, fontKey, assetManager, sf::Color{(sf::Uint8)r,(sf::Uint8)g,(sf::Uint8)b,255}));
         
     int letterPerSecond = 10;
     livingTime = (int)text.length() / letterPerSecond;
@@ -59,7 +59,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
 }
 
 void CChatBubble::onLoop() {
-    if(clock.getElapsedTime().asMicroseconds() > creationTime + livingTime * 1000)
+    if(clock.getElapsedTime().asMilliseconds() > creationTime + livingTime * 1000)
         toRemove = true;
 }
 
@@ -88,7 +88,7 @@ void CChatBubble::onRender(sf::RenderWindow* window, CCamera* camera) {
     int margin = 4;
     int floatOverHead = 20;
     
-    NSurface::renderRect(target->body.getX() + target->body.getWidth() / 2 - widestLine / 2 - camera->offsetX(),
+    NSurface::renderRect(target->body.getX() + target->body.getW() / 2 - widestLine / 2 - camera->offsetX(),
                          target->body.getY() - camera->offsetY() - totalHeight - floatOverHead,
                          widestLine,
                          totalHeight,
@@ -100,7 +100,7 @@ void CChatBubble::onRender(sf::RenderWindow* window, CCamera* camera) {
         sf::Text tempText(i->getText()->c_str(), *i->getFont(), i->getSize());
         width = tempText.getLocalBounds().width;
         height = tempText.getLocalBounds().height;
-        int posX = target->body.getX() + target->body.getWidth() / 2 - width / 2 + (int)(margin / 2);
+        int posX = target->body.getX() + target->body.getW() / 2 - width / 2 + (int)(margin / 2);
         int posY = target->body.getY() - totalHeight + height * currentLine - floatOverHead;
         if(!camera->collision(posX, posY, width + margin * 3, height + margin * 3)) {
             currentLine++;

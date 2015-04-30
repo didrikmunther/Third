@@ -10,18 +10,18 @@
 #define __Third__CTile__
 
 #include <stdio.h>
-#include <SDL2/SDL.h>
+#include <SFML/Graphics.hpp>
 
 class CTile {
     
 public:
-    CTile(SDL_Rect rect, int type);
+    CTile(sf::IntRect rect, int type);
     
-    void onRender(SDL_Renderer* renderer);
+    void onRender(sf::RenderWindow* window);
     
 private:
     int type;
-    SDL_Rect rect;
+    sf::IntRect rect;
     
 };
 

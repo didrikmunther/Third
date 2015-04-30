@@ -16,13 +16,13 @@
 class CParticle : public CEntity {
     
 public:
-    CParticle(SDL_Rect rect, SDL_Color color);
-    CParticle(SDL_Rect rect, SDL_Color color, int livingTime);
+    CParticle(sf::IntRect rect, sf::Color color);
+    CParticle(sf::IntRect rect, sf::Color color, int livingTime);
 private:
     
     sf::Clock clock;
     
-    SDL_Color color;
+    sf::Color color;
     int creationTime;
     int livingTime;
     

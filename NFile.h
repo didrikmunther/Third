@@ -10,7 +10,6 @@
 #define __Third__NFile__
 
 #include <stdio.h>
-#include <SDL2/SDL.h>
 #include "CSpriteSheet.h"
 
 namespace NFile {

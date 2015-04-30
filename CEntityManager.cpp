@@ -13,7 +13,7 @@
 CEntityManager::CEntityManager() : entityID(0), renderFlags(0) {
 }
 
-CEntity* CEntityManager::addEntity(SDL_Rect rect, SDL_Color color, std::string name /* = "" */) {
+CEntity* CEntityManager::addEntity(sf::IntRect rect, sf::Color color, std::string name /* = "" */) {
     if(name == "") {
         std::string id = "5:" + std::to_string(++entityID);
         EntityVector[id] = new CEntity(rect, color);
@@ -25,7 +25,7 @@ CEntity* CEntityManager::addEntity(SDL_Rect rect, SDL_Color color, std::string n
     }
 }
 
-CEntity* CEntityManager::addEntity(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager, std::string name /* = "" */) {
+CEntity* CEntityManager::addEntity(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager, std::string name /* = "" */) {
     if(name == "") {
         std::string id = "5:" + std::to_string(++entityID);
         EntityVector[id] = new CEntity(rect, spriteKey, assetManager);
@@ -46,11 +46,11 @@ void CEntityManager::addEntity(CEntity* entity, std::string name /* = "" */) {
         EntityVector[name] = entity;
 }
 
-void CEntityManager::addParticle(SDL_Rect rect, SDL_Color color, int livingTime) {
+void CEntityManager::addParticle(sf::IntRect rect, sf::Color color, int livingTime) {
     ParticleVector.push_back(new CParticle(rect, color, livingTime));
 }
 
-void CEntityManager::addParticleEmitter(SDL_Rect rect, SDL_Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity) {
+void CEntityManager::addParticleEmitter(sf::IntRect rect, sf::Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity) {
     ParticleEmitterVector.push_back(new CParticleEmitter(rect, color, amount, frequency, livingTime, particleLivingTime, velocity));
 }
 

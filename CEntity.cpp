@@ -14,13 +14,13 @@
 #include "CChatBubble.h"
 #include "CEntityManager.h"
 
-CEntity::CEntity(SDL_Rect rect, SDL_Color color) :
+CEntity::CEntity(sf::IntRect rect, sf::Color color) :
     /*sprite(nullptr),*/ spriteKey(""), assetManager(nullptr), body(rect), color(color) {
         initValues();
 }
 
-CEntity::CEntity(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager) :
-    /*sprite(sprite),*/ spriteKey(spriteKey), assetManager(assetManager), body(rect), color(SDL_Color{255,0,255,0}) {
+CEntity::CEntity(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager) :
+/*sprite(sprite),*/ spriteKey(spriteKey), assetManager(assetManager), body(rect), color(sf::Color{255,0,255,0}) {
         initValues();
 }
 
@@ -31,9 +31,7 @@ void CEntity::initValues() {
     collisionBottom     = false;
     collisionRight      = false;
     collisionLeft       = false;
-    angle               = 0;
-    center              = {body.rect.w/2, body.rect.h/2};
-    flip                = (SDL_RendererFlip)(SDL_FLIP_NONE);
+    flip                = false;
 }
 
 void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
@@ -53,11 +51,11 @@ void CEntity::onRender(sf::RenderWindow* window, CCamera* camera, int renderFlag
         //std::cout << sprite << std::endl;
         if(assetManager == nullptr || assetManager->getSprite(spriteKey) == nullptr)
                 NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(),
-                                     body.getWidth(), body.getHeight(),
+                                     body.getW(), body.getH(),
                                      window, color.r, color.g, color.b);
         else
             //NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h});
-            NSurface::renderSprite(assetManager->getSprite(spriteKey), window, sf::IntRect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getWidth(), body.getHeight()});
+            NSurface::renderSprite(assetManager->getSprite(spriteKey), window, sf::IntRect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW(), body.getH()});
     }
     
     if(renderFlags & RenderFlags::COLLISION_BORDERS) {
@@ -65,10 +63,10 @@ void CEntity::onRender(sf::RenderWindow* window, CCamera* camera, int renderFlag
         if(hasProperty(EntityProperty::COLLIDABLE)) {r = 255; g = 0; b = 0;  }
         else                                        {r = 0; g = 255; b = 255;}
         
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), 1, body.rect.h - 1, window, r, g, b);
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w - 1, 1, window, r, g, b);
-        NSurface::renderRect(body.getX() + body.rect.w - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.rect.h, window, r, g, b);
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.rect.h - camera->offsetY() - 1, body.rect.w, 1, window, r, g, b);
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), 1, body.getW() - 1, window, r, g, b);
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW() - 1, 1, window, r, g, b);
+        NSurface::renderRect(body.getX() + body.getW() - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.getH(), window, r, g, b);
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, window, r, g, b);
     }
 }
 
@@ -110,22 +108,22 @@ bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities)
         if (i.second == this) continue;
         if (!(i.second->properties & EntityProperty::COLLIDABLE)) continue;
     
-        if(x + 1 > i.second->body.getX() + i.second->body.getWidth())
+        if(x + 1 > i.second->body.getX() + i.second->body.getW())
             continue;
-        if(x - 1 + body.getWidth() < i.second->body.getX())
+        if(x - 1 + body.getW() < i.second->body.getX())
             continue;
-        if(y + 1 > i.second->body.getY() + i.second->body.getHeight())
+        if(y + 1 > i.second->body.getY() + i.second->body.getH())
             continue;
-        if(y - 1 + body.getHeight() < i.second->body.getY())
+        if(y - 1 + body.getH() < i.second->body.getY())
             continue;
         
-        if(y - 1 + body.getHeight() <= i.second->body.getY() && x + body.getWidth() - 1 > i.second->body.getX() && x + 1 < i.second->body.getX() + i.second->body.getWidth())
+        if(y - 1 + body.getH() <= i.second->body.getY() && x + body.getW() - 1 > i.second->body.getX() && x + 1 < i.second->body.getX() + i.second->body.getW())
             collisionBottom = true;
-        if(y - 1 >= i.second->body.getY() + i.second->body.getHeight())
+        if(y - 1 >= i.second->body.getY() + i.second->body.getH())
             collisionTop = true;
-        if(x + 1> i.second->body.getX() && y + body.getHeight() > i.second->body.getY() && y < i.second->body.getY() + i.second->body.getHeight())
+        if(x + 1> i.second->body.getX() && y + body.getH() > i.second->body.getY() && y < i.second->body.getY() + i.second->body.getH())
             collisionLeft = true;
-        if(x + 1 < i.second->body.getX() && y + body.getHeight() > i.second->body.getY())
+        if(x + 1 < i.second->body.getX() && y + body.getH() > i.second->body.getY())
             collisionRight = true;
         return true;
     }
@@ -160,14 +158,14 @@ void CEntity::move(std::map<std::string, CEntity*>* entities) {
     while(true) {
         if(!collision(StopX + NewX, StopY, entities)) {
             StopX += NewX;
-            body.rect.x += NewX;
+            body.rect.left += NewX;
         } else {
             body.velX = 0;
         }
         
         if(!collision(StopX, StopY + NewY, entities)) {
             StopY += NewY;
-            body.rect.y += NewY;
+            body.rect.top += NewY;
         } else {
             body.velY = 0;
         }

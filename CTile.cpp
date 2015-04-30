@@ -8,7 +8,7 @@
 
 #include "CTile.h"
 
-CTile::CTile(SDL_Rect rect, int type) :
+CTile::CTile(sf::IntRect rect, int type) :
     rect(rect), type(type) {
         
 }

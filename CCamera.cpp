@@ -9,6 +9,7 @@
 #include "CCamera.h"
 #include <iostream>
 #include "Define.h"
+#include <math.h>
 
 CCamera::CCamera() :
     offset{0, 0, 0, 0}, cameraSway(10) {
@@ -25,8 +26,8 @@ void CCamera::onLoop() {
         return;
     }
     
-    offset.x += (((target->body.getX() + target->body.getWidth() / 2) - offset.w / 2) - offset.x) / cameraSway;
-    offset.y += (((target->body.getY() + target->body.getHeight() / 2) - offset.h / 2) - offset.y) / cameraSway;
+    offset.x += (((target->body.getX() + target->body.getW() / 2) - offset.w / 2) - offset.x) / cameraSway;
+    offset.y += (((target->body.getY() + target->body.getH() / 2) - offset.h / 2) - offset.y) / cameraSway;
 }
 
 int CCamera::offsetX() {
@@ -42,11 +43,11 @@ void CCamera::setTarget(CEntity* target) {
 }
 
 bool CCamera::collision(CEntity* entity) {
-    if(offsetX() > entity->body.getX() + entity->body.getWidth())
+    if(offsetX() > entity->body.getX() + entity->body.getW())
         return false;
     if(offsetX() + offset.w < entity->body.getX())
         return false;
-    if(offsetY() > entity->body.getY() + entity->body.getHeight())
+    if(offsetY() > entity->body.getY() + entity->body.getH())
         return false;
     if(offsetY() + offset.h < entity->body.getY())
         return false;

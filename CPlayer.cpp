@@ -10,14 +10,14 @@
 #include "Define.h"
 #include <iostream>
 
-CPlayer::CPlayer(SDL_Rect rect, SDL_Color color) :
+CPlayer::CPlayer(sf::IntRect rect, sf::Color color) :
     CEntity(rect, color) {
         initValues();
 }
 
-CPlayer::CPlayer(SDL_Rect rect, std::string spriteKey, CAssetManager* assetManager) :
+CPlayer::CPlayer(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager) :
     CEntity(rect, spriteKey, assetManager) {
-        CPlayer(rect, SDL_Color{255, 255, 255, 255});
+        CPlayer(rect, sf::Color{255, 255, 255, 255});
         initValues();
 }
 
@@ -130,7 +130,7 @@ void CPlayer::doLogic() {
     hasWalkedY = false;
     
     if(body.velX > 0)
-        flip = SDL_FLIP_NONE;
+        flip = false;
     else if(body.velX < 0)
-        flip = SDL_FLIP_HORIZONTAL;
+        flip = true;
 }
