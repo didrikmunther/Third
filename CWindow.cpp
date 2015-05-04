@@ -17,10 +17,6 @@ int CWindow::onInit(std::string title, int width, int height) {
     
     window.create(sf::VideoMode(width, height), sf::String(title));
     window.setVerticalSyncEnabled(true);
-//    if() {
-//        puts("e:Window creation error.");
-//        return -1;
-//    }
     
     screenWidth = width;
     screenHeight = height;

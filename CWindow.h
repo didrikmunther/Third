@@ -26,11 +26,12 @@ public:
     int getWidth();
     int getHeight();
     
-    sf::RenderWindow window;
-    
     sf::RenderWindow* getWindow();
     
 private:
+    sf::RenderWindow window;
+    sf::View view;
+    
     int screenHeight, screenWidth;
     
     

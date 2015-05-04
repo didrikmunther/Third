@@ -7,6 +7,8 @@
 //
 
 #include "NSurface.h"
+#include "Define.h"
+#include <iostream>
 
 void NSurface::renderRect(int x, int y, int w, int h, sf::RenderWindow* window, int r, int g, int b) {
     renderRect(sf::IntRect{x,y,w,h}, window, r, g, b);
@@ -37,7 +39,9 @@ void NSurface::renderSprite(CSprite* sprite, sf::RenderWindow* window, sf::IntRe
 }
 
 void NSurface::renderText(int x, int y, CText* textObj, sf::RenderWindow* window) {
-    sf::Text text(textObj->getText()->c_str(), *textObj->getFont(), 10);
+    sf::Text text(textObj->getText()->c_str(), *textObj->getFont(), textObj->getSize());
+    text.setColor(*textObj->getColor());
+    text.setPosition(x, y);
     window->draw(text);
 }
 

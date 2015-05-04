@@ -273,9 +273,18 @@ void CGame::onLoop() {
 
 void CGame::onRender() {
     
+    sf::View view1(sf::FloatRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
+    view1.setViewport(sf::FloatRect(0, 0, 1, 1));
+    sf::View view2(sf::FloatRect(0.5f, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
+    view2.setViewport(sf::FloatRect(0.75f, 0, 0.25f, 0.25f));
+    view2.zoom(2.0f);
+    
+    window.getWindow()->setView(view1);
     window.getWindow()->clear();
     NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, window.getWindow(), 255, 255, 255);
+    entityManager.onRender(window.getWindow(), &camera);
     
+    window.getWindow()->setView(view2);
     entityManager.onRender(window.getWindow(), &camera);
     
     window.getWindow()->display();

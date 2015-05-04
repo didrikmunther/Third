@@ -16,7 +16,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
     target(target), type(type), CGuiText(0, 0, text, fontKey, assetManager), creationTime(clock.getElapsedTime().asMilliseconds()),
     r(0), g(0), b(0), rB(220), gB(220), bB(220) {
     
-        int textSize = 10;
+        int textSize = 40;
         
     switch(type) {
         case ChatBubbleType::SAY:
@@ -100,8 +100,8 @@ void CChatBubble::onRender(sf::RenderWindow* window, CCamera* camera) {
         sf::Text tempText(i->getText()->c_str(), *i->getFont(), i->getSize());
         width = tempText.getLocalBounds().width;
         height = tempText.getLocalBounds().height;
-        int posX = target->body.getX() + target->body.getW() / 2 - width / 2 + (int)(margin / 2);
-        int posY = target->body.getY() - totalHeight + height * currentLine - floatOverHead;
+        int posX = target->body.getX() + target->body.getW() / 2 - width / 2 + margin * 2;
+        int posY = target->body.getY() - totalHeight + height * currentLine + floatOverHead / 2;
         if(!camera->collision(posX, posY, width + margin * 3, height + margin * 3)) {
             currentLine++;
             i++;

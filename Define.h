@@ -9,6 +9,9 @@
 #include <stdio.h>
 #include <SFML/Graphics.hpp>
 
+#define NATIVE_SCREEN_WIDTH   1920
+#define NATIVE_SCREEN_HEIGHT  1080
+
 #define SCREEN_WIDTH   1280
 #define SCREEN_HEIGHT  720
 #define SCREEN_BPP     32
