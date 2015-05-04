@@ -102,9 +102,9 @@ void CChatBubble::onRender(sf::RenderWindow* window, CCamera* camera) {
         sf::Text tempText(i->getText()->c_str(), *i->getFont(), i->getSize());
         width = tempText.getLocalBounds().width;
         height = tempText.getLocalBounds().height;
-        int posX = target->body.getX() + target->body.getW() / 2 - width / 2 + marginX * 2;
+        int posX = target->body.getX() + target->body.getW() / 2 - width / 2 + marginX;
         int posY = target->body.getY() - totalHeight + height * currentLine - marginY * 2;
-        if(!camera->collision(posX, posY, width + marginX * 2, height + marginY * 2)) {
+        if(!camera->collision(posX, posY, width + marginX, height + marginY * 2)) {
             currentLine++;
             i++;
             continue;
