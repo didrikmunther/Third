@@ -20,7 +20,7 @@ CEntity::CEntity(sf::IntRect rect, sf::Color color) :
 }
 
 CEntity::CEntity(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager) :
-/*sprite(sprite),*/ spriteKey(spriteKey), assetManager(assetManager), body(rect), color(sf::Color{255,0,255,0}) {
+/*sprite(sprite),*/ spriteKey(spriteKey), assetManager(assetManager), body(rect), color(sf::Color{255,0,255,255}) {
         initValues();
 }
 

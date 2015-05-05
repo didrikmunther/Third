@@ -34,8 +34,8 @@ CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, std::string fileNa
         std::cout << "!: Couldn't add spritesheet: \"" << name << "\", because it already exists.\n";
         return SpriteSheetVector[name];
     } else {
-        CSpriteSheet* temp = new CSpriteSheet(fileName);
-        if(temp->getTexture() == nullptr) {
+        CSpriteSheet* temp = new CSpriteSheet();
+        if(!temp->openFile(fileName)) {
             std::cout << "!: Couldn't add spritesheet: \"" << name << "\", could not open file \"" << fileName << "\".\n";
             return nullptr;
         } else {
@@ -113,17 +113,15 @@ void CAssetManager::onCleanup() {
         std::cout << "\n";
     }
     
-//    {
-//        std::cout << "Unloaded font: ";
-//        auto i = FontVector.begin();
-//        while(i != FontVector.end()) {
-//            TTF_CloseFont(i->second);
-//            i->second = nullptr;
-//            std::cout << "\"" << i->first << "\",";
-//            FontVector.erase(i++->first);
-//        }
-//        FontVector.clear();
-//        std::cout << "\n";
-//    }
+    {
+        std::cout << "Unloaded font: ";
+        auto i = FontVector.begin();
+        while(i != FontVector.end()) {
+            std::cout << "\"" << i->first << "\",";
+            FontVector.erase(i++->first);
+        }
+        FontVector.clear();
+        std::cout << "\n";
+    }
     
 }

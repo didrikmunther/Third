@@ -91,8 +91,6 @@ int CGame::onInit() {
     
     srand((sf::Uint16)time(nullptr));
     
-    assetManager.addFont("TESTFONT", "resources/font.ttf");
-    
     if(window.onInit(intro, SCREEN_WIDTH, SCREEN_HEIGHT))
         return -1;
     camera.onInit(&window);
@@ -104,6 +102,7 @@ int CGame::onInit() {
     assetManager.addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});
     assetManager.addSpriteSheet("BG", "resources/bg.png");
     assetManager.addSprite("background", "BG", sf::IntRect{0,0,128,64});
+    assetManager.addFont("TESTFONT", "resources/font.ttf");
     
     player = new CPlayer(sf::IntRect{30, 30, 60, 164}, "player", &assetManager);
     entityManager.addEntity(player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
@@ -188,6 +187,7 @@ void CGame::onEvent(sf::Event* event) {
                     assetManager.addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});
                     assetManager.addSpriteSheet("BG", "resources/bg.png");
                     assetManager.addSprite("background", "BG", sf::IntRect{0,0,128,64});
+                    assetManager.addFont("TESTFONT", "resources/font.ttf");
                     break;
                 case keyMap::TOGGLE_HIDDEN:
                     player->toggleProperty(EntityProperty::HIDDEN);

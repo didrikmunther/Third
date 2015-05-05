@@ -16,8 +16,8 @@
 class CSpriteSheet {
     
 public:
-    CSpriteSheet(std::string fileName);
-    void openFile(std::string fileName);
+    CSpriteSheet();
+    int openFile(std::string fileName);
     void onCleanup();
     
     sf::Texture* getTexture();

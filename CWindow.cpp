@@ -26,13 +26,8 @@ int CWindow::onInit(std::string title, int width, int height) {
 
 int CWindow::newWindow(std::string title, int width, int height) {
 
-//    sf::RenderWindow tempWindow(sf::VideoMode(width, height), sf::String(title));
-//    
-//    window = tempWindow;
-//    
-//    return onInit(title, width, height, window_flags, renderer_flags);
-    
-    return 0;
+    onCleanup();
+    return onInit(title, width, height);
     
 }
 

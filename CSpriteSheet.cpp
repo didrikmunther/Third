@@ -8,12 +8,11 @@
 
 #include "CSpriteSheet.h"
 
-CSpriteSheet::CSpriteSheet(std::string fileName) {
-    openFile(fileName);
+CSpriteSheet::CSpriteSheet() {
 }
 
-void CSpriteSheet::openFile(std::string fileName) {
-    texture.loadFromFile(fileName);
+int CSpriteSheet::openFile(std::string fileName) {
+    return texture.loadFromFile(fileName);
 }
 
 sf::Texture* CSpriteSheet::getTexture() {

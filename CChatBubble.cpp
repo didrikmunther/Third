@@ -53,7 +53,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
     if(currentSize > 0)                 // For when the loop quits but there is still text that should be added
         TextVector.push_back(CText(currentString, textSize, fontKey, assetManager, sf::Color{(sf::Uint8)r,(sf::Uint8)g,(sf::Uint8)b,255}));
         
-    int letterPerSecond = 10;
+    int letterPerSecond = 5;
     livingTime = (int)text.length() / letterPerSecond;
     
 }
@@ -90,11 +90,15 @@ void CChatBubble::onRender(sf::RenderWindow* window, CCamera* camera) {
     
     int floatOverHead = 20;
     
-    NSurface::renderRect(target->body.getX() + target->body.getW() / 2 - widestLine / 2 - camera->offsetX(),
-                         target->body.getY() - camera->offsetY() - totalHeight - floatOverHead,
-                         widestLine,
-                         totalHeight,
-                         window, rB, gB, bB);
+    if(camera->collision(target->body.getX() + target->body.getW() / 2 - widestLine / 2,
+                          target->body.getY() - totalHeight - floatOverHead,
+                          widestLine,
+                          totalHeight))
+        NSurface::renderRect(target->body.getX() + target->body.getW() / 2 - widestLine / 2 - camera->offsetX(),
+                             target->body.getY() - totalHeight - floatOverHead - camera->offsetY(),
+                             widestLine,
+                             totalHeight,
+                             window, rB, gB, bB);
     
     int currentLine = 0;
     i = TextVector.begin();
