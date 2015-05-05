@@ -162,13 +162,13 @@ void CGame::_onEvent(sf::Event* event) {
                     
                 case keyMap::BLOCK:
                 {
-                    CEntity* temp = _entityManager.addEntity(sf::IntRect{NMouse::relativeMouseX(&_camera) - 30 / 2, NMouse::relativeMouseY(&_camera) - 30 / 2, 40, 40}, sf::Color{0, 0, 255, 0});
+                    CEntity* temp = _entityManager.addEntity(sf::IntRect{NMouse::relativeMouseX(_window.getWindow(), &_camera) - 30 / 2, NMouse::relativeMouseY(_window.getWindow(), &_camera) - 30 / 2, 40, 40}, sf::Color{0, 0, 255, 0});
                     temp->addProperty(EntityProperty::STATIC);
                 }
                     break;
                     
                 case keyMap::PARTICLEEM:
-                    _entityManager.addParticleEmitter(sf::IntRect{NMouse::relativeMouseX(&_camera) - 4 / 2, NMouse::relativeMouseY(&_camera) - 4 / 2, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, 20, 2, 4, 6, 0.3);
+                    _entityManager.addParticleEmitter(sf::IntRect{NMouse::relativeMouseX(_window.getWindow(), &_camera) - 4 / 2, NMouse::relativeMouseY(_window.getWindow(), &_camera) - 4 / 2, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, 20, 2, 4, 6, 0.3);
                     break;
                     
                 case keyMap::RESET:

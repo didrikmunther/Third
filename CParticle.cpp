@@ -17,7 +17,7 @@ CParticle::CParticle(sf::IntRect rect, sf::Color color, int livingTime) :
     CEntity(rect, color), _color(color), _creationTime(_clock.getElapsedTime().asMilliseconds()), _livingTime(livingTime) {
 }
 
-void CParticle::doLogic() {
+void CParticle::_doLogic() {
     
     if(_clock.getElapsedTime().asMilliseconds() - _creationTime > _livingTime * 1000)
         toRemove = true;

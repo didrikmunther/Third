@@ -26,7 +26,7 @@ private:
     int _creationTime;
     int _livingTime;
     
-    virtual void doLogic();
+    virtual void _doLogic();
 };
 
 
