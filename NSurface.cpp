@@ -21,20 +21,22 @@ void NSurface::renderRect(sf::IntRect rect, sf::RenderWindow* window, int r, int
     window->draw(rectangle);
 }
 
-void NSurface::renderSprite(CSprite* sprite, sf::RenderWindow* window, sf::IntRect destination) {
-//    auto nsprite = *sprite->getSprite();
-//    nsprite.setPosition(destination.left, destination.top);
-//    nsprite.setScale(destination.width / sprite->getSprite()->getGlobalBounds().width, destination.height / sprite->getSprite()->getGlobalBounds().height);
-//    window->draw(nsprite);
+void NSurface::renderSprite(CSprite* sprite, sf::RenderWindow* window, sf::IntRect destination, int properties /* = 0 */) {
+    auto nsprite = *sprite->getSprite();
+    nsprite.setPosition(destination.left, destination.top);
+    nsprite.setScale(destination.width / sprite->getSprite()->getGlobalBounds().width, destination.height / sprite->getSprite()->getGlobalBounds().height);
+    if(properties & EntityProperty::FLIP) { nsprite.setOrigin({ nsprite.getLocalBounds().width, 0 }); nsprite.setScale({ -1, 1 }); }
     
-    sf::RectangleShape rectangle(sf::Vector2f(destination.width, destination.height));
-    rectangle.setTexture(sprite->getSprite()->getTexture());
-    rectangle.setPosition(destination.left, destination.top);
-    rectangle.setTextureRect(sf::IntRect(sprite->getOffset()->left,
-                                         sprite->getOffset()->top,
-                                         sprite->getOffset()->width,
-                                         sprite->getOffset()->height));
-    window->draw(rectangle);
+    window->draw(nsprite);
+    
+//    sf::RectangleShape rectangle(sf::Vector2f(destination.width, destination.height));
+//    rectangle.setTexture(sprite->getSprite()->getTexture());
+//    rectangle.setPosition(destination.left, destination.top);
+//    rectangle.setTextureRect(sf::IntRect(sprite->getOffset()->left,
+//                                         sprite->getOffset()->top,
+//                                         sprite->getOffset()->width,
+//                                         sprite->getOffset()->height));
+    //window->draw(rectangle);
     
 }
 

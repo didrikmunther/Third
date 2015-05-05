@@ -18,7 +18,7 @@ namespace NSurface {
 
     void renderRect(int x, int y, int w, int h, sf::RenderWindow* window, int r, int g, int b);
     void renderRect(sf::IntRect rect, sf::RenderWindow* window, int r, int g, int b);
-    void renderSprite(CSprite* sprite, sf::RenderWindow* window, sf::IntRect destination);
+    void renderSprite(CSprite* sprite, sf::RenderWindow* window, sf::IntRect destination, int properties = 0);
 //    void renderSprite(CSprite* sprite, sf::RenderWindow* window, sf::IntRect destination, double angle, SDL_Point* center, SDL_RendererFlip flip);
     void renderText(int x, int y, CText* textObj, sf::RenderWindow* window);
     

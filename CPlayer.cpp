@@ -100,7 +100,7 @@ void CPlayer::jump() {
     
 }
 
-void CPlayer::doLogic() {
+void CPlayer::_doLogic() {
     if(!hasWalkedX) {
         if(body.velX < 0) {
             body.velX += stoppingAccelerationX;
@@ -112,7 +112,6 @@ void CPlayer::doLogic() {
                 body.velX = 0.0f;
         }
     }
-    hasWalkedX = false;
     
     if(!hasWalkedY) {
         if(hasProperty(EntityProperty::FLYING)) {
@@ -127,10 +126,7 @@ void CPlayer::doLogic() {
             }
         }
     }
-    hasWalkedY = false;
     
-    if(body.velX > 0)
-        flip = false;
-    else if(body.velX < 0)
-        flip = true;
+    hasWalkedX = false;
+    hasWalkedY = false;
 }

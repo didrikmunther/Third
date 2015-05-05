@@ -18,7 +18,6 @@ class CPlayer : public CEntity {
     
 public:
     CPlayer(sf::IntRect rect, sf::Color color);
-    //CPlayer(SDL_Rect rect, CSprite* sprite);
     CPlayer(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager);
     void initValues();
     
@@ -38,7 +37,7 @@ public:
     
     
 private:
-    virtual void doLogic();
+    virtual void _doLogic();
     
     
 };

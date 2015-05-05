@@ -40,10 +40,17 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
         body.velY += GRAVITY;
     
     _doLogic();
+    
     if(!hasProperty(EntityProperty::STATIC))
         move(entities);
     else
         body.velY = body.velX = 0;
+    
+    if(body.velX > 0)
+        removeProperty(EntityProperty::FLIP);
+    else if(body.velX < 0)
+        addProperty(EntityProperty::FLIP);
+
 }
 
 void CEntity::onRender(sf::RenderWindow* window, CCamera* camera, int renderFlags) {
@@ -55,7 +62,7 @@ void CEntity::onRender(sf::RenderWindow* window, CCamera* camera, int renderFlag
                                      window, color.r, color.g, color.b);
         else
             //NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h});
-            NSurface::renderSprite(assetManager->getSprite(spriteKey), window, sf::IntRect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW(), body.getH()});
+            NSurface::renderSprite(assetManager->getSprite(spriteKey), window, sf::IntRect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW(), body.getH()}, properties);
     }
     
     if(renderFlags & RenderFlags::COLLISION_BORDERS) {
