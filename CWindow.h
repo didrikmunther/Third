@@ -29,10 +29,10 @@ public:
     sf::RenderWindow* getWindow();
     
 private:
-    sf::RenderWindow window;
-    sf::View view;
+    sf::RenderWindow _window;
+    sf::View _view;
     
-    int screenHeight, screenWidth;
+    int _screenHeight, _screenWidth;
     
     
     

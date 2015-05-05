@@ -36,9 +36,9 @@ public:
     int cameraSway;
     
 private:
-    CameraOffset offset;
+    CameraOffset _offset;
     
-    CEntity* target;
+    CEntity* _target;
     
     
 };

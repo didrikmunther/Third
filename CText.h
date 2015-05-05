@@ -29,11 +29,11 @@ public:
     sf::Color* getColor();
     
 private:
-    std::string text;
-    int size;
-    std::string fontKey;
-    CAssetManager* assetManager;
-    sf::Color color;
+    std::string _text;
+    int _size;
+    std::string _fontKey;
+    CAssetManager* _assetManager;
+    sf::Color _color;
     
 };
 

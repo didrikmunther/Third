@@ -28,13 +28,13 @@ public:
     CEntity(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager);
     void initValues();
     void onLoop(std::map<std::string, CEntity*>* entities);
-    virtual void doLogic();
+    void onRender(sf::RenderWindow* window, CCamera* camera, int renderFlags);
+    
     void move(std::map<std::string, CEntity*>* entities);
     bool collision(int x, int y, std::map<std::string, CEntity*>* entities);
-    void onRender(sf::RenderWindow* window, CCamera* camera, int renderFlags);
-    int properties;
     void say(std::string text, std::string fontKey, CAssetManager* assetManager, CEntityManager* entityManager, int type);
     
+    int properties;
     bool hasProperty(int property);
     void toggleProperty(int property);
     void addProperty(int property);
@@ -56,6 +56,8 @@ public:
     
 protected:
     sf::Color color;
+    
+    virtual void _doLogic();
     
 };
 

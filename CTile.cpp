@@ -9,6 +9,6 @@
 #include "CTile.h"
 
 CTile::CTile(sf::IntRect rect, int type) :
-    rect(rect), type(type) {
+    _rect(rect), _type(type) {
         
 }

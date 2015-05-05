@@ -39,7 +39,7 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
     if(!hasProperty(EntityProperty::FLYING))
         body.velY += GRAVITY;
     
-    doLogic();
+    _doLogic();
     if(!hasProperty(EntityProperty::STATIC))
         move(entities);
     else
@@ -188,7 +188,7 @@ void CEntity::move(std::map<std::string, CEntity*>* entities) {
     
 }
 
-void CEntity::doLogic() {
+void CEntity::_doLogic() {
     //if(body.rect.y > DESPAWN_HEIGHT)
         //toRemove = true;
 }

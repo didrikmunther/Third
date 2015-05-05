@@ -32,9 +32,9 @@ public:
     void onCleanup();
     
 private:
-    std::map<std::string, CSprite*> SpriteVector;
-    std::map<std::string, CSpriteSheet*> SpriteSheetVector;
-    std::map<std::string, sf::Font> FontVector;
+    std::map<std::string, CSprite*> _SpriteVector;
+    std::map<std::string, CSpriteSheet*> _SpriteSheetVector;
+    std::map<std::string, sf::Font> _FontVector;
     
 };
 

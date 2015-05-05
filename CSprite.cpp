@@ -8,16 +8,16 @@
 
 #include "CSprite.h"
 
-CSprite::CSprite(CSpriteSheet* spriteSheet, sf::IntRect rect) : rect(rect)
+CSprite::CSprite(CSpriteSheet* spriteSheet, sf::IntRect rect) : _rect(rect)
 {
-    sprite.setTexture(*spriteSheet->getTexture());
-    sprite.setTextureRect(rect);
+    _sprite.setTexture(*spriteSheet->getTexture());
+    _sprite.setTextureRect(rect);
 }
 
 sf::Sprite* CSprite::getSprite() {
-    return &sprite;
+    return &_sprite;
 }
 
 sf::IntRect* CSprite::getOffset() {
-    return &rect;
+    return &_rect;
 }

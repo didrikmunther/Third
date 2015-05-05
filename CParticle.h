@@ -20,11 +20,11 @@ public:
     CParticle(sf::IntRect rect, sf::Color color, int livingTime);
 private:
     
-    sf::Clock clock;
+    sf::Clock _clock;
     
-    sf::Color color;
-    int creationTime;
-    int livingTime;
+    sf::Color _color;
+    int _creationTime;
+    int _livingTime;
     
     virtual void doLogic();
 };

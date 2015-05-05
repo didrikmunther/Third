@@ -23,8 +23,8 @@ public:
     sf::IntRect* getOffset();
     
 private:
-    sf::IntRect rect;
-    sf::Sprite sprite;
+    sf::IntRect _rect;
+    sf::Sprite _sprite;
     
 };
 

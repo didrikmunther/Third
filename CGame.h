@@ -33,50 +33,50 @@ private:
     
     // Main functions
     
-    int onInit();
+    int _onInit();
     
-    void onEvent(sf::Event* event);
+    void _onEvent(sf::Event* event);
     
-    void handleKeyStates();
+    void _handleKeyStates();
     
-    void onLoop();
+    void _onLoop();
     
-    void onRender();
+    void _onRender();
     
-    int onCleanup();
+    int _onCleanup();
     
     // Main variables
     
-    bool running;
+    bool _running;
     
-    CCamera camera;
-    CPlayer* player;
+    CCamera _camera;
+    CPlayer* _player;
     
     // Timer variables
     
-    sf::Clock clock;
+    sf::Clock _clock;
     
-    float lastTime;
-    float timer;
-    const float ns;
-    float delta;
-    int frames;
-    int updates;
+    float _lastTime;
+    float _timer;
+    const float _ns;
+    float _delta;
+    int _frames;
+    int _updates;
     
     // Misc variables
     
-    std::stringstream title;
-    std::string intro;
+    std::stringstream _title;
+    std::string _intro;
     
     // Game variables
     
-    CEntityManager entityManager;
-    CAssetManager assetManager;
-    CWindow window;
+    CEntityManager _entityManager;
+    CAssetManager _assetManager;
+    CWindow _window;
     
     // Temp variables
     
-    CEntity* block;
+    CEntity* _block;
     
 };
 

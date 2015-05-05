@@ -11,22 +11,22 @@
 #include <iostream>
 
 CParticleEmitter::CParticleEmitter(sf::IntRect rect, sf::Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity) :
-    rect(rect), color(color), amount(amount), frequency(frequency),
-    livingTime(livingTime), particleLivingTime(particleLivingTime),
-    velocity(velocity), creationTime(clock.getElapsedTime().asMilliseconds()),
-    toRemove(false), timer(clock.getElapsedTime().asMilliseconds() - (frequency * 1000)) {
+    _rect(rect), _color(color), _amount(amount), _frequency(frequency),
+    _livingTime(livingTime), _particleLivingTime(particleLivingTime),
+    _velocity(velocity), _creationTime(_clock.getElapsedTime().asMilliseconds()),
+    toRemove(false), _timer(_clock.getElapsedTime().asMilliseconds() - (frequency * 1000)) {
 }
 
 void CParticleEmitter::onLoop(CEntityManager *entityManager) {
-    if(clock.getElapsedTime().asMilliseconds() - creationTime > livingTime * 1000) {
+    if(_clock.getElapsedTime().asMilliseconds() - _creationTime > _livingTime * 1000) {
         toRemove = true;
         return;
     }
     
-    if(clock.getElapsedTime().asMilliseconds() - timer > frequency * 1000) {
-        timer += 1000;
-        for (int i = 0; i < amount; i++) {
-            entityManager->addParticle(rect, color, particleLivingTime);
+    if(_clock.getElapsedTime().asMilliseconds() - _timer > _frequency * 1000) {
+        _timer += 1000;
+        for (int i = 0; i < _amount; i++) {
+            entityManager->addParticle(_rect, _color, _particleLivingTime);
         }
     }
         

@@ -12,11 +12,11 @@ CSpriteSheet::CSpriteSheet() {
 }
 
 int CSpriteSheet::openFile(std::string fileName) {
-    return texture.loadFromFile(fileName);
+    return _texture.loadFromFile(fileName);
 }
 
 sf::Texture* CSpriteSheet::getTexture() {
-    return &texture;
+    return &_texture;
 }
 
 void CSpriteSheet::onCleanup() {

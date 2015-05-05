@@ -16,23 +16,23 @@ CAssetManager::CAssetManager() {
 
 
 CSprite* CAssetManager::addSprite(std::string name, std::string spriteSheetKey, sf::IntRect source) {
-    if(SpriteVector.find(name) != SpriteVector.end()) {
+    if(_SpriteVector.find(name) != _SpriteVector.end()) {
         std::cout << "!: Couldn't add sprite: \"" << name << "\", because it already exists.\n";
-        return SpriteVector[name];
-    } else if(SpriteSheetVector.find(spriteSheetKey) == SpriteSheetVector.end()) {
+        return _SpriteVector[name];
+    } else if(_SpriteSheetVector.find(spriteSheetKey) == _SpriteSheetVector.end()) {
         std::cout << "!: Couldn't add sprite: \"" << name << "\", because the spritesheet \"" << spriteSheetKey << "\" didn't exist.\n";
         return nullptr;
     } else {
-        SpriteVector[name] = new CSprite(SpriteSheetVector[spriteSheetKey], source);
-        return SpriteVector[name];
+        _SpriteVector[name] = new CSprite(_SpriteSheetVector[spriteSheetKey], source);
+        return _SpriteVector[name];
     }
 }
 
 CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, std::string fileName) {
     //fileName = resourcePath() + fileName;
-    if(SpriteSheetVector.find(name) != SpriteSheetVector.end()) {
+    if(_SpriteSheetVector.find(name) != _SpriteSheetVector.end()) {
         std::cout << "!: Couldn't add spritesheet: \"" << name << "\", because it already exists.\n";
-        return SpriteSheetVector[name];
+        return _SpriteSheetVector[name];
     } else {
         CSpriteSheet* temp = new CSpriteSheet();
         if(!temp->openFile(fileName)) {
@@ -40,17 +40,17 @@ CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, std::string fileNa
             return nullptr;
         } else {
             std::cout << "Loaded asset: \"" << fileName << "\" as \"" << name << "\"\n";
-            SpriteSheetVector[name] = temp;
-            return SpriteSheetVector[name];
+            _SpriteSheetVector[name] = temp;
+            return _SpriteSheetVector[name];
         }
     }
 }
 
 sf::Font* CAssetManager::addFont(std::string name, std::string fileName) {
     //fileName = resourcePath() + fileName;
-    if(FontVector.find(name) != FontVector.end()) {
+    if(_FontVector.find(name) != _FontVector.end()) {
         std::cout << "!: Couldn't add font: \"" << name << "\", because it already exists.\n";
-        return &FontVector[name];
+        return &_FontVector[name];
     } else {
         sf::Font temp;
         if(!temp.loadFromFile(fileName)) {
@@ -58,31 +58,31 @@ sf::Font* CAssetManager::addFont(std::string name, std::string fileName) {
             return nullptr;
         } else {
             std::cout << "Loaded font: \"" << fileName << "\" as \"" << name << "\"\n";
-            FontVector[name] = temp;
-            return &FontVector[name];
+            _FontVector[name] = temp;
+            return &_FontVector[name];
         }
     }
 }
 
 CSprite* CAssetManager::getSprite(std::string key) {
-    auto it = SpriteVector.find(key);
-    if(it == SpriteVector.end())
+    auto it = _SpriteVector.find(key);
+    if(it == _SpriteVector.end())
         return nullptr;
     else
         return it->second;
 }
 
 CSpriteSheet* CAssetManager::getSpriteSheet(std::string key) {
-    auto it = SpriteSheetVector.find(key);
-    if(it == SpriteSheetVector.end())
+    auto it = _SpriteSheetVector.find(key);
+    if(it == _SpriteSheetVector.end())
         return nullptr;
     else
         return it->second;
 }
 
 sf::Font* CAssetManager::getFont(std::string key) {
-    auto it = FontVector.find(key);
-    if(it == FontVector.end())
+    auto it = _FontVector.find(key);
+    if(it == _FontVector.end())
         return nullptr;
     else
         return &it->second;
@@ -90,37 +90,37 @@ sf::Font* CAssetManager::getFont(std::string key) {
 
 void CAssetManager::onCleanup() {
     {
-        auto i = SpriteVector.begin();
-        while(i != SpriteVector.end()) {
+        auto i = _SpriteVector.begin();
+        while(i != _SpriteVector.end()) {
             delete i->second;
             i->second = nullptr;
-            SpriteVector.erase(i++->first);
+            _SpriteVector.erase(i++->first);
         }
-        SpriteVector.clear();
+        _SpriteVector.clear();
     }
     
     {
         std::cout << "Unloaded asset: ";
-        auto i = SpriteSheetVector.begin();
-        while(i != SpriteSheetVector.end()) {
+        auto i = _SpriteSheetVector.begin();
+        while(i != _SpriteSheetVector.end()) {
             i->second->onCleanup();
             delete i->second;
             i->second = nullptr;
             std::cout << " \"" << i->first << "\",";
-            SpriteSheetVector.erase(i++->first);
+            _SpriteSheetVector.erase(i++->first);
         }
-        SpriteSheetVector.clear();
+        _SpriteSheetVector.clear();
         std::cout << "\n";
     }
     
     {
         std::cout << "Unloaded font: ";
-        auto i = FontVector.begin();
-        while(i != FontVector.end()) {
+        auto i = _FontVector.begin();
+        while(i != _FontVector.end()) {
             std::cout << "\"" << i->first << "\",";
-            FontVector.erase(i++->first);
+            _FontVector.erase(i++->first);
         }
-        FontVector.clear();
+        _FontVector.clear();
         std::cout << "\n";
     }
     

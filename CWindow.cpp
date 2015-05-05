@@ -10,16 +10,16 @@
 #include <iostream>
 
 CWindow::CWindow() :
-    screenWidth(0), screenHeight(0) {
+    _screenWidth(0), _screenHeight(0) {
 }
 
 int CWindow::onInit(std::string title, int width, int height) {
     
-    window.create(sf::VideoMode(width, height), sf::String(title));
-    window.setVerticalSyncEnabled(true);
+    _window.create(sf::VideoMode(width, height), sf::String(title));
+    _window.setVerticalSyncEnabled(true);
     
-    screenWidth = width;
-    screenHeight = height;
+    _screenWidth = width;
+    _screenHeight = height;
     
     return 0;
 }
@@ -32,20 +32,20 @@ int CWindow::newWindow(std::string title, int width, int height) {
 }
 
 void CWindow::setTitle(std::string title) {
-    window.setTitle(sf::String(title));
+    _window.setTitle(sf::String(title));
 }
 
 int CWindow::getWidth() {
-    return screenWidth;
+    return _screenWidth;
 }
 
 int CWindow::getHeight() {
-    return screenHeight;
+    return _screenHeight;
 }
 
 
 sf::RenderWindow* CWindow::getWindow() {
-    return &window;
+    return &_window;
 }
 
 void CWindow::onCleanup() {

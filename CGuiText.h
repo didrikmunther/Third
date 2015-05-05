@@ -24,10 +24,10 @@ public:
     bool toRemove;
     
 protected:
-    std::string fontKey;
-    CAssetManager* assetManager;
-    std::string text;
-    int x, y;
+    std::string _fontKey;
+    CAssetManager* _assetManager;
+    std::string _text;
+    int _x, _y;
 };
 
 #endif /* defined(__Third__CGuiText__) */

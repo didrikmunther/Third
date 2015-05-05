@@ -16,46 +16,46 @@ CEntityManager::CEntityManager() : entityID(0), renderFlags(0) {
 CEntity* CEntityManager::addEntity(sf::IntRect rect, sf::Color color, std::string name /* = "" */) {
     if(name == "") {
         std::string id = "5:" + std::to_string(++entityID);
-        EntityVector[id] = new CEntity(rect, color);
-        return EntityVector[id];
+        _EntityVector[id] = new CEntity(rect, color);
+        return _EntityVector[id];
     }
     else {
-        EntityVector[name] = new CEntity(rect, color);
-        return EntityVector[name];
+        _EntityVector[name] = new CEntity(rect, color);
+        return _EntityVector[name];
     }
 }
 
 CEntity* CEntityManager::addEntity(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager, std::string name /* = "" */) {
     if(name == "") {
         std::string id = "5:" + std::to_string(++entityID);
-        EntityVector[id] = new CEntity(rect, spriteKey, assetManager);
-        return EntityVector[id];
+        _EntityVector[id] = new CEntity(rect, spriteKey, assetManager);
+        return _EntityVector[id];
     }
     else {
-        EntityVector[name] = new CEntity(rect, spriteKey, assetManager);
-        return EntityVector[name];
+        _EntityVector[name] = new CEntity(rect, spriteKey, assetManager);
+        return _EntityVector[name];
     }
 }
 
 void CEntityManager::addEntity(CEntity* entity, std::string name /* = "" */) {
     if(name == "") {
         std::string id = "5:" + std::to_string(++entityID);
-        EntityVector[id] = entity;
+        _EntityVector[id] = entity;
     }
     else
-        EntityVector[name] = entity;
+        _EntityVector[name] = entity;
 }
 
 void CEntityManager::addParticle(sf::IntRect rect, sf::Color color, int livingTime) {
-    ParticleVector.push_back(new CParticle(rect, color, livingTime));
+    _ParticleVector.push_back(new CParticle(rect, color, livingTime));
 }
 
 void CEntityManager::addParticleEmitter(sf::IntRect rect, sf::Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity) {
-    ParticleEmitterVector.push_back(new CParticleEmitter(rect, color, amount, frequency, livingTime, particleLivingTime, velocity));
+    _ParticleEmitterVector.push_back(new CParticleEmitter(rect, color, amount, frequency, livingTime, particleLivingTime, velocity));
 }
 
 void CEntityManager::addGuiText(CGuiText* guiText) {
-    GuiTextVector.push_back(guiText);
+    _GuiTextVector.push_back(guiText);
 }
 
 void CEntityManager::addRenderFlag(int renderFlag) {
@@ -69,24 +69,24 @@ void CEntityManager::toggleRenderFlag(int renderFlag) {
 }
 
 void CEntityManager::onRender(sf::RenderWindow* window, CCamera* camera) {
-    for (auto &i: ParticleVector)
+    for (auto &i: _ParticleVector)
         i->onRender(window, camera, renderFlags);
     
-    for (auto &i: EntityVector)
+    for (auto &i: _EntityVector)
         i.second->onRender(window, camera, renderFlags);
     
-    for (auto &i: GuiTextVector)
+    for (auto &i: _GuiTextVector)
         i->onRender(window, camera);
 }
 
 void CEntityManager::onLoop() {
     {
-        auto i = EntityVector.begin();
-        while(i != EntityVector.end()) {
-            (*i).second->onLoop(&EntityVector);
+        auto i = _EntityVector.begin();
+        while(i != _EntityVector.end()) {
+            (*i).second->onLoop(&_EntityVector);
             if((*i).second->toRemove) {
                 delete (*i).second;
-                EntityVector.erase(i->first);
+                _EntityVector.erase(i->first);
             }
             else
                 ++i;
@@ -94,12 +94,12 @@ void CEntityManager::onLoop() {
     }
     
     {
-        auto i = ParticleEmitterVector.begin();
-        while(i != ParticleEmitterVector.end()) {
+        auto i = _ParticleEmitterVector.begin();
+        while(i != _ParticleEmitterVector.end()) {
             (*i)->onLoop(this);
             if((*i)->toRemove) {
                 delete *i;
-                ParticleEmitterVector.erase(std::remove(ParticleEmitterVector.begin(), ParticleEmitterVector.end(), (*i)), ParticleEmitterVector.end());
+                _ParticleEmitterVector.erase(std::remove(_ParticleEmitterVector.begin(), _ParticleEmitterVector.end(), (*i)), _ParticleEmitterVector.end());
             } else
                 ++i;
                 
@@ -107,24 +107,24 @@ void CEntityManager::onLoop() {
     }
     
     {
-        auto i = ParticleVector.begin();
-        while(i != ParticleVector.end()) {
-            (*i)->onLoop(&EntityVector);
+        auto i = _ParticleVector.begin();
+        while(i != _ParticleVector.end()) {
+            (*i)->onLoop(&_EntityVector);
             if((*i)->toRemove) {
                 delete *i;
-                ParticleVector.erase(std::remove(ParticleVector.begin(), ParticleVector.end(), (*i)), ParticleVector.end());
+                _ParticleVector.erase(std::remove(_ParticleVector.begin(), _ParticleVector.end(), (*i)), _ParticleVector.end());
             } else
                 ++i;
         }
     }
     
     {
-        auto i = GuiTextVector.begin();
-        while(i != GuiTextVector.end()) {
+        auto i = _GuiTextVector.begin();
+        while(i != _GuiTextVector.end()) {
             (*i)->onLoop();
             if((*i)->toRemove) {
                 delete *i;
-                GuiTextVector.erase(std::remove(GuiTextVector.begin(), GuiTextVector.end(), (*i)), GuiTextVector.end());
+                _GuiTextVector.erase(std::remove(_GuiTextVector.begin(), _GuiTextVector.end(), (*i)), _GuiTextVector.end());
             }
             else
                 ++i;
@@ -140,37 +140,37 @@ void CEntityManager::onCleanup() {
 }
 
 void CEntityManager::entityCleanup() {
-    auto i = EntityVector.begin();
-    while(i != EntityVector.end()) {
+    auto i = _EntityVector.begin();
+    while(i != _EntityVector.end()) {
         delete i->second;
-        EntityVector.erase(i++->first);
+        _EntityVector.erase(i++->first);
     }
-    EntityVector.clear();
+    _EntityVector.clear();
 }
 
 void CEntityManager::particleEmitterCleanup() {
-    auto i = ParticleEmitterVector.begin();
-    while(i != ParticleEmitterVector.end()) {
+    auto i = _ParticleEmitterVector.begin();
+    while(i != _ParticleEmitterVector.end()) {
         delete *i;
-        i = ParticleEmitterVector.erase(i);
+        i = _ParticleEmitterVector.erase(i);
     }
-    ParticleEmitterVector.clear();
+    _ParticleEmitterVector.clear();
 }
 
 void CEntityManager::particleCleanup() {
-    auto i = ParticleVector.begin();
-    while(i != ParticleVector.end()) {
+    auto i = _ParticleVector.begin();
+    while(i != _ParticleVector.end()) {
         delete *i;
-        i = ParticleVector.erase(i);
+        i = _ParticleVector.erase(i);
     }
-    ParticleVector.clear();
+    _ParticleVector.clear();
 }
 
 void CEntityManager::guiTextCleanup() {
-    auto i = GuiTextVector.begin();
-    while(i != GuiTextVector.end()) {
+    auto i = _GuiTextVector.begin();
+    while(i != _GuiTextVector.end()) {
         delete *i;
-        i = GuiTextVector.erase(i);
+        i = _GuiTextVector.erase(i);
     }
-    GuiTextVector.clear();
+    _GuiTextVector.clear();
 }

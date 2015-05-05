@@ -10,31 +10,31 @@
 #include "NSurface.h"
 
 CText::CText(std::string text, int size, std::string fontKey, CAssetManager* assetManager, sf::Color color) :
-    text(text), size(size), fontKey(fontKey), assetManager(assetManager), color(color) {
+    _text(text), _size(size), _fontKey(fontKey), _assetManager(assetManager), _color(color) {
 }
 
 void CText::onRender(int x, int y, sf::RenderWindow* window, CCamera* camera) {
-    if(assetManager->getFont(fontKey) != nullptr)
+    if(_assetManager->getFont(_fontKey) != nullptr)
         NSurface::renderText(x - camera->offsetX(), y - camera->offsetY(), this, window);
 }
 
 void CText::onRender(int x, int y, sf::RenderWindow* window) {
-    if(assetManager->getFont(fontKey) != nullptr)
+    if(_assetManager->getFont(_fontKey) != nullptr)
         NSurface::renderText(x, y, this, window);
 }
 
 sf::Font* CText::getFont() {
-    return assetManager->getFont(fontKey);
+    return _assetManager->getFont(_fontKey);
 }
 
 int CText::getSize() {
-    return size;
+    return _size;
 }
 
 std::string* CText::getText() {
-    return &text;
+    return &_text;
 }
 
 sf::Color* CText::getColor() {
-    return &color;
+    return &_color;
 }

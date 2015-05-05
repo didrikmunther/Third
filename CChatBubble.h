@@ -26,18 +26,18 @@ public:
     
 private:
     
-    sf::Clock clock;
+    sf::Clock _clock;
     
-    CEntity* target;
-    int r, g, b;            // Foreground colors
-    int rB, gB, bB;         // Background colors
-    int type;
-    int livingTime;         // Seconds
-    int creationTime;
+    CEntity* _target;
+    int _r, _g, _b;            // Foreground colors
+    int _rB, _gB, _bB;         // Background colors
+    int _type;
+    int _livingTime;         // Seconds
+    int _creationTime;
     
-    std::vector<CText> TextVector;
-    int widestLine;
-    int totalHeight;
+    std::vector<CText> _TextVector;
+    int _widestLine;
+    int _totalHeight;
     
 };
 

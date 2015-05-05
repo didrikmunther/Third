@@ -25,18 +25,18 @@ public:
     
 private:
     
-    sf::Clock clock;
+    sf::Clock _clock;
     
-    sf::IntRect rect;
-    sf::Color color;
-    int amount;
-    int frequency;
-    int creationTime;
-    int livingTime;
-    int particleLivingTime;
-    float velocity;
+    sf::IntRect _rect;
+    sf::Color _color;
+    int _amount;
+    int _frequency;
+    int _creationTime;
+    int _livingTime;
+    int _particleLivingTime;
+    float _velocity;
     
-    int timer;
+    int _timer;
     
 };
 

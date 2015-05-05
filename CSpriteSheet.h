@@ -24,7 +24,7 @@ public:
     
 private:
     
-    sf::Texture texture;
+    sf::Texture _texture;
     
 };
 

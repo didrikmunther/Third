@@ -53,10 +53,10 @@ public:
     void toggleRenderFlag(int renderFlag);
     
 private:
-    std::map<std::string, CEntity*> EntityVector;
-    std::vector<CParticle*> ParticleVector;
-    std::vector<CParticleEmitter*> ParticleEmitterVector;
-    std::vector<CGuiText*> GuiTextVector;
+    std::map<std::string, CEntity*> _EntityVector;
+    std::vector<CParticle*> _ParticleVector;
+    std::vector<CParticleEmitter*> _ParticleEmitterVector;
+    std::vector<CGuiText*> _GuiTextVector;
     
 };
 

@@ -16,10 +16,10 @@
 #include "CText.h"
 
 CGame::CGame() :
-intro("Physics"),
+_intro("Physics"),
 //WIDTH(640), HEIGHT(480), BPP(32), camera(WIDTH, HEIGHT),
-lastTime(clock.getElapsedTime().asMilliseconds()), timer(clock.getElapsedTime().asMilliseconds()),
-ns(1000.0f / (float)GAMEINTERVAL), delta(0), frames(0), updates(0) {
+_lastTime(_clock.getElapsedTime().asMilliseconds()), _timer(_clock.getElapsedTime().asMilliseconds()),
+_ns(1000.0f / (float)GAMEINTERVAL), _delta(0), _frames(0), _updates(0) {
 }
 
 CGame::~CGame() {
@@ -29,52 +29,52 @@ int CGame::onExecute() {
     
     std::cout << "Initializing game...\n";
     
-    switch(onInit()){
+    switch(_onInit()){
         case -1:
             std::cout << "Initializing failed!\n";
-            running = false;
+            _running = false;
         case 0:
             std::cout << "Initializing succesful!\n";
     }
     
     std::cout << "Starting game...\n";
     
-    while(window.getWindow()->isOpen()) {
+    while(_window.getWindow()->isOpen()) {
         sf::Event event;
-        while(window.getWindow()->pollEvent(event)){
-            onEvent(&event);
+        while(_window.getWindow()->pollEvent(event)){
+            _onEvent(&event);
         }
         
         //std::cout << "CameraX: " << camera.offsetX() << ", CameraY: " << camera.offsetY() << " \n";
         
-        float now = clock.getElapsedTime().asMilliseconds();
-        delta += (now - lastTime) / ns;
-        lastTime = now;
+        float now = _clock.getElapsedTime().asMilliseconds();
+        _delta += (now - _lastTime) / _ns;
+        _lastTime = now;
         
-        while(delta >= 1) {
+        while(_delta >= 1) {
             //std::cout << (int)floor(delta) << " | ";
-            if(delta > 20) {       // To make sure it doesn't freeze
-                entityManager.particleCleanup();
+            if(_delta > 20) {       // To make sure it doesn't freeze
+                _entityManager.particleCleanup();
             }
             
-            handleKeyStates();
-            onLoop();
+            _handleKeyStates();
+            _onLoop();
             
-            updates++;
-            delta--;
+            _updates++;
+            _delta--;
         }
         
-        onRender();
+        _onRender();
         
-        frames++;
+        _frames++;
         
-        if(clock.getElapsedTime().asMilliseconds() - timer > 1000) {
-            timer += 1000;
-            title.str("");
-            title << intro << " | " << updates << " ups, " << frames << " fps";
-            window.setTitle(title.str());
-            updates = 0;
-            frames = 0;
+        if(_clock.getElapsedTime().asMilliseconds() - _timer > 1000) {
+            _timer += 1000;
+            _title.str("");
+            _title << _intro << " | " << _updates << " ups, " << _frames << " fps";
+            _window.setTitle(_title.str());
+            _updates = 0;
+            _frames = 0;
         }
         
         //SDL_Delay(7);
@@ -83,62 +83,62 @@ int CGame::onExecute() {
     
     std::cout << "Ending game...\n";
     
-    return onCleanup();
+    return _onCleanup();
     
 }
 
-int CGame::onInit() {
+int CGame::_onInit() {
     
     srand((sf::Uint16)time(nullptr));
     
-    if(window.onInit(intro, SCREEN_WIDTH, SCREEN_HEIGHT))
+    if(_window.onInit(_intro, SCREEN_WIDTH, SCREEN_HEIGHT))
         return -1;
-    camera.onInit(&window);
+    _camera.onInit(&_window);
     
-    assetManager.addSpriteSheet("MAIN", "resources/gfx.png");
-    assetManager.addSpriteSheet("MAIN2", "resources/gfx2.png");
-    assetManager.addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
-    assetManager.addSprite("bush", "MAIN", sf::IntRect{160, 91, 30, 28});
-    assetManager.addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});
-    assetManager.addSpriteSheet("BG", "resources/bg.png");
-    assetManager.addSprite("background", "BG", sf::IntRect{0,0,128,64});
-    assetManager.addFont("TESTFONT", "resources/font.ttf");
+    _assetManager.addSpriteSheet("MAIN", "resources/gfx.png");
+    _assetManager.addSpriteSheet("MAIN2", "resources/gfx2.png");
+    _assetManager.addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
+    _assetManager.addSprite("bush", "MAIN", sf::IntRect{160, 91, 30, 28});
+    _assetManager.addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});
+    _assetManager.addSpriteSheet("BG", "resources/bg.png");
+    _assetManager.addSprite("background", "BG", sf::IntRect{0,0,128,64});
+    _assetManager.addFont("TESTFONT", "resources/font.ttf");
     
-    player = new CPlayer(sf::IntRect{30, 30, 60, 164}, "player", &assetManager);
-    entityManager.addEntity(player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
-    camera.setTarget(player);
+    _player = new CPlayer(sf::IntRect{30, 30, 60, 164}, "player", &_assetManager);
+    _entityManager.addEntity(_player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
+    _camera.setTarget(_player);
     
-    entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
-    entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 500, 30, 500}, sf::Color{255, 0, 0, 0});
-    auto tree = entityManager.addEntity(sf::IntRect{276, 229, 23 * 4, 59 * 4}, "tree", &assetManager, "l:tree");
+    _entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
+    _entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 500, 30, 500}, sf::Color{255, 0, 0, 0});
+    auto tree = _entityManager.addEntity(sf::IntRect{276, 229, 23 * 4, 59 * 4}, "tree", &_assetManager, "l:tree");
     tree->removeProperty(EntityProperty::COLLIDABLE);
     tree->addProperty(EntityProperty::STATIC);
-    block = entityManager.addEntity(sf::IntRect{200, 357, 60 * 2, 54 * 2}, "bush", &assetManager, "n:bush");
-    block->removeProperty(EntityProperty::COLLIDABLE);
-    block->addProperty(EntityProperty::STATIC);
+    _block = _entityManager.addEntity(sf::IntRect{200, 357, 60 * 2, 54 * 2}, "bush", &_assetManager, "n:bush");
+    _block->removeProperty(EntityProperty::COLLIDABLE);
+    _block->addProperty(EntityProperty::STATIC);
 
     return 0;
 }
 
-void CGame::handleKeyStates() {
+void CGame::_handleKeyStates() {
     
     if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::RIGHT)) {
-        player->goRight();
+        _player->goRight();
     }
     if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::LEFT)) {
-        player->goLeft();
+        _player->goLeft();
     }
     
     if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::UP)) {
-        player->goUp();
+        _player->goUp();
     }
     
     if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::DOWN)) {
-        player->goDown();
+        _player->goDown();
     }
 }
 
-void CGame::onEvent(sf::Event* event) {
+void CGame::_onEvent(sf::Event* event) {
     
     
     
@@ -146,62 +146,62 @@ void CGame::onEvent(sf::Event* event) {
     
     switch(event->type) {
         case sf::Event::Closed:
-            window.getWindow()->close();
+            _window.getWindow()->close();
             break;
             
         case sf::Event::KeyPressed:
             switch(event->key.code) {
                     
                 case keyMap::EXIT:
-                    window.getWindow()->close();
+                    _window.getWindow()->close();
                     break;
                     
                 case keyMap::SNEAK:
-                    player->isSneaking = true;
+                    _player->isSneaking = true;
                     break;
                     
                 case keyMap::BLOCK:
                 {
-                    CEntity* temp = entityManager.addEntity(sf::IntRect{NMouse::relativeMouseX(&camera) - 30 / 2, NMouse::relativeMouseY(&camera) - 30 / 2, 40, 40}, sf::Color{0, 0, 255, 0});
+                    CEntity* temp = _entityManager.addEntity(sf::IntRect{NMouse::relativeMouseX(&_camera) - 30 / 2, NMouse::relativeMouseY(&_camera) - 30 / 2, 40, 40}, sf::Color{0, 0, 255, 0});
                     temp->addProperty(EntityProperty::STATIC);
                 }
                     break;
                     
                 case keyMap::PARTICLEEM:
-                    entityManager.addParticleEmitter(sf::IntRect{NMouse::relativeMouseX(&camera) - 4 / 2, NMouse::relativeMouseY(&camera) - 4 / 2, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, 20, 2, 4, 6, 0.3);
+                    _entityManager.addParticleEmitter(sf::IntRect{NMouse::relativeMouseX(&_camera) - 4 / 2, NMouse::relativeMouseY(&_camera) - 4 / 2, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, 20, 2, 4, 6, 0.3);
                     break;
                     
                 case keyMap::RESET:
-                    *player = CPlayer(sf::IntRect{30, 30, 30, 30}, sf::Color{255, 255, 0, 255});
+                    *_player = CPlayer(sf::IntRect{30, 30, 30, 30}, sf::Color{255, 255, 0, 255});
                     break;
                     
                 case keyMap::TOGGLE_NOCLIP:
-                    player->toggleProperty(EntityProperty::COLLIDABLE);
-                    player->toggleProperty(EntityProperty::FLYING);
+                    _player->toggleProperty(EntityProperty::COLLIDABLE);
+                    _player->toggleProperty(EntityProperty::FLYING);
                     break;
                 case keyMap::LOAD_ASSETS:
-                    assetManager.addSpriteSheet("MAIN", "resources/gfx.png");
-                    assetManager.addSpriteSheet("MAIN2", "resources/gfx2.png");
-                    assetManager.addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
-                    assetManager.addSprite("bush", "MAIN", sf::IntRect{160, 91, 30, 28});
-                    assetManager.addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});
-                    assetManager.addSpriteSheet("BG", "resources/bg.png");
-                    assetManager.addSprite("background", "BG", sf::IntRect{0,0,128,64});
-                    assetManager.addFont("TESTFONT", "resources/font.ttf");
+                    _assetManager.addSpriteSheet("MAIN", "resources/gfx.png");
+                    _assetManager.addSpriteSheet("MAIN2", "resources/gfx2.png");
+                    _assetManager.addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
+                    _assetManager.addSprite("bush", "MAIN", sf::IntRect{160, 91, 30, 28});
+                    _assetManager.addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});
+                    _assetManager.addSpriteSheet("BG", "resources/bg.png");
+                    _assetManager.addSprite("background", "BG", sf::IntRect{0,0,128,64});
+                    _assetManager.addFont("TESTFONT", "resources/font.ttf");
                     break;
                 case keyMap::TOGGLE_HIDDEN:
-                    player->toggleProperty(EntityProperty::HIDDEN);
+                    _player->toggleProperty(EntityProperty::HIDDEN);
                     break;
                 case keyMap::TOGGLE_COLLISION_BOUNDS:
                     //player->toggleProperty(EntityProperty::FLYING);
-                    entityManager.toggleRenderFlag(RenderFlags::COLLISION_BORDERS);
+                    _entityManager.toggleRenderFlag(RenderFlags::COLLISION_BORDERS);
                     break;
                 case keyMap::NEW_WINDOW:
                 {
                     //player->toggleProperty(EntityProperty::STATIC);
-                    window.newWindow(intro, 600, 400);
-                    camera.onInit(&window);
-                    assetManager.onCleanup();
+                    _window.newWindow(_intro, 600, 400);
+                    _camera.onInit(&_window);
+                    _assetManager.onCleanup();
                 }
                     break;
                     
@@ -217,31 +217,31 @@ void CGame::onEvent(sf::Event* event) {
                     for(int i = 0; i < 100; i++) {
                         text += alphanum[rand() % (sizeof(alphanum) - 1)];
                     }
-                    player->say(text, "TESTFONT", &assetManager, &entityManager, ChatBubbleType::SAY);
+                    _player->say(text, "TESTFONT", &_assetManager, &_entityManager, ChatBubbleType::SAY);
                     
                     text = "";
                     for(int i = 0; i < 50; i++) {
                         text += alphanum[rand() % (sizeof(alphanum) - 1)];
                     }
-                    block->say(text, "TESTFONT", &assetManager, &entityManager, ChatBubbleType::YELL);
+                    _block->say(text, "TESTFONT", &_assetManager, &_entityManager, ChatBubbleType::YELL);
                 }
                     break;
                     
                 case keyMap::TARGET_PLAYER:
-                    camera.setTarget(player);
+                    _camera.setTarget(_player);
                     break;
                 case keyMap::TARGET_BLOCK:
-                    camera.setTarget(block);
+                    _camera.setTarget(_block);
                     break;
                     
                 case keyMap::CHANGE_CAMERA_SWAY_UP:
-                        camera.cameraSway += 10;
+                        _camera.cameraSway += 10;
                     break;
                 case keyMap::CHANGE_CAMERA_SWAY_DOWN:
-                    if(camera.cameraSway <= 10)
-                        camera.cameraSway = 1;
+                    if(_camera.cameraSway <= 10)
+                        _camera.cameraSway = 1;
                     else
-                        camera.cameraSway -= 10;
+                        _camera.cameraSway -= 10;
                     break;
                     
                 default:
@@ -253,7 +253,7 @@ void CGame::onEvent(sf::Event* event) {
         case sf::Event::KeyReleased:
             switch(event->key.code) {
                 case keyMap::SNEAK:
-                    player->isSneaking = false;
+                    _player->isSneaking = false;
                     break;
                     
                 default:
@@ -266,12 +266,12 @@ void CGame::onEvent(sf::Event* event) {
     
 }
 
-void CGame::onLoop() {
-    entityManager.onLoop();
-    camera.onLoop();
+void CGame::_onLoop() {
+    _entityManager.onLoop();
+    _camera.onLoop();
 }
 
-void CGame::onRender() {
+void CGame::_onRender() {
     
     sf::View view1(sf::FloatRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
     view1.setViewport(sf::FloatRect(0, 0, 1, 1));
@@ -279,22 +279,22 @@ void CGame::onRender() {
     view2.setViewport(sf::FloatRect(0.75f, 0, 0.25f, 0.25f));
     view2.zoom(2.0f);
     
-    window.getWindow()->setView(view1);
-    window.getWindow()->clear();
-    NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, window.getWindow(), 255, 255, 255);
-    entityManager.onRender(window.getWindow(), &camera);
+    _window.getWindow()->setView(view1);
+    _window.getWindow()->clear();
+    NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, _window.getWindow(), 255, 255, 255);
+    _entityManager.onRender(_window.getWindow(), &_camera);
     
-    window.getWindow()->setView(view2);
-    entityManager.onRender(window.getWindow(), &camera);
+    _window.getWindow()->setView(view2);
+    _entityManager.onRender(_window.getWindow(), &_camera);
     
-    window.getWindow()->display();
+    _window.getWindow()->display();
     
 }
 
-int CGame::onCleanup() {
-    entityManager.onCleanup();
-    assetManager.onCleanup();
-    window.onCleanup();
+int CGame::_onCleanup() {
+    _entityManager.onCleanup();
+    _assetManager.onCleanup();
+    _window.onCleanup();
     
     return 0;
 }

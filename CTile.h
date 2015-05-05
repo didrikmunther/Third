@@ -20,8 +20,8 @@ public:
     void onRender(sf::RenderWindow* window);
     
 private:
-    int type;
-    sf::IntRect rect;
+    int _type;
+    sf::IntRect _rect;
     
 };
 
