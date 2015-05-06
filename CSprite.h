@@ -12,15 +12,16 @@
 
 #include <stdio.h>
 #include "CSpriteSheet.h"
+#include "CRenderable.h"
 #include <SFML/Graphics.hpp>
 
-class CSprite {
+class CSprite : public CRenderable {
     
 public:
-    CSprite(CSpriteSheet* spriteSheet, sf::IntRect rect);
+    CSprite(CSpriteSheet* spriteSheet, sf::IntRect rect, std::string shaderKey = "");
     
-    sf::Sprite* getSprite();
     sf::IntRect* getOffset();
+    sf::Sprite* getSprite();
     
 private:
     sf::IntRect _rect;

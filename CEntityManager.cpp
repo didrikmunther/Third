@@ -77,7 +77,7 @@ void CEntityManager::toggleRenderFlag(int renderFlag) {
     renderFlags ^= renderFlag;
 }
 
-void CEntityManager::onRender(sf::RenderWindow* window, CCamera* camera) {
+void CEntityManager::onRender(CWindow* window, CCamera* camera) {
     for (auto &i: _ParticleVector)
         i->onRender(window, camera, renderFlags);
     

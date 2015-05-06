@@ -17,7 +17,7 @@ class CTile {
 public:
     CTile(sf::IntRect rect, int type);
     
-    void onRender(sf::RenderWindow* window);
+    void onRender(sf::RenderTarget& renderTarget);
     
 private:
     int _type;

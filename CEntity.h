@@ -16,11 +16,13 @@
 #include "CBody.h"
 #include "CSprite.h"
 #include "CAssetManager.h"
+#include "CRenderable.h"
+#include "CWindow.h"
 
 class CCamera;
 class CEntityManager;
 
-class CEntity {
+class CEntity : public CRenderable {
     
 public:
     CEntity(sf::IntRect rect, sf::Color color);
@@ -28,7 +30,7 @@ public:
     CEntity(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager);
     void initValues();
     void onLoop(std::map<std::string, CEntity*>* entities);
-    void onRender(sf::RenderWindow* window, CCamera* camera, int renderFlags);
+    void onRender(CWindow* window, CCamera* camera, int renderFlags);
     
     void move(std::map<std::string, CEntity*>* entities);
     bool collision(int x, int y, std::map<std::string, CEntity*>* entities);
@@ -46,9 +48,8 @@ public:
     CBody body;
     bool toRemove;
     
-    //int setSprite(CSprite* sprite);
     int setSprite(std::string spriteKey);
-    //CSprite* sprite;
+    CSprite* getSprite();
     std::string spriteKey;
     CAssetManager* assetManager;
     

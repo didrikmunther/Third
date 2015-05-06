@@ -13,13 +13,14 @@
 #include "CCamera.h"
 #include <SFML/Graphics.hpp>
 #include <string>
+#include "CWindow.h"
 
 class CGuiText {
 public:
     CGuiText(int x, int y, std::string text, std::string fontKey, CAssetManager* assetManager);
     
     virtual void onLoop();                                          // Pure virtual
-    virtual void onRender(sf::RenderWindow* window, CCamera* camera); //
+    virtual void onRender(CWindow* window, CCamera* camera); //
     
     bool toRemove;
     

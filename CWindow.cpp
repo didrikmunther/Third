@@ -43,9 +43,16 @@ int CWindow::getHeight() {
     return _screenHeight;
 }
 
-
 sf::RenderWindow* CWindow::getWindow() {
     return &_window;
+}
+
+sf::RenderTexture* CWindow::getRenderTexture() {
+    return &_renderTexture;
+}
+
+sf::Sprite* CWindow::getSprite() {
+    return &_sprite;
 }
 
 void CWindow::onCleanup() {

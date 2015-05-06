@@ -37,7 +37,7 @@ public:
     void addParticleEmitter(sf::IntRect rect, sf::Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity);
     void addGuiText(CGuiText* guiText);
     
-    void onRender(sf::RenderWindow* window, CCamera* camera);
+    void onRender(CWindow* window, CCamera* camera);
     void onLoop();
     void onCleanup();
     

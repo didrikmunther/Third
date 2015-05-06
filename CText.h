@@ -14,14 +14,15 @@
 #include "CCamera.h"
 #include <string>
 #include "CAssetManager.h"
+#include "CRenderable.h"
 
-class CText {
+class CText : public CRenderable {
     
 public:
     CText(std::string text, int size, std::string fontKey, CAssetManager* assetManager, sf::Color color);
     
-    void onRender(int x, int y, sf::RenderWindow* window, CCamera* camera);
-    void onRender(int x, int y, sf::RenderWindow* window);
+    void onRender(int x, int y, sf::RenderTarget& renderTarget, CCamera* camera);
+    void onRender(int x, int y, sf::RenderTarget& renderTarget);
     
     sf::Font* getFont();
     int getSize();

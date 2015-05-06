@@ -22,7 +22,7 @@ public:
     CChatBubble(std::string text, CEntity* target, std::string fontKey, CAssetManager* assetManager, int type);
     
     void onLoop();
-    void onRender(sf::RenderWindow* window, CCamera* camera);
+    void onRender(CWindow* window, CCamera* camera);
     
 private:
     

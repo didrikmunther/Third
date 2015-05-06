@@ -13,14 +13,14 @@ CText::CText(std::string text, int size, std::string fontKey, CAssetManager* ass
     _text(text), _size(size), _fontKey(fontKey), _assetManager(assetManager), _color(color) {
 }
 
-void CText::onRender(int x, int y, sf::RenderWindow* window, CCamera* camera) {
+void CText::onRender(int x, int y, sf::RenderTarget& renderTarget, CCamera* camera) {
     if(_assetManager->getFont(_fontKey) != nullptr)
-        NSurface::renderText(x - camera->offsetX(), y - camera->offsetY(), this, window);
+        NSurface::renderText(x - camera->offsetX(), y - camera->offsetY(), this, renderTarget);
 }
 
-void CText::onRender(int x, int y, sf::RenderWindow* window) {
+void CText::onRender(int x, int y, sf::RenderTarget& renderTarget) {
     if(_assetManager->getFont(_fontKey) != nullptr)
-        NSurface::renderText(x, y, this, window);
+        NSurface::renderText(x, y, this, renderTarget);
 }
 
 sf::Font* CText::getFont() {

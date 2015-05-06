@@ -95,6 +95,9 @@ int CGame::_onInit() {
         return -1;
     instance.camera.onInit(&instance.window);
     
+    instance.window.getRenderTexture()->create(SCREEN_WIDTH, SCREEN_HEIGHT);                // Draw unto a texture for applying shaders later
+    instance.window.getSprite()->setTexture(instance.window.getRenderTexture()->getTexture());
+    
     instance.assetManager.addSpriteSheet("MAIN", "resources/gfx.png");
     instance.assetManager.addSpriteSheet("MAIN2", "resources/gfx2.png");
     instance.assetManager.addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
@@ -103,6 +106,7 @@ int CGame::_onInit() {
     instance.assetManager.addSpriteSheet("BG", "resources/bg.png");
     instance.assetManager.addSprite("background", "BG", sf::IntRect{0,0,128,64});
     instance.assetManager.addFont("TESTFONT", "resources/font.ttf");
+    instance.assetManager.addShader("SHADER1", "resources/light.frag", sf::Shader::Type::Fragment);
     
     instance.player = new CPlayer(sf::IntRect{30, 30, 60, 164}, "player", &instance.assetManager);
     instance.entityManager.addEntity(instance.player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
@@ -271,22 +275,39 @@ void CGame::_onLoop() {
     instance.camera.onLoop();
 }
 
+//void CGame::_onRender() {
+//    
+//    sf::View view1(sf::FloatRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
+//    view1.setViewport(sf::FloatRect(0, 0, 1, 1));
+//    sf::View view2(sf::FloatRect(0.5f, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
+//    view2.setViewport(sf::FloatRect(0.75f, 0, 0.25f, 0.25f));
+//    view2.zoom(2.0f);
+//    
+//    instance.window.getRenderTexture()->clear();
+//    
+//    instance.window.getWindow()->setView(view1);
+//    instance.window.getWindow()->clear();
+//    NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, instance.window.getRenderTexture(), 255, 255, 255);
+//    instance.entityManager.onRender(instance.window.getRenderTexture(), &instance.camera);
+//    
+////    instance.window.getWindow()->setView(view2);
+////    instance.entityManager.onRender(instance.window.getRenderTexture(), &instance.camera);
+//    
+//    instance.window.getRenderTexture()->display();
+//    instance.window.getWindow()->display();
+//    
+//}
+
 void CGame::_onRender() {
     
-    sf::View view1(sf::FloatRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
-    view1.setViewport(sf::FloatRect(0, 0, 1, 1));
-    sf::View view2(sf::FloatRect(0.5f, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
-    view2.setViewport(sf::FloatRect(0.75f, 0, 0.25f, 0.25f));
-    view2.zoom(2.0f);
-    
-    instance.window.getWindow()->setView(view1);
     instance.window.getWindow()->clear();
-    NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, instance.window.getWindow(), 255, 255, 255);
-    instance.entityManager.onRender(instance.window.getWindow(), &instance.camera);
+    instance.window.getRenderTexture()->clear();
     
-    instance.window.getWindow()->setView(view2);
-    instance.entityManager.onRender(instance.window.getWindow(), &instance.camera);
+    NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, *instance.window.getRenderTexture(), 255, 255, 255);
+    instance.entityManager.onRender(&instance.window, &instance.camera);
     
+    instance.window.getRenderTexture()->display();
+    instance.window.getWindow()->draw(*instance.window.getSprite());
     instance.window.getWindow()->display();
     
 }

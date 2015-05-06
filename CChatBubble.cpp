@@ -63,7 +63,7 @@ void CChatBubble::onLoop() {
         toRemove = true;
 }
 
-void CChatBubble::onRender(sf::RenderWindow* window, CCamera* camera) {
+void CChatBubble::onRender(CWindow* window, CCamera* camera) {
     
     if(_TextVector.size() <= 0)
         return;
@@ -98,7 +98,7 @@ void CChatBubble::onRender(sf::RenderWindow* window, CCamera* camera) {
                              _target->body.getY() - totalHeight - floatOverHead - camera->offsetY(),
                              widestLine,
                              totalHeight,
-                             window, _rB, _gB, _bB);
+                             *window->getRenderTexture(), _rB, _gB, _bB);
     
     int currentLine = 0;
     i = _TextVector.begin();
@@ -115,7 +115,7 @@ void CChatBubble::onRender(sf::RenderWindow* window, CCamera* camera) {
         }
         i++->onRender(posX - camera->offsetX(),
                       posY - camera->offsetY(),
-                      window);
+                      *window->getRenderTexture());
         currentLine++;
     }
     

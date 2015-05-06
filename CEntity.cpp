@@ -53,16 +53,16 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
 
 }
 
-void CEntity::onRender(sf::RenderWindow* window, CCamera* camera, int renderFlags) {
+void CEntity::onRender(CWindow* window, CCamera* camera, int renderFlags) {
     if(camera->collision(this) && !(hasProperty(EntityProperty::HIDDEN))) {
         //std::cout << sprite << std::endl;
         if(assetManager == nullptr || assetManager->getSprite(spriteKey) == nullptr)
                 NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(),
                                      body.getW(), body.getH(),
-                                     window, color.r, color.g, color.b);
+                                     *window->getRenderTexture(), color.r, color.g, color.b);
         else
             //NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h});
-            NSurface::renderSprite(assetManager->getSprite(spriteKey), window, sf::IntRect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW(), body.getH()}, properties);
+            NSurface::renderEntity(this, window, sf::IntRect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW(), body.getH()}, properties);
     }
     
     if(renderFlags & RenderFlags::COLLISION_BORDERS) {
@@ -70,10 +70,10 @@ void CEntity::onRender(sf::RenderWindow* window, CCamera* camera, int renderFlag
         if(hasProperty(EntityProperty::COLLIDABLE)) {r = 255; g = 0; b = 0;  }
         else                                        {r = 0; g = 255; b = 255;}
         
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), 1, body.getH() - 1, window, r, g, b);    // Left line
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW() - 1, 1, window, r, g, b);      // Top line
-        NSurface::renderRect(body.getX() + body.getW() - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.getH(), window, r, g, b);  // Right line
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, window, r, g, b);  // Bottom line
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), 1, body.getH() - 1, *window->getRenderTexture(), r, g, b);    // Left line
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW() - 1, 1, *window->getRenderTexture(), r, g, b);      // Top line
+        NSurface::renderRect(body.getX() + body.getW() - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.getH(), *window->getRenderTexture(), r, g, b);  // Right line
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, *window->getRenderTexture(), r, g, b);  // Bottom line
     }
 }
 
@@ -104,6 +104,13 @@ int CEntity::setSprite(std::string spriteKey) {
     else
         this->spriteKey = spriteKey;
     return 0;
+}
+
+CSprite* CEntity::getSprite() {
+    if(assetManager == nullptr)
+        return nullptr;
+    else
+        return assetManager->getSprite(spriteKey);
 }
 
 bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities) {

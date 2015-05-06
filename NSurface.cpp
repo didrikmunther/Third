@@ -10,50 +10,49 @@
 #include "Define.h"
 #include <iostream>
 
-void NSurface::renderRect(int x, int y, int w, int h, sf::RenderWindow* window, int r, int g, int b) {
-    renderRect(sf::IntRect{x,y,w,h}, window, r, g, b);
+void NSurface::renderRect(int x, int y, int w, int h, sf::RenderTarget& target, int r, int g, int b) {
+    renderRect(sf::IntRect{x,y,w,h}, target, r, g, b);
 }
 
-void NSurface::renderRect(sf::IntRect rect, sf::RenderWindow* window, int r, int g, int b) {
+void NSurface::renderRect(sf::IntRect rect, sf::RenderTarget& target, int r, int g, int b) {
     sf::RectangleShape rectangle(sf::Vector2f(rect.width, rect.height));
     rectangle.setPosition(rect.left, rect.top);
     rectangle.setFillColor(sf::Color(r, g, b));
     
-    window->draw(rectangle);
+    target.draw(rectangle);
 }
 
-void NSurface::renderSprite(CSprite* sprite, sf::RenderWindow* window, sf::IntRect destination, int properties /* = 0 */) {
-    auto nsprite = *sprite->getSprite();
+void NSurface::renderEntity(CEntity* entity, CWindow* window, sf::IntRect destination, int properties /* = 0 */) {
+    if(entity->getSprite() == nullptr) return;
+    auto nsprite = *entity->getSprite()->getSprite();
     nsprite.setPosition(destination.left, destination.top);
-    nsprite.setScale(destination.width / sprite->getSprite()->getGlobalBounds().width, destination.height / sprite->getSprite()->getGlobalBounds().height);
+    nsprite.setScale(destination.width / entity->getSprite()->getSprite()->getGlobalBounds().width, destination.height / entity->getSprite()->getSprite()->getGlobalBounds().height);
     if(properties & EntityProperty::FLIP) { nsprite.setOrigin({ nsprite.getLocalBounds().width, 0 }); nsprite.setScale({ -1, 1 }); }
     
-    window->draw(nsprite);
+    window->getRenderTexture()->draw(nsprite);
     
-//    sf::RectangleShape rectangle(sf::Vector2f(destination.width, destination.height));
-//    rectangle.setTexture(sprite->getSprite()->getTexture());
-//    rectangle.setPosition(destination.left, destination.top);
-//    rectangle.setTextureRect(sf::IntRect(sprite->getOffset()->left,
-//                                         sprite->getOffset()->top,
-//                                         sprite->getOffset()->width,
-//                                         sprite->getOffset()->height));
-    //window->draw(rectangle);
+    sf::Shader* shader = entity->assetManager->getShader(entity->getShaderKey());
+    sf::RenderStates states;
+    if(shader != nullptr) {
+        shader->setParameter("frag_LightOrigin", sf::Vector2f(destination.left + destination.width / 2, destination.top + destination.height / 2));
+        shader->setParameter("frag_LightColor", sf::Vector3f(255, 255, 0));
+        shader->setParameter("frag_LightAttenuation", 5);
+        shader->setParameter("frag_ScreenResolution", sf::Vector2f((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT));
+        states.shader = shader;
+        states.blendMode = sf::BlendAdd;
+    }
+    
+    
+    window->getRenderTexture()->draw(*window->getSprite(), states);
     
 }
 
-void NSurface::renderText(int x, int y, CText* textObj, sf::RenderWindow* window) {
+void NSurface::renderText(int x, int y, CText* textObj, sf::RenderTarget& target) {
     sf::Text text(textObj->getText()->c_str(), *textObj->getFont(), textObj->getSize());
     text.setColor(*textObj->getColor());
     text.setPosition(x, y);
     
-    window->draw(text);
-    
-//    sf::Shader shader;
-//    shader.setParameter("frag_LightOrigin", sf::Vector2f(x, y));
-//    shader.setParameter("frag_LightColor", sf::Vector3f(255, 0, 0));
-//    shader.setParameter("frag_LightAttenuation", 10);
-//    shader.setParameter("frag_ScreenResolution", sf::Vector2f((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT));
-//    shader.loadFromFile("resources/fshader.frag", sf::Shader::Fragment);
+    target.draw(text);
 }
 
 

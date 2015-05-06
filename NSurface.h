@@ -13,14 +13,15 @@
 #include <SFML/Graphics.hpp>
 #include "CSprite.h"
 #include "CText.h"
+#include "CWindow.h"
 
 namespace NSurface {
 
-    void renderRect(int x, int y, int w, int h, sf::RenderWindow* window, int r, int g, int b);
-    void renderRect(sf::IntRect rect, sf::RenderWindow* window, int r, int g, int b);
-    void renderSprite(CSprite* sprite, sf::RenderWindow* window, sf::IntRect destination, int properties = 0);
-//    void renderSprite(CSprite* sprite, sf::RenderWindow* window, sf::IntRect destination, double angle, SDL_Point* center, SDL_RendererFlip flip);
-    void renderText(int x, int y, CText* textObj, sf::RenderWindow* window);
+    void renderRect(int x, int y, int w, int h, sf::RenderTarget& target, int r, int g, int b);
+    void renderRect(sf::IntRect rect, sf::RenderTarget& target, int r, int g, int b);
+    
+    void renderEntity(CEntity* entity, CWindow* window, sf::IntRect destination, int properties = 0);
+    void renderText(int x, int y, CText* textObj, sf::RenderTarget& target);
     
 };
 

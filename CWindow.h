@@ -27,10 +27,13 @@ public:
     int getHeight();
     
     sf::RenderWindow* getWindow();
+    sf::RenderTexture* getRenderTexture();
+    sf::Sprite* getSprite();
     
 private:
     sf::RenderWindow _window;
-    sf::View _view;
+    sf::RenderTexture _renderTexture;
+    sf::Sprite _sprite;
     
     int _screenHeight, _screenWidth;
     

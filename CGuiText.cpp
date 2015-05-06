@@ -15,5 +15,5 @@ CGuiText::CGuiText(int x, int y, std::string text, std::string fontKey, CAssetMa
 
 void CGuiText::onLoop() {
 }
-void CGuiText::onRender(sf::RenderWindow* window, CCamera* camera) {
+void CGuiText::onRender(CWindow* window, CCamera* camera) {
 }

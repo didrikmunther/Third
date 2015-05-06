@@ -64,6 +64,23 @@ sf::Font* CAssetManager::addFont(std::string name, std::string fileName) {
     }
 }
 
+sf::Shader* CAssetManager::addShader(std::string name, std::string fileName, sf::Shader::Type type) {
+    if(_ShaderVector.find(name) != _ShaderVector.end()) {
+        std::cout << "!: Couldn't add shader: \"" << name << "\", because it already exists.\n";
+        return _ShaderVector[name];
+    } else {
+        sf::Shader* temp = new sf::Shader;
+        if(!temp->loadFromFile(fileName.c_str(), type)) {
+            std::cout << "!: Couldn't add shader: \"" << name << "\", could not open file \"" << fileName << "\".\n";
+            return nullptr;
+        } else {
+            std::cout << "Loaded shader: \"" << fileName << "\" as \"" << name << "\"\n";
+            _ShaderVector[name] = temp;
+            return _ShaderVector[name];
+        }
+    }
+}
+
 CSprite* CAssetManager::getSprite(std::string key) {
     auto it = _SpriteVector.find(key);
     if(it == _SpriteVector.end())
@@ -86,6 +103,14 @@ sf::Font* CAssetManager::getFont(std::string key) {
         return nullptr;
     else
         return &it->second;
+}
+
+sf::Shader* CAssetManager::getShader(std::string key) {
+    auto it = _ShaderVector.find(key);
+    if(it == _ShaderVector.end())
+        return nullptr;
+    else
+        return it->second;
 }
 
 void CAssetManager::onCleanup() {
@@ -121,6 +146,18 @@ void CAssetManager::onCleanup() {
             _FontVector.erase(i++->first);
         }
         _FontVector.clear();
+        std::cout << "\n";
+    }
+    
+    {
+        std::cout << "Unloaded shader: ";
+        auto i = _ShaderVector.begin();
+        while(i != _ShaderVector.end()) {
+            std::cout << "\"" << i->first << "\",";
+            delete i->second;
+            _ShaderVector.erase(i++->first);
+        }
+        _ShaderVector.clear();
         std::cout << "\n";
     }
     
