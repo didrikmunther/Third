@@ -13,11 +13,7 @@
 #include <stdio.h>
 #include <sstream>
 #include <string>
-#include "CEntityManager.h"
-#include "CAssetManager.h"
-#include "CWindow.h"
-#include "CPlayer.h"
-#include "CCamera.h"
+#include "CInstance.h"
 #include "CChatBubble.h"
 
 class CGame {
@@ -49,8 +45,7 @@ private:
     
     bool _running;
     
-    CCamera _camera;
-    CPlayer* _player;
+    CInstance instance;
     
     // Timer variables
     
@@ -67,16 +62,6 @@ private:
     
     std::stringstream _title;
     std::string _intro;
-    
-    // Game variables
-    
-    CEntityManager _entityManager;
-    CAssetManager _assetManager;
-    CWindow _window;
-    
-    // Temp variables
-    
-    CEntity* _block;
     
 };
 

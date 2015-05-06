@@ -31,6 +31,7 @@ public:
     
     CEntity* addEntity(sf::IntRect rect, sf::Color color, std::string name = "");
     CEntity* addEntity(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager, std::string name = "");
+    CEntity* getEntity(std::string name);
     void addEntity(CEntity* entity, std::string name = "");
     void addParticle(sf::IntRect rect, sf::Color color, int livingTime);
     void addParticleEmitter(sf::IntRect rect, sf::Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity);

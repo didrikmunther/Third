@@ -18,6 +18,7 @@ void NSurface::renderRect(sf::IntRect rect, sf::RenderWindow* window, int r, int
     sf::RectangleShape rectangle(sf::Vector2f(rect.width, rect.height));
     rectangle.setPosition(rect.left, rect.top);
     rectangle.setFillColor(sf::Color(r, g, b));
+    
     window->draw(rectangle);
 }
 
@@ -44,7 +45,15 @@ void NSurface::renderText(int x, int y, CText* textObj, sf::RenderWindow* window
     sf::Text text(textObj->getText()->c_str(), *textObj->getFont(), textObj->getSize());
     text.setColor(*textObj->getColor());
     text.setPosition(x, y);
+    
     window->draw(text);
+    
+//    sf::Shader shader;
+//    shader.setParameter("frag_LightOrigin", sf::Vector2f(x, y));
+//    shader.setParameter("frag_LightColor", sf::Vector3f(255, 0, 0));
+//    shader.setParameter("frag_LightAttenuation", 10);
+//    shader.setParameter("frag_ScreenResolution", sf::Vector2f((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT));
+//    shader.loadFromFile("resources/fshader.frag", sf::Shader::Fragment);
 }
 
 

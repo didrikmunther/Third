@@ -18,8 +18,7 @@ CEntity* CEntityManager::addEntity(sf::IntRect rect, sf::Color color, std::strin
         std::string id = "5:" + std::to_string(++entityID);
         _EntityVector[id] = new CEntity(rect, color);
         return _EntityVector[id];
-    }
-    else {
+    } else {
         _EntityVector[name] = new CEntity(rect, color);
         return _EntityVector[name];
     }
@@ -30,8 +29,7 @@ CEntity* CEntityManager::addEntity(sf::IntRect rect, std::string spriteKey, CAss
         std::string id = "5:" + std::to_string(++entityID);
         _EntityVector[id] = new CEntity(rect, spriteKey, assetManager);
         return _EntityVector[id];
-    }
-    else {
+    } else {
         _EntityVector[name] = new CEntity(rect, spriteKey, assetManager);
         return _EntityVector[name];
     }
@@ -41,9 +39,20 @@ void CEntityManager::addEntity(CEntity* entity, std::string name /* = "" */) {
     if(name == "") {
         std::string id = "5:" + std::to_string(++entityID);
         _EntityVector[id] = entity;
-    }
-    else
+    } else
         _EntityVector[name] = entity;
+}
+
+CEntity* CEntityManager::getEntity(std::string name) {
+    if(name == "") {
+        std::cout << "Couldn't get entity because it had no name.\n";
+        return nullptr;
+    } else if(_EntityVector.find(name) == _EntityVector.end()) {
+        std::cout << "Couldn't get entity: " << name << ", because it doesn't exist.";
+        return nullptr;
+    } else {
+        return _EntityVector[name];
+    }
 }
 
 void CEntityManager::addParticle(sf::IntRect rect, sf::Color color, int livingTime) {
@@ -87,8 +96,7 @@ void CEntityManager::onLoop() {
             if((*i).second->toRemove) {
                 delete (*i).second;
                 _EntityVector.erase(i->first);
-            }
-            else
+            } else
                 ++i;
         }
     }
@@ -125,8 +133,7 @@ void CEntityManager::onLoop() {
             if((*i)->toRemove) {
                 delete *i;
                 _GuiTextVector.erase(std::remove(_GuiTextVector.begin(), _GuiTextVector.end(), (*i)), _GuiTextVector.end());
-            }
-            else
+            } else
                 ++i;
         }
     }
