@@ -14,6 +14,11 @@
 #include "NMouse.h"
 #include <SFML/Graphics.hpp>
 #include "CText.h"
+#ifdef __APPLE__
+#include "CoreFoundation/CoreFoundation.h"
+#endif
+
+#include <fstream>
 
 CGame::CGame() :
 _intro("Physics"),
@@ -89,6 +94,8 @@ int CGame::onExecute() {
 
 int CGame::_onInit() {
     
+    _initRelativePaths();
+    
     srand((sf::Uint16)time(nullptr));
     
     if(instance.window.onInit(_intro, SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -122,6 +129,25 @@ int CGame::_onInit() {
     instance.entityManager.getEntity("n:bush")->addProperty(EntityProperty::STATIC);
 
     return 0;
+}
+
+void CGame::_initRelativePaths() {
+    // ----------------------------------------------------------------------------
+    // This makes relative paths work in C++ in Xcode by changing directory to the Resources folder inside the .app bundle
+    #ifdef __APPLE__
+        CFBundleRef mainBundle = CFBundleGetMainBundle();
+        CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
+        char path[PATH_MAX];
+        if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX))
+        {
+            // error!
+        }
+        CFRelease(resourcesURL);
+        
+        chdir(path);
+        std::cout << "Current Path: " << path << std::endl;
+    #endif
+    // ----------------------------------------------------------------------------
 }
 
 void CGame::_handleKeyStates() {

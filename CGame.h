@@ -30,6 +30,7 @@ private:
     // Main functions
     
     int _onInit();
+    void _initRelativePaths();
     
     void _onEvent(sf::Event* event);
     
