@@ -18,7 +18,7 @@ class CPlayer : public CEntity {
     
 public:
     CPlayer(sf::IntRect rect, sf::Color color);
-    CPlayer(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager);
+    CPlayer(sf::IntRect rect, std::string spriteKey);
     void initValues();
     
     void goRight();

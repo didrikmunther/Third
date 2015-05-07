@@ -15,8 +15,8 @@ CPlayer::CPlayer(sf::IntRect rect, sf::Color color) :
         initValues();
 }
 
-CPlayer::CPlayer(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager) :
-    CEntity(rect, spriteKey, assetManager) {
+CPlayer::CPlayer(sf::IntRect rect, std::string spriteKey) :
+    CEntity(rect, spriteKey) {
         CPlayer(rect, sf::Color{255, 255, 255, 255});
         initValues();
 }

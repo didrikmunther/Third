@@ -15,12 +15,12 @@
 #include "CEntityManager.h"
 
 CEntity::CEntity(sf::IntRect rect, sf::Color color) :
-    /*sprite(nullptr),*/ spriteKey(""), assetManager(nullptr), body(rect), color(color) {
+    /*sprite(nullptr),*/ spriteKey(""), body(rect), color(color) {
         initValues();
 }
 
-CEntity::CEntity(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager) :
-/*sprite(sprite),*/ spriteKey(spriteKey), assetManager(assetManager), body(rect), color(sf::Color{255,0,255,255}) {
+CEntity::CEntity(sf::IntRect rect, std::string spriteKey) :
+/*sprite(sprite),*/ spriteKey(spriteKey), body(rect), color(sf::Color{255,0,255,255}) {
         initValues();
 }
 
@@ -56,7 +56,7 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
 void CEntity::onRender(CWindow* window, CCamera* camera, int renderFlags) {
     if(camera->collision(this) && !(hasProperty(EntityProperty::HIDDEN))) {
         //std::cout << sprite << std::endl;
-        if(assetManager == nullptr || assetManager->getSprite(spriteKey) == nullptr)
+        if(CAssetManager::getSprite(spriteKey) == nullptr)
                 NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(),
                                      body.getW(), body.getH(),
                                      *window->getRenderTexture(), color.r, color.g, color.b);
@@ -77,8 +77,8 @@ void CEntity::onRender(CWindow* window, CCamera* camera, int renderFlags) {
     }
 }
 
-void CEntity::say(std::string text, std::string fontKey, CAssetManager* assetManager, CEntityManager* entityManager, int type) {
-    CChatBubble* temp = new CChatBubble(text, this, fontKey, assetManager, type);
+void CEntity::say(std::string text, std::string fontKey, CEntityManager* entityManager, int type) {
+    CChatBubble* temp = new CChatBubble(text, this, fontKey, type);
     entityManager->addGuiText(temp);
 }
 
@@ -98,19 +98,12 @@ void CEntity::removeProperty(int property) {
     if(hasProperty(property)) toggleProperty(property);
 }
 
-int CEntity::setSprite(std::string spriteKey) {
-    if(assetManager == nullptr)
-        return -1;
-    else
-        this->spriteKey = spriteKey;
-    return 0;
+void CEntity::setSprite(std::string spriteKey) {
+    this->spriteKey = spriteKey;
 }
 
 CSprite* CEntity::getSprite() {
-    if(assetManager == nullptr)
-        return nullptr;
-    else
-        return assetManager->getSprite(spriteKey);
+    return CAssetManager::getSprite(spriteKey);
 }
 
 bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities) {

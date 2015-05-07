@@ -24,13 +24,13 @@ CEntity* CEntityManager::addEntity(sf::IntRect rect, sf::Color color, std::strin
     }
 }
 
-CEntity* CEntityManager::addEntity(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager, std::string name /* = "" */) {
+CEntity* CEntityManager::addEntity(sf::IntRect rect, std::string spriteKey, std::string name /* = "" */) {
     if(name == "") {
         std::string id = "5:" + std::to_string(++entityID);
-        _EntityVector[id] = new CEntity(rect, spriteKey, assetManager);
+        _EntityVector[id] = new CEntity(rect, spriteKey);
         return _EntityVector[id];
     } else {
-        _EntityVector[name] = new CEntity(rect, spriteKey, assetManager);
+        _EntityVector[name] = new CEntity(rect, spriteKey);
         return _EntityVector[name];
     }
 }

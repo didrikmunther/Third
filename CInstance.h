@@ -11,7 +11,6 @@
 
 #include <stdio.h>
 #include "CEntityManager.h"
-#include "CAssetManager.h"
 #include "CWindow.h"
 #include "CCamera.h"
 #include "CPlayer.h"
@@ -26,7 +25,6 @@ public:
     CPlayer* player;
     
     CEntityManager entityManager;
-    CAssetManager assetManager;
     CWindow window;
     
 };

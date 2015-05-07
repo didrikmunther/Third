@@ -11,6 +11,11 @@
 #include "NFile.h"
 #include "ResourcePath.hpp"
 
+std::map<std::string, CSprite*> CAssetManager::_SpriteVector;
+std::map<std::string, CSpriteSheet*> CAssetManager::_SpriteSheetVector;
+std::map<std::string, sf::Font> CAssetManager::_FontVector;
+std::map<std::string, sf::Shader*> CAssetManager::_ShaderVector;
+
 CAssetManager::CAssetManager() {
 }
 

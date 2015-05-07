@@ -17,7 +17,7 @@
 
 class CGuiText {
 public:
-    CGuiText(int x, int y, std::string text, std::string fontKey, CAssetManager* assetManager);
+    CGuiText(int x, int y, std::string text, std::string fontKey);
     
     virtual void onLoop();                                          // Pure virtual
     virtual void onRender(CWindow* window, CCamera* camera); //
@@ -26,7 +26,6 @@ public:
     
 protected:
     std::string _fontKey;
-    CAssetManager* _assetManager;
     std::string _text;
     int _x, _y;
 };

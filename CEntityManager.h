@@ -30,7 +30,7 @@ public:
     CEntityManager();
     
     CEntity* addEntity(sf::IntRect rect, sf::Color color, std::string name = "");
-    CEntity* addEntity(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager, std::string name = "");
+    CEntity* addEntity(sf::IntRect rect, std::string spriteKey, std::string name = "");
     CEntity* getEntity(std::string name);
     void addEntity(CEntity* entity, std::string name = "");
     void addParticle(sf::IntRect rect, sf::Color color, int livingTime);

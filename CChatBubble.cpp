@@ -12,8 +12,8 @@
 #include "Define.h"
 #include <iostream>
 
-CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey, CAssetManager* assetManager, int type) :
-    _target(target), _type(type), CGuiText(0, 0, text, fontKey, assetManager), _creationTime(_clock.getElapsedTime().asMilliseconds()),
+CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey, int type) :
+    _target(target), _type(type), CGuiText(0, 0, text, fontKey), _creationTime(_clock.getElapsedTime().asMilliseconds()),
     _r(0), _g(0), _b(0), _rB(220), _gB(220), _bB(220) {
     
         int textSize = 20;
@@ -43,7 +43,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
     std::string currentString = "";
     for(int i = 0; i < splittedText.size(); i++) {
         if(currentSize > 10) {
-            _TextVector.push_back(CText(currentString, textSize, fontKey, assetManager, sf::Color{(sf::Uint8)_r,(sf::Uint8)_g,(sf::Uint8)_b,255}));
+            _TextVector.push_back(CText(currentString, textSize, fontKey, sf::Color{(sf::Uint8)_r,(sf::Uint8)_g,(sf::Uint8)_b,255}));
             currentString = "";
             currentSize = 0;
         }
@@ -51,7 +51,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
         currentString += splittedText[i] + " ";
     }
     if(currentSize > 0)                 // For when the loop quits but there is still text that should be added
-        _TextVector.push_back(CText(currentString, textSize, fontKey, assetManager, sf::Color{(sf::Uint8)_r,(sf::Uint8)_g,(sf::Uint8)_b,255}));
+        _TextVector.push_back(CText(currentString, textSize, fontKey, sf::Color{(sf::Uint8)_r,(sf::Uint8)_g,(sf::Uint8)_b,255}));
         
     int letterPerSecond = 5;
     _livingTime = (int)text.length() / letterPerSecond;

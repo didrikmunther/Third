@@ -19,7 +19,7 @@
 class CText : public CRenderable {
     
 public:
-    CText(std::string text, int size, std::string fontKey, CAssetManager* assetManager, sf::Color color);
+    CText(std::string text, int size, std::string fontKey, sf::Color color);
     
     void onRender(int x, int y, sf::RenderTarget& renderTarget, CCamera* camera);
     void onRender(int x, int y, sf::RenderTarget& renderTarget);
@@ -33,7 +33,6 @@ private:
     std::string _text;
     int _size;
     std::string _fontKey;
-    CAssetManager* _assetManager;
     sf::Color _color;
     
 };

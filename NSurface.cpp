@@ -31,12 +31,12 @@ void NSurface::renderEntity(CEntity* entity, CWindow* window, sf::IntRect destin
     
     window->getRenderTexture()->draw(nsprite);
     
-    sf::Shader* shader = entity->assetManager->getShader(entity->getShaderKey());
+    sf::Shader* shader = CAssetManager::getShader(entity->getShaderKey());
     sf::RenderStates states;
     if(shader != nullptr) {
         shader->setParameter("frag_LightOrigin", sf::Vector2f(destination.left + destination.width / 2, destination.top + destination.height / 2));
-        shader->setParameter("frag_LightColor", sf::Vector3f(255, 255, 0));
-        shader->setParameter("frag_LightAttenuation", 5);
+        shader->setParameter("frag_LightColor", sf::Vector3f(0, 255, 0));
+        shader->setParameter("frag_LightAttenuation", 1);
         shader->setParameter("frag_ScreenResolution", sf::Vector2f((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT));
         states.shader = shader;
         states.blendMode = sf::BlendAdd;

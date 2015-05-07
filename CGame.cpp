@@ -98,26 +98,26 @@ int CGame::_onInit() {
     instance.window.getRenderTexture()->create(SCREEN_WIDTH, SCREEN_HEIGHT);                // Draw unto a texture for applying shaders later
     instance.window.getSprite()->setTexture(instance.window.getRenderTexture()->getTexture());
     
-    instance.assetManager.addSpriteSheet("MAIN", "resources/gfx.png");
-    instance.assetManager.addSpriteSheet("MAIN2", "resources/gfx2.png");
-    instance.assetManager.addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
-    instance.assetManager.addSprite("bush", "MAIN", sf::IntRect{160, 91, 30, 28});
-    instance.assetManager.addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});
-    instance.assetManager.addSpriteSheet("BG", "resources/bg.png");
-    instance.assetManager.addSprite("background", "BG", sf::IntRect{0,0,128,64});
-    instance.assetManager.addFont("TESTFONT", "resources/font.ttf");
-    instance.assetManager.addShader("SHADER1", "resources/light.frag", sf::Shader::Type::Fragment);
+    CAssetManager::addSpriteSheet("MAIN", "resources/gfx.png");
+    CAssetManager::addSpriteSheet("MAIN2", "resources/gfx2.png");
+    CAssetManager::addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
+    CAssetManager::addSprite("bush", "MAIN", sf::IntRect{160, 91, 30, 28});
+    CAssetManager::addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});
+    CAssetManager::addSpriteSheet("BG", "resources/bg.png");
+    CAssetManager::addSprite("background", "BG", sf::IntRect{0,0,128,64});
+    CAssetManager::addFont("TESTFONT", "resources/font.ttf");
+    CAssetManager::addShader("SHADER1", "resources/light.frag", sf::Shader::Type::Fragment);
     
-    instance.player = new CPlayer(sf::IntRect{30, 30, 60, 164}, "player", &instance.assetManager);
+    instance.player = new CPlayer(sf::IntRect{30, 30, 60, 164}, "player");
     instance.entityManager.addEntity(instance.player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
     instance.camera.setTarget(instance.player);
     
     instance.entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
     instance.entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 500, 30, 500}, sf::Color{255, 0, 0, 0});
-    auto tree = instance.entityManager.addEntity(sf::IntRect{276, 229, 23 * 4, 59 * 4}, "tree", &instance.assetManager, "l:tree");
+    auto tree = instance.entityManager.addEntity(sf::IntRect{276, 229, 23 * 4, 59 * 4}, "tree", "l:tree");
     tree->removeProperty(EntityProperty::COLLIDABLE);
     tree->addProperty(EntityProperty::STATIC);
-    instance.entityManager.addEntity(sf::IntRect{200, 357, 60 * 2, 54 * 2}, "bush", &instance.assetManager, "n:bush");
+    instance.entityManager.addEntity(sf::IntRect{200, 357, 60 * 2, 54 * 2}, "bush", "n:bush");
     instance.entityManager.getEntity("n:bush")->removeProperty(EntityProperty::COLLIDABLE);
     instance.entityManager.getEntity("n:bush")->addProperty(EntityProperty::STATIC);
 
@@ -184,14 +184,14 @@ void CGame::_onEvent(sf::Event* event) {
                     instance.player->toggleProperty(EntityProperty::FLYING);
                     break;
                 case keyMap::LOAD_ASSETS:
-                    instance.assetManager.addSpriteSheet("MAIN", "resources/gfx.png");
-                    instance.assetManager.addSpriteSheet("MAIN2", "resources/gfx2.png");
-                    instance.assetManager.addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
-                    instance.assetManager.addSprite("bush", "MAIN", sf::IntRect{160, 91, 30, 28});
-                    instance.assetManager.addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});
-                    instance.assetManager.addSpriteSheet("BG", "resources/bg.png");
-                    instance.assetManager.addSprite("background", "BG", sf::IntRect{0,0,128,64});
-                    instance.assetManager.addFont("TESTFONT", "resources/font.ttf");
+                    CAssetManager::addSpriteSheet("MAIN", "resources/gfx.png");
+                    CAssetManager::addSpriteSheet("MAIN2", "resources/gfx2.png");
+                    CAssetManager::addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
+                    CAssetManager::addSprite("bush", "MAIN", sf::IntRect{160, 91, 30, 28});
+                    CAssetManager::addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});
+                    CAssetManager::addSpriteSheet("BG", "resources/bg.png");
+                    CAssetManager::addSprite("background", "BG", sf::IntRect{0,0,128,64});
+                    CAssetManager::addFont("TESTFONT", "resources/font.ttf");
                     break;
                 case keyMap::TOGGLE_HIDDEN:
                     instance.player->toggleProperty(EntityProperty::HIDDEN);
@@ -205,7 +205,7 @@ void CGame::_onEvent(sf::Event* event) {
                     //player->toggleProperty(EntityProperty::STATIC);
                     instance.window.newWindow(_intro, 600, 400);
                     instance.camera.onInit(&instance.window);
-                    instance.assetManager.onCleanup();
+                    CAssetManager::onCleanup();
                 }
                     break;
                     
@@ -221,13 +221,13 @@ void CGame::_onEvent(sf::Event* event) {
                     for(int i = 0; i < 100; i++) {
                         text += alphanum[rand() % (sizeof(alphanum) - 1)];
                     }
-                    instance.player->say(text, "TESTFONT", &instance.assetManager, &instance.entityManager, ChatBubbleType::SAY);
+                    instance.player->say(text, "TESTFONT", &instance.entityManager, ChatBubbleType::SAY);
                     
                     text = "";
                     for(int i = 0; i < 50; i++) {
                         text += alphanum[rand() % (sizeof(alphanum) - 1)];
                     }
-                    instance.entityManager.getEntity("n:bush")->say(text, "TESTFONT", &instance.assetManager, &instance.entityManager, ChatBubbleType::YELL);
+                    instance.entityManager.getEntity("n:bush")->say(text, "TESTFONT", &instance.entityManager, ChatBubbleType::YELL);
                 }
                     break;
                     
@@ -303,7 +303,7 @@ void CGame::_onRender() {
     instance.window.getWindow()->clear();
     instance.window.getRenderTexture()->clear();
     
-    NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, *instance.window.getRenderTexture(), 255, 255, 255);
+    NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, *instance.window.getRenderTexture(), 0, 0, 0);
     instance.entityManager.onRender(&instance.window, &instance.camera);
     
     instance.window.getRenderTexture()->display();
@@ -314,7 +314,7 @@ void CGame::_onRender() {
 
 int CGame::_onCleanup() {
     instance.entityManager.onCleanup();
-    instance.assetManager.onCleanup();
+    CAssetManager::onCleanup();
     instance.window.onCleanup();
     
     return 0;

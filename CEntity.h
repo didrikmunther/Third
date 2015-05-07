@@ -27,14 +27,14 @@ class CEntity : public CRenderable {
 public:
     CEntity(sf::IntRect rect, sf::Color color);
     //CEntity(SDL_Rect rect, CSprite* sprite);
-    CEntity(sf::IntRect rect, std::string spriteKey, CAssetManager* assetManager);
+    CEntity(sf::IntRect rect, std::string spriteKey);
     void initValues();
     void onLoop(std::map<std::string, CEntity*>* entities);
     void onRender(CWindow* window, CCamera* camera, int renderFlags);
     
     void move(std::map<std::string, CEntity*>* entities);
     bool collision(int x, int y, std::map<std::string, CEntity*>* entities);
-    void say(std::string text, std::string fontKey, CAssetManager* assetManager, CEntityManager* entityManager, int type);
+    void say(std::string text, std::string fontKey, CEntityManager* entityManager, int type);
     
     int properties;
     bool hasProperty(int property);
@@ -48,10 +48,9 @@ public:
     CBody body;
     bool toRemove;
     
-    int setSprite(std::string spriteKey);
+    void setSprite(std::string spriteKey);
     CSprite* getSprite();
     std::string spriteKey;
-    CAssetManager* assetManager;
     
     bool flip;
     

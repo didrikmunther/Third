@@ -21,23 +21,23 @@ class CAssetManager {
 public:
     CAssetManager();
     
-    CSprite* addSprite(std::string name, std::string spriteSheetKey, sf::IntRect source);
-    CSpriteSheet* addSpriteSheet(std::string name, std::string fileName);
-    sf::Font* addFont(std::string name, std::string fileName);
-    sf::Shader* addShader(std::string name, std::string fileName, sf::Shader::Type type);
+    static CSprite* addSprite(std::string name, std::string spriteSheetKey, sf::IntRect source);
+    static CSpriteSheet* addSpriteSheet(std::string name, std::string fileName);
+    static sf::Font* addFont(std::string name, std::string fileName);
+    static sf::Shader* addShader(std::string name, std::string fileName, sf::Shader::Type type);
     
-    CSprite* getSprite(std::string key);
-    CSpriteSheet* getSpriteSheet(std::string key);
-    sf::Font* getFont(std::string key);
-    sf::Shader* getShader(std::string key);
+    static CSprite* getSprite(std::string key);
+    static CSpriteSheet* getSpriteSheet(std::string key);
+    static sf::Font* getFont(std::string key);
+    static sf::Shader* getShader(std::string key);
     
-    void onCleanup();
+    static void onCleanup();
     
 private:
-    std::map<std::string, CSprite*> _SpriteVector;
-    std::map<std::string, CSpriteSheet*> _SpriteSheetVector;
-    std::map<std::string, sf::Font> _FontVector;
-    std::map<std::string, sf::Shader*> _ShaderVector;
+    static std::map<std::string, CSprite*> _SpriteVector;
+    static std::map<std::string, CSpriteSheet*> _SpriteSheetVector;
+    static std::map<std::string, sf::Font> _FontVector;
+    static std::map<std::string, sf::Shader*> _ShaderVector;
     
 };
 

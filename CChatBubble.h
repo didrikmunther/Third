@@ -19,7 +19,7 @@
 class CChatBubble : public CGuiText{
 
 public:
-    CChatBubble(std::string text, CEntity* target, std::string fontKey, CAssetManager* assetManager, int type);
+    CChatBubble(std::string text, CEntity* target, std::string fontKey, int type);
     
     void onLoop();
     void onRender(CWindow* window, CCamera* camera);
