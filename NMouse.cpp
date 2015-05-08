@@ -10,21 +10,21 @@
 #include <iostream>
 
 int NMouse::absoluteMouseX(sf::RenderWindow* window) {
-    sf::Vector2i position = sf::Mouse::getPosition(*window);
+    sf::Vector2f position = window->mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(*window)));
     return position.x;
 }
 
 int NMouse::absoluteMouseY(sf::RenderWindow* window) {
-    sf::Vector2i position = sf::Mouse::getPosition(*window);
+    sf::Vector2f position = window->mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(*window)));
     return position.y;
 }
 
 int NMouse::relativeMouseX(sf::RenderWindow* window, CCamera* camera) {
-    sf::Vector2i position = sf::Mouse::getPosition(*window);
+    sf::Vector2f position = window->mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(*window)));
     return position.x + camera->offsetX();
 }
 
 int NMouse::relativeMouseY(sf::RenderWindow* window, CCamera* camera) {
-    sf::Vector2i position = sf::Mouse::getPosition(*window);
+    sf::Vector2f position = window->mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(*window)));
     return position.y + camera->offsetY();
 }
