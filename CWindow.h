@@ -30,10 +30,15 @@ public:
     sf::RenderTexture* getRenderTexture();
     sf::Sprite* getSprite();
     
+    void updateView(int width, int height);
+    
 private:
     sf::RenderWindow _window;
     sf::RenderTexture _renderTexture;
     sf::Sprite _sprite;
+    
+    sf::View _view;
+    sf::View _getLetterboxView(sf::View view, int windowWidth, int windowHeight);
     
     int _screenHeight, _screenWidth;
     

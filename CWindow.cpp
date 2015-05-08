@@ -15,6 +15,10 @@ CWindow::CWindow() :
 
 int CWindow::onInit(std::string title, int width, int height) {
     
+    _view.setSize(width, height);
+    _view.setCenter(_view.getSize().x / 2, _view.getSize().y / 2);
+    _view = _getLetterboxView(_view, width, height);
+    
     _window.create(sf::VideoMode(width, height), sf::String(title));
     _window.setVerticalSyncEnabled(true);
     
@@ -53,6 +57,46 @@ sf::RenderTexture* CWindow::getRenderTexture() {
 
 sf::Sprite* CWindow::getSprite() {
     return &_sprite;
+}
+
+void CWindow::updateView(int width, int height) {
+    _view = _getLetterboxView(_view, width, height);
+    _window.setView(_view);
+}
+
+sf::View CWindow::_getLetterboxView(sf::View view, int windowWidth, int windowHeight) {
+    
+    // Compares the aspect ratio of the window to the aspect ratio of the view,
+    // and sets the view's viewport accordingly in order to archieve a letterbox effect.
+    // A new view (with a new viewport set) is returned.
+    
+    float windowRatio = windowWidth / (float) windowHeight;
+    float viewRatio = view.getSize().x / (float) view.getSize().y;
+    float sizeX = 1;
+    float sizeY = 1;
+    float posX = 0;
+    float posY = 0;
+    
+    bool horizontalSpacing = true;
+    if (windowRatio < viewRatio)
+        horizontalSpacing = false;
+    
+    // If horizontalSpacing is true, the black bars will appear on the left and right side.
+    // Otherwise, the black bars will appear on the top and bottom.
+    
+    if (horizontalSpacing) {
+        sizeX = viewRatio / windowRatio;
+        posX = (1 - sizeX) / 2.0;
+    }
+    
+    else {
+        sizeY = windowRatio / viewRatio;
+        posY = (1 - sizeY) / 2.0;
+    }
+    
+    view.setViewport( sf::FloatRect(posX, posY, sizeX, sizeY) );
+    
+    return view;
 }
 
 void CWindow::onCleanup() {

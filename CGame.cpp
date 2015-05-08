@@ -16,9 +16,8 @@
 #include "CText.h"
 #ifdef __APPLE__
 #include "CoreFoundation/CoreFoundation.h"
+#include "ResourcePath.hpp"
 #endif
-
-#include <fstream>
 
 CGame::CGame() :
 _intro("Physics"),
@@ -105,6 +104,28 @@ int CGame::_onInit() {
     instance.window.getRenderTexture()->create(SCREEN_WIDTH, SCREEN_HEIGHT);                // Draw unto a texture for applying shaders later
     instance.window.getSprite()->setTexture(instance.window.getRenderTexture()->getTexture());
     
+    _initAssets();
+    
+    instance.player = new CPlayer(sf::IntRect{30, 30, 60, 164}, "player");
+    instance.entityManager.addEntity(instance.player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
+    instance.camera.setTarget(instance.player);
+    
+    instance.entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
+    instance.entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 500, 30, 500}, sf::Color{255, 0, 0, 0});
+    instance.entityManager.addEntity(sf::IntRect{276, 229, 23 * 4, 59 * 4}, "tree", "l:tree");
+    instance.entityManager.getEntity("l:tree")->removeProperty(EntityProperty::COLLIDABLE);
+    instance.entityManager.getEntity("l:tree")->addProperty(EntityProperty::STATIC);
+    instance.entityManager.getEntity("l:tree")->setShaderKey("");
+    instance.entityManager.addEntity(sf::IntRect{200, 357, 60 * 2, 54 * 2}, "bush", "n:bush");
+    instance.entityManager.getEntity("n:bush")->removeProperty(EntityProperty::COLLIDABLE);
+    instance.entityManager.getEntity("n:bush")->addProperty(EntityProperty::STATIC);
+    instance.entityManager.getEntity("n:bush")->addProperty(EntityProperty::STATIC);
+    instance.entityManager.getEntity("n:bush")->setShaderKey("");
+
+    return 0;
+}
+
+void CGame::_initAssets() {
     CAssetManager::addSpriteSheet("MAIN", "resources/gfx.png");
     CAssetManager::addSpriteSheet("MAIN2", "resources/gfx2.png");
     CAssetManager::addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
@@ -114,21 +135,6 @@ int CGame::_onInit() {
     CAssetManager::addSprite("background", "BG", sf::IntRect{0,0,128,64});
     CAssetManager::addFont("TESTFONT", "resources/font.ttf");
     CAssetManager::addShader("SHADER1", "resources/light.frag", sf::Shader::Type::Fragment);
-    
-    instance.player = new CPlayer(sf::IntRect{30, 30, 60, 164}, "player");
-    instance.entityManager.addEntity(instance.player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
-    instance.camera.setTarget(instance.player);
-    
-    instance.entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
-    instance.entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 500, 30, 500}, sf::Color{255, 0, 0, 0});
-    auto tree = instance.entityManager.addEntity(sf::IntRect{276, 229, 23 * 4, 59 * 4}, "tree", "l:tree");
-    tree->removeProperty(EntityProperty::COLLIDABLE);
-    tree->addProperty(EntityProperty::STATIC);
-    instance.entityManager.addEntity(sf::IntRect{200, 357, 60 * 2, 54 * 2}, "bush", "n:bush");
-    instance.entityManager.getEntity("n:bush")->removeProperty(EntityProperty::COLLIDABLE);
-    instance.entityManager.getEntity("n:bush")->addProperty(EntityProperty::STATIC);
-
-    return 0;
 }
 
 void CGame::_initRelativePaths() {
@@ -179,6 +185,10 @@ void CGame::_onEvent(sf::Event* event) {
             instance.window.getWindow()->close();
             break;
             
+        case sf::Event::Resized:
+            instance.window.updateView(event->size.width, event->size.height);
+            break;
+            
         case sf::Event::KeyPressed:
             switch(event->key.code) {
                     
@@ -210,14 +220,7 @@ void CGame::_onEvent(sf::Event* event) {
                     instance.player->toggleProperty(EntityProperty::FLYING);
                     break;
                 case keyMap::LOAD_ASSETS:
-                    CAssetManager::addSpriteSheet("MAIN", "resources/gfx.png");
-                    CAssetManager::addSpriteSheet("MAIN2", "resources/gfx2.png");
-                    CAssetManager::addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
-                    CAssetManager::addSprite("bush", "MAIN", sf::IntRect{160, 91, 30, 28});
-                    CAssetManager::addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});
-                    CAssetManager::addSpriteSheet("BG", "resources/bg.png");
-                    CAssetManager::addSprite("background", "BG", sf::IntRect{0,0,128,64});
-                    CAssetManager::addFont("TESTFONT", "resources/font.ttf");
+                    _initAssets();
                     break;
                 case keyMap::TOGGLE_HIDDEN:
                     instance.player->toggleProperty(EntityProperty::HIDDEN);
@@ -329,7 +332,7 @@ void CGame::_onRender() {
     instance.window.getWindow()->clear();
     instance.window.getRenderTexture()->clear();
     
-    NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, *instance.window.getRenderTexture(), 0, 0, 0);
+    NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, *instance.window.getRenderTexture(), 255, 255, 255);
     instance.entityManager.onRender(&instance.window, &instance.camera);
     
     instance.window.getRenderTexture()->display();
