@@ -18,6 +18,7 @@
 #include "CoreFoundation/CoreFoundation.h"
 #include "ResourcePath.hpp"
 #endif
+#include <SFML/Network.hpp>
 
 CGame::CGame() :
 _intro("Physics"),
@@ -300,6 +301,20 @@ void CGame::_onEvent(sf::Event* event) {
 }
 
 void CGame::_onLoop() {
+    
+    // Send
+    
+    sf::UdpSocket socket;
+    if(socket.bind(1337) != sf::Socket::Done) { /* error */ }
+    sf::IpAddress adress = sf::IpAddress::LocalHost;
+    unsigned short port = 1234;
+    std::string thing = std::to_string(instance.entityManager.getEntity("m:player")->body.getX());
+    char data[thing.size()];
+    std::strcpy(data, thing.c_str());
+    if(socket.send(data, thing.size(), adress, port) != sf::Socket::Done) { /* error */ }
+    
+    
+    
     instance.entityManager.onLoop();
     instance.camera.onLoop();
 }
