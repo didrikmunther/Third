@@ -15,8 +15,11 @@
 #include <string>
 #include "CInstance.h"
 #include "CChatBubble.h"
+#include "CNetwork.h"
 
 class CGame {
+    
+    friend class CNetwork;
     
 public:
     
@@ -64,6 +67,7 @@ private:
     
     std::stringstream _title;
     std::string _intro;
+    bool isFocused;
     
 };
 

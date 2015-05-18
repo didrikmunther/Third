@@ -24,7 +24,7 @@ CGame::CGame() :
 _intro("Physics"),
 //WIDTH(640), HEIGHT(480), BPP(32), camera(WIDTH, HEIGHT),
 _lastTime(_clock.getElapsedTime().asMilliseconds()), _timer(_clock.getElapsedTime().asMilliseconds()),
-_ns(1000.0f / (float)GAMEINTERVAL), _delta(0), _frames(0), _updates(0) {
+_ns(1000.0f / (float)GAMEINTERVAL), _delta(0), _frames(0), _updates(0), isFocused(true) {
 }
 
 CGame::~CGame() {
@@ -159,6 +159,9 @@ void CGame::_initRelativePaths() {
 
 void CGame::_handleKeyStates() {
     
+    if(!isFocused)
+        return;
+    
     if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::RIGHT)) {
         instance.player->goRight();
     }
@@ -177,17 +180,24 @@ void CGame::_handleKeyStates() {
 
 void CGame::_onEvent(sf::Event* event) {
     
-    
-    
     //if(event->key.repeat != 0) return;
     
     switch(event->type) {
+        case sf::Event::LostFocus:
+            isFocused = false;
+            break;
+            
+        case sf::Event::GainedFocus:
+            isFocused = true;
+            break;
+            
         case sf::Event::Closed:
             instance.window.getWindow()->close();
             break;
             
         case sf::Event::Resized:
-            instance.window.updateView(event->size.width, event->size.height);
+            //instance.window.updateView(event->size.width, event->size.height);
+            instance.window.setSize(event->size.width, event->size.height);
             break;
             
         case sf::Event::KeyPressed:
@@ -232,7 +242,6 @@ void CGame::_onEvent(sf::Event* event) {
                     break;
                 case keyMap::NEW_WINDOW:
                 {
-                    //player->toggleProperty(EntityProperty::STATIC);
                     instance.window.newWindow(_intro, 600, 400);
                     instance.camera.onInit(&instance.window);
                     CAssetManager::onCleanup();

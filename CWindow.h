@@ -31,6 +31,7 @@ public:
     sf::Sprite* getSprite();
     
     void updateView(int width, int height);
+    void setSize(int width, int height);
     
 private:
     sf::RenderWindow _window;

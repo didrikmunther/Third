@@ -64,6 +64,11 @@ void CWindow::updateView(int width, int height) {
     _window.setView(_view);
 }
 
+void CWindow::setSize(int width, int height) {
+    _window.setSize(sf::Vector2u(width, height));
+    updateView(width, height);
+}
+
 sf::View CWindow::_getLetterboxView(sf::View view, int windowWidth, int windowHeight) {
     
     // Compares the aspect ratio of the window to the aspect ratio of the view,
@@ -71,7 +76,8 @@ sf::View CWindow::_getLetterboxView(sf::View view, int windowWidth, int windowHe
     // A new view (with a new viewport set) is returned.
     
     float windowRatio = windowWidth / (float) windowHeight;
-    float viewRatio = view.getSize().x / (float) view.getSize().y;
+    //float viewRatio = view.getSize().x / (float) view.getSize().y;
+    float viewRatio = 1980 / (float) 1080;
     float sizeX = 1;
     float sizeY = 1;
     float posX = 0;
@@ -95,6 +101,7 @@ sf::View CWindow::_getLetterboxView(sf::View view, int windowWidth, int windowHe
     }
     
     view.setViewport( sf::FloatRect(posX, posY, sizeX, sizeY) );
+    
     
     return view;
 }
