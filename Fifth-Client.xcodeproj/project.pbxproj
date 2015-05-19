@@ -87,7 +87,6 @@
 		F5B5BB801B0A20C500D93B7B /* ResourcePath.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ResourcePath.hpp; sourceTree = "<group>"; };
 		F5B5BB811B0A20C500D93B7B /* ResourcePath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
 		F5B5BB821B0A20C500D93B7B /* resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = resources; sourceTree = "<group>"; };
-		F5B5BB831B0A20C500D93B7B /* Third. */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Third.; sourceTree = "<group>"; };
 		F5B5BBA01B0A217600D93B7B /* Fifth-Client-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Fifth-Client-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -140,7 +139,6 @@
 				F5B5BB791B0A20C500D93B7B /* main.cpp */,
 				F5B5BB781B0A20C500D93B7B /* Images.xcassets */,
 				F5B5BB821B0A20C500D93B7B /* resources */,
-				F5B5BB831B0A20C500D93B7B /* Third. */,
 				F5B5BB3B1B0A208B00D93B7B /* Supporting Files */,
 			);
 			path = "Fifth-Client";

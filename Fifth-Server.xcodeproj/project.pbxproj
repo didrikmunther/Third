@@ -33,7 +33,6 @@
 		F5B5BC111B0B516F00D93B7B /* NSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBF41B0B516F00D93B7B /* NSurface.cpp */; };
 		F5B5BC121B0B516F00D93B7B /* ResourcePath.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBF71B0B516F00D93B7B /* ResourcePath.mm */; };
 		F5B5BC131B0B516F00D93B7B /* resources in Resources */ = {isa = PBXBuildFile; fileRef = F5B5BBF81B0B516F00D93B7B /* resources */; };
-		F5B5BC141B0B516F00D93B7B /* Third. in Resources */ = {isa = PBXBuildFile; fileRef = F5B5BBF91B0B516F00D93B7B /* Third. */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -89,7 +88,6 @@
 		F5B5BBF61B0B516F00D93B7B /* ResourcePath.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ResourcePath.hpp; sourceTree = "<group>"; };
 		F5B5BBF71B0B516F00D93B7B /* ResourcePath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
 		F5B5BBF81B0B516F00D93B7B /* resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = resources; sourceTree = "<group>"; };
-		F5B5BBF91B0B516F00D93B7B /* Third. */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Third.; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,7 +139,6 @@
 				F5B5BBEF1B0B516F00D93B7B /* main.cpp */,
 				F5B5BBEE1B0B516F00D93B7B /* Images.xcassets */,
 				F5B5BBF81B0B516F00D93B7B /* resources */,
-				F5B5BBF91B0B516F00D93B7B /* Third. */,
 				F5B5BBB21B0A240E00D93B7B /* Supporting Files */,
 			);
 			path = "Fifth-Server";
@@ -268,7 +265,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5B5BC131B0B516F00D93B7B /* resources in Resources */,
-				F5B5BC141B0B516F00D93B7B /* Third. in Resources */,
 				F5B5BC0D1B0B516F00D93B7B /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
