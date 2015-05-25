@@ -11,6 +11,9 @@
 
 #include <stdio.h>
 #include <SFML/Network.hpp>
+#include <map>
+#include <string>
+#include "CClient.h"
 
 class CGame;
 
@@ -25,7 +28,12 @@ public:
     void onUpdate(CGame* game);
     
 private:
-    sf::UdpSocket udpSocket;
+    sf::UdpSocket _udpSocket;
+    sf::TcpSocket _tcpSocket;
+    
+    std::map<std::string, CClient> _clients;
+    
+    
     
 };
 

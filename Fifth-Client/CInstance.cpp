@@ -10,3 +10,7 @@
 
 CInstance::CInstance() {
 }
+
+void CInstance::closeInstance() {
+    entityManager.onCleanup();
+}

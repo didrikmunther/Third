@@ -7,217 +7,230 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F5B5BBFA1B0B516F00D93B7B /* CAssetManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBC71B0B516F00D93B7B /* CAssetManager.cpp */; };
-		F5B5BBFB1B0B516F00D93B7B /* CBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBC91B0B516F00D93B7B /* CBody.cpp */; };
-		F5B5BBFC1B0B516F00D93B7B /* CCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBCB1B0B516F00D93B7B /* CCamera.cpp */; };
-		F5B5BBFD1B0B516F00D93B7B /* CChatBubble.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBCD1B0B516F00D93B7B /* CChatBubble.cpp */; };
-		F5B5BBFE1B0B516F00D93B7B /* CEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBCF1B0B516F00D93B7B /* CEntity.cpp */; };
-		F5B5BBFF1B0B516F00D93B7B /* CEntityManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBD11B0B516F00D93B7B /* CEntityManager.cpp */; };
-		F5B5BC001B0B516F00D93B7B /* CGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBD31B0B516F00D93B7B /* CGame.cpp */; };
-		F5B5BC011B0B516F00D93B7B /* CGuiText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBD51B0B516F00D93B7B /* CGuiText.cpp */; };
-		F5B5BC021B0B516F00D93B7B /* CInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBD71B0B516F00D93B7B /* CInstance.cpp */; };
-		F5B5BC031B0B516F00D93B7B /* CNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBD91B0B516F00D93B7B /* CNetwork.cpp */; };
-		F5B5BC041B0B516F00D93B7B /* CParticle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBDB1B0B516F00D93B7B /* CParticle.cpp */; };
-		F5B5BC051B0B516F00D93B7B /* CParticleEmitter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBDD1B0B516F00D93B7B /* CParticleEmitter.cpp */; };
-		F5B5BC061B0B516F00D93B7B /* CPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBDF1B0B516F00D93B7B /* CPlayer.cpp */; };
-		F5B5BC071B0B516F00D93B7B /* CRenderable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBE11B0B516F00D93B7B /* CRenderable.cpp */; };
-		F5B5BC081B0B516F00D93B7B /* CSprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBE31B0B516F00D93B7B /* CSprite.cpp */; };
-		F5B5BC091B0B516F00D93B7B /* CSpriteSheet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBE51B0B516F00D93B7B /* CSpriteSheet.cpp */; };
-		F5B5BC0A1B0B516F00D93B7B /* CText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBE71B0B516F00D93B7B /* CText.cpp */; };
-		F5B5BC0B1B0B516F00D93B7B /* CTile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBE91B0B516F00D93B7B /* CTile.cpp */; };
-		F5B5BC0C1B0B516F00D93B7B /* CWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBEB1B0B516F00D93B7B /* CWindow.cpp */; };
-		F5B5BC0D1B0B516F00D93B7B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5B5BBEE1B0B516F00D93B7B /* Images.xcassets */; };
-		F5B5BC0E1B0B516F00D93B7B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBEF1B0B516F00D93B7B /* main.cpp */; };
-		F5B5BC0F1B0B516F00D93B7B /* NFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBF01B0B516F00D93B7B /* NFile.cpp */; };
-		F5B5BC101B0B516F00D93B7B /* NMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBF21B0B516F00D93B7B /* NMouse.cpp */; };
-		F5B5BC111B0B516F00D93B7B /* NSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBF41B0B516F00D93B7B /* NSurface.cpp */; };
-		F5B5BC121B0B516F00D93B7B /* ResourcePath.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B5BBF71B0B516F00D93B7B /* ResourcePath.mm */; };
-		F5B5BC131B0B516F00D93B7B /* resources in Resources */ = {isa = PBXBuildFile; fileRef = F5B5BBF81B0B516F00D93B7B /* resources */; };
+		F55874581B132CE2006E87AE /* sfml-audio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F55874521B132CE2006E87AE /* sfml-audio.framework */; };
+		F55874591B132CE2006E87AE /* sfml-graphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F55874531B132CE2006E87AE /* sfml-graphics.framework */; };
+		F558745A1B132CE2006E87AE /* sfml-network.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F55874541B132CE2006E87AE /* sfml-network.framework */; };
+		F558745B1B132CE2006E87AE /* sfml-system.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F55874551B132CE2006E87AE /* sfml-system.framework */; };
+		F558745C1B132CE2006E87AE /* sfml-window.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F55874561B132CE2006E87AE /* sfml-window.framework */; };
+		F558745D1B132CE2006E87AE /* SFML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F55874571B132CE2006E87AE /* SFML.framework */; };
+		F55874951B133567006E87AE /* CAssetManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558745F1B133567006E87AE /* CAssetManager.cpp */; };
+		F55874961B133567006E87AE /* CBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55874611B133567006E87AE /* CBody.cpp */; };
+		F55874971B133567006E87AE /* CCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55874631B133567006E87AE /* CCamera.cpp */; };
+		F55874981B133567006E87AE /* CChatBubble.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55874651B133567006E87AE /* CChatBubble.cpp */; };
+		F55874991B133567006E87AE /* CClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55874671B133567006E87AE /* CClient.cpp */; };
+		F558749A1B133567006E87AE /* CEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55874691B133567006E87AE /* CEntity.cpp */; };
+		F558749B1B133567006E87AE /* CEntityManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558746B1B133567006E87AE /* CEntityManager.cpp */; };
+		F558749C1B133567006E87AE /* CGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558746D1B133567006E87AE /* CGame.cpp */; };
+		F558749D1B133567006E87AE /* CGuiText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558746F1B133567006E87AE /* CGuiText.cpp */; };
+		F558749E1B133567006E87AE /* CInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55874711B133567006E87AE /* CInstance.cpp */; };
+		F558749F1B133567006E87AE /* CNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55874731B133567006E87AE /* CNetwork.cpp */; };
+		F55874A01B133567006E87AE /* CParticle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55874751B133567006E87AE /* CParticle.cpp */; };
+		F55874A11B133567006E87AE /* CParticleEmitter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55874771B133567006E87AE /* CParticleEmitter.cpp */; };
+		F55874A21B133567006E87AE /* CPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55874791B133567006E87AE /* CPlayer.cpp */; };
+		F55874A31B133567006E87AE /* CRenderable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558747B1B133567006E87AE /* CRenderable.cpp */; };
+		F55874A41B133567006E87AE /* CServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558747D1B133567006E87AE /* CServer.cpp */; };
+		F55874A51B133567006E87AE /* CSprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558747F1B133567006E87AE /* CSprite.cpp */; };
+		F55874A61B133567006E87AE /* CSpriteSheet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55874811B133567006E87AE /* CSpriteSheet.cpp */; };
+		F55874A71B133567006E87AE /* CText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55874831B133567006E87AE /* CText.cpp */; };
+		F55874A81B133567006E87AE /* CTile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55874851B133567006E87AE /* CTile.cpp */; };
+		F55874A91B133567006E87AE /* CWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55874871B133567006E87AE /* CWindow.cpp */; };
+		F55874AA1B133567006E87AE /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558748B1B133567006E87AE /* main.cpp */; };
+		F55874AB1B133567006E87AE /* NFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558748C1B133567006E87AE /* NFile.cpp */; };
+		F55874AC1B133567006E87AE /* NMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558748E1B133567006E87AE /* NMouse.cpp */; };
+		F55874AD1B133567006E87AE /* NSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55874901B133567006E87AE /* NSurface.cpp */; };
+		F55874AE1B133567006E87AE /* ResourcePath.mm in Sources */ = {isa = PBXBuildFile; fileRef = F55874941B133567006E87AE /* ResourcePath.mm */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		F55873F51B132C6C006E87AE /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		F5B5BBAF1B0A240E00D93B7B /* Fifth-Server.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Fifth-Server.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		F5B5BBB31B0A240E00D93B7B /* Fifth-Server-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Fifth-Server-Info.plist"; sourceTree = "<group>"; };
-		F5B5BBC71B0B516F00D93B7B /* CAssetManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAssetManager.cpp; sourceTree = "<group>"; };
-		F5B5BBC81B0B516F00D93B7B /* CAssetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAssetManager.h; sourceTree = "<group>"; };
-		F5B5BBC91B0B516F00D93B7B /* CBody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CBody.cpp; sourceTree = "<group>"; };
-		F5B5BBCA1B0B516F00D93B7B /* CBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBody.h; sourceTree = "<group>"; };
-		F5B5BBCB1B0B516F00D93B7B /* CCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCamera.cpp; sourceTree = "<group>"; };
-		F5B5BBCC1B0B516F00D93B7B /* CCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCamera.h; sourceTree = "<group>"; };
-		F5B5BBCD1B0B516F00D93B7B /* CChatBubble.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CChatBubble.cpp; sourceTree = "<group>"; };
-		F5B5BBCE1B0B516F00D93B7B /* CChatBubble.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CChatBubble.h; sourceTree = "<group>"; };
-		F5B5BBCF1B0B516F00D93B7B /* CEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CEntity.cpp; sourceTree = "<group>"; };
-		F5B5BBD01B0B516F00D93B7B /* CEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CEntity.h; sourceTree = "<group>"; };
-		F5B5BBD11B0B516F00D93B7B /* CEntityManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CEntityManager.cpp; sourceTree = "<group>"; };
-		F5B5BBD21B0B516F00D93B7B /* CEntityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CEntityManager.h; sourceTree = "<group>"; };
-		F5B5BBD31B0B516F00D93B7B /* CGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGame.cpp; sourceTree = "<group>"; };
-		F5B5BBD41B0B516F00D93B7B /* CGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGame.h; sourceTree = "<group>"; };
-		F5B5BBD51B0B516F00D93B7B /* CGuiText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGuiText.cpp; sourceTree = "<group>"; };
-		F5B5BBD61B0B516F00D93B7B /* CGuiText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGuiText.h; sourceTree = "<group>"; };
-		F5B5BBD71B0B516F00D93B7B /* CInstance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CInstance.cpp; sourceTree = "<group>"; };
-		F5B5BBD81B0B516F00D93B7B /* CInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CInstance.h; sourceTree = "<group>"; };
-		F5B5BBD91B0B516F00D93B7B /* CNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CNetwork.cpp; sourceTree = "<group>"; };
-		F5B5BBDA1B0B516F00D93B7B /* CNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNetwork.h; sourceTree = "<group>"; };
-		F5B5BBDB1B0B516F00D93B7B /* CParticle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CParticle.cpp; sourceTree = "<group>"; };
-		F5B5BBDC1B0B516F00D93B7B /* CParticle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CParticle.h; sourceTree = "<group>"; };
-		F5B5BBDD1B0B516F00D93B7B /* CParticleEmitter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CParticleEmitter.cpp; sourceTree = "<group>"; };
-		F5B5BBDE1B0B516F00D93B7B /* CParticleEmitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CParticleEmitter.h; sourceTree = "<group>"; };
-		F5B5BBDF1B0B516F00D93B7B /* CPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CPlayer.cpp; sourceTree = "<group>"; };
-		F5B5BBE01B0B516F00D93B7B /* CPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPlayer.h; sourceTree = "<group>"; };
-		F5B5BBE11B0B516F00D93B7B /* CRenderable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CRenderable.cpp; sourceTree = "<group>"; };
-		F5B5BBE21B0B516F00D93B7B /* CRenderable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRenderable.h; sourceTree = "<group>"; };
-		F5B5BBE31B0B516F00D93B7B /* CSprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CSprite.cpp; sourceTree = "<group>"; };
-		F5B5BBE41B0B516F00D93B7B /* CSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSprite.h; sourceTree = "<group>"; };
-		F5B5BBE51B0B516F00D93B7B /* CSpriteSheet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CSpriteSheet.cpp; sourceTree = "<group>"; };
-		F5B5BBE61B0B516F00D93B7B /* CSpriteSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSpriteSheet.h; sourceTree = "<group>"; };
-		F5B5BBE71B0B516F00D93B7B /* CText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CText.cpp; sourceTree = "<group>"; };
-		F5B5BBE81B0B516F00D93B7B /* CText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CText.h; sourceTree = "<group>"; };
-		F5B5BBE91B0B516F00D93B7B /* CTile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CTile.cpp; sourceTree = "<group>"; };
-		F5B5BBEA1B0B516F00D93B7B /* CTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTile.h; sourceTree = "<group>"; };
-		F5B5BBEB1B0B516F00D93B7B /* CWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CWindow.cpp; sourceTree = "<group>"; };
-		F5B5BBEC1B0B516F00D93B7B /* CWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWindow.h; sourceTree = "<group>"; };
-		F5B5BBED1B0B516F00D93B7B /* Define.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Define.h; sourceTree = "<group>"; };
-		F5B5BBEE1B0B516F00D93B7B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		F5B5BBEF1B0B516F00D93B7B /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		F5B5BBF01B0B516F00D93B7B /* NFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFile.cpp; sourceTree = "<group>"; };
-		F5B5BBF11B0B516F00D93B7B /* NFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFile.h; sourceTree = "<group>"; };
-		F5B5BBF21B0B516F00D93B7B /* NMouse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NMouse.cpp; sourceTree = "<group>"; };
-		F5B5BBF31B0B516F00D93B7B /* NMouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMouse.h; sourceTree = "<group>"; };
-		F5B5BBF41B0B516F00D93B7B /* NSurface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NSurface.cpp; sourceTree = "<group>"; };
-		F5B5BBF51B0B516F00D93B7B /* NSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSurface.h; sourceTree = "<group>"; };
-		F5B5BBF61B0B516F00D93B7B /* ResourcePath.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ResourcePath.hpp; sourceTree = "<group>"; };
-		F5B5BBF71B0B516F00D93B7B /* ResourcePath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
-		F5B5BBF81B0B516F00D93B7B /* resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = resources; sourceTree = "<group>"; };
+		F55873F71B132C6C006E87AE /* Fifth-Server */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Fifth-Server"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F558742D1B132CAC006E87AE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		F55874371B132CAC006E87AE /* resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = resources; sourceTree = "<group>"; };
+		F55874521B132CE2006E87AE /* sfml-audio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-audio.framework"; path = "../../../../../../../Library/Frameworks/sfml-audio.framework"; sourceTree = "<group>"; };
+		F55874531B132CE2006E87AE /* sfml-graphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-graphics.framework"; path = "../../../../../../../Library/Frameworks/sfml-graphics.framework"; sourceTree = "<group>"; };
+		F55874541B132CE2006E87AE /* sfml-network.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-network.framework"; path = "../../../../../../../Library/Frameworks/sfml-network.framework"; sourceTree = "<group>"; };
+		F55874551B132CE2006E87AE /* sfml-system.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-system.framework"; path = "../../../../../../../Library/Frameworks/sfml-system.framework"; sourceTree = "<group>"; };
+		F55874561B132CE2006E87AE /* sfml-window.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-window.framework"; path = "../../../../../../../Library/Frameworks/sfml-window.framework"; sourceTree = "<group>"; };
+		F55874571B132CE2006E87AE /* SFML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SFML.framework; path = ../../../../../../../Library/Frameworks/SFML.framework; sourceTree = "<group>"; };
+		F558745F1B133567006E87AE /* CAssetManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAssetManager.cpp; sourceTree = "<group>"; };
+		F55874601B133567006E87AE /* CAssetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAssetManager.h; sourceTree = "<group>"; };
+		F55874611B133567006E87AE /* CBody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CBody.cpp; sourceTree = "<group>"; };
+		F55874621B133567006E87AE /* CBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBody.h; sourceTree = "<group>"; };
+		F55874631B133567006E87AE /* CCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCamera.cpp; sourceTree = "<group>"; };
+		F55874641B133567006E87AE /* CCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCamera.h; sourceTree = "<group>"; };
+		F55874651B133567006E87AE /* CChatBubble.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CChatBubble.cpp; sourceTree = "<group>"; };
+		F55874661B133567006E87AE /* CChatBubble.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CChatBubble.h; sourceTree = "<group>"; };
+		F55874671B133567006E87AE /* CClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CClient.cpp; sourceTree = "<group>"; };
+		F55874681B133567006E87AE /* CClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CClient.h; sourceTree = "<group>"; };
+		F55874691B133567006E87AE /* CEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CEntity.cpp; sourceTree = "<group>"; };
+		F558746A1B133567006E87AE /* CEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CEntity.h; sourceTree = "<group>"; };
+		F558746B1B133567006E87AE /* CEntityManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CEntityManager.cpp; sourceTree = "<group>"; };
+		F558746C1B133567006E87AE /* CEntityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CEntityManager.h; sourceTree = "<group>"; };
+		F558746D1B133567006E87AE /* CGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGame.cpp; sourceTree = "<group>"; };
+		F558746E1B133567006E87AE /* CGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGame.h; sourceTree = "<group>"; };
+		F558746F1B133567006E87AE /* CGuiText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGuiText.cpp; sourceTree = "<group>"; };
+		F55874701B133567006E87AE /* CGuiText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGuiText.h; sourceTree = "<group>"; };
+		F55874711B133567006E87AE /* CInstance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CInstance.cpp; sourceTree = "<group>"; };
+		F55874721B133567006E87AE /* CInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CInstance.h; sourceTree = "<group>"; };
+		F55874731B133567006E87AE /* CNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CNetwork.cpp; sourceTree = "<group>"; };
+		F55874741B133567006E87AE /* CNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNetwork.h; sourceTree = "<group>"; };
+		F55874751B133567006E87AE /* CParticle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CParticle.cpp; sourceTree = "<group>"; };
+		F55874761B133567006E87AE /* CParticle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CParticle.h; sourceTree = "<group>"; };
+		F55874771B133567006E87AE /* CParticleEmitter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CParticleEmitter.cpp; sourceTree = "<group>"; };
+		F55874781B133567006E87AE /* CParticleEmitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CParticleEmitter.h; sourceTree = "<group>"; };
+		F55874791B133567006E87AE /* CPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CPlayer.cpp; sourceTree = "<group>"; };
+		F558747A1B133567006E87AE /* CPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPlayer.h; sourceTree = "<group>"; };
+		F558747B1B133567006E87AE /* CRenderable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CRenderable.cpp; sourceTree = "<group>"; };
+		F558747C1B133567006E87AE /* CRenderable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRenderable.h; sourceTree = "<group>"; };
+		F558747D1B133567006E87AE /* CServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CServer.cpp; sourceTree = "<group>"; };
+		F558747E1B133567006E87AE /* CServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CServer.h; sourceTree = "<group>"; };
+		F558747F1B133567006E87AE /* CSprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CSprite.cpp; sourceTree = "<group>"; };
+		F55874801B133567006E87AE /* CSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSprite.h; sourceTree = "<group>"; };
+		F55874811B133567006E87AE /* CSpriteSheet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CSpriteSheet.cpp; sourceTree = "<group>"; };
+		F55874821B133567006E87AE /* CSpriteSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSpriteSheet.h; sourceTree = "<group>"; };
+		F55874831B133567006E87AE /* CText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CText.cpp; sourceTree = "<group>"; };
+		F55874841B133567006E87AE /* CText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CText.h; sourceTree = "<group>"; };
+		F55874851B133567006E87AE /* CTile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CTile.cpp; sourceTree = "<group>"; };
+		F55874861B133567006E87AE /* CTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTile.h; sourceTree = "<group>"; };
+		F55874871B133567006E87AE /* CWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CWindow.cpp; sourceTree = "<group>"; };
+		F55874881B133567006E87AE /* CWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWindow.h; sourceTree = "<group>"; };
+		F55874891B133567006E87AE /* Define.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Define.h; sourceTree = "<group>"; };
+		F558748A1B133567006E87AE /* Fifth-Server-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Fifth-Server-Info.plist"; sourceTree = "<group>"; };
+		F558748B1B133567006E87AE /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		F558748C1B133567006E87AE /* NFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFile.cpp; sourceTree = "<group>"; };
+		F558748D1B133567006E87AE /* NFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFile.h; sourceTree = "<group>"; };
+		F558748E1B133567006E87AE /* NMouse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NMouse.cpp; sourceTree = "<group>"; };
+		F558748F1B133567006E87AE /* NMouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMouse.h; sourceTree = "<group>"; };
+		F55874901B133567006E87AE /* NSurface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NSurface.cpp; sourceTree = "<group>"; };
+		F55874911B133567006E87AE /* NSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSurface.h; sourceTree = "<group>"; };
+		F55874921B133567006E87AE /* rapidjson */ = {isa = PBXFileReference; lastKnownFileType = folder; path = rapidjson; sourceTree = "<group>"; };
+		F55874931B133567006E87AE /* ResourcePath.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ResourcePath.hpp; sourceTree = "<group>"; };
+		F55874941B133567006E87AE /* ResourcePath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		F5B5BBAB1B0A240E00D93B7B /* Frameworks */ = {
+		F55873F41B132C6C006E87AE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F55874581B132CE2006E87AE /* sfml-audio.framework in Frameworks */,
+				F55874591B132CE2006E87AE /* sfml-graphics.framework in Frameworks */,
+				F558745A1B132CE2006E87AE /* sfml-network.framework in Frameworks */,
+				F558745B1B132CE2006E87AE /* sfml-system.framework in Frameworks */,
+				F558745C1B132CE2006E87AE /* sfml-window.framework in Frameworks */,
+				F558745D1B132CE2006E87AE /* SFML.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		F5B5BBA51B0A240E00D93B7B = {
+		F55873EE1B132C6C006E87AE = {
 			isa = PBXGroup;
 			children = (
-				F5B5BBB11B0A240E00D93B7B /* Fifth-Server */,
-				F5B5BBB01B0A240E00D93B7B /* Products */,
+				F55874521B132CE2006E87AE /* sfml-audio.framework */,
+				F55874531B132CE2006E87AE /* sfml-graphics.framework */,
+				F55874541B132CE2006E87AE /* sfml-network.framework */,
+				F55874551B132CE2006E87AE /* sfml-system.framework */,
+				F55874561B132CE2006E87AE /* sfml-window.framework */,
+				F55874571B132CE2006E87AE /* SFML.framework */,
+				F55873F91B132C6C006E87AE /* Fifth-Server */,
+				F55873F81B132C6C006E87AE /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		F5B5BBB01B0A240E00D93B7B /* Products */ = {
+		F55873F81B132C6C006E87AE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F5B5BBAF1B0A240E00D93B7B /* Fifth-Server.app */,
+				F55873F71B132C6C006E87AE /* Fifth-Server */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		F5B5BBB11B0A240E00D93B7B /* Fifth-Server */ = {
+		F55873F91B132C6C006E87AE /* Fifth-Server */ = {
 			isa = PBXGroup;
 			children = (
-				F5B5BC151B0B51BA00D93B7B /* GFX */,
-				F5B5BC161B0B51CF00D93B7B /* Entity */,
-				F5B5BC171B0B51EC00D93B7B /* Helper */,
-				F5B5BBCB1B0B516F00D93B7B /* CCamera.cpp */,
-				F5B5BBCC1B0B516F00D93B7B /* CCamera.h */,
-				F5B5BBD71B0B516F00D93B7B /* CInstance.cpp */,
-				F5B5BBD81B0B516F00D93B7B /* CInstance.h */,
-				F5B5BBD91B0B516F00D93B7B /* CNetwork.cpp */,
-				F5B5BBDA1B0B516F00D93B7B /* CNetwork.h */,
-				F5B5BBE91B0B516F00D93B7B /* CTile.cpp */,
-				F5B5BBEA1B0B516F00D93B7B /* CTile.h */,
-				F5B5BBEB1B0B516F00D93B7B /* CWindow.cpp */,
-				F5B5BBEC1B0B516F00D93B7B /* CWindow.h */,
-				F5B5BBED1B0B516F00D93B7B /* Define.h */,
-				F5B5BBD31B0B516F00D93B7B /* CGame.cpp */,
-				F5B5BBD41B0B516F00D93B7B /* CGame.h */,
-				F5B5BBEF1B0B516F00D93B7B /* main.cpp */,
-				F5B5BBEE1B0B516F00D93B7B /* Images.xcassets */,
-				F5B5BBF81B0B516F00D93B7B /* resources */,
-				F5B5BBB21B0A240E00D93B7B /* Supporting Files */,
+				F558745F1B133567006E87AE /* CAssetManager.cpp */,
+				F55874601B133567006E87AE /* CAssetManager.h */,
+				F55874611B133567006E87AE /* CBody.cpp */,
+				F55874621B133567006E87AE /* CBody.h */,
+				F55874631B133567006E87AE /* CCamera.cpp */,
+				F55874641B133567006E87AE /* CCamera.h */,
+				F55874651B133567006E87AE /* CChatBubble.cpp */,
+				F55874661B133567006E87AE /* CChatBubble.h */,
+				F55874671B133567006E87AE /* CClient.cpp */,
+				F55874681B133567006E87AE /* CClient.h */,
+				F55874691B133567006E87AE /* CEntity.cpp */,
+				F558746A1B133567006E87AE /* CEntity.h */,
+				F558746B1B133567006E87AE /* CEntityManager.cpp */,
+				F558746C1B133567006E87AE /* CEntityManager.h */,
+				F558746D1B133567006E87AE /* CGame.cpp */,
+				F558746E1B133567006E87AE /* CGame.h */,
+				F558746F1B133567006E87AE /* CGuiText.cpp */,
+				F55874701B133567006E87AE /* CGuiText.h */,
+				F55874711B133567006E87AE /* CInstance.cpp */,
+				F55874721B133567006E87AE /* CInstance.h */,
+				F55874731B133567006E87AE /* CNetwork.cpp */,
+				F55874741B133567006E87AE /* CNetwork.h */,
+				F55874751B133567006E87AE /* CParticle.cpp */,
+				F55874761B133567006E87AE /* CParticle.h */,
+				F55874771B133567006E87AE /* CParticleEmitter.cpp */,
+				F55874781B133567006E87AE /* CParticleEmitter.h */,
+				F55874791B133567006E87AE /* CPlayer.cpp */,
+				F558747A1B133567006E87AE /* CPlayer.h */,
+				F558747B1B133567006E87AE /* CRenderable.cpp */,
+				F558747C1B133567006E87AE /* CRenderable.h */,
+				F558747D1B133567006E87AE /* CServer.cpp */,
+				F558747E1B133567006E87AE /* CServer.h */,
+				F558747F1B133567006E87AE /* CSprite.cpp */,
+				F55874801B133567006E87AE /* CSprite.h */,
+				F55874811B133567006E87AE /* CSpriteSheet.cpp */,
+				F55874821B133567006E87AE /* CSpriteSheet.h */,
+				F55874831B133567006E87AE /* CText.cpp */,
+				F55874841B133567006E87AE /* CText.h */,
+				F55874851B133567006E87AE /* CTile.cpp */,
+				F55874861B133567006E87AE /* CTile.h */,
+				F55874871B133567006E87AE /* CWindow.cpp */,
+				F55874881B133567006E87AE /* CWindow.h */,
+				F55874891B133567006E87AE /* Define.h */,
+				F558748A1B133567006E87AE /* Fifth-Server-Info.plist */,
+				F558748B1B133567006E87AE /* main.cpp */,
+				F558748C1B133567006E87AE /* NFile.cpp */,
+				F558748D1B133567006E87AE /* NFile.h */,
+				F558748E1B133567006E87AE /* NMouse.cpp */,
+				F558748F1B133567006E87AE /* NMouse.h */,
+				F55874901B133567006E87AE /* NSurface.cpp */,
+				F55874911B133567006E87AE /* NSurface.h */,
+				F55874921B133567006E87AE /* rapidjson */,
+				F55874931B133567006E87AE /* ResourcePath.hpp */,
+				F55874941B133567006E87AE /* ResourcePath.mm */,
+				F558742D1B132CAC006E87AE /* Images.xcassets */,
+				F55874371B132CAC006E87AE /* resources */,
 			);
 			path = "Fifth-Server";
-			sourceTree = "<group>";
-		};
-		F5B5BBB21B0A240E00D93B7B /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				F5B5BBB31B0A240E00D93B7B /* Fifth-Server-Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		F5B5BC151B0B51BA00D93B7B /* GFX */ = {
-			isa = PBXGroup;
-			children = (
-				F5B5BBCD1B0B516F00D93B7B /* CChatBubble.cpp */,
-				F5B5BBCE1B0B516F00D93B7B /* CChatBubble.h */,
-				F5B5BBC71B0B516F00D93B7B /* CAssetManager.cpp */,
-				F5B5BBC81B0B516F00D93B7B /* CAssetManager.h */,
-				F5B5BBD51B0B516F00D93B7B /* CGuiText.cpp */,
-				F5B5BBD61B0B516F00D93B7B /* CGuiText.h */,
-				F5B5BBE11B0B516F00D93B7B /* CRenderable.cpp */,
-				F5B5BBE21B0B516F00D93B7B /* CRenderable.h */,
-				F5B5BBE31B0B516F00D93B7B /* CSprite.cpp */,
-				F5B5BBE41B0B516F00D93B7B /* CSprite.h */,
-				F5B5BBE51B0B516F00D93B7B /* CSpriteSheet.cpp */,
-				F5B5BBE61B0B516F00D93B7B /* CSpriteSheet.h */,
-				F5B5BBE71B0B516F00D93B7B /* CText.cpp */,
-				F5B5BBE81B0B516F00D93B7B /* CText.h */,
-				F5B5BBF41B0B516F00D93B7B /* NSurface.cpp */,
-				F5B5BBF51B0B516F00D93B7B /* NSurface.h */,
-			);
-			name = GFX;
-			sourceTree = "<group>";
-		};
-		F5B5BC161B0B51CF00D93B7B /* Entity */ = {
-			isa = PBXGroup;
-			children = (
-				F5B5BBC91B0B516F00D93B7B /* CBody.cpp */,
-				F5B5BBCA1B0B516F00D93B7B /* CBody.h */,
-				F5B5BBCF1B0B516F00D93B7B /* CEntity.cpp */,
-				F5B5BBD01B0B516F00D93B7B /* CEntity.h */,
-				F5B5BBD11B0B516F00D93B7B /* CEntityManager.cpp */,
-				F5B5BBD21B0B516F00D93B7B /* CEntityManager.h */,
-				F5B5BBDB1B0B516F00D93B7B /* CParticle.cpp */,
-				F5B5BBDC1B0B516F00D93B7B /* CParticle.h */,
-				F5B5BBDD1B0B516F00D93B7B /* CParticleEmitter.cpp */,
-				F5B5BBDE1B0B516F00D93B7B /* CParticleEmitter.h */,
-				F5B5BBDF1B0B516F00D93B7B /* CPlayer.cpp */,
-				F5B5BBE01B0B516F00D93B7B /* CPlayer.h */,
-			);
-			name = Entity;
-			sourceTree = "<group>";
-		};
-		F5B5BC171B0B51EC00D93B7B /* Helper */ = {
-			isa = PBXGroup;
-			children = (
-				F5B5BBF01B0B516F00D93B7B /* NFile.cpp */,
-				F5B5BBF11B0B516F00D93B7B /* NFile.h */,
-				F5B5BBF21B0B516F00D93B7B /* NMouse.cpp */,
-				F5B5BBF31B0B516F00D93B7B /* NMouse.h */,
-				F5B5BBF61B0B516F00D93B7B /* ResourcePath.hpp */,
-				F5B5BBF71B0B516F00D93B7B /* ResourcePath.mm */,
-			);
-			name = Helper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F5B5BBAE1B0A240E00D93B7B /* Fifth-Server */ = {
+		F55873F61B132C6C006E87AE /* Fifth-Server */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F5B5BBC41B0A240E00D93B7B /* Build configuration list for PBXNativeTarget "Fifth-Server" */;
+			buildConfigurationList = F55873FE1B132C6C006E87AE /* Build configuration list for PBXNativeTarget "Fifth-Server" */;
 			buildPhases = (
-				F5B5BBAA1B0A240E00D93B7B /* Sources */,
-				F5B5BBAB1B0A240E00D93B7B /* Frameworks */,
-				F5B5BBAC1B0A240E00D93B7B /* Resources */,
-				F5B5BBAD1B0A240E00D93B7B /* ShellScript */,
+				F55873F31B132C6C006E87AE /* Sources */,
+				F55873F41B132C6C006E87AE /* Frameworks */,
+				F55873F51B132C6C006E87AE /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -225,211 +238,171 @@
 			);
 			name = "Fifth-Server";
 			productName = "Fifth-Server";
-			productReference = F5B5BBAF1B0A240E00D93B7B /* Fifth-Server.app */;
-			productType = "com.apple.product-type.application";
+			productReference = F55873F71B132C6C006E87AE /* Fifth-Server */;
+			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		F5B5BBA61B0A240E00D93B7B /* Project object */ = {
+		F55873EF1B132C6C006E87AE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0620;
 				ORGANIZATIONNAME = "Didrik Munther";
 				TargetAttributes = {
-					F5B5BBAE1B0A240E00D93B7B = {
+					F55873F61B132C6C006E87AE = {
 						CreatedOnToolsVersion = 6.2;
 					};
 				};
 			};
-			buildConfigurationList = F5B5BBA91B0A240E00D93B7B /* Build configuration list for PBXProject "Fifth-Server" */;
+			buildConfigurationList = F55873F21B132C6C006E87AE /* Build configuration list for PBXProject "Fifth-Server" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = F5B5BBA51B0A240E00D93B7B;
-			productRefGroup = F5B5BBB01B0A240E00D93B7B /* Products */;
+			mainGroup = F55873EE1B132C6C006E87AE;
+			productRefGroup = F55873F81B132C6C006E87AE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F5B5BBAE1B0A240E00D93B7B /* Fifth-Server */,
+				F55873F61B132C6C006E87AE /* Fifth-Server */,
 			);
 		};
 /* End PBXProject section */
 
-/* Begin PBXResourcesBuildPhase section */
-		F5B5BBAC1B0A240E00D93B7B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F5B5BC131B0B516F00D93B7B /* resources in Resources */,
-				F5B5BC0D1B0B516F00D93B7B /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		F5B5BBAD1B0A240E00D93B7B /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This shell script simply copies required SFML dylibs/frameworks into the application bundle frameworks folder.\n# If you're using static libraries (which is not recommended) you should remove this script from your project.\n\n# Are we building a project that uses frameworks or dylibs?\ncase \"$SFML_BINARY_TYPE\" in\n    DYLIBS)\n        frameworks=\"false\"\n        ;;\n    *)\n        frameworks=\"true\"\n        ;;\nesac\n\n# Echoes to stderr\nerror () # $* message to display\n{\n    echo $* 1>&2\n    exit 2\n}\n\nassert () # $1 is a boolean, $2...N is an error message\n{\n    if [ $# -lt 2 ]\n    then\n        error \"Internal error in assert : not enough args\"\n    fi\n\n    if [ $1 -ne 0 ]\n    then\n        shift\n        error \"$*\"\n    fi\n}\n\nforce_remove () # $@ is some paths\n{\n    test $# -ge 1\n    assert $? \"force_remove() requires at least one parameter\"\n    rm -fr $@\n    assert $? \"couldn't remove $@\"\n}\n\ncopy () # $1 is a source, $2 is a destination\n{\n    test $# -eq 2\n    assert $? \"copy() requires two parameters\"\n    ditto \"$1\" \"$2\"\n    assert $? \"couldn't copy $1 to $2\"\n}\n\nrequire () # $1 is a SFML module like 'system' or 'audio'\n{\n    dest=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app/Contents/Frameworks\"\n\n    if [ -z \"$1\" ]\n    then\n        error \"require() requires one parameter!\"\n    else\n        # clean potentially old stuff\n        force_remove \"$dest/libsfml-$1\"*\n        force_remove \"$dest/sfml-$1.framework\"\n\n        # copy SFML libraries\n        if [ \"$frameworks\" = \"true\" ]\n        then\n            source=\"/Library/Frameworks/sfml-$1.framework\"\n            target=\"sfml-$1.framework\"\n        elif [ \"$SFML_LINK_DYLIBS_SUFFIX\" = \"-d\" ]\n        then\n            source=\"/usr/local/lib/libsfml-$1-d.dylib\"\n            target=\"`readlink $source`\"\n        else\n            source=\"/usr/local/lib/libsfml-$1.dylib\"\n            target=\"`readlink $source`\"\n        fi\n\n        copy \"$source\" \"$dest/$target\"\n\n        # copy extra dependencies\n        if [ \"$1\" = \"audio\" ]\n        then\n            # copy sndfile framework too\n            copy \"/Library/Frameworks/sndfile.framework\" \"$dest/sndfile.framework\"\n        elif [ \"$1\" = \"graphics\" ]\n        then\n            # copy freetype framework too\n            copy \"/Library/Frameworks/freetype.framework\" \"$dest/freetype.framework\"\n        fi\n    fi\n}\n\nif [ -n \"$SFML_SYSTEM\" ]\nthen\n    require \"system\"\nfi\n\nif [ -n \"$SFML_AUDIO\" ]\nthen\n    require \"audio\"\nfi\n\nif [ -n \"$SFML_NETWORK\" ]\nthen\n    require \"network\"\nfi\n\nif [ -n \"$SFML_WINDOW\" ]\nthen\n    require \"window\"\nfi\n\nif [ -n \"$SFML_GRAPHICS\" ]\nthen\n    require \"graphics\"\nfi\n\n                ";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
-		F5B5BBAA1B0A240E00D93B7B /* Sources */ = {
+		F55873F31B132C6C006E87AE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5B5BC111B0B516F00D93B7B /* NSurface.cpp in Sources */,
-				F5B5BBFE1B0B516F00D93B7B /* CEntity.cpp in Sources */,
-				F5B5BC071B0B516F00D93B7B /* CRenderable.cpp in Sources */,
-				F5B5BBFA1B0B516F00D93B7B /* CAssetManager.cpp in Sources */,
-				F5B5BC051B0B516F00D93B7B /* CParticleEmitter.cpp in Sources */,
-				F5B5BC091B0B516F00D93B7B /* CSpriteSheet.cpp in Sources */,
-				F5B5BC0B1B0B516F00D93B7B /* CTile.cpp in Sources */,
-				F5B5BC011B0B516F00D93B7B /* CGuiText.cpp in Sources */,
-				F5B5BC041B0B516F00D93B7B /* CParticle.cpp in Sources */,
-				F5B5BBFC1B0B516F00D93B7B /* CCamera.cpp in Sources */,
-				F5B5BBFB1B0B516F00D93B7B /* CBody.cpp in Sources */,
-				F5B5BC0C1B0B516F00D93B7B /* CWindow.cpp in Sources */,
-				F5B5BC121B0B516F00D93B7B /* ResourcePath.mm in Sources */,
-				F5B5BC0F1B0B516F00D93B7B /* NFile.cpp in Sources */,
-				F5B5BC101B0B516F00D93B7B /* NMouse.cpp in Sources */,
-				F5B5BC021B0B516F00D93B7B /* CInstance.cpp in Sources */,
-				F5B5BC031B0B516F00D93B7B /* CNetwork.cpp in Sources */,
-				F5B5BC081B0B516F00D93B7B /* CSprite.cpp in Sources */,
-				F5B5BBFF1B0B516F00D93B7B /* CEntityManager.cpp in Sources */,
-				F5B5BC061B0B516F00D93B7B /* CPlayer.cpp in Sources */,
-				F5B5BBFD1B0B516F00D93B7B /* CChatBubble.cpp in Sources */,
-				F5B5BC0A1B0B516F00D93B7B /* CText.cpp in Sources */,
-				F5B5BC0E1B0B516F00D93B7B /* main.cpp in Sources */,
-				F5B5BC001B0B516F00D93B7B /* CGame.cpp in Sources */,
+				F558749E1B133567006E87AE /* CInstance.cpp in Sources */,
+				F558749D1B133567006E87AE /* CGuiText.cpp in Sources */,
+				F55874AD1B133567006E87AE /* NSurface.cpp in Sources */,
+				F558749A1B133567006E87AE /* CEntity.cpp in Sources */,
+				F55874A91B133567006E87AE /* CWindow.cpp in Sources */,
+				F55874AA1B133567006E87AE /* main.cpp in Sources */,
+				F55874951B133567006E87AE /* CAssetManager.cpp in Sources */,
+				F55874AB1B133567006E87AE /* NFile.cpp in Sources */,
+				F558749B1B133567006E87AE /* CEntityManager.cpp in Sources */,
+				F55874A01B133567006E87AE /* CParticle.cpp in Sources */,
+				F55874A41B133567006E87AE /* CServer.cpp in Sources */,
+				F55874A21B133567006E87AE /* CPlayer.cpp in Sources */,
+				F55874A31B133567006E87AE /* CRenderable.cpp in Sources */,
+				F558749F1B133567006E87AE /* CNetwork.cpp in Sources */,
+				F55874A11B133567006E87AE /* CParticleEmitter.cpp in Sources */,
+				F55874971B133567006E87AE /* CCamera.cpp in Sources */,
+				F55874A61B133567006E87AE /* CSpriteSheet.cpp in Sources */,
+				F55874961B133567006E87AE /* CBody.cpp in Sources */,
+				F55874991B133567006E87AE /* CClient.cpp in Sources */,
+				F55874AC1B133567006E87AE /* NMouse.cpp in Sources */,
+				F55874AE1B133567006E87AE /* ResourcePath.mm in Sources */,
+				F55874981B133567006E87AE /* CChatBubble.cpp in Sources */,
+				F55874A71B133567006E87AE /* CText.cpp in Sources */,
+				F558749C1B133567006E87AE /* CGame.cpp in Sources */,
+				F55874A51B133567006E87AE /* CSprite.cpp in Sources */,
+				F55874A81B133567006E87AE /* CTile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		F5B5BBC21B0A240E00D93B7B /* Debug */ = {
+		F55873FC1B132C6C006E87AE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					x86_64,
-				);
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
-				FRAMEWORK_SEARCH_PATHS = (
-					/Library/Frameworks/,
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
 					"$(inherited)",
 				);
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = (
-					/usr/local/include/,
-					"$(inherited)",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					/usr/local/lib/,
-					"$(inherited)",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"$(SFML_SYSTEM)",
-					"$(SFML_WINDOW)",
-					"$(SFML_GRAPHICS)",
-					"$(SFML_AUDIO)",
-					"$(SFML_NETWORK)",
-				);
-				SFML_AUDIO = "$(SFML_LINK_PREFIX) sfml-audio$(SFML_LINK_SUFFIX)";
-				SFML_BINARY_TYPE = FRAMEWORKS;
-				SFML_GRAPHICS = "$(SFML_LINK_PREFIX) sfml-graphics$(SFML_LINK_SUFFIX)";
-				SFML_LINK_DYLIBS_PREFIX = "-l";
-				SFML_LINK_DYLIBS_SUFFIX = "";
-				SFML_LINK_FRAMEWORKS_PREFIX = "-framework";
-				SFML_LINK_FRAMEWORKS_SUFFIX = "";
-				SFML_LINK_PREFIX = "$(SFML_LINK_$(SFML_BINARY_TYPE)_PREFIX)";
-				SFML_LINK_SUFFIX = "$(SFML_LINK_$(SFML_BINARY_TYPE)_SUFFIX)";
-				SFML_NETWORK = "$(SFML_LINK_PREFIX) sfml-network$(SFML_LINK_SUFFIX)";
-				SFML_SYSTEM = "$(SFML_LINK_PREFIX) sfml-system$(SFML_LINK_SUFFIX)";
-				SFML_WINDOW = "$(SFML_LINK_PREFIX) sfml-window$(SFML_LINK_SUFFIX)";
-				SUPPORTED_PLATFORMS = macosx;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
-		F5B5BBC31B0A240E00D93B7B /* Release */ = {
+		F55873FD1B132C6C006E87AE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					x86_64,
-				);
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
-				FRAMEWORK_SEARCH_PATHS = (
-					/Library/Frameworks/,
-					"$(inherited)",
-				);
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = (
-					/usr/local/include/,
-					"$(inherited)",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					/usr/local/lib/,
-					"$(inherited)",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"$(SFML_SYSTEM)",
-					"$(SFML_WINDOW)",
-					"$(SFML_GRAPHICS)",
-					"$(SFML_AUDIO)",
-					"$(SFML_NETWORK)",
-				);
-				SFML_AUDIO = "$(SFML_LINK_PREFIX) sfml-audio$(SFML_LINK_SUFFIX)";
-				SFML_BINARY_TYPE = FRAMEWORKS;
-				SFML_GRAPHICS = "$(SFML_LINK_PREFIX) sfml-graphics$(SFML_LINK_SUFFIX)";
-				SFML_LINK_DYLIBS_PREFIX = "-l";
-				SFML_LINK_DYLIBS_SUFFIX = "";
-				SFML_LINK_FRAMEWORKS_PREFIX = "-framework";
-				SFML_LINK_FRAMEWORKS_SUFFIX = "";
-				SFML_LINK_PREFIX = "$(SFML_LINK_$(SFML_BINARY_TYPE)_PREFIX)";
-				SFML_LINK_SUFFIX = "$(SFML_LINK_$(SFML_BINARY_TYPE)_SUFFIX)";
-				SFML_NETWORK = "$(SFML_LINK_PREFIX) sfml-network$(SFML_LINK_SUFFIX)";
-				SFML_SYSTEM = "$(SFML_LINK_PREFIX) sfml-system$(SFML_LINK_SUFFIX)";
-				SFML_WINDOW = "$(SFML_LINK_PREFIX) sfml-window$(SFML_LINK_SUFFIX)";
-				SUPPORTED_PLATFORMS = macosx;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
-		F5B5BBC51B0A240E00D93B7B /* Debug */ = {
+		F55873FF1B132C6C006E87AE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = "Fifth-Server/Fifth-Server-Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
-		F5B5BBC61B0A240E00D93B7B /* Release */ = {
+		F55874001B132C6C006E87AE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = "Fifth-Server/Fifth-Server-Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -437,25 +410,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F5B5BBA91B0A240E00D93B7B /* Build configuration list for PBXProject "Fifth-Server" */ = {
+		F55873F21B132C6C006E87AE /* Build configuration list for PBXProject "Fifth-Server" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F5B5BBC21B0A240E00D93B7B /* Debug */,
-				F5B5BBC31B0A240E00D93B7B /* Release */,
+				F55873FC1B132C6C006E87AE /* Debug */,
+				F55873FD1B132C6C006E87AE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F5B5BBC41B0A240E00D93B7B /* Build configuration list for PBXNativeTarget "Fifth-Server" */ = {
+		F55873FE1B132C6C006E87AE /* Build configuration list for PBXNativeTarget "Fifth-Server" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F5B5BBC51B0A240E00D93B7B /* Debug */,
-				F5B5BBC61B0A240E00D93B7B /* Release */,
+				F55873FF1B132C6C006E87AE /* Debug */,
+				F55874001B132C6C006E87AE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = F5B5BBA61B0A240E00D93B7B /* Project object */;
+	rootObject = F55873EF1B132C6C006E87AE /* Project object */;
 }

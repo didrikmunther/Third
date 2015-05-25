@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F5B5BBAE1B0A240E00D93B7B"
-               BuildableName = "Fifth-Server.app"
+               BlueprintIdentifier = "F55873F61B132C6C006E87AE"
+               BuildableName = "Fifth-Server"
                BlueprintName = "Fifth-Server"
                ReferencedContainer = "container:Fifth-Server.xcodeproj">
             </BuildableReference>
@@ -32,8 +32,8 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F5B5BBAE1B0A240E00D93B7B"
-            BuildableName = "Fifth-Server.app"
+            BlueprintIdentifier = "F55873F61B132C6C006E87AE"
+            BuildableName = "Fifth-Server"
             BlueprintName = "Fifth-Server"
             ReferencedContainer = "container:Fifth-Server.xcodeproj">
          </BuildableReference>
@@ -52,8 +52,8 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F5B5BBAE1B0A240E00D93B7B"
-            BuildableName = "Fifth-Server.app"
+            BlueprintIdentifier = "F55873F61B132C6C006E87AE"
+            BuildableName = "Fifth-Server"
             BlueprintName = "Fifth-Server"
             ReferencedContainer = "container:Fifth-Server.xcodeproj">
          </BuildableReference>
@@ -71,8 +71,8 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F5B5BBAE1B0A240E00D93B7B"
-            BuildableName = "Fifth-Server.app"
+            BlueprintIdentifier = "F55873F61B132C6C006E87AE"
+            BuildableName = "Fifth-Server"
             BlueprintName = "Fifth-Server"
             ReferencedContainer = "container:Fifth-Server.xcodeproj">
          </BuildableReference>

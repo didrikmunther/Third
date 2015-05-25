@@ -15,6 +15,7 @@
 #include "CCamera.h"
 #include "CPlayer.h"
 #include "CCamera.h"
+#include "CNetwork.h"
 
 class CInstance {
     
@@ -22,10 +23,14 @@ public:
     CInstance();
     
     CCamera camera;
-    CPlayer* player;
+    CWindow window;
     
     CEntityManager entityManager;
-    CWindow window;
+    CPlayer* player;
+    
+    CNetwork network;
+    
+    void closeInstance();
     
 };
 

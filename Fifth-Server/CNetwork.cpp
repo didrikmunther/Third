@@ -12,7 +12,7 @@ CNetwork::CNetwork() {
 }
 
 int CNetwork::connect(sf::IpAddress adress, unsigned short port) {
-    
+    return 0;
 }
 
 void CNetwork::disconnect() {

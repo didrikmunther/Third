@@ -6,12 +6,16 @@
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#include "CGame.h"
+//#include "CGame.h"
+#include "CServer.h"
+
+#include <iostream>
 
 
 int main(int argc, const char * argv[]){
     
-    CGame game;
+    CServer server;
     
-    return game.onExecute();
+    return server.onExecute();
+    
 }

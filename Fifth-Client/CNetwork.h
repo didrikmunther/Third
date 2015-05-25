@@ -19,13 +19,17 @@ class CNetwork {
 public:
     CNetwork();
     
+    bool isConnected();
     int connect(sf::IpAddress adress, unsigned short port);
     void disconnect();
     
     void onUpdate(CGame* game);
     
 private:
-    sf::UdpSocket udpSocket;
+    sf::UdpSocket _udpSocket;
+    sf::TcpSocket _tcpSocket;
+    
+    
     
 };
 

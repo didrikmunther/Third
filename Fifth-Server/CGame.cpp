@@ -351,19 +351,19 @@ void CGame::_onLoop() {
 //    
 //}
 
-//void CGame::_onRender() {
-//    
-//    instance.window.getWindow()->clear();
-//    instance.window.getRenderTexture()->clear();
-//    
-//    NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, *instance.window.getRenderTexture(), 255, 255, 255);
-//    instance.entityManager.onRender(&instance.window, &instance.camera);
-//    
-//    instance.window.getRenderTexture()->display();
-//    instance.window.getWindow()->draw(*instance.window.getSprite());
-//    instance.window.getWindow()->display();
-//    
-//}
+void CGame::_onRender() {
+    
+    instance.window.getWindow()->clear();
+    instance.window.getRenderTexture()->clear();
+    
+    NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, *instance.window.getRenderTexture(), 255, 255, 255);
+    instance.entityManager.onRender(&instance.window, &instance.camera);
+    
+    instance.window.getRenderTexture()->display();
+    instance.window.getWindow()->draw(*instance.window.getSprite());
+    instance.window.getWindow()->display();
+    
+}
 
 int CGame::_onCleanup() {
     instance.entityManager.onCleanup();

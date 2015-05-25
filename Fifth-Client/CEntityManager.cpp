@@ -43,6 +43,14 @@ void CEntityManager::addEntity(CEntity* entity, std::string name /* = "" */) {
         _EntityVector[name] = entity;
 }
 
+void CEntityManager::removeEntity(std::string name) {
+    auto it = _EntityVector.find(name);
+    if(it == _EntityVector.end())
+        return
+    delete it->second;
+    _EntityVector.erase(it);
+}
+
 CEntity* CEntityManager::getEntity(std::string name) {
     if(name == "") {
         std::cout << "Couldn't get entity because it had no name.\n";
