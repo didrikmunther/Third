@@ -3,4 +3,4 @@
 *.xcodeproj/
 *.app
 *.plist
-Images.xcassets/
+*/Images.xcassets/
