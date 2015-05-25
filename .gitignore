@@ -2,3 +2,5 @@
 *.xcodeproj
 *.xcodeproj/
 *.app
+*.plist
+Images.xcassets/
