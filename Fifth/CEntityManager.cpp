@@ -55,6 +55,21 @@ CEntity* CEntityManager::getEntity(std::string name) {
     }
 }
 
+CEntity* CEntityManager::getEntityAtCoordinate(int x, int y) {
+    for (auto &i: _EntityVector) {
+        if(i.second->coordinateCollision(x, y, 1, 1))
+           return i.second;
+    }
+    return nullptr;
+}
+
+std::string CEntityManager::getNameOfEntity(CEntity *entity) {
+    for (auto &i: _EntityVector) {                              // There must be a better way of doing this
+        if(i.second == entity)
+            return i.first;
+    }
+}
+
 void CEntityManager::addParticle(sf::IntRect rect, sf::Color color, int livingTime) {
     _ParticleVector.push_back(new CParticle(rect, color, livingTime));
 }

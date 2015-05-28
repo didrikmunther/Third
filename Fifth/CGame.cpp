@@ -112,6 +112,10 @@ int CGame::_onInit() {
     instance.entityManager.addEntity(instance.player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
     instance.camera.setTarget(instance.player);
     
+    instance.seeker = new CEnemy(sf::IntRect{150, 150, 32, 32}, "yrl");
+    instance.entityManager.addEntity(instance.seeker);
+    instance.seeker->setTarget(instance.player);
+    
     instance.entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
     instance.entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 500, 30, 500}, sf::Color{255, 0, 0, 0});
     instance.entityManager.addEntity(sf::IntRect{276, 229, 23 * 4, 59 * 4}, "tree", "l:tree");
@@ -322,6 +326,14 @@ void CGame::_onEvent(sf::Event* event) {
             }
             break;
         default:
+            break;
+            
+        case sf::Event::MouseButtonPressed:
+            auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera));
+            if(tempTarget != nullptr) {
+                instance.seeker->setTarget(tempTarget);
+                instance.seeker->say("Target confirmed: " + instance.entityManager.getNameOfEntity(tempTarget), "TESTFONT", ChatBubbleType::SAY);
+            }
             break;
     }
     

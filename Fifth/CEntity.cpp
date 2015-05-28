@@ -136,7 +136,24 @@ CSprite* CEntity::getSprite() {
     return CAssetManager::getSprite(spriteKey);
 }
 
-bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities) {
+bool CEntity::coordinateCollision(int x, int y, int w, int h, int x2, int y2, int w2, int h2) {
+    if(x + 1 > x2 + w2)
+        return false;
+    if(x - 1 + w < x2)
+        return false;
+    if(y + 1 > y2 + h2)
+        return false;
+    if(y - 1 + h < y2)
+        return false;
+    
+    return true;
+}
+
+bool CEntity::coordinateCollision(int x, int y, int w, int h) {
+    return coordinateCollision(x, y, w, h, body.getX(), body.getY(), body.getW(), body.getH());
+}
+
+bool CEntity::_collision(int x, int y, std::map<std::string, CEntity*>* entities) {
     
     if(!(properties & EntityProperty::COLLIDABLE)) return false;
     
@@ -148,13 +165,7 @@ bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities)
         if (!(i.second->properties & EntityProperty::COLLIDABLE)) continue;
         //if (!i.second->isOnCollisionLayer(collisionLayer)) return;        // Isn't working right now
     
-        if(x + 1 > i.second->body.getX() + i.second->body.getW())
-            continue;
-        if(x - 1 + body.getW() < i.second->body.getX())
-            continue;
-        if(y + 1 > i.second->body.getY() + i.second->body.getH())
-            continue;
-        if(y - 1 + body.getH() < i.second->body.getY())
+        if(!coordinateCollision(x, y, body.getW(), body.getH(), i.second->body.getX(), i.second->body.getY(), i.second->body.getW(), i.second->body.getH()))
             continue;
         
         if(y - 1 + body.getH() <= i.second->body.getY() &&
@@ -175,16 +186,16 @@ bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities)
     }
     
     if(colliding) {
-        std::string toWrite = "";           // Write where the entity is colliding
-        if(collisionTop)
-            toWrite += "Top, ";
-        if(collisionBottom)
-            toWrite += "Bot, ";
-        if(collisionLeft)
-            toWrite += "Left, ";
-        if(collisionRight)
-            toWrite += "Right, ";
-        say(toWrite, "TESTFONT", ChatBubbleType::INSTANT_TALK);
+//        std::string toWrite = "";           // Write where the entity is colliding
+//        if(collisionTop)
+//            toWrite += "Top, ";
+//        if(collisionBottom)
+//            toWrite += "Bot, ";
+//        if(collisionLeft)
+//            toWrite += "Left, ";
+//        if(collisionRight)
+//            toWrite += "Right, ";
+//        say(toWrite, "TESTFONT", ChatBubbleType::INSTANT_TALK);
         return true;
     } else
         return false;
@@ -215,14 +226,14 @@ void CEntity::move(std::map<std::string, CEntity*>* entities) {
     collisionTop = collisionBottom = false;
     
     while(true) {
-        if(!collision(StopX + NewX, StopY, entities)) {
+        if(!_collision(StopX + NewX, StopY, entities)) {
             StopX += NewX;
             body.rect.left += NewX;
         } else {
             body.velX = 0;
         }
         
-        if(!collision(StopX, StopY + NewY, entities)) {
+        if(!_collision(StopX, StopY + NewY, entities)) {
             StopY += NewY;
             body.rect.top += NewY;
         } else {

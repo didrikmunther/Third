@@ -38,7 +38,8 @@ public:
     bool isOnCollisionLayer(int collisionLayer);
     
     void move(std::map<std::string, CEntity*>* entities);
-    bool collision(int x, int y, std::map<std::string, CEntity*>* entities);
+    bool coordinateCollision(int x, int y, int w, int h, int x2, int y2, int w2, int h2);
+    bool coordinateCollision(int x, int y, int w, int h);
     
     void say(std::string text, std::string fontKey, int type);
     void renderChat(CWindow* window, CCamera* camera);
@@ -67,6 +68,9 @@ protected:
     std::vector<CChatBubble*> _ChatBubbleVector;
     
     virtual void _doLogic();
+    
+private:
+    bool _collision(int x, int y, std::map<std::string, CEntity*>* entities);
     
 };
 

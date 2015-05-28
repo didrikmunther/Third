@@ -15,6 +15,7 @@
 #include "CCamera.h"
 #include "CPlayer.h"
 #include "CCamera.h"
+#include "CEnemy.h"
 
 class CInstance {
     
@@ -26,6 +27,8 @@ public:
     
     CEntityManager entityManager;
     CPlayer* player;
+    
+    CEnemy* seeker;
     
     void closeInstance();
     
