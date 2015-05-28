@@ -13,6 +13,7 @@
 #include "Define.h"
 #include "CChatBubble.h"
 #include "CEntityManager.h"
+#include <math.h>
 
 CEntity::CEntity(sf::IntRect rect, sf::Color color) :
     spriteKey(""), body(rect), color(color) {
@@ -139,6 +140,8 @@ bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities)
     
     if(!(properties & EntityProperty::COLLIDABLE)) return false;
     
+    bool colliding = false;
+    
     for (auto &i: *entities) {
         
         if (i.second == this) continue;
@@ -154,26 +157,46 @@ bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities)
         if(y - 1 + body.getH() < i.second->body.getY())
             continue;
         
-        say("I am hit!!", "TESTFONT", ChatBubbleType::INSTANT_TALK);
-        
-        if(y - 1 + body.getH() <= i.second->body.getY() && x + body.getW() - 1 > i.second->body.getX() && x + 1 < i.second->body.getX() + i.second->body.getW())
+        if(y - 1 + body.getH() <= i.second->body.getY() &&
+           x + body.getW() - 1 > i.second->body.getX() &&
+           x + 1 < i.second->body.getX() + i.second->body.getW())
             collisionBottom = true;
+        
         if(y - 1 >= i.second->body.getY() + i.second->body.getH())
             collisionTop = true;
-        if(x + 1> i.second->body.getX() && y + body.getH() > i.second->body.getY() && y < i.second->body.getY() + i.second->body.getH())
+        
+        if(x + 1> i.second->body.getX() &&
+           y + body.getH() > i.second->body.getY() &&
+           y < i.second->body.getY() + i.second->body.getH())
             collisionLeft = true;
-        if(x + 1 < i.second->body.getX() && y + body.getH() > i.second->body.getY())
+        
+        if(x + 1 < i.second->body.getX() &&
+           y + body.getH() > i.second->body.getY())
             collisionRight = true;
-        return true;
+        
+        colliding = true;
     }
     
-    return false;
+    if(colliding) {
+        std::string toWrite = "";           // Write where the entity is colliding
+        if(collisionTop)
+            toWrite += "Top, ";
+        if(collisionBottom)
+            toWrite += "Bot, ";
+        if(collisionLeft)
+            toWrite += "Left, ";
+        if(collisionRight)
+            toWrite += "Right, ";
+        say(toWrite, "TESTFONT", ChatBubbleType::INSTANT_TALK);
+        return true;
+    } else
+        return false;
 }
 
 void CEntity::move(std::map<std::string, CEntity*>* entities) {
     
-    int MoveX = body.velX;
-    int MoveY = body.velY;
+    int MoveX = ceil(body.velX);
+    int MoveY = ceil(body.velY);
     
     int StopX = body.getX();
     int StopY = body.getY();
@@ -224,7 +247,6 @@ void CEntity::move(std::map<std::string, CEntity*>* entities) {
         if(MoveX == 0 && MoveY == 0) 	break;
         if(NewX == 0 && NewY == 0) 		break;
     }
-    
 }
 
 void CEntity::_doLogic() {

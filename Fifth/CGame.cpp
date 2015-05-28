@@ -340,8 +340,6 @@ void CGame::_onLoop() {
 //    std::strcpy(data, thing.c_str());
 //    if(socket.send(data, thing.size(), adress, port) != sf::Socket::Done) { /* error */ }
     
-    std::cout << instance.player->collisionBottom << std::endl;
-    
     instance.entityManager.onLoop();
     instance.camera.onLoop();
 }
