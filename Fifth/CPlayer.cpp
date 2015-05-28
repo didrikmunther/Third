@@ -23,6 +23,7 @@ CPlayer::CPlayer(sf::IntRect rect, std::string spriteKey) :
 
 void CPlayer::_initMovementValues() {
     maxSpeed = 10.0f;
+    jumpPower = 20.0f;
     accelerationX = 1.5f;
     accelerationY = 100.0f;
     stoppingAccelerationX = accelerationX * 2;
