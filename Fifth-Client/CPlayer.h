@@ -13,27 +13,16 @@
 #include "CEntity.h"
 #include "CSprite.h"
 #include "CAssetManager.h"
+#include "CMovable.h"
 
-class CPlayer : public CEntity {
+class CPlayer : public CMovable {
     
 public:
     CPlayer(sf::IntRect rect, sf::Color color);
     CPlayer(sf::IntRect rect, std::string spriteKey);
     void initValues();
     
-    void goRight();
-    void goLeft();
-    void goUp();
-    void goDown();
-    bool hasWalkedX, hasWalkedY;
     
-    void jump();
-    bool isSneaking;
-    
-    float maxSpeed;
-    float accelerationX, accelerationY;
-    float stoppingAccelerationX;
-    float sneakSpeed;
     
     
 private:

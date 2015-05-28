@@ -19,6 +19,8 @@
 #include "ResourcePath.hpp"
 #endif
 #include <SFML/Network.hpp>
+#include "Cenemy.h"
+#include "Cpython.h"
 
 CGame::CGame() :
 _intro("Physics"),
@@ -32,6 +34,7 @@ CGame::~CGame() {
 
 int CGame::onExecute() {
     
+        
     std::cout << "Initializing game...\n";
     
     switch(_onInit()){
@@ -82,8 +85,7 @@ int CGame::onExecute() {
             _frames = 0;
         }
         
-        //SDL_Delay(7);
-        
+              
     }
     
     std::cout << "Ending game...\n";
@@ -93,6 +95,9 @@ int CGame::onExecute() {
 }
 
 int CGame::_onInit() {
+    class Cpython python_1;
+    python_1.onInit();
+    
     
     _initRelativePaths();
     
@@ -111,24 +116,31 @@ int CGame::_onInit() {
     instance.entityManager.addEntity(instance.player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
     instance.camera.setTarget(instance.player);
     
-    instance.entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
-    instance.entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 500, 30, 500}, sf::Color{255, 0, 0, 0});
+    auto temp = instance.entityManager.addEntity(sf::IntRect{-1130, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
+    temp->addProperty(EntityProperty::STATIC);
     instance.entityManager.addEntity(sf::IntRect{276, 229, 23 * 4, 59 * 4}, "tree", "l:tree");
     instance.entityManager.getEntity("l:tree")->removeProperty(EntityProperty::COLLIDABLE);
     instance.entityManager.getEntity("l:tree")->addProperty(EntityProperty::STATIC);
-    instance.entityManager.getEntity("l:tree")->setShaderKey("");
     instance.entityManager.addEntity(sf::IntRect{200, 357, 60 * 2, 54 * 2}, "bush", "n:bush");
     instance.entityManager.getEntity("n:bush")->removeProperty(EntityProperty::COLLIDABLE);
     instance.entityManager.getEntity("n:bush")->addProperty(EntityProperty::STATIC);
     instance.entityManager.getEntity("n:bush")->addProperty(EntityProperty::STATIC);
-    instance.entityManager.getEntity("n:bush")->setShaderKey("");
 
+    
+    
+    temp = new Cenemy(sf::IntRect{150,100,32,32},"enemy");
+    instance.entityManager.addEntity(temp, "Enemy");
+    
     return 0;
 }
 
 void CGame::_initAssets() {
     CAssetManager::addSpriteSheet("MAIN", "resources/gfx.png");
     CAssetManager::addSpriteSheet("MAIN2", "resources/gfx2.png");
+    
+    CAssetManager::addSpriteSheet("MAIN3", "resources/yrl.png");
+    CAssetManager::addSprite("enemy", "MAIN3", sf::IntRect{0,0,32,32});
+    
     CAssetManager::addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
     CAssetManager::addSprite("bush", "MAIN", sf::IntRect{160, 91, 30, 28});
     CAssetManager::addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});

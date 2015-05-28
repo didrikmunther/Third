@@ -28,6 +28,7 @@ public:
     CEntity(sf::IntRect rect, sf::Color color);
     //CEntity(SDL_Rect rect, CSprite* sprite);
     CEntity(sf::IntRect rect, std::string spriteKey);
+    
     void initValues();
     void onLoop(std::map<std::string, CEntity*>* entities);
     void onRender(CWindow* window, CCamera* camera, int renderFlags);
@@ -54,6 +55,7 @@ public:
     
     bool flip;
     
+       
 protected:
     sf::Color color;
     

@@ -7,11 +7,12 @@
 //
 
 #include "CGame.h"
-
+#include "Cpython.h"
 
 int main(int argc, const char * argv[]){
     
     CGame game;
+    
     
     return game.onExecute();
 }

@@ -1,38 +1,23 @@
 //
-//  CPlayer.cpp
-//  Third
+//  CMovable.cpp
+//  Fifth-Client
 //
-//  Created by Didrik Munther on 14/04/15.
+//  Created by Lucas Karlsson on 27/05/15.
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#include "CPlayer.h"
+#include "CMovable.h"
 #include "Define.h"
-#include <iostream>
 
-CPlayer::CPlayer(sf::IntRect rect, sf::Color color) :
-    CEntity(rect, color) {
-        initValues();
+CMovable::CMovable(sf::IntRect rect, sf::Color color) : CEntity(rect, color) {
+
 }
 
-CPlayer::CPlayer(sf::IntRect rect, std::string spriteKey) :
-    CEntity(rect, spriteKey) {
-        CPlayer(rect, sf::Color{255, 255, 255, 255});
-        initValues();
+CMovable::CMovable(sf::IntRect rect, std::string spriteKey) : CEntity(rect, spriteKey){
+
 }
 
-void CPlayer::initValues() {
-    maxSpeed = 10.0f;
-    accelerationX = 1.5f;
-    accelerationY = 100.0f;
-    stoppingAccelerationX = accelerationX * 2;
-    sneakSpeed = (float)maxSpeed / 2.0f;
-    isSneaking = false;
-    hasWalkedX = false;
-    hasWalkedY = false;
-}
-
-void CPlayer::goRight() {
+void CMovable::goRight() {
     body.velX += accelerationX;
     if(isSneaking) {
         if(body.velX > sneakSpeed)
@@ -45,7 +30,7 @@ void CPlayer::goRight() {
     hasWalkedX = true;
 }
 
-void CPlayer::goLeft() {
+void CMovable::goLeft() {
     body.velX -= accelerationX;
     if(isSneaking) {
         if(body.velX < -sneakSpeed)
@@ -57,7 +42,7 @@ void CPlayer::goLeft() {
     hasWalkedX = true;
 }
 
-void CPlayer::goUp() {
+void CMovable::goUp() {
     if(hasProperty(EntityProperty::FLYING)) {
         body.velY -= accelerationY;
         if(isSneaking) {
@@ -74,7 +59,7 @@ void CPlayer::goUp() {
     hasWalkedY = true;
 }
 
-void CPlayer::goDown() {
+void CMovable::goDown() {
     if(hasProperty(EntityProperty::FLYING)) {
         body.velY += accelerationY;
         
@@ -90,7 +75,7 @@ void CPlayer::goDown() {
     hasWalkedY = true;
 }
 
-void CPlayer::jump() {
+void CMovable::jump() {
     if (!collisionBottom)
         return;
     
@@ -100,7 +85,8 @@ void CPlayer::jump() {
     
 }
 
-void CPlayer::_doLogic() {
+
+void CMovable::checkMovement() {
     if(!hasWalkedX) {
         if(body.velX < 0) {
             body.velX += stoppingAccelerationX;
@@ -129,4 +115,17 @@ void CPlayer::_doLogic() {
     
     hasWalkedX = false;
     hasWalkedY = false;
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+

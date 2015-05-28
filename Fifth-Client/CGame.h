@@ -16,10 +16,12 @@
 #include "CInstance.h"
 #include "CChatBubble.h"
 #include "CNetwork.h"
+#include "Cpython.h"
 
 class CGame {
     
     friend class CNetwork;
+    
     
 public:
     
@@ -41,6 +43,8 @@ private:
     void _handleKeyStates();
     
     void _onLoop();
+    
+    void Cpython();
     
     void _onRender();
     
