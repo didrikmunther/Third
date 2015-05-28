@@ -19,6 +19,7 @@
 #include "ResourcePath.hpp"
 #endif
 #include <SFML/Network.hpp>
+#include "CNpc.h"
 
 CGame::CGame() :
 _intro("Physics"),
@@ -223,7 +224,10 @@ void CGame::_onEvent(sf::Event* event) {
                     break;
                     
                 case keyMap::RESET:
-                    *instance.player = CPlayer(sf::IntRect{30, 30, 30, 30}, sf::Color{255, 255, 0, 255});
+                {
+                    auto tempNpc = new CNpc(sf::IntRect{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 60, 164}, "player");
+                    instance.entityManager.addEntity(tempNpc);
+                }
                     break;
                     
                 case keyMap::TOGGLE_NOCLIP:
