@@ -10,10 +10,11 @@
 #define __Third__CGuiText__
 
 #include <stdio.h>
-#include "CCamera.h"
 #include <SFML/Graphics.hpp>
 #include <string>
 #include "CWindow.h"
+
+class CCamera;
 
 class CGuiText {
 public:

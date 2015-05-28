@@ -16,6 +16,10 @@
 #include <string>
 #include <vector>
 
+class CCamera;
+class CEntity;
+class CText;
+
 class CChatBubble : public CGuiText{
 
 public:

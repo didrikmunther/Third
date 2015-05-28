@@ -84,6 +84,9 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
     for (auto &i: _EntityVector)
         i.second->onRender(window, camera, renderFlags);
     
+    for (auto &i: _EntityVector)
+        i.second->renderChat(window, camera);
+    
     for (auto &i: _GuiTextVector)
         i->onRender(window, camera);
 }

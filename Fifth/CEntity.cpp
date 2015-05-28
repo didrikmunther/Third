@@ -24,6 +24,15 @@ CEntity::CEntity(sf::IntRect rect, std::string spriteKey) :
         initValues();
 }
 
+CEntity::~CEntity() {
+    auto i = _ChatBubbleVector.begin();
+    while(i != _ChatBubbleVector.end()) {
+        delete *i;
+        i = _ChatBubbleVector.erase(i);
+    }
+    _ChatBubbleVector.clear();
+}
+
 void CEntity::initValues() {
     toRemove            = false;
     properties          = EntityProperty::COLLIDABLE;
@@ -51,6 +60,16 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
         removeProperty(EntityProperty::FLIP);
     else if(body.velX < 0)
         addProperty(EntityProperty::FLIP);
+    
+    auto i = _ChatBubbleVector.begin();
+    while(i != _ChatBubbleVector.end()) {
+        (*i)->onLoop();
+        if((*i)->toRemove) {
+            delete *i;
+            _ChatBubbleVector.erase(std::remove(_ChatBubbleVector.begin(), _ChatBubbleVector.end(), (*i)), _ChatBubbleVector.end());
+        } else
+            ++i;
+    }
 
 }
 
@@ -82,9 +101,14 @@ bool CEntity::isOnCollisionLayer(int collisionLayer) {
     return this->collisionLayer & collisionLayer;
 }
 
-void CEntity::say(std::string text, std::string fontKey, CEntityManager* entityManager, int type) {
+void CEntity::say(std::string text, std::string fontKey, int type) {
     CChatBubble* temp = new CChatBubble(text, this, fontKey, type);
-    entityManager->addGuiText(temp);
+    _ChatBubbleVector.push_back(temp);
+}
+
+void CEntity::renderChat(CWindow *window, CCamera *camera) {
+    for (auto &i: _ChatBubbleVector)
+        i->onRender(window, camera);
 }
 
 bool CEntity::hasProperty(int property) {
@@ -119,7 +143,7 @@ bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities)
         
         if (i.second == this) continue;
         if (!(i.second->properties & EntityProperty::COLLIDABLE)) continue;
-        if (!i.second->isOnCollisionLayer(collisionLayer)) return;
+        //if (!i.second->isOnCollisionLayer(collisionLayer)) return;        // Isn't working right now
     
         if(x + 1 > i.second->body.getX() + i.second->body.getW())
             continue;
@@ -129,6 +153,8 @@ bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities)
             continue;
         if(y - 1 + body.getH() < i.second->body.getY())
             continue;
+        
+        say("I am hit!!", "TESTFONT", ChatBubbleType::INSTANT_TALK);
         
         if(y - 1 + body.getH() <= i.second->body.getY() && x + body.getW() - 1 > i.second->body.getX() && x + 1 < i.second->body.getX() + i.second->body.getW())
             collisionBottom = true;

@@ -17,6 +17,8 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
     _r(0), _g(0), _b(0), _rB(220), _gB(220), _bB(220) {
     
         int textSize = 20;
+        int letterPerSecond = 5;
+        bool instantText = false;
         
     switch(type) {
         case ChatBubbleType::SAY:
@@ -27,6 +29,9 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
             break;
         case ChatBubbleType::WHISPER:
             _g = _b = 255;            // Cyan
+            break;
+        case ChatBubbleType::INSTANT_TALK:
+            instantText = true;
             break;
     }
     
@@ -53,8 +58,10 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
     if(currentSize > 0)                 // For when the loop quits but there is still text that should be added
         _TextVector.push_back(CText(currentString, textSize, fontKey, sf::Color{(sf::Uint8)_r,(sf::Uint8)_g,(sf::Uint8)_b,255}));
         
-    int letterPerSecond = 5;
-    _livingTime = (int)text.length() / letterPerSecond;
+    if(!instantText)
+        _livingTime = (int)text.length() / letterPerSecond;
+    else
+        _livingTime = 0;
     
 }
 

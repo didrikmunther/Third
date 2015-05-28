@@ -76,7 +76,8 @@ enum RenderFlags {
 enum ChatBubbleType {
     SAY = 0,
     YELL = 1,
-    WHISPER = 2
+    WHISPER = 2,
+    INSTANT_TALK = 3
 };
 
 

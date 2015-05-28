@@ -19,6 +19,7 @@
 #include "CRenderable.h"
 #include "CWindow.h"
 
+class CChatBubble;
 class CCamera;
 class CEntityManager;
 
@@ -27,6 +28,8 @@ class CEntity : public CRenderable {
 public:
     CEntity(sf::IntRect rect, sf::Color color);
     CEntity(sf::IntRect rect, std::string spriteKey);
+    ~CEntity();
+    
     void initValues();
     void onLoop(std::map<std::string, CEntity*>* entities);
     void onRender(CWindow* window, CCamera* camera, int renderFlags);
@@ -36,7 +39,9 @@ public:
     
     void move(std::map<std::string, CEntity*>* entities);
     bool collision(int x, int y, std::map<std::string, CEntity*>* entities);
-    void say(std::string text, std::string fontKey, CEntityManager* entityManager, int type);
+    
+    void say(std::string text, std::string fontKey, int type);
+    void renderChat(CWindow* window, CCamera* camera);
     
     int properties;
     bool hasProperty(int property);
@@ -58,6 +63,8 @@ public:
     
 protected:
     sf::Color color;
+    
+    std::vector<CChatBubble*> _ChatBubbleVector;
     
     virtual void _doLogic();
     

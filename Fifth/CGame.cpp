@@ -278,13 +278,13 @@ void CGame::_onEvent(sf::Event* event) {
                     for(int i = 0; i < 100; i++) {
                         text += alphanum[rand() % (sizeof(alphanum) - 1)];
                     }
-                    instance.player->say(text, "TESTFONT", &instance.entityManager, ChatBubbleType::SAY);
+                    instance.player->say(text, "TESTFONT", ChatBubbleType::SAY);
                     
                     text = "";
                     for(int i = 0; i < 50; i++) {
                         text += alphanum[rand() % (sizeof(alphanum) - 1)];
                     }
-                    instance.entityManager.getEntity("n:bush")->say(text, "TESTFONT", &instance.entityManager, ChatBubbleType::YELL);
+                    instance.entityManager.getEntity("n:bush")->say(text, "TESTFONT", ChatBubbleType::YELL);
                 }
                     break;
                     
@@ -331,16 +331,16 @@ void CGame::_onLoop() {
     
     // Send
     
-    sf::UdpSocket socket;
-    if(socket.bind(1337) != sf::Socket::Done) { /* error */ }
-    sf::IpAddress adress = sf::IpAddress::LocalHost;
-    unsigned short port = 1234;
-    std::string thing = std::to_string(instance.entityManager.getEntity("m:player")->body.getX());
-    char data[thing.size()];
-    std::strcpy(data, thing.c_str());
-    if(socket.send(data, thing.size(), adress, port) != sf::Socket::Done) { /* error */ }
+//    sf::UdpSocket socket;
+//    if(socket.bind(1337) != sf::Socket::Done) { /* error */ }
+//    sf::IpAddress adress = sf::IpAddress::LocalHost;
+//    unsigned short port = 1234;
+//    std::string thing = std::to_string(instance.entityManager.getEntity("m:player")->body.getX());
+//    char data[thing.size()];
+//    std::strcpy(data, thing.c_str());
+//    if(socket.send(data, thing.size(), adress, port) != sf::Socket::Done) { /* error */ }
     
-    
+    std::cout << instance.player->collisionBottom << std::endl;
     
     instance.entityManager.onLoop();
     instance.camera.onLoop();

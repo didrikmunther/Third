@@ -13,6 +13,8 @@
 #include "CEntity.h"
 #include "CWindow.h"
 
+class CEntity;
+
 typedef struct CameraOffset {
     float   x, y;
     int     w, h;
