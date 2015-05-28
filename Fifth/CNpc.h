@@ -20,6 +20,7 @@ public:
     CNpc(sf::IntRect rect, std::string spriteKey);
     
 private:
+    virtual void _initMovementValues();
     virtual void _doLogic();
 };
 

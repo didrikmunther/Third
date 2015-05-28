@@ -27,9 +27,6 @@ void CPlayer::_initMovementValues() {
     accelerationY = 100.0f;
     stoppingAccelerationX = accelerationX * 2;
     sneakSpeed = (float)maxSpeed / 2.0f;
-    isSneaking = false;
-    hasWalkedX = false;
-    hasWalkedY = false;
 }
 
 

@@ -10,12 +10,20 @@
 
 CNpc::CNpc(sf::IntRect rect, sf::Color color) :
 CMovable(rect, color) {
-    
+    _initMovementValues();
 }
 
 CNpc::CNpc(sf::IntRect rect, std::string spriteKey) :
 CMovable(rect, spriteKey) {
-    
+    _initMovementValues();
+}
+
+void CNpc::_initMovementValues() {
+    maxSpeed = 5.0f;
+    accelerationX = 1.5f;
+    accelerationY = 100.0f;
+    stoppingAccelerationX = accelerationX * 2;
+    sneakSpeed = (float)maxSpeed / 2.0f;
 }
 
 void CNpc::_doLogic() {

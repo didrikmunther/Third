@@ -19,7 +19,7 @@
 #include "ResourcePath.hpp"
 #endif
 #include <SFML/Network.hpp>
-#include "CNpc.h"
+#include "CEnemy.h"
 
 CGame::CGame() :
 _intro("Physics"),
@@ -128,8 +128,10 @@ int CGame::_onInit() {
 }
 
 void CGame::_initAssets() {
+    CAssetManager::addSpriteSheet("YRLSPRITESHEET", "resources/yrl.png");
     CAssetManager::addSpriteSheet("MAIN", "resources/gfx.png");
     CAssetManager::addSpriteSheet("MAIN2", "resources/gfx2.png");
+    CAssetManager::addSprite("yrl", "YRLSPRITESHEET", sf::IntRect{0,0,32,32});
     CAssetManager::addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
     CAssetManager::addSprite("bush", "MAIN", sf::IntRect{160, 91, 30, 28});
     CAssetManager::addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});
@@ -225,7 +227,19 @@ void CGame::_onEvent(sf::Event* event) {
                     
                 case keyMap::RESET:
                 {
-                    auto tempNpc = new CNpc(sf::IntRect{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 60, 164}, "player");
+                    auto tempNpc = new CEnemy(sf::IntRect{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 32, 32}, "yrl");
+                    tempNpc->setTarget(instance.player);
+                    //tempNpc->setShaderKey("");
+                    tempNpc->collisionLayer = 1 << 1;
+                    instance.entityManager.addEntity(tempNpc);
+                }
+                    break;
+                    
+                case sf::Keyboard::H:
+                {
+                    auto tempNpc = new CEnemy(sf::IntRect{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 32, 32}, "yrl");
+                    tempNpc->setTarget(instance.entityManager.getEntity("n:bush"));
+                    //tempNpc->setShaderKey("");
                     instance.entityManager.addEntity(tempNpc);
                 }
                     break;

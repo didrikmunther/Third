@@ -31,6 +31,9 @@ public:
     void onLoop(std::map<std::string, CEntity*>* entities);
     void onRender(CWindow* window, CCamera* camera, int renderFlags);
     
+    int collisionLayer;
+    bool isOnCollisionLayer(int collisionLayer);
+    
     void move(std::map<std::string, CEntity*>* entities);
     bool collision(int x, int y, std::map<std::string, CEntity*>* entities);
     void say(std::string text, std::string fontKey, CEntityManager* entityManager, int type);

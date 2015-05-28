@@ -29,6 +29,7 @@ public:
     bool isSneaking;
     
     float maxSpeed;
+    float jumpPower;
     float accelerationX, accelerationY;
     float stoppingAccelerationX;
     float sneakSpeed;

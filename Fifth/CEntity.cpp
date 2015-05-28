@@ -15,7 +15,7 @@
 #include "CEntityManager.h"
 
 CEntity::CEntity(sf::IntRect rect, sf::Color color) :
-    /*sprite(nullptr),*/ spriteKey(""), body(rect), color(color) {
+    spriteKey(""), body(rect), color(color) {
         initValues();
 }
 
@@ -32,6 +32,7 @@ void CEntity::initValues() {
     collisionRight      = false;
     collisionLeft       = false;
     flip                = false;
+    collisionLayer = CollisionLayers::LAYER0;
 }
 
 void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
@@ -77,6 +78,10 @@ void CEntity::onRender(CWindow* window, CCamera* camera, int renderFlags) {
     }
 }
 
+bool CEntity::isOnCollisionLayer(int collisionLayer) {
+    return this->collisionLayer & collisionLayer;
+}
+
 void CEntity::say(std::string text, std::string fontKey, CEntityManager* entityManager, int type) {
     CChatBubble* temp = new CChatBubble(text, this, fontKey, type);
     entityManager->addGuiText(temp);
@@ -114,6 +119,7 @@ bool CEntity::collision(int x, int y, std::map<std::string, CEntity*>* entities)
         
         if (i.second == this) continue;
         if (!(i.second->properties & EntityProperty::COLLIDABLE)) continue;
+        if (!i.second->isOnCollisionLayer(collisionLayer)) return;
     
         if(x + 1 > i.second->body.getX() + i.second->body.getW())
             continue;

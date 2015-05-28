@@ -20,9 +20,16 @@
 #define DESPAWN_HEIGHT  10000
 #define GRAVITY         0.5
 
-enum Status {
-    FAILURE = 0,
-    SUCCESS = 1
+
+enum CollisionLayers {
+    LAYER0      = 1 << 0,
+    LAYER1      = 1 << 1,
+    LAYER2      = 1 << 2,
+    LAYER3      = 1 << 3,
+    LAYER4      = 1 << 4,
+    LAYER5      = 1 << 5,
+    LAYER6      = 1 << 6,
+    LAYER7      = 1 << 7,
 };
 
 enum keyMap {

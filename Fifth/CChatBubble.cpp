@@ -65,6 +65,8 @@ void CChatBubble::onLoop() {
 
 void CChatBubble::onRender(CWindow* window, CCamera* camera) {
     
+    if(_target == nullptr)
+        return;
     if(_TextVector.size() <= 0)
         return;
     if(_TextVector[0].getFont() == nullptr)

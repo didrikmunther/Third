@@ -21,6 +21,7 @@ CMovable::CMovable(sf::IntRect rect, std::string spriteKey) :
 
 void CMovable::_initMovementValues() {
     maxSpeed = 10.0f;                   // Default values
+    jumpPower = 10.0f;
     accelerationX = 1.5f;
     accelerationY = 100.0f;
     stoppingAccelerationX = accelerationX * 2;
@@ -93,8 +94,8 @@ void CMovable::jump() {
         return;
     
     body.velY -= accelerationY;
-    if(body.velY < -maxSpeed)
-        body.velY = -maxSpeed;
+    if(body.velY < -jumpPower)
+        body.velY = -jumpPower;
     
 }
 
