@@ -113,7 +113,7 @@ int CGame::_onInit() {
     instance.camera.setTarget(instance.player);
     
     instance.seeker = new CEnemy(sf::IntRect{150, 150, 32, 32}, "yrl");
-    instance.entityManager.addEntity(instance.seeker);
+    instance.entityManager.addEntity(instance.seeker, "m:yrl");
     instance.seeker->setTarget(instance.player);
     
     instance.entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
@@ -296,7 +296,7 @@ void CGame::_onEvent(sf::Event* event) {
                     instance.camera.setTarget(instance.player);
                     break;
                 case keyMap::TARGET_BLOCK:
-                    instance.camera.setTarget(instance.entityManager.getEntity("n:bush"));
+                    instance.camera.setTarget(instance.entityManager.getEntity("m:yrl"));
                     break;
                     
                 case keyMap::CHANGE_CAMERA_SWAY_UP:
