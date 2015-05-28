@@ -115,6 +115,7 @@ int CGame::_onInit() {
     instance.seeker = new CEnemy(sf::IntRect{150, 150, 32, 32}, "yrl");
     instance.entityManager.addEntity(instance.seeker, "m:yrl");
     instance.seeker->setTarget(instance.player);
+    instance.seeker->setShaderKey("");
     
     instance.entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
     instance.entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 500, 30, 500}, sf::Color{255, 0, 0, 0});
@@ -233,7 +234,7 @@ void CGame::_onEvent(sf::Event* event) {
                 {
                     auto tempNpc = new CEnemy(sf::IntRect{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 32, 32}, "yrl");
                     tempNpc->setTarget(instance.player);
-                    //tempNpc->setShaderKey("");
+                    tempNpc->setShaderKey("");
                     tempNpc->collisionLayer = 1 << 1;
                     instance.entityManager.addEntity(tempNpc);
                 }

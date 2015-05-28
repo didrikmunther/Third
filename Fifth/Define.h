@@ -9,16 +9,16 @@
 #include <stdio.h>
 #include <SFML/Graphics.hpp>
 
-#define NATIVE_SCREEN_WIDTH   1920
-#define NATIVE_SCREEN_HEIGHT  1080
+const int NATIVE_SCREEN_WIDTH   = 1920;
+const int NATIVE_SCREEN_HEIGHT  = 1080;
 
-#define SCREEN_WIDTH   1280
-#define SCREEN_HEIGHT  720
-#define SCREEN_BPP     32
+const int SCREEN_WIDTH          = 1280;
+const int SCREEN_HEIGHT         = 720;
+const int SCREEN_BPP            = 32;
 
-#define GAMEINTERVAL    60
-#define DESPAWN_HEIGHT  10000
-#define GRAVITY         0.5
+const int GAMEINTERVAL          = 60;
+const int DESPAWN_HEIGHT        = 10000;
+const float GRAVITY               = 0.5;
 
 
 enum CollisionLayers {
