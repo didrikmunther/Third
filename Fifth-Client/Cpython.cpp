@@ -12,6 +12,7 @@
 #include <string>
 #include <fstream>
 
+
 Cpython::Cpython() {  }
 
 using namespace std;
@@ -19,17 +20,21 @@ using namespace std;
 void Cpython::onInit(){
     Py_Initialize();
     
-    cout << "Python initialized\n";
+    if (!Py_Initialize){
+        cout << "Could not initialize python\n";
+    }
     
+    if (Py_Initialize){
+        cout << "Python initialized\n";
+    }
    
     
     
     
     
+    PyRun_SimpleString("print('Hello')");
     
     
-    
-    PyRun_SimpleString("print('love python')");
     
     
 }
