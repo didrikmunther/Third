@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <SFML/Network.hpp>
+#include "CInstance.h"
 
 class CServer {
     
@@ -43,6 +44,8 @@ private:
     int _updates;
     
     // Misc
+    
+    CInstance instance;
     
     sf::Thread _inputThread;
     

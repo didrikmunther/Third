@@ -24,7 +24,7 @@ int CServer::onExecute() {
     
     std::cout << "Starting server...\n";
     
-    if(!_onInit())
+    if(_onInit() == -1)
         return -1;
     
     while(_isRunning) {
@@ -55,11 +55,14 @@ int CServer::onExecute() {
         
 }
 
-//"{"entities":[{"name":"maTree","posX":10,"posY":20},{"name":"laBush","posX":23,"posY":43}]}";
-
 int CServer::_onInit() {
     
-    const char* jsonString = "{\"entities\":[{\"name\":\"m:aTree\",\"posX\":10,\"posY\":20},{\"name\":\"l:aBush\",\"posX\":23,\"posY\":43}]}";
+    const char* jsonString = "  {\"entities\":\
+                                    [\
+                                        {\"name\":\"m:aTree\",\"posX\":10,\"posY\":20},\
+                                        {\"name\":\"l:aBush\",\"posX\":23,\"posY\":43}\
+                                    ]\
+                                }";
     
     rapidjson::Document d;
     
@@ -77,7 +80,7 @@ int CServer::_onInit() {
     _isRunning = true;
     
     std::cout << "Server started!\n";
-    return 1;
+    return 0;
 }
 
 void CServer::_onLoop() {
@@ -87,18 +90,19 @@ void CServer::_onLoop() {
 void CServer::_handleInput() {
     
     while(_isRunning) {
-        std::string input; getline(std::cin, input);
+        std::string i; getline(std::cin, i);
         
-        if(input == "") { std::cout << input; }
-        else if(input == "quit" ||
-                input == "/quit" ||
-                input == "exit" ||
-                input == "/exit") { _isRunning = false; }
+        if     (i == "")            {  }
+        else if(i == "quit" ||
+                i == "exit")        { _isRunning = false; }
+        else if(i == "addentity")   { instance.entityManager.addEntity(sf::IntRect{0, 0, 0, 0}, sf::Color{255,0,255}); }
+        else                        { std::cout << "Command not recognized.\n"; }
     }
     
 }
 
 int CServer::_onRestart() {
+    instance.closeInstance();
     return 0;
 }
 

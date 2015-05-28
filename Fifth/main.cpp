@@ -7,11 +7,19 @@
 //
 
 #include "CGame.h"
+#include "CServer.h"
+
+#include <iostream>
 
 
 int main(int argc, const char * argv[]){
     
+    //CServer server;
+    
+    //return server.onExecute();
+    
     CGame game;
     
     return game.onExecute();
+    
 }

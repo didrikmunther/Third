@@ -22,16 +22,20 @@ class CNetwork {
 public:
     CNetwork();
     
-    int connect(sf::IpAddress adress, unsigned short port);
-    void disconnect();
-    
+    int onInit(CGame* game);
     void onUpdate(CGame* game);
     
+    void onCleanup();
+    
 private:
-    sf::UdpSocket _udpSocket;
-    sf::TcpSocket _tcpSocket;
+    bool _isRunning;
+    
+    sf::TcpListener _tcpListener;
     
     std::map<std::string, CClient> _clients;
+    
+    void _connectionsLoop();
+    void _clientLoop();
     
     
     

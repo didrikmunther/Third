@@ -20,6 +20,11 @@
 #define DESPAWN_HEIGHT  10000
 #define GRAVITY         0.5
 
+enum Status {
+    FAILURE = 0,
+    SUCCESS = 1
+};
+
 enum keyMap {
     EXIT = sf::Keyboard::Escape,
     

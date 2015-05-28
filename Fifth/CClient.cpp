@@ -7,3 +7,7 @@
 //
 
 #include "CClient.h"
+
+CClient::CClient(sf::TcpSocket& tcpSocket) {
+    
+}

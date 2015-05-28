@@ -15,11 +15,9 @@
 class CClient {
     
 public:
-    CClient();
+    CClient(sf::TcpSocket& tcpSocket);
     
-private:
-    sf::UdpSocket _udpSocket;
-    sf::TcpSocket _tcpSocket;
+    sf::TcpSocket tcpSocket;
     
 };
 
