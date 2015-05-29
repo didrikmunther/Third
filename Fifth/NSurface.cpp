@@ -26,8 +26,14 @@ void NSurface::renderEntity(CEntity* entity, CWindow* window, sf::IntRect destin
     if(entity->getSprite() == nullptr) return;
     auto nsprite = *entity->getSprite()->getSprite();
     nsprite.setPosition(destination.left, destination.top);
-    nsprite.setScale(destination.width / entity->getSprite()->getSprite()->getGlobalBounds().width, destination.height / entity->getSprite()->getSprite()->getGlobalBounds().height);
-    if(properties & EntityProperty::FLIP) { nsprite.setOrigin({ nsprite.getLocalBounds().width, 0 }); nsprite.setScale({ -1, 1 }); }
+    
+    if(properties & EntityProperty::FLIP) {
+        nsprite.setOrigin({ nsprite.getLocalBounds().width, 0 });
+        
+        nsprite.setScale(-destination.width / entity->getSprite()->getSprite()->getGlobalBounds().width, destination.height / entity->getSprite()->getSprite()->getGlobalBounds().height);
+    } else {
+        nsprite.setScale(destination.width / entity->getSprite()->getSprite()->getGlobalBounds().width, destination.height / entity->getSprite()->getSprite()->getGlobalBounds().height);
+    }
     
     window->getRenderTexture()->draw(nsprite);
     

@@ -78,7 +78,8 @@ int CGame::onExecute() {
             _timer += 1000;
             _title.str("");
             _title << _intro << " | " << _updates << " ups, " << _frames << " fps";
-            instance.window.setTitle(_title.str());
+            //instance.window.setTitle(_title.str());
+            instance.player->say(_title.str(), "TESTFONT", ChatBubbleType::SAY);
             _updates = 0;
             _frames = 0;
         }
@@ -112,7 +113,7 @@ int CGame::_onInit() {
     instance.entityManager.addEntity(instance.player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
     instance.camera.setTarget(instance.player);
     
-    instance.seeker = new CEnemy(sf::IntRect{150, 150, 32, 32}, "yrl");
+    instance.seeker = new CEnemy(sf::IntRect{150, 150, 60, 164}, "player");
     instance.entityManager.addEntity(instance.seeker, "m:yrl");
     instance.seeker->setTarget(instance.player);
     instance.seeker->setShaderKey("");
@@ -210,6 +211,11 @@ void CGame::_onEvent(sf::Event* event) {
             
         case sf::Event::KeyPressed:
             switch(event->key.code) {
+                    
+                case sf::Keyboard::Q:
+                    CEntity* temp;
+                    temp->say("asdf", "TESTFONT", ChatBubbleType::SAY);     // Crash the game
+                    break;
                     
                 case keyMap::EXIT:
                     instance.window.getWindow()->close();

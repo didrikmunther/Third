@@ -60,8 +60,6 @@ public:
     CSprite* getSprite();
     std::string spriteKey;
     
-    bool flip;
-    
 protected:
     sf::Color color;
     

@@ -41,7 +41,6 @@ void CEntity::initValues() {
     collisionBottom     = false;
     collisionRight      = false;
     collisionLeft       = false;
-    flip                = false;
     collisionLayer = CollisionLayers::LAYER0;
 }
 
