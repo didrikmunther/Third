@@ -76,8 +76,10 @@ void CLiving::dealDamage(int amount) {
             *kevlar = 0;
     } else {
         *health -= amount;
-        if(*health <= 0)
+        if(*health <= 0) {
             *health = 0;
+            toRemove = true;
+        }
     }
 }
 

@@ -231,7 +231,7 @@ void CGame::_onEvent(sf::Event* event) {
                     break;
                     
                 case keyMap::PARTICLEEM:
-                    instance.entityManager.addParticleEmitter(sf::IntRect{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 4 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 4 / 2, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, 20, 2, 4, 6, 0.3);
+                    instance.entityManager.addParticleEmitter(sf::IntRect{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 4 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 4 / 2, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 20, 2, 4, 6, 0.3);
                     break;
                     
                 case keyMap::RESET:

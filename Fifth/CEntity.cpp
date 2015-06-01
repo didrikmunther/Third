@@ -200,6 +200,7 @@ bool CEntity::_collision(int x, int y, std::map<std::string, CEntity*>* entities
             collisionRight = true;
         
         colliding = true;
+        _collisionLogic(i.second);
     }
     
     if(colliding) {
@@ -272,6 +273,9 @@ void CEntity::move(std::map<std::string, CEntity*>* entities) {
         if(MoveX == 0 && MoveY == 0) 	break;
         if(NewX == 0 && NewY == 0) 		break;
     }
+}
+
+void CEntity::_collisionLogic(CEntity *target) {
 }
 
 void CEntity::_doLogic() {

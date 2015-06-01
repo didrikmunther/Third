@@ -74,8 +74,12 @@ void CEntityManager::addParticle(sf::IntRect rect, sf::Color color, int livingTi
     _ParticleVector.push_back(new CParticle(rect, color, livingTime));
 }
 
-void CEntityManager::addParticleEmitter(sf::IntRect rect, sf::Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity) {
-    _ParticleEmitterVector.push_back(new CParticleEmitter(rect, color, amount, frequency, livingTime, particleLivingTime, velocity));
+void CEntityManager::addParticle(CParticle *particle) {
+    _ParticleVector.push_back(particle);
+}
+
+void CEntityManager::addParticleEmitter(sf::IntRect rect, sf::Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, float velocity) {
+    _ParticleEmitterVector.push_back(new CParticleEmitter(rect, color, type, amount, frequency, livingTime, particleLivingTime, velocity));
 }
 
 void CEntityManager::addGuiText(CGuiText* guiText) {
@@ -113,7 +117,7 @@ void CEntityManager::onLoop() {
             (*i).second->onLoop(&_EntityVector);
             if((*i).second->toRemove) {
                 delete (*i).second;
-                _EntityVector.erase(i->first);
+                _EntityVector.erase(i++);
             } else
                 ++i;
         }

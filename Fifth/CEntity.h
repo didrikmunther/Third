@@ -61,6 +61,7 @@ public:
     bool collisionLeft, collisionRight;
     bool collisionTop, collisionBottom;
     
+    sf::Color color;
     CBody body;
     bool toRemove;
     
@@ -68,14 +69,12 @@ public:
     CSprite* getSprite();
     std::string spriteKey;
     
-protected:
-    sf::Color color;
-    
+private:
     std::vector<CChatBubble*> _ChatBubbleVector;
     
+    virtual void _collisionLogic(CEntity* target);
     virtual void _doLogic();
     
-private:
     bool _collision(int x, int y, std::map<std::string, CEntity*>* entities);
     
 };

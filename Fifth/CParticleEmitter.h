@@ -9,16 +9,19 @@
 #ifndef __Third__CParticleEmitter__
 #define __Third__CParticleEmitter__
 
+enum ParticleTypes {
+    PARTICLE = 0,
+    UTILITY_PARTICLE
+};
+
 #include <stdio.h>
 #include "CParticle.h"
 #include <SFML/Graphics.hpp>
 
-class CEntityManager;
-
 class CParticleEmitter {
     
 public:
-    CParticleEmitter(sf::IntRect rect, sf::Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity);
+    CParticleEmitter(sf::IntRect rect, sf::Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, float velocity);
     void onLoop(CEntityManager *entityManager);
     
     bool toRemove;
@@ -27,6 +30,7 @@ private:
     
     sf::Clock _clock;
     
+    int type;
     sf::IntRect _rect;
     sf::Color _color;
     int _amount;

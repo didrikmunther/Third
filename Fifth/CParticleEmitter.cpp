@@ -8,10 +8,11 @@
 
 #include "CParticleEmitter.h"
 #include "CEntityManager.h"
+#include "CUtilityParticle.h"
 #include <iostream>
 
-CParticleEmitter::CParticleEmitter(sf::IntRect rect, sf::Color color, int amount, int frequency, int livingTime, int particleLivingTime, float velocity) :
-    _rect(rect), _color(color), _amount(amount), _frequency(frequency),
+CParticleEmitter::CParticleEmitter(sf::IntRect rect, sf::Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, float velocity) :
+    _rect(rect), _color(color), type(type), _amount(amount), _frequency(frequency),
     _livingTime(livingTime), _particleLivingTime(particleLivingTime),
     _velocity(velocity), _creationTime(_clock.getElapsedTime().asMilliseconds()),
     toRemove(false), _timer(_clock.getElapsedTime().asMilliseconds() - (frequency * 1000)) {
@@ -26,7 +27,15 @@ void CParticleEmitter::onLoop(CEntityManager *entityManager) {
     if(_clock.getElapsedTime().asMilliseconds() - _timer > _frequency * 1000) {
         _timer += 1000;
         for (int i = 0; i < _amount; i++) {
-            entityManager->addParticle(_rect, _color, _particleLivingTime);
+            CParticle* particle;
+            switch(type) {
+                case ParticleTypes::UTILITY_PARTICLE:
+                    particle = new CUtilityParticle(_rect, _color, _particleLivingTime);
+                    break;
+                default:
+                    particle = new CParticle(_rect, _color, _particleLivingTime);
+            }
+            entityManager->addParticle(particle);
         }
     }
         
