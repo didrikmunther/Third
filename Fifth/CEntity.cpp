@@ -13,6 +13,7 @@
 #include "Define.h"
 #include "CChatBubble.h"
 #include "CEntityManager.h"
+#include "CLiving.h"
 #include <math.h>
 
 CEntity::CEntity(sf::IntRect rect, sf::Color color) :
@@ -70,6 +71,11 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
         } else
             ++i;
     }
+    
+    CLiving* living = dynamic_cast<CLiving*>(this);   // If a living entity, call the function for CLiving
+    if(living != nullptr) {
+        living->cLivingLoop();
+    }
 
 }
 
@@ -84,17 +90,6 @@ void CEntity::onRender(CWindow* window, CCamera* camera, int renderFlags) {
             //NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h});
             NSurface::renderEntity(this, window, sf::IntRect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW(), body.getH()}, properties);
     }
-    
-    if(renderFlags & RenderFlags::COLLISION_BORDERS) {
-        int r, g, b = 0;
-        if(hasProperty(EntityProperty::COLLIDABLE)) {r = 255; g = 0; b = 0;  }
-        else                                        {r = 0; g = 255; b = 255;}
-        
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), 1, body.getH() - 1, *window->getRenderTexture(), r, g, b);    // Left line
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW() - 1, 1, *window->getRenderTexture(), r, g, b);      // Top line
-        NSurface::renderRect(body.getX() + body.getW() - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.getH(), *window->getRenderTexture(), r, g, b);  // Right line
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, *window->getRenderTexture(), r, g, b);  // Bottom line
-    }
 }
 
 bool CEntity::isOnCollisionLayer(int collisionLayer) {
@@ -106,9 +101,27 @@ void CEntity::say(std::string text, std::string fontKey, int type) {
     _ChatBubbleVector.push_back(temp);
 }
 
-void CEntity::renderChat(CWindow *window, CCamera *camera) {
-    for (auto &i: _ChatBubbleVector)
+void CEntity::renderAdditional(CWindow *window, CCamera *camera, int renderFlags) {
+    
+    if(renderFlags & RenderFlags::COLLISION_BORDERS) {                             // Render collision boxes
+        int r, g, b = 0;
+        if(hasProperty(EntityProperty::COLLIDABLE)) {r = 255; g = 0; b = 0;  }
+        else                                        {r = 0; g = 255; b = 255;}
+        
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), 1, body.getH() - 1, *window->getRenderTexture(), r, g, b);    // Left line
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW() - 1, 1, *window->getRenderTexture(), r, g, b);      // Top line
+        NSurface::renderRect(body.getX() + body.getW() - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.getH(), *window->getRenderTexture(), r, g, b);  // Right line
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, *window->getRenderTexture(), r, g, b);  // Bottom line
+    }
+    
+    for (auto &i: _ChatBubbleVector)                                                // Render chatbubbles
         i->onRender(window, camera);
+    
+    CLiving* living = dynamic_cast<CLiving*>(this);   // If a living entity, call the function for CLiving
+    if(living != nullptr) {
+        living->cLivingRender(window, camera);
+    }
+    
 }
 
 bool CEntity::hasProperty(int property) {
@@ -257,7 +270,5 @@ void CEntity::move(std::map<std::string, CEntity*>* entities) {
 }
 
 void CEntity::_doLogic() {
-    //if(body.rect.y > DESPAWN_HEIGHT)
-        //toRemove = true;
 }
 

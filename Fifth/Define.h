@@ -61,23 +61,8 @@ enum keyMap {
     
 };
 
-enum EntityProperty {
-    COLLIDABLE  = 1 << 0,
-    FLYING      = 1 << 1,
-    HIDDEN      = 1 << 2,
-    STATIC      = 1 << 3,
-    FLIP        = 1 << 4
-};
-
 enum RenderFlags {
     COLLISION_BORDERS = 1 << 0
-};
-
-enum ChatBubbleType {
-    SAY = 0,
-    YELL = 1,
-    WHISPER = 2,
-    INSTANT_TALK = 3
 };
 
 

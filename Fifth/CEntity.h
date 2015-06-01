@@ -19,6 +19,14 @@
 #include "CRenderable.h"
 #include "CWindow.h"
 
+enum EntityProperty {
+    COLLIDABLE  = 1 << 0,
+    FLYING      = 1 << 1,
+    HIDDEN      = 1 << 2,
+    STATIC      = 1 << 3,
+    FLIP        = 1 << 4
+};
+
 class CChatBubble;
 class CCamera;
 class CEntityManager;
@@ -42,7 +50,7 @@ public:
     bool coordinateCollision(int x, int y, int w, int h);
     
     void say(std::string text, std::string fontKey, int type);
-    void renderChat(CWindow* window, CCamera* camera);
+    void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
     
     int properties;
     bool hasProperty(int property);

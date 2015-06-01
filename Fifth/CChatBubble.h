@@ -16,6 +16,13 @@
 #include <string>
 #include <vector>
 
+enum ChatBubbleType {
+    SAY = 0,
+    YELL = 1,
+    WHISPER = 2,
+    INSTANT_TALK = 3
+};
+
 class CCamera;
 class CEntity;
 class CText;

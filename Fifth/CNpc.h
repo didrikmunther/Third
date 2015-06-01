@@ -10,10 +10,10 @@
 #define __Fifth__CNpc__
 
 #include <stdio.h>
-#include "CMovable.h"
+#include "CLiving.h"
 #include <SFML/Graphics.hpp>
 
-class CNpc : public CMovable {
+class CNpc : public CLiving {
     
 public:
     CNpc(sf::IntRect rect, sf::Color color);

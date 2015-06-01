@@ -10,11 +10,11 @@
 #define __Third__CPlayer__
 
 #include <stdio.h>
-#include "CMovable.h"
+#include "CLiving.h"
 #include "CSprite.h"
 #include "CAssetManager.h"
 
-class CPlayer : public CMovable {
+class CPlayer : public CLiving {
     
 public:
     CPlayer(sf::IntRect rect, sf::Color color);

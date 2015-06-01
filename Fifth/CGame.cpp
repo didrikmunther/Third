@@ -23,7 +23,6 @@
 
 CGame::CGame() :
 _intro("Physics"),
-//WIDTH(640), HEIGHT(480), BPP(32), camera(WIDTH, HEIGHT),
 _lastTime(_clock.getElapsedTime().asMilliseconds()), _timer(_clock.getElapsedTime().asMilliseconds()),
 _ns(1000.0f / (float)GAMEINTERVAL), _delta(0), _frames(0), _updates(0), isFocused(true) {
 }
@@ -51,14 +50,11 @@ int CGame::onExecute() {
             _onEvent(&event);
         }
         
-        //std::cout << "CameraX: " << camera.offsetX() << ", CameraY: " << camera.offsetY() << " \n";
-        
         float now = _clock.getElapsedTime().asMilliseconds();
         _delta += (now - _lastTime) / _ns;
         _lastTime = now;
         
         while(_delta >= 1) {
-            //std::cout << (int)floor(delta) << " | ";
             if(_delta > 20) {       // To make sure it doesn't freeze
                 instance.entityManager.particleCleanup();
             }

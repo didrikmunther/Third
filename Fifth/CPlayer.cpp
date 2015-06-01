@@ -11,12 +11,12 @@
 #include <iostream>
 
 CPlayer::CPlayer(sf::IntRect rect, sf::Color color) :
-    CMovable(rect, color) {
+    CLiving(rect, color) {
         _initMovementValues();
 }
 
 CPlayer::CPlayer(sf::IntRect rect, std::string spriteKey) :
-    CMovable(rect, spriteKey) {
+    CLiving(rect, spriteKey) {
         CPlayer(rect, sf::Color{255, 255, 255, 255});
         _initMovementValues();
 }
