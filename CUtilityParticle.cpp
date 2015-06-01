@@ -18,9 +18,15 @@ CUtilityParticle::CUtilityParticle(sf::IntRect rect, sf::Color color, int living
 }
 
 void CUtilityParticle::_collisionLogic(CEntity* target) {
-    CLiving* living = dynamic_cast<CLiving*>(target);   // If a living entity, call the function for CLiving
+    CLiving* living = dynamic_cast<CLiving*>(target);
     if(living != nullptr) {
         living->dealDamage(1);
         toRemove = true;
     }
+    
+    body.velX /= 2;
+}
+
+void CUtilityParticle::_doLogic() {
+    body.velY += rand() % 3 - 1;
 }

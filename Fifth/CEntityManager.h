@@ -37,7 +37,7 @@ public:
     void addEntity(CEntity* entity, std::string name = "");
     void addParticle(sf::IntRect rect, sf::Color color, int livingTime);
     void addParticle(CParticle* particle);
-    void addParticleEmitter(sf::IntRect rect, sf::Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, float velocity);
+    void addParticleEmitter(sf::IntRect rect, sf::Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, ParticleVelocity velocity);
     void addGuiText(CGuiText* guiText);
     
     void onRender(CWindow* window, CCamera* camera);

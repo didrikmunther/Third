@@ -11,7 +11,7 @@
 #include "CUtilityParticle.h"
 #include <iostream>
 
-CParticleEmitter::CParticleEmitter(sf::IntRect rect, sf::Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, float velocity) :
+CParticleEmitter::CParticleEmitter(sf::IntRect rect, sf::Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, ParticleVelocity velocity) :
     _rect(rect), _color(color), type(type), _amount(amount), _frequency(frequency),
     _livingTime(livingTime), _particleLivingTime(particleLivingTime),
     _velocity(velocity), _creationTime(_clock.getElapsedTime().asMilliseconds()),
@@ -35,6 +35,9 @@ void CParticleEmitter::onLoop(CEntityManager *entityManager) {
                 default:
                     particle = new CParticle(_rect, _color, _particleLivingTime);
             }
+            particle->body.velX += _velocity.x;
+            particle->body.velY += _velocity.y;
+            
             entityManager->addParticle(particle);
         }
     }

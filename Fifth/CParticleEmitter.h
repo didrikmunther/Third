@@ -14,6 +14,10 @@ enum ParticleTypes {
     UTILITY_PARTICLE
 };
 
+struct ParticleVelocity {
+    float x, y;
+};
+
 #include <stdio.h>
 #include "CParticle.h"
 #include <SFML/Graphics.hpp>
@@ -21,7 +25,7 @@ enum ParticleTypes {
 class CParticleEmitter {
     
 public:
-    CParticleEmitter(sf::IntRect rect, sf::Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, float velocity);
+    CParticleEmitter(sf::IntRect rect, sf::Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, ParticleVelocity velocity);
     void onLoop(CEntityManager *entityManager);
     
     bool toRemove;
@@ -38,7 +42,7 @@ private:
     int _creationTime;
     int _livingTime;
     int _particleLivingTime;
-    float _velocity;
+    ParticleVelocity _velocity;
     
     int _timer;
     

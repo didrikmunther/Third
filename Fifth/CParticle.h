@@ -18,6 +18,9 @@ class CParticle : public CEntity {
 public:
     CParticle(sf::IntRect rect, sf::Color color);
     CParticle(sf::IntRect rect, sf::Color color, int livingTime);
+    
+    void cParticleLoop();
+    
 private:
     
     sf::Clock _clock;

@@ -17,15 +17,15 @@ CParticle::CParticle(sf::IntRect rect, sf::Color color, int livingTime) :
     CEntity(rect, color), _color(color), _creationTime(_clock.getElapsedTime().asMilliseconds()), _livingTime(livingTime) {
 }
 
-void CParticle::_doLogic() {
-    
+void CParticle::cParticleLoop() {
     if(_clock.getElapsedTime().asMilliseconds() - _creationTime > _livingTime * 1000)
         toRemove = true;
     
-    body.velX += rand() % 3 - 1;
-    //body.velY += rand() % 3 - 1;
-    
     if(body.rect.top > DESPAWN_HEIGHT)
         toRemove = true;
+}
+
+void CParticle::_doLogic() {
+    body.velX += rand() % 3 - 1;
 }
 

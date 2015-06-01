@@ -77,9 +77,14 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
         living->cLivingLoop();
     }
     
-    CMovable* movable = dynamic_cast<CMovable*>(this);  // If movable entity, call the function for CMovable
+    CMovable* movable = dynamic_cast<CMovable*>(this);  // If movable entity
     if(movable != nullptr) {
         movable->cMovableLoop();
+    }
+    
+    CParticle* particle = dynamic_cast<CParticle*>(this);  // If particle entity
+    if(particle != nullptr) {
+        particle->cParticleLoop();
     }
 
 }
