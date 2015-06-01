@@ -99,7 +99,7 @@ void CMovable::jump() {
     
 }
 
-void CMovable::checkMovement() {
+void CMovable::cMovableLoop() {
     if(!hasWalkedX) {
         if(body.velX < 0) {
             body.velX += stoppingAccelerationX;

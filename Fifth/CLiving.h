@@ -16,6 +16,7 @@
 
 enum ValueTypes {
     HEALTH = 0,
+    KEVLAR,
     STAMINA,
     ENERGY,
     VALUETYPES_TOTAL

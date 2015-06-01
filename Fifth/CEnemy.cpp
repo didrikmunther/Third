@@ -27,6 +27,14 @@ void CEnemy::_initMovementValues() {
     sneakSpeed = (float)maxSpeed / 2.0f;
 }
 
+void CEnemy::setTarget(CEntity *target) {
+    this->target = target;
+}
+
+CEntity* CEnemy::getTarget() {
+    return target;
+}
+
 void CEnemy::_doLogic() {
     
     isSneaking = true;
@@ -41,14 +49,4 @@ void CEnemy::_doLogic() {
         if(collisionRight || collisionLeft)
             jump();
     }
-    
-    checkMovement();
-}
-
-void CEnemy::setTarget(CEntity *target) {
-    this->target = target;
-}
-
-CEntity* CEnemy::getTarget() {
-    return target;
 }

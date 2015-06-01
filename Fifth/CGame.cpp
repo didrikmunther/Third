@@ -209,8 +209,9 @@ void CGame::_onEvent(sf::Event* event) {
             switch(event->key.code) {
                     
                 case sf::Keyboard::Q:
-                    CEntity* temp;
-                    temp->say("asdf", "TESTFONT", ChatBubbleType::SAY);     // Crash the game
+                    //CEntity* temp;
+                    //temp->say("asdf", "TESTFONT", ChatBubbleType::SAY);     // Crash the game
+                    instance.seeker->heal(10);
                     break;
                     
                 case keyMap::EXIT:
@@ -218,7 +219,8 @@ void CGame::_onEvent(sf::Event* event) {
                     break;
                     
                 case keyMap::SNEAK:
-                    instance.player->isSneaking = true;
+                    //instance.player->isSneaking = true;
+                    instance.seeker->dealDamage(5);
                     break;
                     
                 case keyMap::BLOCK:

@@ -34,7 +34,7 @@ public:
     float stoppingAccelerationX;
     float sneakSpeed;
     
-    void checkMovement();
+    void cMovableLoop();
     
 private:
     virtual void _initMovementValues();

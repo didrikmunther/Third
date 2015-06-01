@@ -76,6 +76,11 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
     if(living != nullptr) {
         living->cLivingLoop();
     }
+    
+    CMovable* movable = dynamic_cast<CMovable*>(this);  // If movable entity, call the function for CMovable
+    if(movable != nullptr) {
+        movable->cMovableLoop();
+    }
 
 }
 

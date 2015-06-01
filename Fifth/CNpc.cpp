@@ -28,5 +28,4 @@ void CNpc::_initMovementValues() {
 
 void CNpc::_doLogic() {
     goRight();
-    checkMovement();
 }
