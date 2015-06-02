@@ -29,6 +29,10 @@ protected:
     std::string _fontKey;
     std::string _text;
     int _x, _y;
+    
+    sf::Clock _clock;
+    int _livingTime;         // Seconds
+    int _creationTime;
 };
 
 #endif /* defined(__Third__CGuiText__) */

@@ -231,12 +231,13 @@ void CGame::_onEvent(sf::Event* event) {
                     break;
                     
                 case keyMap::PARTICLEEM:
-                    instance.entityManager.addParticleEmitter(sf::IntRect{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 4 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 4 / 2, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 20, 2, 4, 6, ParticleVelocity{7, -5});
+                    instance.entityManager.addParticleEmitter(sf::IntRect{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 4 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 4 / 2, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 6, ParticleVelocity{7, -5});
+                    //instance.entityManager.addParticleEmitter(<#sf::IntRect rect#>, <#sf::Color color#>, <#int type#>, <#int amount#>, <#int frequency#>, <#int livingTime#>, <#int particleLivingTime#>, <#ParticleVelocity velocity#>)
                     break;
                     
                 case keyMap::RESET:
                 {
-                    auto tempNpc = new CEnemy(sf::IntRect{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 32, 32}, "yrl");
+                    auto tempNpc = new CEnemy(sf::IntRect{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 60, 164}, "player");
                     tempNpc->setTarget(instance.player);
                     tempNpc->setShaderKey("");
                     tempNpc->collisionLayer = 1 << 1;

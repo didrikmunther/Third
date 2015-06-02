@@ -27,12 +27,12 @@ CEntity::CEntity(sf::IntRect rect, std::string spriteKey) :
 }
 
 CEntity::~CEntity() {
-    auto i = _ChatBubbleVector.begin();
-    while(i != _ChatBubbleVector.end()) {
+    auto i = _GuiTextVector.begin();
+    while(i != _GuiTextVector.end()) {
         delete *i;
-        i = _ChatBubbleVector.erase(i);
+        i = _GuiTextVector.erase(i);
     }
-    _ChatBubbleVector.clear();
+    _GuiTextVector.clear();
 }
 
 void CEntity::initValues() {
@@ -62,12 +62,12 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
     else if(body.velX < 0)
         addProperty(EntityProperty::FLIP);
     
-    auto i = _ChatBubbleVector.begin();
-    while(i != _ChatBubbleVector.end()) {
+    auto i = _GuiTextVector.begin();
+    while(i != _GuiTextVector.end()) {
         (*i)->onLoop();
         if((*i)->toRemove) {
             delete *i;
-            _ChatBubbleVector.erase(std::remove(_ChatBubbleVector.begin(), _ChatBubbleVector.end(), (*i)), _ChatBubbleVector.end());
+            _GuiTextVector.erase(std::remove(_GuiTextVector.begin(), _GuiTextVector.end(), (*i)), _GuiTextVector.end());
         } else
             ++i;
     }
@@ -90,6 +90,10 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
 }
 
 void CEntity::onRender(CWindow* window, CCamera* camera, int renderFlags) {
+    
+    if(toRemove)
+        return;
+    
     if(camera->collision(this) && !(hasProperty(EntityProperty::HIDDEN))) {
         //std::cout << sprite << std::endl;
         if(CAssetManager::getSprite(spriteKey) == nullptr)
@@ -108,10 +112,13 @@ bool CEntity::isOnCollisionLayer(int collisionLayer) {
 
 void CEntity::say(std::string text, std::string fontKey, int type) {
     CChatBubble* temp = new CChatBubble(text, this, fontKey, type);
-    _ChatBubbleVector.push_back(temp);
+    _GuiTextVector.push_back(temp);
 }
 
 void CEntity::renderAdditional(CWindow *window, CCamera *camera, int renderFlags) {
+    
+    if(toRemove)
+        return;
     
     if(renderFlags & RenderFlags::COLLISION_BORDERS) {                             // Render collision boxes
         int r, g, b = 0;
@@ -124,7 +131,7 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, int renderFlags
         NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, *window->getRenderTexture(), r, g, b);  // Bottom line
     }
     
-    for (auto &i: _ChatBubbleVector)                                                // Render chatbubbles
+    for (auto &i: _GuiTextVector)                                                // Render chatbubbles
         i->onRender(window, camera);
     
     CLiving* living = dynamic_cast<CLiving*>(this);   // If a living entity, call the function for CLiving

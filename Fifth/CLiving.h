@@ -29,13 +29,18 @@ enum StatTypes {
     STATTYPES_TOTAL
 };
 
+struct DamagePosition {
+    int x, y;
+    bool hasPosition;
+};
+
 class CLiving : public CMovable {
     
 public:
     CLiving(sf::IntRect rect, sf::Color color);
     CLiving(sf::IntRect rect, std::string spriteKey);
     
-    void dealDamage(int amount);
+    void dealDamage(int amount, DamagePosition position = {0, 0, false});
     void heal(int amount);
 
     void cLivingLoop();

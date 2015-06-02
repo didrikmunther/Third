@@ -27,7 +27,7 @@ enum EntityProperty {
     FLIP        = 1 << 4
 };
 
-class CChatBubble;
+class CGuiText;
 class CCamera;
 class CEntityManager;
 
@@ -69,9 +69,10 @@ public:
     CSprite* getSprite();
     std::string spriteKey;
     
-private:
-    std::vector<CChatBubble*> _ChatBubbleVector;
+protected:
+    std::vector<CGuiText*> _GuiTextVector;
     
+private:
     virtual void _collisionLogic(CEntity* target);
     virtual void _doLogic();
     

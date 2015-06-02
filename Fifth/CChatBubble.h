@@ -37,14 +37,10 @@ public:
     
 private:
     
-    sf::Clock _clock;
-    
     CEntity* _target;
     int _r, _g, _b;            // Foreground colors
     int _rB, _gB, _bB;         // Background colors
     int _type;
-    int _livingTime;         // Seconds
-    int _creationTime;
     
     std::vector<CText> _TextVector;
     int _widestLine;

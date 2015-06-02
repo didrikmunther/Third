@@ -21,13 +21,15 @@ public:
     
     void cParticleLoop();
     
+protected:
+    int _livingTime;
+    
 private:
     
     sf::Clock _clock;
     
     sf::Color _color;
     int _creationTime;
-    int _livingTime;
     
     virtual void _doLogic();
 };

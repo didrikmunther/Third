@@ -8,6 +8,7 @@
 
 #include "CLiving.h"
 #include "NSurface.h"
+#include "CCombatText.h"
 
 CLiving::CLiving(sf::IntRect rect, sf::Color color) : CMovable(rect, color) {
     _initValues();
@@ -18,8 +19,8 @@ CLiving::CLiving(sf::IntRect rect, std::string spriteKey) : CMovable(rect, sprit
 }
 
 void CLiving::_initValues() {
-    _values[ValueTypes::HEALTH]      = _maxValues[ValueTypes::HEALTH] = 100;
-    _values[ValueTypes::KEVLAR]      = _maxValues[ValueTypes::KEVLAR] = 100;
+    _values[ValueTypes::HEALTH]      = _maxValues[ValueTypes::HEALTH] = 1000;
+    _values[ValueTypes::KEVLAR]      = _maxValues[ValueTypes::KEVLAR] = 1000;
     _values[ValueTypes::ENERGY]      = _maxValues[ValueTypes::ENERGY] = 100;
     _values[ValueTypes::STAMINA]     = _maxValues[ValueTypes::STAMINA] = 100;
     _stats [StatTypes::ARMOUR]       = 1;
@@ -27,8 +28,8 @@ void CLiving::_initValues() {
     _stats [StatTypes::ATTACK_SPEED] = 10;
 
     // temp
-    _values[ValueTypes::HEALTH] = 75;
-    _values[ValueTypes::KEVLAR] = 50;
+    _values[ValueTypes::HEALTH] = 750;
+    _values[ValueTypes::KEVLAR] = 500;
 }
 
 void CLiving::cLivingRender(CWindow *window, CCamera *camera) {
@@ -67,19 +68,26 @@ void CLiving::cLivingLoop() {
     
 }
 
-void CLiving::dealDamage(int amount) {
+void CLiving::dealDamage(int amount, DamagePosition position) {
     int* health = &_values[ValueTypes::HEALTH];
     int* kevlar = &_values[ValueTypes::KEVLAR];
-    if(_values[KEVLAR] > 0) {
-        *kevlar -= amount;
-        if(*kevlar <= 0)
-            *kevlar = 0;
-    } else {
-        *health -= amount;
-        if(*health <= 0) {
-            *health = 0;
-            toRemove = true;
-        }
+    
+    int afterKevlar = 0;
+    
+    *kevlar -= amount;
+    if(*kevlar <= 0) {
+        afterKevlar = -*kevlar;
+        *kevlar = 0;
+    }
+    *health -= afterKevlar;
+    if(*health <= 0) {
+        *health = 0;
+        toRemove = true;
+    }
+    
+    if(position.hasPosition) {
+        CCombatText* text = new CCombatText(position.x, position.y, "-" + std::to_string(amount), "TESTFONT");
+        _GuiTextVector.push_back(text);
     }
 }
 

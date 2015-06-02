@@ -9,6 +9,8 @@
 #include "CUtilityParticle.h"
 #include "CLiving.h"
 
+#include <iostream>
+
 CUtilityParticle::CUtilityParticle(sf::IntRect rect, sf::Color color) : CParticle(rect, color) {
     
 }
@@ -19,12 +21,14 @@ CUtilityParticle::CUtilityParticle(sf::IntRect rect, sf::Color color, int living
 
 void CUtilityParticle::_collisionLogic(CEntity* target) {
     CLiving* living = dynamic_cast<CLiving*>(target);
-    if(living != nullptr) {
-        living->dealDamage(1);
+    if(living != nullptr && !toRemove) {
+        living->dealDamage(10, DamagePosition{body.getX(), body.getY(), true});
         toRemove = true;
+        //std::cout << "here\n";
     }
     
     body.velX /= 2;
+    _livingTime -= 1;
 }
 
 void CUtilityParticle::_doLogic() {
