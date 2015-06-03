@@ -22,6 +22,8 @@ private:
     virtual void _collisionLogic(CEntity* target);
     virtual void _doLogic();
     
+    bool _doEffect;
+    
     
 };
 

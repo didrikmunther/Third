@@ -167,6 +167,8 @@ void CGame::_handleKeyStates() {
     if(!isFocused)
         return;
     
+    // Movement
+    
     if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::RIGHT)) {
         instance.player->goRight();
     }
@@ -180,6 +182,19 @@ void CGame::_handleKeyStates() {
     
     if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::DOWN)) {
         instance.player->goDown();
+    }
+    
+    // Other
+    
+    if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::PARTICLEEM)) {
+        int mousePosX = instance.player->body.getX() - (NMouse::absoluteMouseX(instance.window.getWindow()) + instance.camera.offsetX());
+        int mousePosY = instance.player->body.getY() - 100 - (NMouse::absoluteMouseY(instance.window.getWindow()) + instance.camera.offsetY());
+        float angle = atan2(mousePosY, mousePosX);
+        
+        const int velocityX = -cos(angle) * 100;
+        const int velocityY = -sin(angle) * 100;
+        
+        instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 6, ParticleVelocity{(float)velocityX, (float)velocityY});
     }
 }
 
@@ -230,10 +245,8 @@ void CGame::_onEvent(sf::Event* event) {
                 }
                     break;
                     
-                case keyMap::PARTICLEEM:
-                    instance.entityManager.addParticleEmitter(sf::IntRect{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 4 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 4 / 2, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 6, ParticleVelocity{7, -5});
-                    //instance.entityManager.addParticleEmitter(<#sf::IntRect rect#>, <#sf::Color color#>, <#int type#>, <#int amount#>, <#int frequency#>, <#int livingTime#>, <#int particleLivingTime#>, <#ParticleVelocity velocity#>)
-                    break;
+//                case keyMap::PARTICLEEM:
+//                    break;
                     
                 case keyMap::RESET:
                 {

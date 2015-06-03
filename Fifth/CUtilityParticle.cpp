@@ -24,7 +24,6 @@ void CUtilityParticle::_collisionLogic(CEntity* target) {
     if(living != nullptr && !toRemove) {
         living->dealDamage(10, DamagePosition{body.getX(), body.getY(), true});
         toRemove = true;
-        //std::cout << "here\n";
     }
     
     body.velX /= 2;

@@ -278,7 +278,7 @@ void CEntity::move(std::map<std::string, CEntity*>* entities) {
         
         if(NewY > 0 && MoveY <= 0) NewY = 0;
         if(NewY < 0 && MoveY >= 0) NewY = 0;
-        
+
         if(MoveX == 0) NewX = 0;
         if(MoveY == 0) NewY = 0;
         
