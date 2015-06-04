@@ -98,3 +98,8 @@ void CLiving::heal(int amount) {
         *health = _maxValues[ValueTypes::HEALTH];
 }
 
+void CLiving::_doLogic() {
+    CMovable::_doLogic();
+    
+}
+

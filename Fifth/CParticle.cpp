@@ -26,6 +26,8 @@ void CParticle::cParticleLoop() {
 }
 
 void CParticle::_doLogic() {
+    CEntity::_doLogic();
+    
     body.velX += rand() % 3 - 1;
 }
 

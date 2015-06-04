@@ -33,4 +33,5 @@ void CPlayer::_initMovementValues() {
 
 
 void CPlayer::_doLogic() {
+    CLiving::_doLogic();
 }

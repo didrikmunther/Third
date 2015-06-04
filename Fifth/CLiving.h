@@ -46,6 +46,9 @@ public:
     void cLivingLoop();
     void cLivingRender(CWindow *window, CCamera *camera);
     
+protected:
+    virtual void _doLogic();
+    
 private:
     
     void _initValues();

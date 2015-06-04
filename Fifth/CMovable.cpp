@@ -129,3 +129,7 @@ void CMovable::cMovableLoop() {
     hasWalkedX = false;
     hasWalkedY = false;
 }
+
+void CMovable::_doLogic() {
+    CEntity::_doLogic();
+}

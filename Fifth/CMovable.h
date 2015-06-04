@@ -36,6 +36,9 @@ public:
     
     void cMovableLoop();
     
+protected:
+    virtual void _doLogic();
+    
 private:
     virtual void _initMovementValues();
     

@@ -19,9 +19,11 @@ public:
     CNpc(sf::IntRect rect, sf::Color color);
     CNpc(sf::IntRect rect, std::string spriteKey);
     
+protected:
+    virtual void _doLogic();
+    
 private:
     virtual void _initMovementValues();
-    virtual void _doLogic();
 };
 
 #endif /* defined(__Fifth__CNpc__) */

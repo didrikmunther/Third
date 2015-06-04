@@ -27,5 +27,7 @@ void CNpc::_initMovementValues() {
 }
 
 void CNpc::_doLogic() {
+    CLiving::_doLogic();
+    
     goRight();
 }

@@ -233,8 +233,8 @@ bool CEntity::_collision(int x, int y, std::map<std::string, CEntity*>* entities
 
 void CEntity::move(std::map<std::string, CEntity*>* entities) {
     
-    int MoveX = ceil(body.velX);
-    int MoveY = ceil(body.velY);
+    int MoveX = round(body.velX);
+    int MoveY = round(body.velY);
     
     int StopX = body.getX();
     int StopY = body.getY();
@@ -288,6 +288,27 @@ void CEntity::move(std::map<std::string, CEntity*>* entities) {
 }
 
 void CEntity::_collisionLogic(CEntity *target) {
+    
+//    float momentumX = (float)body.getW() * body.getH() * body.velX;
+//    float targetMomentumX = (float)target->body.getW() * target->body.getH() * target->body.velX;
+//    
+//    float finalMomentumX = momentumX + targetMomentumX;
+//    float finalVelocityX = finalMomentumX / (body.getW() + body.getH() + target->body.getW() + target->body.getH()) / 100;
+//    
+//    //body.velX += finalVelocityX;
+//    target->body.velX += finalVelocityX;
+    
+//    float weight = (body.getW()*body.getH()) / 10000.0f;
+//    
+//    float otherWeight = ( target->body.getW() * target->body.getH() ) / 10000.0f ;
+//    
+//    float movementMass = body.velX*weight;
+//    
+//    float otherMovementMass = (target->body.velX)*otherWeight;
+//    
+//    
+//    body.velX += movementMass*otherMovementMass*(otherWeight/weight);
+    
 }
 
 void CEntity::_doLogic() {

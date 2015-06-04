@@ -31,5 +31,7 @@ void CUtilityParticle::_collisionLogic(CEntity* target) {
 }
 
 void CUtilityParticle::_doLogic() {
+    CParticle::_doLogic();
+    
     body.velY += rand() % 3 - 1;
 }

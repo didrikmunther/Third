@@ -20,10 +20,11 @@ public:
     CPlayer(sf::IntRect rect, sf::Color color);
     CPlayer(sf::IntRect rect, std::string spriteKey);
     
-private:
-    virtual void _initMovementValues();
+protected:
     virtual void _doLogic();
     
+private:
+    virtual void _initMovementValues();
     
 };
 

@@ -18,9 +18,11 @@ public:
     CUtilityParticle(sf::IntRect rect, sf::Color color);
     CUtilityParticle(sf::IntRect rect, sf::Color color, int livingTime);
     
+protected:
+    virtual void _doLogic();
+    
 private:
     virtual void _collisionLogic(CEntity* target);
-    virtual void _doLogic();
     
     bool _doEffect;
     

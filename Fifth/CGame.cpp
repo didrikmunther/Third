@@ -75,7 +75,7 @@ int CGame::onExecute() {
             _title.str("");
             _title << _intro << " | " << _updates << " ups, " << _frames << " fps";
             //instance.window.setTitle(_title.str());
-            instance.player->say(_title.str(), "TESTFONT", ChatBubbleType::SAY);
+            //instance.player->say(_title.str(), "TESTFONT", ChatBubbleType::SAY);
             _updates = 0;
             _frames = 0;
         }
