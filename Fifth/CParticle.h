@@ -19,8 +19,6 @@ public:
     CParticle(sf::IntRect rect, sf::Color color);
     CParticle(sf::IntRect rect, sf::Color color, int livingTime);
     
-    void cParticleLoop();
-    
 protected:
     virtual void _doLogic();
     

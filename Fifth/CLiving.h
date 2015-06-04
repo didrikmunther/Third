@@ -43,7 +43,6 @@ public:
     void dealDamage(int amount, DamagePosition position = {0, 0, false});
     void heal(int amount);
 
-    void cLivingLoop();
     void cLivingRender(CWindow *window, CCamera *camera);
     
 protected:

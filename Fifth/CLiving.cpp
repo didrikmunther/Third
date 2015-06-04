@@ -64,10 +64,6 @@ void CLiving::cLivingRender(CWindow *window, CCamera *camera) {
     
 }
 
-void CLiving::cLivingLoop() {
-    
-}
-
 void CLiving::dealDamage(int amount, DamagePosition position) {
     int* health = &_values[ValueTypes::HEALTH];
     int* kevlar = &_values[ValueTypes::KEVLAR];

@@ -99,7 +99,11 @@ void CMovable::jump() {
     
 }
 
-void CMovable::cMovableLoop() {
+
+
+void CMovable::_doLogic() {
+    CEntity::_doLogic();
+    
     if(!hasWalkedX) {
         if(body.velX < 0) {
             body.velX += stoppingAccelerationX;
@@ -128,8 +132,4 @@ void CMovable::cMovableLoop() {
     
     hasWalkedX = false;
     hasWalkedY = false;
-}
-
-void CMovable::_doLogic() {
-    CEntity::_doLogic();
 }

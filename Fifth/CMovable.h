@@ -34,8 +34,6 @@ public:
     float stoppingAccelerationX;
     float sneakSpeed;
     
-    void cMovableLoop();
-    
 protected:
     virtual void _doLogic();
     
