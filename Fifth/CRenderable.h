@@ -15,13 +15,17 @@
 class CRenderable {
 
 public:
-    CRenderable(std::string shaderKey = "") : _shaderKey("SHADER1") {};
+    CRenderable(std::string shaderKey = "") : _shaderKey("SHADER1"), _transparency(255) {};
     
     std::string getShaderKey() { return _shaderKey; }
     void setShaderKey(std::string shaderKey) { _shaderKey = shaderKey; }
     
+    void setTransparency(int value) { _transparency = value; }
+    int getTransparency() { return _transparency; }
+    
 private:
     std::string _shaderKey;
+    int _transparency;
     
 };
 

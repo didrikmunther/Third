@@ -26,6 +26,7 @@ public:
 private:
     virtual void _initMovementValues();
     virtual void _doLogic();
+    virtual void _collisionLogic(CEntity* target);
     
     CEntity* target;
     

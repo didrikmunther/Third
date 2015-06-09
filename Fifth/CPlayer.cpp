@@ -30,8 +30,10 @@ void CPlayer::_initMovementValues() {
     sneakSpeed = (float)maxSpeed / 2.0f;
 }
 
-
-
 void CPlayer::_doLogic() {
     CLiving::_doLogic();
+}
+
+void CPlayer::_collisionLogic(CEntity* target) {
+    CLiving::_collisionLogic(target);
 }

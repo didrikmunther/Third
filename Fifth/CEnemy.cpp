@@ -50,3 +50,7 @@ void CEnemy::_doLogic() {
             jump();
     }
 }
+
+void CEnemy::_collisionLogic(CEntity* target) {
+    CLiving::_collisionLogic(target);
+}

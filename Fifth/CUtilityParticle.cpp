@@ -25,9 +25,6 @@ void CUtilityParticle::_collisionLogic(CEntity* target) {
         living->dealDamage(10, DamagePosition{body.getX(), body.getY(), true});
         toRemove = true;
     }
-    
-    body.velX /= 2;
-    _livingTime -= 1;
 }
 
 void CUtilityParticle::_doLogic() {

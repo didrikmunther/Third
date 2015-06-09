@@ -35,6 +35,7 @@ public:
     float sneakSpeed;
     
 protected:
+    virtual void _collisionLogic(CEntity* target);
     virtual void _doLogic();
     
 private:

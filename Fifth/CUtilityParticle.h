@@ -20,11 +20,10 @@ public:
     
 protected:
     virtual void _doLogic();
-    
-private:
     virtual void _collisionLogic(CEntity* target);
     
-    bool _doEffect;
+private:
+    CEntity* _owner;
     
     
 };

@@ -71,12 +71,12 @@ public:
     
 protected:
     std::vector<CGuiText*> _GuiTextVector;
-    // Remember to allways call your parents _doLogic function.
-    virtual void _doLogic();
     
-private:
+    // Remember to allways call your parents _doLogic, and _collisionLogic function.
+    virtual void _doLogic();
     virtual void _collisionLogic(CEntity* target);
     
+private:
     bool _collision(int x, int y, std::map<std::string, CEntity*>* entities);
     
 };

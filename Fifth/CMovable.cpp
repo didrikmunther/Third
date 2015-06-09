@@ -133,3 +133,9 @@ void CMovable::_doLogic() {
     hasWalkedX = false;
     hasWalkedY = false;
 }
+
+void CMovable::_collisionLogic(CEntity* target) {
+    CEntity::_collisionLogic(target);
+    
+    
+}

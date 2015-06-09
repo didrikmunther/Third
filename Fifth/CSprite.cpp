@@ -12,14 +12,4 @@ CSprite::CSprite(CSpriteSheet* spriteSheet, sf::IntRect rect, std::string shader
 {
     _sprite.setTexture(*spriteSheet->getTexture());
     _sprite.setTextureRect(rect);
-    
-}
-
-
-sf::IntRect* CSprite::getOffset() {
-    return &_rect;
-}
-
-sf::Sprite* CSprite::getSprite() {
-    return &_sprite;
 }

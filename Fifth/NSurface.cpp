@@ -10,14 +10,14 @@
 #include "Define.h"
 #include <iostream>
 
-void NSurface::renderRect(int x, int y, int w, int h, sf::RenderTarget& target, int r, int g, int b) {
-    renderRect(sf::IntRect{x,y,w,h}, target, r, g, b);
+void NSurface::renderRect(int x, int y, int w, int h, sf::RenderTarget& target, int r, int g, int b, int a) {
+    renderRect(sf::IntRect{x,y,w,h}, target, r, g, b, a);
 }
 
-void NSurface::renderRect(sf::IntRect rect, sf::RenderTarget& target, int r, int g, int b) {
+void NSurface::renderRect(sf::IntRect rect, sf::RenderTarget& target, int r, int g, int b, int a) {
     sf::RectangleShape rectangle(sf::Vector2f(rect.width, rect.height));
     rectangle.setPosition(rect.left, rect.top);
-    rectangle.setFillColor(sf::Color(r, g, b));
+    rectangle.setFillColor(sf::Color(r, g, b, a));
     
     target.draw(rectangle);
 }
@@ -26,6 +26,7 @@ void NSurface::renderEntity(CEntity* entity, CWindow* window, sf::IntRect destin
     if(entity->getSprite() == nullptr) return;
     auto nsprite = *entity->getSprite()->getSprite();
     nsprite.setPosition(destination.left, destination.top);
+    nsprite.setColor(sf::Color{255, 255, 255, (uint8_t)entity->getTransparency()});
     
     if(properties & EntityProperty::FLIP) {
         nsprite.setOrigin({ nsprite.getLocalBounds().width, 0 });

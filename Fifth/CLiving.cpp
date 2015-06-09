@@ -84,6 +84,9 @@ void CLiving::dealDamage(int amount, DamagePosition position) {
     if(position.hasPosition) {
         CCombatText* text = new CCombatText(position.x, position.y, "-" + std::to_string(amount), "TESTFONT");
         _GuiTextVector.push_back(text);
+    } else {
+        CCombatText* text = new CCombatText(body.getX(), body.getY(), "-" + std::to_string(amount), "TESTFONT");
+        _GuiTextVector.push_back(text);
     }
 }
 
@@ -96,6 +99,15 @@ void CLiving::heal(int amount) {
 
 void CLiving::_doLogic() {
     CMovable::_doLogic();
+    
+}
+
+void CLiving::_collisionLogic(CEntity* target) {
+    CMovable::_collisionLogic(target);
+    
+    if(body.velY > 22) {            // Fall damage
+        dealDamage(10 * (body.velY - 22) * (_maxValues[ValueTypes::HEALTH] / 500));
+    }
     
 }
 

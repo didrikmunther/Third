@@ -75,7 +75,7 @@ int CGame::onExecute() {
             _title.str("");
             _title << _intro << " | " << _updates << " ups, " << _frames << " fps";
             //instance.window.setTitle(_title.str());
-            //instance.player->say(_title.str(), "TESTFONT", ChatBubbleType::SAY);
+            instance.entityManager.getEntity("n:bush")->say(_title.str(), "TESTFONT", ChatBubbleType::SAY);
             _updates = 0;
             _frames = 0;
         }
@@ -191,10 +191,10 @@ void CGame::_handleKeyStates() {
         int mousePosY = instance.player->body.getY() - 100 - (NMouse::absoluteMouseY(instance.window.getWindow()) + instance.camera.offsetY());
         float angle = atan2(mousePosY, mousePosX);
         
-        const int velocityX = -cos(angle) * 100;
-        const int velocityY = -sin(angle) * 100;
+        const int velocityX = -(cos(angle) * 100);
+        const int velocityY = -(sin(angle) * 100);
         
-        instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 6, ParticleVelocity{(float)velocityX, (float)velocityY});
+        instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
     }
 }
 
@@ -270,6 +270,11 @@ void CGame::_onEvent(sf::Event* event) {
                 case keyMap::TOGGLE_NOCLIP:
                     instance.player->toggleProperty(EntityProperty::COLLIDABLE);
                     instance.player->toggleProperty(EntityProperty::FLYING);
+                    if (instance.player->hasProperty(EntityProperty::COLLIDABLE))
+                        instance.player->setTransparency(255);
+                    else
+                        instance.player->setTransparency(128);
+                    
                     break;
                 case keyMap::LOAD_ASSETS:
                     _initAssets();

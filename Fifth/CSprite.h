@@ -20,8 +20,8 @@ class CSprite : public CRenderable {
 public:
     CSprite(CSpriteSheet* spriteSheet, sf::IntRect rect, std::string shaderKey = "");
     
-    sf::IntRect* getOffset();
-    sf::Sprite* getSprite();
+    sf::IntRect* getOffset() { return &_rect; }
+    sf::Sprite* getSprite() { return &_sprite; }
     
 private:
     sf::IntRect _rect;
