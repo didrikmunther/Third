@@ -20,6 +20,7 @@
 #endif
 #include <SFML/Network.hpp>
 #include "CEnemy.h"
+#include "CUtilityParticle.h"
 
 CGame::CGame() :
 _intro("Physics"),
@@ -186,7 +187,7 @@ void CGame::_handleKeyStates() {
     
     // Other
     
-    if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::PARTICLEEM)) {
+    if(    sf::Mouse::isButtonPressed(sf::Mouse::Left)) { // damage particle
         int mousePosX = instance.player->body.getX() - (NMouse::absoluteMouseX(instance.window.getWindow()) + instance.camera.offsetX());
         int mousePosY = instance.player->body.getY() - 100 - (NMouse::absoluteMouseY(instance.window.getWindow()) + instance.camera.offsetY());
         float angle = atan2(mousePosY, mousePosX);
@@ -194,7 +195,28 @@ void CGame::_handleKeyStates() {
         const int velocityX = -(cos(angle) * 100);
         const int velocityY = -(sin(angle) * 100);
         
-        instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
+        //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
+        
+        CUtilityParticle* tempParticle = new CUtilityParticle(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, BasicUtilities::DAMAGE, 10);
+        tempParticle->body.velX = velocityX;
+        tempParticle->body.velY = velocityY;
+        instance.entityManager.addParticle(tempParticle);
+    }
+    
+    if(sf::Mouse::isButtonPressed(sf::Mouse::Right)) {   // heal particle
+        int mousePosX = instance.player->body.getX() - (NMouse::absoluteMouseX(instance.window.getWindow()) + instance.camera.offsetX());
+        int mousePosY = instance.player->body.getY() - 100 - (NMouse::absoluteMouseY(instance.window.getWindow()) + instance.camera.offsetY());
+        float angle = atan2(mousePosY, mousePosX);
+        
+        const float velocityX = -(cos(angle) * 100);
+        const float velocityY = -(sin(angle) * 100);
+        
+        //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
+        
+        CUtilityParticle* tempParticle = new CUtilityParticle(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 20, 20}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, BasicUtilities::HEAL, 10);
+        tempParticle->body.velX = velocityX;
+        tempParticle->body.velY = velocityY;
+        instance.entityManager.addParticle(tempParticle);
     }
 }
 

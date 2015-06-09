@@ -64,7 +64,15 @@ void CLiving::cLivingRender(CWindow *window, CCamera *camera) {
     
 }
 
-void CLiving::dealDamage(int amount, DamagePosition position) {
+int CLiving::dealDamage(int amount, UtilityPosition position) {
+    
+    if(position.x == 0)
+        position.x = body.getX();
+    if(position.y == 0)
+        position.y = body.getY();
+    
+    sf::Color damageColor = {255, 0, 0};
+    
     int* health = &_values[ValueTypes::HEALTH];
     int* kevlar = &_values[ValueTypes::KEVLAR];
     
@@ -75,26 +83,42 @@ void CLiving::dealDamage(int amount, DamagePosition position) {
         afterKevlar = -*kevlar;
         *kevlar = 0;
     }
+    int overDamage = (*health-afterKevlar <= 0?amount-(*health-afterKevlar):0);
+    int damageDone = amount - overDamage;
     *health -= afterKevlar;
     if(*health <= 0) {
         *health = 0;
         toRemove = true;
     }
     
-    if(position.hasPosition) {
-        CCombatText* text = new CCombatText(position.x, position.y, "-" + std::to_string(amount), "TESTFONT");
-        _GuiTextVector.push_back(text);
-    } else {
-        CCombatText* text = new CCombatText(body.getX(), body.getY(), "-" + std::to_string(amount), "TESTFONT");
-        _GuiTextVector.push_back(text);
-    }
+    CCombatText* text = new CCombatText(position.x, position.y, damageColor, 20, "-" + std::to_string(damageDone), "TESTFONT");
+    _GuiTextVector.push_back(text);
+    
+    return damageDone;
 }
 
-void CLiving::heal(int amount) {
+int CLiving::heal(int amount, UtilityPosition position) {
+    
+    if(position.x == 0)
+        position.x = body.getX();
+    if(position.y == 0)
+        position.y = body.getY();
+    
+    sf::Color healingColor = {0, 255, 0};
+    
     int* health = &_values[ValueTypes::HEALTH];
     *health += amount;
-    if(*health >= _maxValues[ValueTypes::HEALTH])
+    int overHeal = 0;
+    if(*health >= _maxValues[ValueTypes::HEALTH]) {
+        overHeal = *health - _maxValues[ValueTypes::HEALTH];
         *health = _maxValues[ValueTypes::HEALTH];
+    }
+    int healed = amount - overHeal;
+    
+    CCombatText* text = new CCombatText(position.x, position.y, healingColor, 20, "+" + std::to_string(healed), "TESTFONT");
+    _GuiTextVector.push_back(text);
+    
+    return healed;
 }
 
 void CLiving::_doLogic() {

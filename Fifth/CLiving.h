@@ -29,9 +29,8 @@ enum StatTypes {
     STATTYPES_TOTAL
 };
 
-struct DamagePosition {
+struct UtilityPosition {
     int x, y;
-    bool hasPosition;
 };
 
 class CLiving : public CMovable {
@@ -40,8 +39,8 @@ public:
     CLiving(sf::IntRect rect, sf::Color color);
     CLiving(sf::IntRect rect, std::string spriteKey);
     
-    void dealDamage(int amount, DamagePosition position = {0, 0, false});
-    void heal(int amount);
+    int dealDamage(int amount, UtilityPosition position = {0, 0});
+    int heal(int amount, UtilityPosition position = {0, 0});
 
     void cLivingRender(CWindow *window, CCamera *camera);
     

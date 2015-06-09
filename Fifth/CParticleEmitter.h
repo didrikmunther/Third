@@ -26,6 +26,7 @@ class CParticleEmitter {
     
 public:
     CParticleEmitter(sf::IntRect rect, sf::Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, ParticleVelocity velocity);
+    CParticleEmitter(CParticle* particleTemplate, int amount, int frequency, int livingTime, ParticleVelocity velocity);
     void onLoop(CEntityManager *entityManager);
     
     bool toRemove;

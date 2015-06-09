@@ -12,11 +12,17 @@
 #include <stdio.h>
 #include "CParticle.h"
 
+enum BasicUtilities {
+    DAMAGE = 0,
+    HEAL,
+    NONE
+};
+
 class CUtilityParticle : public CParticle {
     
 public:
-    CUtilityParticle(sf::IntRect rect, sf::Color color);
-    CUtilityParticle(sf::IntRect rect, sf::Color color, int livingTime);
+    CUtilityParticle(sf::IntRect rect, sf::Color color, int utility);
+    CUtilityParticle(sf::IntRect rect, sf::Color color, int utility, int livingTime);
     
 protected:
     virtual void _doLogic();
@@ -25,6 +31,7 @@ protected:
 private:
     CEntity* _owner;
     
+    int _basicUtility;
     
 };
 

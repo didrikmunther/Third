@@ -11,19 +11,32 @@
 
 #include <iostream>
 
-CUtilityParticle::CUtilityParticle(sf::IntRect rect, sf::Color color) : CParticle(rect, color) {
-    
+CUtilityParticle::CUtilityParticle(sf::IntRect rect, sf::Color color, int utility) :
+CParticle(rect, color), _basicUtility(utility) {
+    std::cout << utility << "\n";
 }
 
-CUtilityParticle::CUtilityParticle(sf::IntRect rect, sf::Color color, int livingTime) : CParticle(rect, color, livingTime) {
+CUtilityParticle::CUtilityParticle(sf::IntRect rect, sf::Color color, int utility, int livingTime) :
+CParticle(rect, color, livingTime), _basicUtility(utility) {
     
 }
 
 void CUtilityParticle::_collisionLogic(CEntity* target) {
+    CParticle::_collisionLogic();
+    
     CLiving* living = dynamic_cast<CLiving*>(target);
     if(living != nullptr && !toRemove) {
-        living->dealDamage(10, DamagePosition{body.getX(), body.getY(), true});
-        toRemove = true;
+        switch(_basicUtility) {
+            case BasicUtilities::DAMAGE:
+                living->dealDamage(rand() % 20, UtilityPosition{body.getX(), body.getY()});
+                toRemove = true;
+                break;
+                
+            case BasicUtilities::HEAL:
+                living->heal(rand() % 20, UtilityPosition{body.getX(), body.getY()});
+                toRemove = true;
+                break;
+        }
     }
 }
 

@@ -29,3 +29,6 @@ void CParticle::_doLogic() {
         toRemove = true;
 }
 
+void CParticle::_collisionLogic() {
+    
+}

@@ -9,7 +9,7 @@
 #include "CCombatText.h"
 #include "NSurface.h"
 
-CCombatText::CCombatText(int x, int y, std::string text, std::string fontKey) : CGuiText(x, y, text, fontKey) {
+CCombatText::CCombatText(int x, int y, sf::Color color, int size, std::string text, std::string fontKey) : CGuiText(x, y, text, fontKey) {
     
     _livingTime = 2;
     
@@ -18,9 +18,6 @@ CCombatText::CCombatText(int x, int y, std::string text, std::string fontKey) : 
     int randomPosY = rand() % variator - variator / 2;
     _x += randomPosX;
     _y += randomPosY;
-    
-    int size = 20;
-    sf::Color color = {255, 0, 0};
     
     _textObj = new CText(text, size, fontKey, color);
 }

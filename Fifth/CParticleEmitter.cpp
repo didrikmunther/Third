@@ -12,11 +12,17 @@
 #include <iostream>
 
 CParticleEmitter::CParticleEmitter(sf::IntRect rect, sf::Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, ParticleVelocity velocity) :
-    _rect(rect), _color(color), type(type), _amount(amount), _frequency(frequency),
-    _livingTime(livingTime), _particleLivingTime(particleLivingTime),
-    _velocity(velocity), _creationTime(_clock.getElapsedTime().asMilliseconds()),
-    toRemove(false), _timer(_clock.getElapsedTime().asMilliseconds() - (frequency * 1000)) {
+_rect(rect), _color(color), type(type), _amount(amount), _frequency(frequency),
+_livingTime(livingTime), _particleLivingTime(particleLivingTime),
+_velocity(velocity), _creationTime(_clock.getElapsedTime().asMilliseconds()),
+toRemove(false), _timer(_clock.getElapsedTime().asMilliseconds() - (frequency * 1000)) {
 }
+
+//CParticleEmitter::CParticleEmitter(CParticle* particleTemplate, int amount, int frequency, int livingTime, ParticleVelocity velocity) :
+//_rect(nullptr), _color(nullptr)
+//{
+//    
+//}
 
 void CParticleEmitter::onLoop(CEntityManager *entityManager) {
     if(_clock.getElapsedTime().asMilliseconds() - _creationTime > _livingTime * 1000) {
