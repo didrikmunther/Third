@@ -16,8 +16,8 @@
 class CParticle : public CEntity {
     
 public:
-    CParticle(sf::IntRect rect, sf::Color color);
-    CParticle(sf::IntRect rect, sf::Color color, int livingTime);
+    CParticle(sf::IntRect rect, sf::Color color, int livingTime = 5);
+    CParticle(sf::IntRect rect, std::string spriteKey, int livingTime = 5);
     
 protected:
     virtual void _doLogic();
@@ -29,7 +29,6 @@ private:
     
     sf::Clock _clock;
     
-    sf::Color _color;
     int _creationTime;
 };
 

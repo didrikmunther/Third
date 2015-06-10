@@ -197,7 +197,7 @@ void CGame::_handleKeyStates() {
         
         //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
         
-        CUtilityParticle* tempParticle = new CUtilityParticle(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, BasicUtilities::DAMAGE, 10);
+        CUtilityParticle* tempParticle = new CUtilityParticle(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 4, 4}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, BasicUtilities::DAMAGE, 10);
         tempParticle->body.velX = velocityX;
         tempParticle->body.velY = velocityY;
         instance.entityManager.addParticle(tempParticle);

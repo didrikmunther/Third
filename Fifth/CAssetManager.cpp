@@ -15,6 +15,7 @@ std::map<std::string, CSprite*> CAssetManager::_SpriteVector;
 std::map<std::string, CSpriteSheet*> CAssetManager::_SpriteSheetVector;
 std::map<std::string, sf::Font> CAssetManager::_FontVector;
 std::map<std::string, sf::Shader*> CAssetManager::_ShaderVector;
+int CAssetManager::_assetId = 0;
 
 CAssetManager::CAssetManager() {
 }
@@ -30,6 +31,18 @@ CSprite* CAssetManager::addSprite(std::string name, std::string spriteSheetKey, 
     } else {
         _SpriteVector[name] = new CSprite(_SpriteSheetVector[spriteSheetKey], source);
         return _SpriteVector[name];
+    }
+}
+
+std::string CAssetManager::addSprite(CSprite* sprite, std::string name /* = "" */) {
+    if(name == "")
+        name = "reserved:" + std::to_string(_assetId++);
+    if(_SpriteVector.find(name) != _SpriteVector.end()) {
+        std::cout << "!: Couldn't add sprite: \"" << name << "\", because it already exists.\n";
+        return name;
+    } else {
+        _SpriteVector[name] = sprite;
+        return name;
     }
 }
 

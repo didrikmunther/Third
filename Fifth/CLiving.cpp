@@ -88,7 +88,7 @@ int CLiving::dealDamage(int amount, UtilityPosition position) {
     *health -= afterKevlar;
     if(*health <= 0) {
         *health = 0;
-        toRemove = true;
+        _isDead = true;
     }
     
     CCombatText* text = new CCombatText(position.x, position.y, damageColor, 20, "-" + std::to_string(damageDone), "TESTFONT");

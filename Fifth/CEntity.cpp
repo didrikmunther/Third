@@ -27,15 +27,11 @@ CEntity::CEntity(sf::IntRect rect, std::string spriteKey) :
 }
 
 CEntity::~CEntity() {
-    auto i = _GuiTextVector.begin();
-    while(i != _GuiTextVector.end()) {
-        delete *i;
-        i = _GuiTextVector.erase(i);
-    }
-    _GuiTextVector.clear();
+    _cleanUpTextVector();
 }
 
 void CEntity::initValues() {
+    _isDead             = false;
     toRemove            = false;
     properties          = EntityProperty::COLLIDABLE;
     collisionTop        = false;
@@ -45,22 +41,16 @@ void CEntity::initValues() {
     collisionLayer = CollisionLayers::LAYER0;
 }
 
+void CEntity::_cleanUpTextVector() {
+    auto i = _GuiTextVector.begin();
+    while(i != _GuiTextVector.end()) {
+        delete *i;
+        i = _GuiTextVector.erase(i);
+    }
+    _GuiTextVector.clear();
+}
+
 void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
-    
-    if(!hasProperty(EntityProperty::FLYING))
-        body.velY += GRAVITY;
-    
-    _doLogic();
-    
-    if(!hasProperty(EntityProperty::STATIC))
-        move(entities);
-    else
-        body.velY = body.velX = 0;
-    
-    if(body.velX > 0)
-        removeProperty(EntityProperty::FLIP);
-    else if(body.velX < 0)
-        addProperty(EntityProperty::FLIP);
     
     auto i = _GuiTextVector.begin();
     while(i != _GuiTextVector.end()) {
@@ -71,12 +61,25 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
         } else
             ++i;
     }
+    
+    if(isDead())
+        return;
+    
+    if(!hasProperty(EntityProperty::FLYING))
+        body.velY += GRAVITY;
+    
+    _doLogic();
+    
+    if(!hasProperty(EntityProperty::STATIC))
+        move(entities);
+    else
+        body.velY = body.velX = 0;
 
 }
 
 void CEntity::onRender(CWindow* window, CCamera* camera, int renderFlags) {
     
-    if(toRemove)
+    if(toRemove || isDead())
         return;
     
     if(camera->collision(this) && !(hasProperty(EntityProperty::HIDDEN))) {
@@ -102,7 +105,7 @@ void CEntity::say(std::string text, std::string fontKey, int type) {
 
 void CEntity::renderAdditional(CWindow *window, CCamera *camera, int renderFlags) {
     
-    if(toRemove)
+    if(toRemove || isDead())
         return;
     
     if(renderFlags & RenderFlags::COLLISION_BORDERS) {                             // Render collision boxes
@@ -150,6 +153,10 @@ CSprite* CEntity::getSprite() {
     return CAssetManager::getSprite(spriteKey);
 }
 
+bool CEntity::isDead() {
+    return _isDead;
+}
+
 bool CEntity::coordinateCollision(int x, int y, int w, int h, int x2, int y2, int w2, int h2) {
     if(x + 1 > x2 + w2)
         return false;
@@ -175,29 +182,29 @@ bool CEntity::_collision(int x, int y, std::map<std::string, CEntity*>* entities
     
     for (auto &i: *entities) {
         
-        if (i.second == this) continue;
-        if (!(i.second->properties & EntityProperty::COLLIDABLE)) continue;
+        auto target = i.second;
+        
+        if (target == this) continue;
+        if (!(target->properties & EntityProperty::COLLIDABLE)) continue;
+        if (target->isDead()) return;
         //if (!i.second->isOnCollisionLayer(collisionLayer)) return;        // Isn't working right now
     
-        if(!coordinateCollision(x, y, body.getW(), body.getH(), i.second->body.getX(), i.second->body.getY(), i.second->body.getW(), i.second->body.getH()))
+        if(!coordinateCollision(x, y, body.getW(), body.getH(), target->body.getX(), target->body.getY(), target->body.getW(), target->body.getH()))
             continue;
         
-        if(y - 1 + body.getH() <= i.second->body.getY() &&
-           x + body.getW() - 1 > i.second->body.getX() &&
-           x + 1 < i.second->body.getX() + i.second->body.getW())
+        if(y - 1 + body.getH() <= target->body.getY() &&
+           x + body.getW() - 1 > target->body.getX() &&
+           x + 1 < target->body.getX() + target->body.getW())
             collisionBottom = true;
-        
-        if(y + 1 == i.second->body.getY() + i.second->body.getH())
+        if(y + 1 == target->body.getY() + target->body.getH())
             collisionTop = true;
-        
-        if(x + 1 >= i.second->body.getX() + i.second->body.getW())
+        if(x + 1 >= target->body.getX() + target->body.getW())
             collisionLeft = true;
-        
-        if(x + body.getW() - 1 <= i.second->body.getX())
+        if(x + body.getW() - 1 <= target->body.getX())
             collisionRight = true;
         
         colliding = true;
-        _collisionLogic(i.second);
+        _collisionLogic(target);
     }
     
     if(colliding) {
@@ -297,5 +304,11 @@ void CEntity::_collisionLogic(CEntity *target) {
 }
 
 void CEntity::_doLogic() {
+    if(!hasProperty(EntityProperty::FLIP_FREEZED)) {
+        if(body.velX > 0)
+            removeProperty(EntityProperty::FLIP);
+        else if(body.velX < 0)
+            addProperty(EntityProperty::FLIP);
+    }
 }
 

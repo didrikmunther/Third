@@ -15,7 +15,7 @@
 class CRenderable {
 
 public:
-    CRenderable(std::string shaderKey = "") : _shaderKey("SHADER1"), _transparency(255) {};
+    CRenderable(std::string shaderKey = "") : _shaderKey(""), _transparency(255) {};
     
     std::string getShaderKey() { return _shaderKey; }
     void setShaderKey(std::string shaderKey) { _shaderKey = shaderKey; }

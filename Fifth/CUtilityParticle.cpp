@@ -38,10 +38,14 @@ void CUtilityParticle::_collisionLogic(CEntity* target) {
                 break;
         }
     }
+    
+    if(collisionBottom)
+        toRemove = true;
 }
 
 void CUtilityParticle::_doLogic() {
     CParticle::_doLogic();
     
+    if(!collisionBottom)
     body.velY += rand() % 3 - 1;
 }

@@ -28,6 +28,8 @@ void CNpc::_initMovementValues() {
 
 void CNpc::_doLogic() {
     CLiving::_doLogic();
-    
-    goRight();
+}
+
+void CNpc::_collisionLogic(CEntity* target) {
+    CMovable::_collisionLogic(target);
 }

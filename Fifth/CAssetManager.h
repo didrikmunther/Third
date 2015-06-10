@@ -22,6 +22,7 @@ public:
     CAssetManager();
     
     static CSprite* addSprite(std::string name, std::string spriteSheetKey, sf::IntRect source);
+    static std::string addSprite(CSprite* sprite, std::string name = "");
     static CSpriteSheet* addSpriteSheet(std::string name, std::string fileName);
     static sf::Font* addFont(std::string name, std::string fileName);
     static sf::Shader* addShader(std::string name, std::string fileName, sf::Shader::Type type);
@@ -38,6 +39,7 @@ private:
     static std::map<std::string, CSpriteSheet*> _SpriteSheetVector;
     static std::map<std::string, sf::Font> _FontVector;
     static std::map<std::string, sf::Shader*> _ShaderVector;
+    static int _assetId;
     
 };
 

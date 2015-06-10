@@ -61,6 +61,7 @@ private:
     std::vector<CParticle*> _ParticleVector;
     std::vector<CParticleEmitter*> _ParticleEmitterVector;
     std::vector<CGuiText*> _GuiTextVector;
+    std::map<std::string, CEntity*> _DeadEntitiesVector;
     
 };
 

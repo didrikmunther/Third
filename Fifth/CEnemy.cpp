@@ -36,6 +36,7 @@ CEntity* CEnemy::getTarget() {
 }
 
 void CEnemy::_doLogic() {
+    CNpc::_doLogic();
     
     isSneaking = true;
     
@@ -52,5 +53,5 @@ void CEnemy::_doLogic() {
 }
 
 void CEnemy::_collisionLogic(CEntity* target) {
-    CLiving::_collisionLogic(target);
+    CNpc::_collisionLogic(target);
 }

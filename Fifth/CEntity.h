@@ -24,7 +24,8 @@ enum EntityProperty {
     FLYING      = 1 << 1,
     HIDDEN      = 1 << 2,
     STATIC      = 1 << 3,
-    FLIP        = 1 << 4
+    FLIP        = 1 << 4,
+    FLIP_FREEZED= 1 << 5
 };
 
 class CGuiText;
@@ -69,12 +70,17 @@ public:
     CSprite* getSprite();
     std::string spriteKey;
     
+    bool isDead();
+    
 protected:
     std::vector<CGuiText*> _GuiTextVector;
+    void _cleanUpTextVector();
     
     // Remember to allways call your parents _doLogic, and _collisionLogic function.
     virtual void _doLogic();
     virtual void _collisionLogic(CEntity* target);
+    
+    bool _isDead;
     
 private:
     bool _collision(int x, int y, std::map<std::string, CEntity*>* entities);
