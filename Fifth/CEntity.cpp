@@ -19,12 +19,14 @@
 
 CEntity::CEntity(Box rect, sf::Color color) :
 spriteContainerKey(""), CCollidable(rect), color(color) {
-        initValues();
+    initValues();
 }
 
 CEntity::CEntity(Box rect, std::string spriteContainerKey) :
 spriteContainerKey(spriteContainerKey), CCollidable(rect), color(sf::Color{255,0,255,255}) /* sprite not found color */ {
-        initValues();
+    initValues();
+    std::fill(spriteStateTypes, spriteStateTypes+SpriteStateTypes::TOTAL_SPRITESTATETYPES, spriteContainerKey);
+    
 }
 
 CEntity::~CEntity() {
@@ -123,7 +125,7 @@ bool CEntity::hasSprite() {
 
 void CEntity::renderAdditional(CWindow *window, CCamera *camera, int renderFlags) {
     
-    if(toRemove || isDead())
+    if(toRemove || isDead() || hasProperty(EntityProperty::HIDDEN))
         return;
     
     if(renderFlags & RenderFlags::COLLISION_BORDERS) {                             // Render collision boxes
@@ -304,6 +306,12 @@ void CEntity::_doLogic() {
             removeProperty(EntityProperty::FLIP);
         else if(body.velX < 0)
             addProperty(EntityProperty::FLIP);
+    }
+    
+    if(!collisionBottom) {
+        setSpriteContainer(spriteStateTypes[SpriteStateTypes::JUMPING]);
+    } else {
+        setSpriteContainer(spriteStateTypes[SpriteStateTypes::IDLE]);
     }
 }
 

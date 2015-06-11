@@ -89,6 +89,15 @@ void CMovable::goDown() {
     hasWalkedY = true;
 }
 
+void CMovable::toggleNoclip() {
+    toggleProperty(EntityProperty::COLLIDABLE);
+    toggleProperty(EntityProperty::FLYING);
+    if (hasProperty(EntityProperty::COLLIDABLE))
+        setTransparency(255);
+    else
+        setTransparency(128);
+}
+
 void CMovable::jump() {
     if (!collisionBottom)
         return;

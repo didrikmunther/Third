@@ -49,6 +49,11 @@ void CEnemy::_doLogic() {
         //if(body.getY() > target->body.getY())
         if(collisionRight || collisionLeft)
             jump();
+        
+//        if(target->body.getY() < body.getY())
+//            goUp();
+//        else if(target->body.getY() > body.getY())
+//            goDown();
     }
 }
 

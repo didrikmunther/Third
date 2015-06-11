@@ -26,7 +26,6 @@ void CUtilityParticle::_collisionLogic(CEntity* target) {
     
     CLiving* living = dynamic_cast<CLiving*>(target);
     if(living != nullptr && !toRemove) {
-        std::cout << "Hello\n";
         switch(_basicUtility) {
             case BasicUtilities::DAMAGE:
                 living->dealDamage(rand() % 20, UtilityPosition{body.getX(), body.getY()});

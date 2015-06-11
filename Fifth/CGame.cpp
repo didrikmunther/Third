@@ -108,6 +108,7 @@ int CGame::_onInit() {
     _initAssets();
     
     instance.player = new CPlayer(Box{30, 30, 16 * 5, 28 * 5}, "playerPink");
+    instance.player->spriteStateTypes[SpriteStateTypes::JUMPING] = "playerPinkRunning";
     instance.player->spriteFollowsCollisionBox = false;
     instance.entityManager.addEntity(instance.player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
     instance.camera.setTarget(instance.player);
@@ -115,7 +116,8 @@ int CGame::_onInit() {
     instance.seeker = new CEnemy(Box{150, 150, 60, 164}, "player");
     instance.entityManager.addEntity(instance.seeker, "m:yrl");
     instance.seeker->setTarget(instance.player);
-    instance.seeker->setShaderKey("");
+    instance.seeker->spriteStateTypes[SpriteStateTypes::JUMPING] = "enemyJumping";
+    instance.seeker->spriteFollowsCollisionBox = false;
     
     instance.entityManager.addEntity(Box{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
     instance.entityManager.addEntity(Box{0 - 30 / 2, 480 - 500, 30, 500}, sf::Color{255, 0, 0, 0});
@@ -151,6 +153,8 @@ void CGame::_initAssets() {
     CAssetManager::addSpriteContainer("player", "player");
     CAssetManager::addSpriteContainer("bush", "bush");
     CAssetManager::addSpriteContainer("tree", "tree");
+    CAssetManager::addSprite("enemyJumping", "MAIN2", Box{212, 22, 52, 182});
+    CAssetManager::addSpriteContainer("enemyJumping", "enemyJumping");
 }
 
 void CGame::_initRelativePaths() {
@@ -255,6 +259,7 @@ void CGame::_onEvent(sf::Event* event) {
             switch(event->key.code) {
                     
                 case sf::Keyboard::U:
+                    instance.seeker->toggleNoclip();
                     break;
                     
                 case sf::Keyboard::Y:
@@ -306,13 +311,7 @@ void CGame::_onEvent(sf::Event* event) {
                     break;
                     
                 case keyMap::TOGGLE_NOCLIP:
-                    instance.player->toggleProperty(EntityProperty::COLLIDABLE);
-                    instance.player->toggleProperty(EntityProperty::FLYING);
-                    if (instance.player->hasProperty(EntityProperty::COLLIDABLE))
-                        instance.player->setTransparency(255);
-                    else
-                        instance.player->setTransparency(128);
-                    
+                    instance.player->toggleNoclip();
                     break;
                 case keyMap::LOAD_ASSETS:
                     _initAssets();
@@ -416,13 +415,6 @@ void CGame::_onLoop() {
     
     instance.entityManager.onLoop();
     instance.camera.onLoop();
-    
-    // temporary
-    if(instance.player->collisionBottom) {
-        instance.player->setSpriteContainer("playerPink");
-    } else {
-        instance.player->setSpriteContainer("playerPinkRunning");
-    }
 }
 
 //void CGame::_onRender() {

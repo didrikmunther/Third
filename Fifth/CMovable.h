@@ -25,6 +25,7 @@ public:
     void goDown();
     bool hasWalkedX, hasWalkedY;
     
+    void toggleNoclip();
     void jump();
     bool isSneaking;
     

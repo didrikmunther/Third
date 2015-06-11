@@ -20,6 +20,12 @@
 #include "CWindow.h"
 #include "CCollidable.h"
 
+enum SpriteStateTypes {
+    IDLE = 0,
+    JUMPING,
+    TOTAL_SPRITESTATETYPES
+};
+
 class CGuiText;
 class CCamera;
 class CEntityManager;
@@ -50,6 +56,8 @@ public:
     
     sf::Color color;
     bool toRemove;
+    
+    std::string spriteStateTypes[SpriteStateTypes::TOTAL_SPRITESTATETYPES];
     
     void setSpriteContainer(std::string spriteContainerKey);
     CSpriteContainer* getSpriteContainer();
