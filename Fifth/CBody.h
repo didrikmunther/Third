@@ -11,11 +11,12 @@
 
 #include <stdio.h>
 #include <SFML/Graphics.hpp>
+#include "Define.h"
 
 class CBody {
     
 public:
-    CBody(sf::IntRect rect);
+    CBody(Box rect);
     float velX, velY;
     
     int getX();
@@ -23,7 +24,7 @@ public:
     int getW();
     int getH();
 
-    sf::IntRect rect;
+    Box rect;
     
 };
 

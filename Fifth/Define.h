@@ -9,6 +9,9 @@
 #include <stdio.h>
 #include <SFML/Graphics.hpp>
 
+#ifndef __Third__Define__
+#define __Third__Define__
+
 const int NATIVE_SCREEN_WIDTH   = 1920;
 const int NATIVE_SCREEN_HEIGHT  = 1080;
 
@@ -20,6 +23,10 @@ const int GAMEINTERVAL          = 60;
 const int DESPAWN_HEIGHT        = 10000;
 const float GRAVITY               = 0.5;
 
+struct Box {
+    int x, y;
+    int w, h;
+};
 
 enum CollisionLayers {
     LAYER0      = 1 << 0,
@@ -65,6 +72,6 @@ enum RenderFlags {
     COLLISION_BORDERS = 1 << 0
 };
 
-
+#endif
 
 

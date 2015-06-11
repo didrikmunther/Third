@@ -8,20 +8,20 @@
 
 #include "CBody.h"
 
-CBody::CBody(sf::IntRect rect) :
+CBody::CBody(Box rect) :
     velX(0), velY(0) {
     this->rect = rect;
 }
 
 int CBody::getX() {
-    return rect.left;
+    return rect.x;
 }
 int CBody::getY() {
-    return rect.top;
+    return rect.y;
 }
 int CBody::getW() {
-    return rect.width;
+    return rect.w;
 }
 int CBody::getH() {
-    return rect.height;
+    return rect.h;
 }

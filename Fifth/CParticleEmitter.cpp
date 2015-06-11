@@ -24,28 +24,30 @@ toRemove(false), _timer(_clock.getElapsedTime().asMilliseconds() - (frequency * 
 //    
 //}
 
+// Nothing of this is working right now
+
 void CParticleEmitter::onLoop(CEntityManager *entityManager) {
-    if(_clock.getElapsedTime().asMilliseconds() - _creationTime > _livingTime * 1000) {
-        toRemove = true;
-        return;
-    }
+//    if(_clock.getElapsedTime().asMilliseconds() - _creationTime > _livingTime * 1000) {
+//        toRemove = true;
+//        return;
+//    }
+//    
+//    if(_clock.getElapsedTime().asMilliseconds() - _timer > _frequency * 1000) {
+//        _timer += 1000;
+//        for (int i = 0; i < _amount; i++) {
+//            CParticle* particle;
+//            switch(type) {
+//                case ParticleTypes::UTILITY_PARTICLE:
+//                    particle = new CUtilityParticle(_rect, _color, _particleLivingTime);
+//                    break;
+//                default:
+//                    particle = new CParticle(_rect, _color, _particleLivingTime);
+//            }
+//            particle->body.velX += _velocity.x;
+//            particle->body.velY += _velocity.y;
+//            
+//            entityManager->addParticle(particle);
+//        }
+//    }
     
-    if(_clock.getElapsedTime().asMilliseconds() - _timer > _frequency * 1000) {
-        _timer += 1000;
-        for (int i = 0; i < _amount; i++) {
-            CParticle* particle;
-            switch(type) {
-                case ParticleTypes::UTILITY_PARTICLE:
-                    particle = new CUtilityParticle(_rect, _color, _particleLivingTime);
-                    break;
-                default:
-                    particle = new CParticle(_rect, _color, _particleLivingTime);
-            }
-            particle->body.velX += _velocity.x;
-            particle->body.velY += _velocity.y;
-            
-            entityManager->addParticle(particle);
-        }
-    }
-        
 }

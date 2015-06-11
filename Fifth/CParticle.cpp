@@ -9,12 +9,12 @@
 #include "CParticle.h"
 #include "Define.h"
 
-CParticle::CParticle(sf::IntRect rect, sf::Color color, int livingTime /* = 5 */) :
+CParticle::CParticle(Box rect, sf::Color color, int livingTime /* = 5 */) :
 CEntity(rect, color), _creationTime(_clock.getElapsedTime().asMilliseconds()), _livingTime(livingTime) {
     addProperty(EntityProperty::FLIP_FREEZED);
 }
 
-CParticle::CParticle(sf::IntRect rect, std::string spriteKey, int livingTime /* = 5 */) :
+CParticle::CParticle(Box rect, std::string spriteKey, int livingTime /* = 5 */) :
 CEntity(rect, spriteKey), _creationTime(_clock.getElapsedTime().asMilliseconds()), _livingTime(livingTime) {
     addProperty(EntityProperty::FLIP_FREEZED);
 }
@@ -24,12 +24,11 @@ void CParticle::_doLogic() {
     
     if(collisionBottom)
         body.velX /= 1.2;
-    //body.velX += rand() % 3 - 1;
     
     if(_clock.getElapsedTime().asMilliseconds() - _creationTime > _livingTime * 1000)
         toRemove = true;
     
-    if(body.rect.top > DESPAWN_HEIGHT)
+    if(body.getY() > DESPAWN_HEIGHT)
         toRemove = true;
 }
 

@@ -10,12 +10,12 @@
 #include "Define.h"
 #include <iostream>
 
-CPlayer::CPlayer(sf::IntRect rect, sf::Color color) :
+CPlayer::CPlayer(Box rect, sf::Color color) :
     CLiving(rect, color) {
         _initMovementValues();
 }
 
-CPlayer::CPlayer(sf::IntRect rect, std::string spriteKey) :
+CPlayer::CPlayer(Box rect, std::string spriteKey) :
     CLiving(rect, spriteKey) {
         CPlayer(rect, sf::Color{255, 255, 255, 255});
         _initMovementValues();
@@ -36,4 +36,5 @@ void CPlayer::_doLogic() {
 
 void CPlayer::_collisionLogic(CEntity* target) {
     CLiving::_collisionLogic(target);
+    
 }

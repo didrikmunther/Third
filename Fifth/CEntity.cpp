@@ -16,13 +16,13 @@
 #include "CLiving.h"
 #include <math.h>
 
-CEntity::CEntity(sf::IntRect rect, sf::Color color) :
-    spriteKey(""), body(rect), color(color) {
+CEntity::CEntity(Box rect, sf::Color color) :
+    spriteKey(""), CCollidable(rect), color(color) {
         initValues();
 }
 
-CEntity::CEntity(sf::IntRect rect, std::string spriteKey) :
-/*sprite(sprite),*/ spriteKey(spriteKey), body(rect), color(sf::Color{255,0,255,255}) {
+CEntity::CEntity(Box rect, std::string spriteKey) :
+/*sprite(sprite),*/ spriteKey(spriteKey), CCollidable(rect), color(sf::Color{255,0,255,255}) {
         initValues();
 }
 
@@ -129,22 +129,6 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, int renderFlags
     
 }
 
-bool CEntity::hasProperty(int property) {
-    return properties & property;
-}
-
-void CEntity::toggleProperty(int property) {
-    properties ^= property;
-}
-
-void CEntity::addProperty(int property) {
-    properties |= property;
-}
-
-void CEntity::removeProperty(int property) {
-    if(hasProperty(property)) toggleProperty(property);
-}
-
 void CEntity::setSprite(std::string spriteKey) {
     this->spriteKey = spriteKey;
 }
@@ -176,7 +160,7 @@ bool CEntity::coordinateCollision(int x, int y, int w, int h) {
 
 bool CEntity::_collision(int x, int y, std::map<std::string, CEntity*>* entities) {
     
-    if(!(properties & EntityProperty::COLLIDABLE)) return false;
+    if(!hasProperty(EntityProperty::COLLIDABLE)) return false;
     
     bool colliding = false;
     
@@ -189,7 +173,8 @@ bool CEntity::_collision(int x, int y, std::map<std::string, CEntity*>* entities
         if (target->isDead()) return;
         //if (!i.second->isOnCollisionLayer(collisionLayer)) return;        // Isn't working right now
     
-        if(!coordinateCollision(x, y, body.getW(), body.getH(), target->body.getX(), target->body.getY(), target->body.getW(), target->body.getH()))
+        if(!coordinateCollision(x, y, body.getW(), body.getH(),
+                                target->body.getX(), target->body.getY(), target->body.getW(), target->body.getH()))
             continue;
         
         if(y - 1 + body.getH() <= target->body.getY() &&
@@ -250,14 +235,14 @@ void CEntity::move(std::map<std::string, CEntity*>* entities) {
     while(true) {
         if(!_collision(StopX + NewX, StopY, entities)) {
             StopX += NewX;
-            body.rect.left += NewX;
+            body.rect.x += NewX;
         } else {
             body.velX = 0;
         }
         
         if(!_collision(StopX, StopY + NewY, entities)) {
             StopY += NewY;
-            body.rect.top += NewY;
+            body.rect.y += NewY;
         } else {
             body.velY = 0;
         }

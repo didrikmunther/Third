@@ -13,34 +13,37 @@
 CEntityManager::CEntityManager() : entityID(0), renderFlags(0) {
 }
 
-CEntity* CEntityManager::addEntity(sf::IntRect rect, sf::Color color, std::string name /* = "" */) {
+CEntity* CEntityManager::addEntity(Box rect, sf::Color color, std::string name /* = "" */) {
     if(name == "") {
-        std::string id = "5:" + std::to_string(++entityID);
-        _EntityVector[id] = new CEntity(rect, color);
-        return _EntityVector[id];
+        CEntity* tempEntity = new CEntity(rect, color);
+        addEntity(tempEntity, name);
+        return tempEntity;
     } else {
-        _EntityVector[name] = new CEntity(rect, color);
-        return _EntityVector[name];
+        CEntity* tempEntity = new CEntity(rect, color);
+        addEntity(tempEntity, name);
+        return tempEntity;
     }
 }
 
-CEntity* CEntityManager::addEntity(sf::IntRect rect, std::string spriteKey, std::string name /* = "" */) {
+CEntity* CEntityManager::addEntity(Box rect, std::string spriteKey, std::string name /* = "" */) {
     if(name == "") {
-        std::string id = "5:" + std::to_string(++entityID);
-        _EntityVector[id] = new CEntity(rect, spriteKey);
-        return _EntityVector[id];
+        CEntity* tempEntity = new CEntity(rect, spriteKey);
+        addEntity(tempEntity, name);
+        return tempEntity;
     } else {
-        _EntityVector[name] = new CEntity(rect, spriteKey);
-        return _EntityVector[name];
+        CEntity* tempEntity = new CEntity(rect, spriteKey);
+        addEntity(tempEntity, name);
+        return tempEntity;
     }
 }
 
 void CEntityManager::addEntity(CEntity* entity, std::string name /* = "" */) {
     if(name == "") {
-        std::string id = "5:" + std::to_string(++entityID);
-        _EntityVector[id] = entity;
+        name = "5:" + std::to_string(++entityID);
+        _EntityVector[name] = entity;
     } else
         _EntityVector[name] = entity;
+    entity->say(name, "TESTFONT", 0);
 }
 
 CEntity* CEntityManager::getEntity(std::string name) {
@@ -70,7 +73,7 @@ std::string CEntityManager::getNameOfEntity(CEntity *entity) {
     }
 }
 
-void CEntityManager::addParticle(sf::IntRect rect, sf::Color color, int livingTime) {
+void CEntityManager::addParticle(Box rect, sf::Color color, int livingTime) {
     _ParticleVector.push_back(new CParticle(rect, color, livingTime));
 }
 
@@ -152,43 +155,43 @@ void CEntityManager::onLoop() {
                 int tempForRand = 5;
                 int livingTime = 2;
                 
-                CParticle* tempParticle1 = new CParticle(sf::IntRect{
+                CParticle* tempParticle1 = new CParticle(Box{
                                                             target->body.getX(),
                                                             target->body.getY(),
                                                             target->body.getW() / 2,
                                                             target->body.getH() / 2},
                                                          sprite1,
-                                                         livingTime);
+                                                         livingTime + rand() % 3 - 1);
                 tempParticle1->body.velX = rand() % explosionForce - tempForRand;
                 tempParticle1->body.velY = rand() % explosionForce - tempForRand;
                 if(target->hasProperty(EntityProperty::FLIP)) tempParticle1->addProperty(EntityProperty::FLIP);
-                CParticle* tempParticle2 = new CParticle(sf::IntRect{
+                CParticle* tempParticle2 = new CParticle(Box{
                                                             target->body.getX() + target->body.getW() / 2,
                                                             target->body.getY(),
                                                             target->body.getW() / 2,
                                                             target->body.getH() / 2},
                                                          sprite2,
-                                                         livingTime);
+                                                         livingTime + rand() % 3 - 1);
                 tempParticle2->body.velX = rand() % explosionForce - tempForRand;
                 tempParticle2->body.velY = rand() % explosionForce - tempForRand;
                 if(target->hasProperty(EntityProperty::FLIP)) tempParticle2->addProperty(EntityProperty::FLIP);
-                CParticle* tempParticle3 = new CParticle(sf::IntRect{
+                CParticle* tempParticle3 = new CParticle(Box{
                                                             target->body.getX(),
                                                             target->body.getY() + target->body.getH() / 2,
                                                             target->body.getW() / 2,
                                                             target->body.getH() / 2},
                                                          sprite3,
-                                                         livingTime);
+                                                         livingTime + rand() % 3 - 1);
                 tempParticle3->body.velX = rand() % explosionForce - tempForRand;
                 tempParticle3->body.velY = rand() % explosionForce - tempForRand;
                 if(target->hasProperty(EntityProperty::FLIP)) tempParticle3->addProperty(EntityProperty::FLIP);
-                CParticle* tempParticle4 = new CParticle(sf::IntRect{
+                CParticle* tempParticle4 = new CParticle(Box{
                                                             target->body.getX() + target->body.getW() / 2,
                                                             target->body.getY() + target->body.getH() / 2,
                                                             target->body.getW() / 2,
                                                             target->body.getH() / 2},
                                                          sprite4,
-                                                         livingTime);
+                                                         livingTime + rand() % 3);
                 tempParticle4->body.velX = rand() % explosionForce - tempForRand;
                 tempParticle4->body.velY = rand() % explosionForce - tempForRand;
                 if(target->hasProperty(EntityProperty::FLIP)) tempParticle4->addProperty(EntityProperty::FLIP);

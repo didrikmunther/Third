@@ -16,8 +16,8 @@
 class CMovable : public CEntity {
     
 public:
-    CMovable(sf::IntRect rect, sf::Color color);
-    CMovable(sf::IntRect rect, std::string spriteKey);
+    CMovable(Box rect, sf::Color color);
+    CMovable(Box rect, std::string spriteKey);
     
     void goRight();
     void goLeft();

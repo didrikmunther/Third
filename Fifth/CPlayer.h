@@ -17,8 +17,8 @@
 class CPlayer : public CLiving {
     
 public:
-    CPlayer(sf::IntRect rect, sf::Color color);
-    CPlayer(sf::IntRect rect, std::string spriteKey);
+    CPlayer(Box rect, sf::Color color);
+    CPlayer(Box rect, std::string spriteKey);
     
 protected:
     virtual void _doLogic();

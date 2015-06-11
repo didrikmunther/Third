@@ -8,12 +8,12 @@
 
 #include "CNpc.h"
 
-CNpc::CNpc(sf::IntRect rect, sf::Color color) :
+CNpc::CNpc(Box rect, sf::Color color) :
 CLiving(rect, color) {
     _initMovementValues();
 }
 
-CNpc::CNpc(sf::IntRect rect, std::string spriteKey) :
+CNpc::CNpc(Box rect, std::string spriteKey) :
 CLiving(rect, spriteKey) {
     _initMovementValues();
 }

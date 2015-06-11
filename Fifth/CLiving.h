@@ -36,8 +36,8 @@ struct UtilityPosition {
 class CLiving : public CMovable {
     
 public:
-    CLiving(sf::IntRect rect, sf::Color color);
-    CLiving(sf::IntRect rect, std::string spriteKey);
+    CLiving(Box rect, sf::Color color);
+    CLiving(Box rect, std::string spriteKey);
     
     int dealDamage(int amount, UtilityPosition position = {0, 0});
     int heal(int amount, UtilityPosition position = {0, 0});

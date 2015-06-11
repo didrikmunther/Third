@@ -9,12 +9,12 @@
 #include "CMovable.h"
 #include "Define.h"
 
-CMovable::CMovable(sf::IntRect rect, sf::Color color) :
+CMovable::CMovable(Box rect, sf::Color color) :
     CEntity(rect, color) {
     _initMovementValues();
 }
 
-CMovable::CMovable(sf::IntRect rect, std::string spriteKey) :
+CMovable::CMovable(Box rect, std::string spriteKey) :
     CEntity(rect, spriteKey) {
     _initMovementValues();
 }

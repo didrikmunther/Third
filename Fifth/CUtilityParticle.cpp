@@ -11,12 +11,12 @@
 
 #include <iostream>
 
-CUtilityParticle::CUtilityParticle(sf::IntRect rect, sf::Color color, int utility) :
+CUtilityParticle::CUtilityParticle(Box rect, sf::Color color, int utility) :
 CParticle(rect, color), _basicUtility(utility) {
     std::cout << utility << "\n";
 }
 
-CUtilityParticle::CUtilityParticle(sf::IntRect rect, sf::Color color, int utility, int livingTime) :
+CUtilityParticle::CUtilityParticle(Box rect, sf::Color color, int utility, int livingTime) :
 CParticle(rect, color, livingTime), _basicUtility(utility) {
     
 }
@@ -29,23 +29,20 @@ void CUtilityParticle::_collisionLogic(CEntity* target) {
         switch(_basicUtility) {
             case BasicUtilities::DAMAGE:
                 living->dealDamage(rand() % 20, UtilityPosition{body.getX(), body.getY()});
-                toRemove = true;
                 break;
                 
             case BasicUtilities::HEAL:
                 living->heal(rand() % 20, UtilityPosition{body.getX(), body.getY()});
-                toRemove = true;
                 break;
         }
     }
     
-    if(collisionBottom)
-        toRemove = true;
+    toRemove = true;
 }
 
 void CUtilityParticle::_doLogic() {
     CParticle::_doLogic();
     
     if(!collisionBottom)
-    body.velY += rand() % 3 - 1;
+        body.velY += rand() % 3 - 1;
 }

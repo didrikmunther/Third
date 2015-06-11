@@ -16,8 +16,8 @@
 class CNpc : public CLiving {
     
 public:
-    CNpc(sf::IntRect rect, sf::Color color);
-    CNpc(sf::IntRect rect, std::string spriteKey);
+    CNpc(Box rect, sf::Color color);
+    CNpc(Box rect, std::string spriteKey);
     
 protected:
     virtual void _doLogic();

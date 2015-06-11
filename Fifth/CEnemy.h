@@ -17,8 +17,8 @@
 class CEnemy : public CNpc {
     
 public:
-    CEnemy(sf::IntRect rect, sf::Color color);
-    CEnemy(sf::IntRect rect, std::string spriteKey);
+    CEnemy(Box rect, sf::Color color);
+    CEnemy(Box rect, std::string spriteKey);
     
     void setTarget(CEntity* target);
     CEntity* getTarget();

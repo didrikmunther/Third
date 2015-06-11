@@ -16,8 +16,8 @@
 class CParticle : public CEntity {
     
 public:
-    CParticle(sf::IntRect rect, sf::Color color, int livingTime = 5);
-    CParticle(sf::IntRect rect, std::string spriteKey, int livingTime = 5);
+    CParticle(Box rect, sf::Color color, int livingTime = 5);
+    CParticle(Box rect, std::string spriteKey, int livingTime = 5);
     
 protected:
     virtual void _doLogic();

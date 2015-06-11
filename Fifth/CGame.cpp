@@ -106,22 +106,22 @@ int CGame::_onInit() {
     
     _initAssets();
     
-    instance.player = new CPlayer(sf::IntRect{30, 30, 60, 164}, "player");
+    instance.player = new CPlayer(Box{30, 30, 60, 164}, "player");
     instance.entityManager.addEntity(instance.player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
     instance.camera.setTarget(instance.player);
     
-    instance.seeker = new CEnemy(sf::IntRect{150, 150, 60, 164}, "player");
+    instance.seeker = new CEnemy(Box{150, 150, 60, 164}, "player");
     instance.entityManager.addEntity(instance.seeker, "m:yrl");
     instance.seeker->setTarget(instance.player);
     instance.seeker->setShaderKey("");
     
-    instance.entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
-    instance.entityManager.addEntity(sf::IntRect{0 - 30 / 2, 480 - 500, 30, 500}, sf::Color{255, 0, 0, 0});
-    instance.entityManager.addEntity(sf::IntRect{276, 229, 23 * 4, 59 * 4}, "tree", "l:tree");
+    instance.entityManager.addEntity(Box{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
+    instance.entityManager.addEntity(Box{0 - 30 / 2, 480 - 500, 30, 500}, sf::Color{255, 0, 0, 0});
+    instance.entityManager.addEntity(Box{276, 229, 23 * 4, 59 * 4}, "tree", "l:tree");
     instance.entityManager.getEntity("l:tree")->removeProperty(EntityProperty::COLLIDABLE);
     instance.entityManager.getEntity("l:tree")->addProperty(EntityProperty::STATIC);
     instance.entityManager.getEntity("l:tree")->setShaderKey("");
-    instance.entityManager.addEntity(sf::IntRect{200, 357, 60 * 2, 54 * 2}, "bush", "n:bush");
+    instance.entityManager.addEntity(Box{200, 357, 60 * 2, 54 * 2}, "bush", "n:bush");
     instance.entityManager.getEntity("n:bush")->removeProperty(EntityProperty::COLLIDABLE);
     instance.entityManager.getEntity("n:bush")->addProperty(EntityProperty::STATIC);
     instance.entityManager.getEntity("n:bush")->addProperty(EntityProperty::STATIC);
@@ -177,7 +177,7 @@ void CGame::_handleKeyStates() {
         instance.player->goLeft();
     }
     
-    if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::UP)) {
+    if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::UP) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
         instance.player->goUp();
     }
     
@@ -197,7 +197,7 @@ void CGame::_handleKeyStates() {
         
         //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
         
-        CUtilityParticle* tempParticle = new CUtilityParticle(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 4, 4}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, BasicUtilities::DAMAGE, 10);
+        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX(), instance.player->body.getY() - 100, 4, 4}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, BasicUtilities::DAMAGE, 10);
         tempParticle->body.velX = velocityX;
         tempParticle->body.velY = velocityY;
         instance.entityManager.addParticle(tempParticle);
@@ -213,7 +213,7 @@ void CGame::_handleKeyStates() {
         
         //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
         
-        CUtilityParticle* tempParticle = new CUtilityParticle(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 20, 20}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, BasicUtilities::HEAL, 10);
+        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX(), instance.player->body.getY() - 100, 20, 20}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, BasicUtilities::HEAL, 10);
         tempParticle->body.velX = velocityX;
         tempParticle->body.velY = velocityY;
         instance.entityManager.addParticle(tempParticle);
@@ -262,7 +262,7 @@ void CGame::_onEvent(sf::Event* event) {
                     
                 case keyMap::BLOCK:
                 {
-                    CEntity* temp = instance.entityManager.addEntity(sf::IntRect{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 40, 40}, sf::Color{0, 0, 255, 0});
+                    CEntity* temp = instance.entityManager.addEntity(Box{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 40, 40}, sf::Color{0, 0, 255, 0});
                     temp->addProperty(EntityProperty::STATIC);
                 }
                     break;
@@ -272,7 +272,7 @@ void CGame::_onEvent(sf::Event* event) {
                     
                 case keyMap::RESET:
                 {
-                    auto tempNpc = new CEnemy(sf::IntRect{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 60, 164}, "player");
+                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 60, 164}, "player");
                     tempNpc->setTarget(instance.player);
                     tempNpc->setShaderKey("");
                     tempNpc->collisionLayer = 1 << 1;
@@ -282,8 +282,9 @@ void CGame::_onEvent(sf::Event* event) {
                     
                 case sf::Keyboard::H:
                 {
-                    auto tempNpc = new CEnemy(sf::IntRect{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 32, 32}, "yrl");
-                    tempNpc->setTarget(instance.entityManager.getEntity("n:bush"));
+                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 32, 32}, "yrl");
+                    //tempNpc->setTarget(instance.entityManager.getEntity("n:bush"));
+                    tempNpc->setTarget(instance.player);
                     //tempNpc->setShaderKey("");
                     instance.entityManager.addEntity(tempNpc);
                 }

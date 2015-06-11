@@ -18,25 +18,17 @@
 #include "CAssetManager.h"
 #include "CRenderable.h"
 #include "CWindow.h"
-
-enum EntityProperty {
-    COLLIDABLE  = 1 << 0,
-    FLYING      = 1 << 1,
-    HIDDEN      = 1 << 2,
-    STATIC      = 1 << 3,
-    FLIP        = 1 << 4,
-    FLIP_FREEZED= 1 << 5
-};
+#include "CCollidable.h"
 
 class CGuiText;
 class CCamera;
 class CEntityManager;
 
-class CEntity : public CRenderable {
+class CEntity : public CRenderable, public CCollidable {
     
 public:
-    CEntity(sf::IntRect rect, sf::Color color);
-    CEntity(sf::IntRect rect, std::string spriteKey);
+    CEntity(Box rect, sf::Color color);
+    CEntity(Box rect, std::string spriteKey);
     ~CEntity();
     
     void initValues();
@@ -53,17 +45,10 @@ public:
     void say(std::string text, std::string fontKey, int type);
     void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
     
-    int properties;
-    bool hasProperty(int property);
-    void toggleProperty(int property);
-    void addProperty(int property);
-    void removeProperty(int property);
-    
     bool collisionLeft, collisionRight;
     bool collisionTop, collisionBottom;
     
     sf::Color color;
-    CBody body;
     bool toRemove;
     
     void setSprite(std::string spriteKey);

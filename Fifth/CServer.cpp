@@ -95,7 +95,7 @@ void CServer::_handleInput() {
         if     (i == "")            {  }
         else if(i == "quit" ||
                 i == "exit")        { _isRunning = false; }
-        else if(i == "addentity")   { instance.entityManager.addEntity(sf::IntRect{0, 0, 0, 0}, sf::Color{255,0,255}); }
+        else if(i == "addentity")   { instance.entityManager.addEntity(Box{0, 0, 0, 0}, sf::Color{255,0,255}); }
         else                        { std::cout << "Command not recognized.\n"; }
     }
     

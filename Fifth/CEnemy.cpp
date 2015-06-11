@@ -8,12 +8,12 @@
 
 #include "CEnemy.h"
 
-CEnemy::CEnemy(sf::IntRect rect, sf::Color color) :
+CEnemy::CEnemy(Box rect, sf::Color color) :
     CNpc(rect, color) {
         _initMovementValues();
 }
 
-CEnemy::CEnemy(sf::IntRect rect, std::string spriteKey) :
+CEnemy::CEnemy(Box rect, std::string spriteKey) :
     CNpc(rect, spriteKey) {
         _initMovementValues();
 }

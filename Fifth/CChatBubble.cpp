@@ -59,7 +59,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
         _TextVector.push_back(CText(currentString, textSize, fontKey, sf::Color{(sf::Uint8)_r,(sf::Uint8)_g,(sf::Uint8)_b,255}));
         
     if(!instantText)
-        _livingTime = (int)text.length() / letterPerSecond;
+        _livingTime = (int)text.length() / letterPerSecond + 3;
     else
         _livingTime = 0;
     

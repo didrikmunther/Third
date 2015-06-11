@@ -10,11 +10,11 @@
 #include "NSurface.h"
 #include "CCombatText.h"
 
-CLiving::CLiving(sf::IntRect rect, sf::Color color) : CMovable(rect, color) {
+CLiving::CLiving(Box rect, sf::Color color) : CMovable(rect, color) {
     _initValues();
 }
 
-CLiving::CLiving(sf::IntRect rect, std::string spriteKey) : CMovable(rect, spriteKey) {
+CLiving::CLiving(Box rect, std::string spriteKey) : CMovable(rect, spriteKey) {
     _initValues();
 }
 
@@ -56,10 +56,10 @@ void CLiving::cLivingRender(CWindow *window, CCamera *camera) {
                              bgHeight,
                              *window->getRenderTexture(), 0, 255, 0);
         NSurface::renderRect(body.getX() + body.getW() / 2 - bgWidth / 2 - camera->offsetX(),  // Kevlar
-                             body.getY() - bgHeight - floatOverHead - camera->offsetY() + bgHeight / 2,
+                             body.getY() - bgHeight - floatOverHead - camera->offsetY() + bgHeight / 2 + 1,
                              kevlarWidth,
                              bgHeight / 2,
-                             *window->getRenderTexture(), 0, 0, 255);
+                             *window->getRenderTexture(), 128, 128, 128);
     }
     
 }
@@ -129,7 +129,7 @@ void CLiving::_doLogic() {
 void CLiving::_collisionLogic(CEntity* target) {
     CMovable::_collisionLogic(target);
     
-    if(body.velY > 22) {            // Fall damage
+    if(body.velY > 22 && collisionBottom) {            // Fall damage
         dealDamage(10 * (body.velY - 22) * (_maxValues[ValueTypes::HEALTH] / 500));
     }
     

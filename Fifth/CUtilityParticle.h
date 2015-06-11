@@ -21,8 +21,8 @@ enum BasicUtilities {
 class CUtilityParticle : public CParticle {
     
 public:
-    CUtilityParticle(sf::IntRect rect, sf::Color color, int utility);
-    CUtilityParticle(sf::IntRect rect, sf::Color color, int utility, int livingTime);
+    CUtilityParticle(Box rect, sf::Color color, int utility);
+    CUtilityParticle(Box rect, sf::Color color, int utility, int livingTime);
     
 protected:
     virtual void _doLogic();
