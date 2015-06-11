@@ -10,7 +10,7 @@
 #include "NSurface.h"
 
 CText::CText(std::string text, int size, std::string fontKey, sf::Color color) :
-    _text(text), _size(size), _fontKey(fontKey), _color(color) {
+_text(text), _size(size), _fontKey(fontKey), _color(color) {
 }
 
 void CText::onRender(int x, int y, sf::RenderTarget& renderTarget, CCamera* camera) {

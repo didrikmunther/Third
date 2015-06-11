@@ -21,6 +21,7 @@
 #include <SFML/Network.hpp>
 #include "CEnemy.h"
 #include "CUtilityParticle.h"
+#include "CSpriteContainer.h"
 
 CGame::CGame() :
 _intro("Physics"),
@@ -106,7 +107,8 @@ int CGame::_onInit() {
     
     _initAssets();
     
-    instance.player = new CPlayer(Box{30, 30, 60, 164}, "player");
+    instance.player = new CPlayer(Box{30, 30, 16 * 5, 28 * 5}, "playerPink");
+    instance.player->spriteFollowsCollisionBox = false;
     instance.entityManager.addEntity(instance.player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
     instance.camera.setTarget(instance.player);
     
@@ -120,12 +122,10 @@ int CGame::_onInit() {
     instance.entityManager.addEntity(Box{276, 229, 23 * 4, 59 * 4}, "tree", "l:tree");
     instance.entityManager.getEntity("l:tree")->removeProperty(EntityProperty::COLLIDABLE);
     instance.entityManager.getEntity("l:tree")->addProperty(EntityProperty::STATIC);
-    instance.entityManager.getEntity("l:tree")->setShaderKey("");
     instance.entityManager.addEntity(Box{200, 357, 60 * 2, 54 * 2}, "bush", "n:bush");
     instance.entityManager.getEntity("n:bush")->removeProperty(EntityProperty::COLLIDABLE);
     instance.entityManager.getEntity("n:bush")->addProperty(EntityProperty::STATIC);
     instance.entityManager.getEntity("n:bush")->addProperty(EntityProperty::STATIC);
-    instance.entityManager.getEntity("n:bush")->setShaderKey("");
 
     return 0;
 }
@@ -134,14 +134,23 @@ void CGame::_initAssets() {
     CAssetManager::addSpriteSheet("YRLSPRITESHEET", "resources/yrl.png");
     CAssetManager::addSpriteSheet("MAIN", "resources/gfx.png");
     CAssetManager::addSpriteSheet("MAIN2", "resources/gfx2.png");
-    CAssetManager::addSprite("yrl", "YRLSPRITESHEET", sf::IntRect{0,0,32,32});
-    CAssetManager::addSprite("player", "MAIN2", sf::IntRect{144,396,60,164});
-    CAssetManager::addSprite("bush", "MAIN", sf::IntRect{160, 91, 30, 28});
-    CAssetManager::addSprite("tree", "MAIN", sf::IntRect{7,64,23,59});
+    CAssetManager::addSpriteSheet("PlayerSpriteSheet", "resources/playerSpritesheet.png");
+    CAssetManager::addSprite("playerPink", "PlayerSpriteSheet", Box{0, 0, 16, 28});
+    CAssetManager::addSprite("playerPinkRunning", "PlayerSpriteSheet", Box{32, 0, 19, 25});
+    CAssetManager::addSprite("yrl", "YRLSPRITESHEET", Box{0,0,32,32});
+    CAssetManager::addSprite("player", "MAIN2", Box{144,396,60,164});
+    CAssetManager::addSprite("bush", "MAIN", Box{160, 91, 30, 28});
+    CAssetManager::addSprite("tree", "MAIN", Box{7,64,23,59});
     CAssetManager::addSpriteSheet("BG", "resources/bg.png");
-    CAssetManager::addSprite("background", "BG", sf::IntRect{0,0,128,64});
+    CAssetManager::addSprite("background", "BG", Box{0,0,128,64});
     CAssetManager::addFont("TESTFONT", "resources/font.ttf");
     CAssetManager::addShader("SHADER1", "resources/light.frag", sf::Shader::Type::Fragment);
+    
+    CAssetManager::addSpriteContainer("playerPink", "playerPink", Area{16 * 5, 28 * 5});
+    CAssetManager::addSpriteContainer("playerPinkRunning", "playerPinkRunning", Area{19 * 5, 25 * 5});
+    CAssetManager::addSpriteContainer("player", "player");
+    CAssetManager::addSpriteContainer("bush", "bush");
+    CAssetManager::addSpriteContainer("tree", "tree");
 }
 
 void CGame::_initRelativePaths() {
@@ -245,6 +254,12 @@ void CGame::_onEvent(sf::Event* event) {
         case sf::Event::KeyPressed:
             switch(event->key.code) {
                     
+                case sf::Keyboard::U:
+                    break;
+                    
+                case sf::Keyboard::Y:
+                    break;
+                    
                 case sf::Keyboard::Q:
                     //CEntity* temp;
                     //temp->say("asdf", "TESTFONT", ChatBubbleType::SAY);     // Crash the game
@@ -262,7 +277,7 @@ void CGame::_onEvent(sf::Event* event) {
                     
                 case keyMap::BLOCK:
                 {
-                    CEntity* temp = instance.entityManager.addEntity(Box{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 40, 40}, sf::Color{0, 0, 255, 0});
+                    CEntity* temp = instance.entityManager.addEntity(Box{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera), 40, 40}, sf::Color{0, 0, 255, 0});
                     temp->addProperty(EntityProperty::STATIC);
                 }
                     break;
@@ -272,7 +287,7 @@ void CGame::_onEvent(sf::Event* event) {
                     
                 case keyMap::RESET:
                 {
-                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 60, 164}, "player");
+                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera), 60, 164}, "player");
                     tempNpc->setTarget(instance.player);
                     tempNpc->setShaderKey("");
                     tempNpc->collisionLayer = 1 << 1;
@@ -282,7 +297,7 @@ void CGame::_onEvent(sf::Event* event) {
                     
                 case sf::Keyboard::H:
                 {
-                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera) - 30 / 2, NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera) - 30 / 2, 32, 32}, "yrl");
+                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera), 32, 32}, "yrl");
                     //tempNpc->setTarget(instance.entityManager.getEntity("n:bush"));
                     tempNpc->setTarget(instance.player);
                     //tempNpc->setShaderKey("");
@@ -401,6 +416,13 @@ void CGame::_onLoop() {
     
     instance.entityManager.onLoop();
     instance.camera.onLoop();
+    
+    // temporary
+    if(instance.player->collisionBottom) {
+        instance.player->setSpriteContainer("playerPink");
+    } else {
+        instance.player->setSpriteContainer("playerPinkRunning");
+    }
 }
 
 //void CGame::_onRender() {

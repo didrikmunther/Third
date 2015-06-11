@@ -8,9 +8,12 @@
 
 #include "CSprite.h"
 
-CSprite::CSprite(CSpriteSheet* spriteSheet, sf::IntRect rect, std::string shaderKey /* = "" */) :
-_spriteSheet(spriteSheet), _rect(rect), CRenderable(shaderKey)
+CSprite::CSprite(CSpriteSheet* spriteSheet, Box rect) :
+_spriteSheet(spriteSheet), _rect(rect)
 {
     _sprite.setTexture(*spriteSheet->getTexture());
-    _sprite.setTextureRect(rect);
+    
+    int w = rect.w;
+    int h = rect.h;
+    _sprite.setTextureRect(sf::IntRect{rect.x, rect.y, w, h});
 }

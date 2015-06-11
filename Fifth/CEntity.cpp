@@ -14,15 +14,16 @@
 #include "CChatBubble.h"
 #include "CEntityManager.h"
 #include "CLiving.h"
+#include "CSpriteContainer.h"
 #include <math.h>
 
 CEntity::CEntity(Box rect, sf::Color color) :
-    spriteKey(""), CCollidable(rect), color(color) {
+spriteContainerKey(""), CCollidable(rect), color(color) {
         initValues();
 }
 
-CEntity::CEntity(Box rect, std::string spriteKey) :
-/*sprite(sprite),*/ spriteKey(spriteKey), CCollidable(rect), color(sf::Color{255,0,255,255}) {
+CEntity::CEntity(Box rect, std::string spriteContainerKey) :
+spriteContainerKey(spriteContainerKey), CCollidable(rect), color(sf::Color{255,0,255,255}) /* sprite not found color */ {
         initValues();
 }
 
@@ -83,14 +84,12 @@ void CEntity::onRender(CWindow* window, CCamera* camera, int renderFlags) {
         return;
     
     if(camera->collision(this) && !(hasProperty(EntityProperty::HIDDEN))) {
-        //std::cout << sprite << std::endl;
-        if(CAssetManager::getSprite(spriteKey) == nullptr)
+        if(!hasSprite())
                 NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(),
                                      body.getW(), body.getH(),
                                      *window->getRenderTexture(), color.r, color.g, color.b);
         else
-            //NSurface::renderSprite(assetManager->getSprite(spriteKey), renderer, SDL_Rect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.rect.w, body.rect.h});
-            NSurface::renderEntity(this, window, sf::IntRect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW(), body.getH()}, properties);
+            NSurface::renderEntity(this, window, sf::IntRect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW(), body.getH()});
     }
 }
 
@@ -101,6 +100,25 @@ bool CEntity::isOnCollisionLayer(int collisionLayer) {
 void CEntity::say(std::string text, std::string fontKey, int type) {
     CChatBubble* temp = new CChatBubble(text, this, fontKey, type);
     _GuiTextVector.push_back(temp);
+}
+
+void CEntity::setSpriteContainer(std::string spriteContainerKey) {
+    this->spriteContainerKey = spriteContainerKey;
+}
+
+CSpriteContainer* CEntity::getSpriteContainer() {
+    return CAssetManager::getSpriteContainer(spriteContainerKey);
+}
+
+std::string CEntity::getSpriteContainerKey() {
+    return spriteContainerKey;
+}
+
+bool CEntity::hasSprite() {
+    if(getSpriteContainer() == nullptr || getSpriteContainer()->getSprite() == nullptr) {
+        return false;
+    }
+    return true;
 }
 
 void CEntity::renderAdditional(CWindow *window, CCamera *camera, int renderFlags) {
@@ -127,14 +145,6 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, int renderFlags
         living->cLivingRender(window, camera);
     }
     
-}
-
-void CEntity::setSprite(std::string spriteKey) {
-    this->spriteKey = spriteKey;
-}
-
-CSprite* CEntity::getSprite() {
-    return CAssetManager::getSprite(spriteKey);
 }
 
 bool CEntity::isDead() {

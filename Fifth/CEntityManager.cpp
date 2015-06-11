@@ -9,6 +9,7 @@
 #include <iostream>
 #include "CEntityManager.h"
 #include "CCamera.h"
+#include "CSpriteContainer.h"
 
 CEntityManager::CEntityManager() : entityID(0), renderFlags(0) {
 }
@@ -120,36 +121,41 @@ void CEntityManager::onLoop() {
             auto target = (*i).second;
             target->onLoop(&_EntityVector);
             
-            if(target->isDead()) {
-                auto offset = target->getSprite()->getOffset();
-                CSprite* tempSprite1 = new CSprite(target->getSprite()->getSpriteSheet(),
-                                                    sf::IntRect{
-                                                       offset->left,
-                                                       offset->top,
-                                                       offset->width / 2,
-                                                       offset->height / 2});
-                CSprite* tempSprite2 = new CSprite(target->getSprite()->getSpriteSheet(),
-                                                   sf::IntRect{
-                                                       offset->left + offset->width / 2,
-                                                       offset->top,
-                                                       offset->width / 2,
-                                                       offset->height / 2});
-                CSprite* tempSprite3 = new CSprite(target->getSprite()->getSpriteSheet(),
-                                                   sf::IntRect{
-                                                       offset->left,
-                                                       offset->top + offset->height / 2,
-                                                       offset->width / 2,
-                                                       offset->height / 2});
-                CSprite* tempSprite4 = new CSprite(target->getSprite()->getSpriteSheet(),
-                                                   sf::IntRect{
-                                                       offset->left + offset->width / 2,
-                                                       offset->top + offset->height / 2,
-                                                       offset->width / 2,
-                                                       offset->height / 2});
+            if(target->isDead() && target->hasSprite()) {
+                auto offset = target->getSpriteContainer()->getSprite()->getOffset();
+                CSprite* tempSprite1 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
+                                                    Box{
+                                                       offset->x,
+                                                       offset->y,
+                                                       offset->w / 2,
+                                                       offset->h / 2});
+                CSprite* tempSprite2 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
+                                                   Box{
+                                                       offset->x + offset->w / 2,
+                                                       offset->y,
+                                                       offset->w / 2,
+                                                       offset->h / 2});
+                CSprite* tempSprite3 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
+                                                   Box{
+                                                       offset->x,
+                                                       offset->y + offset->h / 2,
+                                                       offset->w / 2,
+                                                       offset->h / 2});
+                CSprite* tempSprite4 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
+                                                   Box{
+                                                       offset->x + offset->w / 2,
+                                                       offset->y + offset->h / 2,
+                                                       offset->w / 2,
+                                                       offset->h / 2});
                 std::string sprite1 = CAssetManager::addSprite(tempSprite1);
                 std::string sprite2 = CAssetManager::addSprite(tempSprite2);
                 std::string sprite3 = CAssetManager::addSprite(tempSprite3);
                 std::string sprite4 = CAssetManager::addSprite(tempSprite4);
+                
+                CAssetManager::addSpriteContainer("spriteContainer1", sprite1, Area{0,0});
+                CAssetManager::addSpriteContainer("spriteContainer2", sprite2, Area{0,0});
+                CAssetManager::addSpriteContainer("spriteContainer3", sprite3, Area{0,0});
+                CAssetManager::addSpriteContainer("spriteContainer4", sprite4, Area{0,0});
                 
                 int explosionForce = 10;
                 int tempForRand = 5;
@@ -160,7 +166,7 @@ void CEntityManager::onLoop() {
                                                             target->body.getY(),
                                                             target->body.getW() / 2,
                                                             target->body.getH() / 2},
-                                                         sprite1,
+                                                         "spriteContainer1",
                                                          livingTime + rand() % 3 - 1);
                 tempParticle1->body.velX = rand() % explosionForce - tempForRand;
                 tempParticle1->body.velY = rand() % explosionForce - tempForRand;
@@ -170,7 +176,7 @@ void CEntityManager::onLoop() {
                                                             target->body.getY(),
                                                             target->body.getW() / 2,
                                                             target->body.getH() / 2},
-                                                         sprite2,
+                                                         "spriteContainer2",
                                                          livingTime + rand() % 3 - 1);
                 tempParticle2->body.velX = rand() % explosionForce - tempForRand;
                 tempParticle2->body.velY = rand() % explosionForce - tempForRand;
@@ -180,7 +186,7 @@ void CEntityManager::onLoop() {
                                                             target->body.getY() + target->body.getH() / 2,
                                                             target->body.getW() / 2,
                                                             target->body.getH() / 2},
-                                                         sprite3,
+                                                         "spriteContainer3",
                                                          livingTime + rand() % 3 - 1);
                 tempParticle3->body.velX = rand() % explosionForce - tempForRand;
                 tempParticle3->body.velY = rand() % explosionForce - tempForRand;
@@ -190,7 +196,7 @@ void CEntityManager::onLoop() {
                                                             target->body.getY() + target->body.getH() / 2,
                                                             target->body.getW() / 2,
                                                             target->body.getH() / 2},
-                                                         sprite4,
+                                                         "spriteContainer4",
                                                          livingTime + rand() % 3);
                 tempParticle4->body.velX = rand() % explosionForce - tempForRand;
                 tempParticle4->body.velY = rand() % explosionForce - tempForRand;

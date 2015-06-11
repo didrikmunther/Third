@@ -13,20 +13,21 @@
 #include <stdio.h>
 #include "CSpriteSheet.h"
 #include "CRenderable.h"
+#include "Define.h"
 #include <SFML/Graphics.hpp>
 
-class CSprite : public CRenderable {
+class CSprite {
     
 public:
-    CSprite(CSpriteSheet* spriteSheet, sf::IntRect rect, std::string shaderKey = "");
+    CSprite(CSpriteSheet* spriteSheet, Box rect);
     
     CSpriteSheet* getSpriteSheet() { return _spriteSheet; }
-    sf::IntRect* getOffset() { return &_rect; }
+    Box* getOffset() { return &_rect; }
     sf::Sprite* getSprite() { return &_sprite; }
     
 private:
     CSpriteSheet* _spriteSheet; // Don't modify from here
-    sf::IntRect _rect;
+    Box _rect;
     sf::Sprite _sprite;
     
 };

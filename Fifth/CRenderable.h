@@ -15,13 +15,15 @@
 class CRenderable {
 
 public:
-    CRenderable(std::string shaderKey = "") : _shaderKey(""), _transparency(255) {};
+    CRenderable(std::string shaderKey = "") : spriteFollowsCollisionBox(true), _shaderKey(shaderKey), _transparency(255) {};
     
     std::string getShaderKey() { return _shaderKey; }
     void setShaderKey(std::string shaderKey) { _shaderKey = shaderKey; }
     
     void setTransparency(int value) { _transparency = value; }
     int getTransparency() { return _transparency; }
+    
+    bool spriteFollowsCollisionBox;
     
 private:
     std::string _shaderKey;

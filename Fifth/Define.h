@@ -28,6 +28,10 @@ struct Box {
     int w, h;
 };
 
+struct Area {
+    int w, h;
+};
+
 enum CollisionLayers {
     LAYER0      = 1 << 0,
     LAYER1      = 1 << 1,

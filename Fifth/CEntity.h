@@ -28,7 +28,7 @@ class CEntity : public CRenderable, public CCollidable {
     
 public:
     CEntity(Box rect, sf::Color color);
-    CEntity(Box rect, std::string spriteKey);
+    CEntity(Box rect, std::string spriteContainerKey);
     ~CEntity();
     
     void initValues();
@@ -51,9 +51,11 @@ public:
     sf::Color color;
     bool toRemove;
     
-    void setSprite(std::string spriteKey);
-    CSprite* getSprite();
-    std::string spriteKey;
+    void setSpriteContainer(std::string spriteContainerKey);
+    CSpriteContainer* getSpriteContainer();
+    std::string getSpriteContainerKey();
+    std::string spriteContainerKey;
+    bool hasSprite();
     
     bool isDead();
     

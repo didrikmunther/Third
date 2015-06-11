@@ -21,7 +21,7 @@ CEnemy::CEnemy(Box rect, std::string spriteKey) :
 void CEnemy::_initMovementValues() {
     maxSpeed = 5.0f;
     jumpPower = 15.0f;
-    accelerationX = 1.5f;
+    accelerationX = 0.1f;
     accelerationY = 100.0f;
     stoppingAccelerationX = accelerationX * 2;
     sneakSpeed = (float)maxSpeed / 2.0f;

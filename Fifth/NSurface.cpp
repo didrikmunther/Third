@@ -8,6 +8,7 @@
 
 #include "NSurface.h"
 #include "Define.h"
+#include "CSpriteContainer.h"
 #include <iostream>
 
 void NSurface::renderRect(int x, int y, int w, int h, sf::RenderTarget& target, int r, int g, int b, int a) {
@@ -22,18 +23,26 @@ void NSurface::renderRect(sf::IntRect rect, sf::RenderTarget& target, int r, int
     target.draw(rectangle);
 }
 
-void NSurface::renderEntity(CEntity* entity, CWindow* window, sf::IntRect destination, int properties /* = 0 */) {
-    if(entity->getSprite() == nullptr) return;
-    auto nsprite = *entity->getSprite()->getSprite();
+void NSurface::renderEntity(CEntity* entity, CWindow* window, sf::IntRect destination) {
+    if(entity->getSpriteContainer()->getSprite() == nullptr) return;
+    auto nsprite = *entity->getSpriteContainer()->getSprite()->getSprite();
     nsprite.setPosition(destination.left, destination.top);
     nsprite.setColor(sf::Color{255, 255, 255, (uint8_t)entity->getTransparency()});
     
-    if(properties & EntityProperty::FLIP) {
-        nsprite.setOrigin({ nsprite.getLocalBounds().width, 0 });
-        
-        nsprite.setScale(-destination.width / entity->getSprite()->getSprite()->getGlobalBounds().width, destination.height / entity->getSprite()->getSprite()->getGlobalBounds().height);
+    int spriteWidth, spriteHeight = 0;
+    if(entity->spriteFollowsCollisionBox) {
+        spriteWidth = entity->body.getW();
+        spriteHeight = entity->body.getH();
     } else {
-        nsprite.setScale(destination.width / entity->getSprite()->getSprite()->getGlobalBounds().width, destination.height / entity->getSprite()->getSprite()->getGlobalBounds().height);
+        spriteWidth = entity->getSpriteContainer()->spriteArea.w;
+        spriteHeight = entity->getSpriteContainer()->spriteArea.h;
+    }
+    
+    if(entity->hasProperty(EntityProperty::FLIP)) {
+        nsprite.setOrigin({ nsprite.getLocalBounds().width, 0 });
+        nsprite.setScale(-spriteWidth / entity->getSpriteContainer()->getSprite()->getSprite()->getGlobalBounds().width, spriteHeight / entity->getSpriteContainer()->getSprite()->getSprite()->getGlobalBounds().height);
+    } else {
+        nsprite.setScale(spriteWidth / entity->getSpriteContainer()->getSprite()->getSprite()->getGlobalBounds().width, spriteHeight / entity->getSpriteContainer()->getSprite()->getSprite()->getGlobalBounds().height);
     }
     
     window->getRenderTexture()->draw(nsprite);
@@ -50,7 +59,8 @@ void NSurface::renderEntity(CEntity* entity, CWindow* window, sf::IntRect destin
     }
     
     
-    window->getRenderTexture()->draw(*window->getSprite(), states);
+    //window->getRenderTexture()->draw(*window->getSprite(), states);
+    window->getRenderTexture()->draw(*window->getSprite());
     
 }
 

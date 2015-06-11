@@ -10,18 +10,19 @@
 #include <iostream>
 #include "NFile.h"
 #include "ResourcePath.hpp"
+#include "CSpriteContainer.h"
 
 std::map<std::string, CSprite*> CAssetManager::_SpriteVector;
+std::map<std::string, CSpriteContainer*> CAssetManager::_SpriteContainerVector;
 std::map<std::string, CSpriteSheet*> CAssetManager::_SpriteSheetVector;
 std::map<std::string, sf::Font> CAssetManager::_FontVector;
 std::map<std::string, sf::Shader*> CAssetManager::_ShaderVector;
 int CAssetManager::_assetId = 0;
 
-CAssetManager::CAssetManager() {
-}
+CAssetManager::CAssetManager() { }
 
 
-CSprite* CAssetManager::addSprite(std::string name, std::string spriteSheetKey, sf::IntRect source) {
+CSprite* CAssetManager::addSprite(std::string name, std::string spriteSheetKey, Box source) {
     if(_SpriteVector.find(name) != _SpriteVector.end()) {
         std::cout << "!: Couldn't add sprite: \"" << name << "\", because it already exists.\n";
         return _SpriteVector[name];
@@ -43,6 +44,23 @@ std::string CAssetManager::addSprite(CSprite* sprite, std::string name /* = "" *
     } else {
         _SpriteVector[name] = sprite;
         return name;
+    }
+}
+
+CSpriteContainer* CAssetManager::addSpriteContainer(std::string name, std::string spriteKey, Area area /* = {-1, -1} */) {
+    if(_SpriteContainerVector.find(name) != _SpriteContainerVector.end()) {
+        std::cout << "!: Couldn't add sprite container \"" << name << "\", becuase it already exists.\n";
+        return _SpriteContainerVector[name];
+    } else if(_SpriteVector.find(spriteKey) == _SpriteVector.end()) {
+        std::cout << "!: Couldn't add sprite container \"" << name << "\", becuase the sprite \"" << spriteKey << "\" didn't exist.\n";
+        return nullptr;
+    } else {
+        if(area.w > 0 || area.h > 0)
+            _SpriteContainerVector[name] = new CSpriteContainer(spriteKey, area);
+        else
+            _SpriteContainerVector[name] = new CSpriteContainer(spriteKey);
+            
+        return _SpriteContainerVector[name];
     }
 }
 
@@ -102,6 +120,14 @@ sf::Shader* CAssetManager::addShader(std::string name, std::string fileName, sf:
 CSprite* CAssetManager::getSprite(std::string key) {
     auto it = _SpriteVector.find(key);
     if(it == _SpriteVector.end())
+        return nullptr;
+    else
+        return it->second;
+}
+
+CSpriteContainer* CAssetManager::getSpriteContainer(std::string key) {
+    auto it = _SpriteContainerVector.find(key);
+    if(it == _SpriteContainerVector.end())
         return nullptr;
     else
         return it->second;

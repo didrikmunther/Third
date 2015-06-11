@@ -20,7 +20,7 @@ namespace NSurface {
     void renderRect(int x, int y, int w, int h, sf::RenderTarget& target, int r, int g, int b, int a = 255);
     void renderRect(sf::IntRect rect, sf::RenderTarget& target, int r, int g, int b, int a = 255);
     
-    void renderEntity(CEntity* entity, CWindow* window, sf::IntRect destination, int properties = 0);
+    void renderEntity(CEntity* entity, CWindow* window, sf::IntRect destination);
     void renderText(int x, int y, CText* textObj, sf::RenderTarget& target);
     
 };
