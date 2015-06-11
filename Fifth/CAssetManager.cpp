@@ -64,6 +64,18 @@ CSpriteContainer* CAssetManager::addSpriteContainer(std::string name, std::strin
     }
 }
 
+std::string CAssetManager::addSpriteContainer(CSpriteContainer* spriteContainer, std::string name /* = "" */) {
+    if(name == "")
+        name = "reserved:" + std::to_string(_assetId++);
+    if(_SpriteContainerVector.find(name) != _SpriteContainerVector.end()) {
+        std::cout << "!: Couldn't add sprite container: \"" << name << "\", because it already exists.\n";
+        return name;
+    } else {
+        _SpriteContainerVector[name] = spriteContainer;
+        return name;
+    }
+}
+
 CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, std::string fileName) {
     //fileName = resourcePath() + fileName;
     if(_SpriteSheetVector.find(name) != _SpriteSheetVector.end()) {
@@ -157,6 +169,14 @@ sf::Shader* CAssetManager::getShader(std::string key) {
         return it->second;
 }
 
+void CAssetManager::removeSpriteContainer(std::string key) {
+    auto it = _SpriteContainerVector.find(key);
+    if(it != _SpriteContainerVector.end()) {
+        delete it->second;
+        _SpriteContainerVector.erase(it->first);
+    }
+}
+
 void CAssetManager::onCleanup() {
     {
         auto i = _SpriteVector.begin();
@@ -166,6 +186,16 @@ void CAssetManager::onCleanup() {
             _SpriteVector.erase(i++->first);
         }
         _SpriteVector.clear();
+    }
+    
+    {
+        auto i = _SpriteContainerVector.begin();
+        while(i != _SpriteContainerVector.end()) {
+            delete i->second;
+            i->second = nullptr;
+            _SpriteContainerVector.erase(i++->first);
+        }
+        _SpriteContainerVector.clear();
     }
     
     {

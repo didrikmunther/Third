@@ -152,10 +152,15 @@ void CEntityManager::onLoop() {
                 std::string sprite3 = CAssetManager::addSprite(tempSprite3);
                 std::string sprite4 = CAssetManager::addSprite(tempSprite4);
                 
-                CAssetManager::addSpriteContainer("spriteContainer1", sprite1, Area{0,0});
-                CAssetManager::addSpriteContainer("spriteContainer2", sprite2, Area{0,0});
-                CAssetManager::addSpriteContainer("spriteContainer3", sprite3, Area{0,0});
-                CAssetManager::addSpriteContainer("spriteContainer4", sprite4, Area{0,0});
+                CSpriteContainer* tempSpriteContainer1 = new CSpriteContainer(sprite1);
+                CSpriteContainer* tempSpriteContainer2 = new CSpriteContainer(sprite2);
+                CSpriteContainer* tempSpriteContainer3 = new CSpriteContainer(sprite3);
+                CSpriteContainer* tempSpriteContainer4 = new CSpriteContainer(sprite4);
+                
+                std::string spriteContainer1 = CAssetManager::addSpriteContainer(tempSpriteContainer1);
+                std::string spriteContainer2 = CAssetManager::addSpriteContainer(tempSpriteContainer2);
+                std::string spriteContainer3 = CAssetManager::addSpriteContainer(tempSpriteContainer3);
+                std::string spriteContainer4 = CAssetManager::addSpriteContainer(tempSpriteContainer4);
                 
                 int explosionForce = 10;
                 int tempForRand = 5;
@@ -166,7 +171,7 @@ void CEntityManager::onLoop() {
                                                             target->body.getY(),
                                                             target->body.getW() / 2,
                                                             target->body.getH() / 2},
-                                                         "spriteContainer1",
+                                                         spriteContainer1,
                                                          livingTime + rand() % 3 - 1);
                 tempParticle1->body.velX = rand() % explosionForce - tempForRand;
                 tempParticle1->body.velY = rand() % explosionForce - tempForRand;
@@ -176,7 +181,7 @@ void CEntityManager::onLoop() {
                                                             target->body.getY(),
                                                             target->body.getW() / 2,
                                                             target->body.getH() / 2},
-                                                         "spriteContainer2",
+                                                         spriteContainer2,
                                                          livingTime + rand() % 3 - 1);
                 tempParticle2->body.velX = rand() % explosionForce - tempForRand;
                 tempParticle2->body.velY = rand() % explosionForce - tempForRand;
@@ -186,7 +191,7 @@ void CEntityManager::onLoop() {
                                                             target->body.getY() + target->body.getH() / 2,
                                                             target->body.getW() / 2,
                                                             target->body.getH() / 2},
-                                                         "spriteContainer3",
+                                                         spriteContainer3,
                                                          livingTime + rand() % 3 - 1);
                 tempParticle3->body.velX = rand() % explosionForce - tempForRand;
                 tempParticle3->body.velY = rand() % explosionForce - tempForRand;
@@ -196,7 +201,7 @@ void CEntityManager::onLoop() {
                                                             target->body.getY() + target->body.getH() / 2,
                                                             target->body.getW() / 2,
                                                             target->body.getH() / 2},
-                                                         "spriteContainer4",
+                                                         spriteContainer4,
                                                          livingTime + rand() % 3);
                 tempParticle4->body.velX = rand() % explosionForce - tempForRand;
                 tempParticle4->body.velY = rand() % explosionForce - tempForRand;

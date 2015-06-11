@@ -180,7 +180,7 @@ bool CEntity::_collision(int x, int y, std::map<std::string, CEntity*>* entities
         
         if (target == this) continue;
         if (!(target->properties & EntityProperty::COLLIDABLE)) continue;
-        if (target->isDead()) return;
+        if (target->isDead()) continue;
         //if (!i.second->isOnCollisionLayer(collisionLayer)) return;        // Isn't working right now
     
         if(!coordinateCollision(x, y, body.getW(), body.getH(),

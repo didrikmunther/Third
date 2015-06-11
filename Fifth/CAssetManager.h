@@ -26,6 +26,7 @@ public:
     static CSprite* addSprite(std::string name, std::string spriteSheetKey, Box source);
     static std::string addSprite(CSprite* sprite, std::string name = "");
     static CSpriteContainer* addSpriteContainer(std::string name, std::string spriteKey, Area area = {-1, -1});
+    static std::string addSpriteContainer(CSpriteContainer* spriteContainer, std::string name = "");
     static CSpriteSheet* addSpriteSheet(std::string name, std::string fileName);
     static sf::Font* addFont(std::string name, std::string fileName);
     static sf::Shader* addShader(std::string name, std::string fileName, sf::Shader::Type type);
@@ -35,6 +36,8 @@ public:
     static CSpriteSheet* getSpriteSheet(std::string key);
     static sf::Font* getFont(std::string key);
     static sf::Shader* getShader(std::string key);
+    
+    static void removeSpriteContainer(std::string key);
     
     static void onCleanup();
     
