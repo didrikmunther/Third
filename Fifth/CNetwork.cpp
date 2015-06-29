@@ -8,7 +8,7 @@
 
 #include "CNetwork.h"
 
-CNetwork::CNetwork() : _isRunning(true) {
+CNetwork::CNetwork() : _isRunning(true), clientId(0) {
 }
 
 int CNetwork::onInit(CGame *game) {
@@ -25,21 +25,17 @@ int CNetwork::onInit(CGame *game) {
 
 void CNetwork::_connectionsLoop() {
     while(_isRunning) {
-        sf::TcpSocket tcpClient;
-        if(_tcpListener.accept(tcpClient) != sf::Socket::Done) {
+        sf::TcpSocket* tcpClient;
+        if(_tcpListener.accept(*tcpClient) != sf::Socket::Done) {
             /* tough shit */
         }
-        CClient client(tcpClient);
-        //_clients[tcpClient.getRemoteAddress().toString()] = client;
+        CClient* client = new CClient(tcpClient);
+        _clients[std::to_string(clientId++)] = client;
         
     }
 }
 
-void CNetwork::_clientLoop() {
-    
-}
-
-void CNetwork::onUpdate(CGame *game) {
+void CNetwork::onUpdate() {
     
 }
 

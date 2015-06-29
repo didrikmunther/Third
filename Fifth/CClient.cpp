@@ -8,6 +8,6 @@
 
 #include "CClient.h"
 
-CClient::CClient(sf::TcpSocket& tcpSocket) {
+CClient::CClient(sf::TcpSocket* tcpSocket) {
     
 }

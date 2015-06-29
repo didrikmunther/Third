@@ -23,7 +23,7 @@ public:
     CNetwork();
     
     int onInit(CGame* game);
-    void onUpdate(CGame* game);
+    void onUpdate();
     
     void onCleanup();
     
@@ -32,11 +32,10 @@ private:
     
     sf::TcpListener _tcpListener;
     
-    std::map<std::string, CClient> _clients;
+    std::map<std::string, CClient*> _clients;
+    int clientId;
     
     void _connectionsLoop();
-    void _clientLoop();
-    
     
     
 };

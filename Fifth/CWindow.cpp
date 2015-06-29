@@ -17,10 +17,14 @@ int CWindow::onInit(std::string title, int width, int height) {
     
     _view.setSize(width, height);
     _view.setCenter(_view.getSize().x / 2, _view.getSize().y / 2);
+    //_view.zoom(2.0f);
+    //_view.rotate(45);
+    //_view.setViewport(sf::FloatRect(1.0f, 1.0f, 1.0f, 1.0f));
     _view = _getLetterboxView(_view, width, height);
     
     _window.create(sf::VideoMode(width, height), sf::String(title));
     _window.setVerticalSyncEnabled(true);
+    //_window.setView(_view);
     
     _screenWidth = width;
     _screenHeight = height;

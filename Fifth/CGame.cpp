@@ -77,13 +77,10 @@ int CGame::onExecute() {
             _title.str("");
             _title << _intro << " | " << _updates << " ups, " << _frames << " fps";
             //instance.window.setTitle(_title.str());
-            instance.entityManager.getEntity("n:bush")->say(_title.str(), "TESTFONT", ChatBubbleType::SAY);
+            //instance.entityManager.getEntity("n:bush")->say(_title.str(), "TESTFONT", ChatBubbleType::SAY);
             _updates = 0;
             _frames = 0;
         }
-        
-        //SDL_Delay(7);
-        
     }
     
     std::cout << "Ending game...\n";
@@ -108,7 +105,8 @@ int CGame::_onInit() {
     _initAssets();
     
     instance.player = new CPlayer(Box{30, 30, 16 * 5, 28 * 5}, "playerPink");
-    instance.player->spriteStateTypes[SpriteStateTypes::JUMPING] = "playerPinkRunning";
+    instance.player->spriteStateTypes[SpriteStateTypes::ASCENDING] = "playerPinkRunning";
+    instance.player->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
     instance.player->spriteFollowsCollisionBox = false;
     instance.entityManager.addEntity(instance.player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
     instance.camera.setTarget(instance.player);
@@ -116,18 +114,20 @@ int CGame::_onInit() {
     instance.seeker = new CEnemy(Box{150, 150, 60, 164}, "player");
     instance.entityManager.addEntity(instance.seeker, "m:yrl");
     instance.seeker->setTarget(instance.player);
-    instance.seeker->spriteStateTypes[SpriteStateTypes::JUMPING] = "enemyJumping";
+    instance.seeker->spriteStateTypes[SpriteStateTypes::ASCENDING] = "enemyJumping";
+    instance.seeker->spriteStateTypes[SpriteStateTypes::DESCENDING] = "enemyJumping";
     instance.seeker->spriteFollowsCollisionBox = false;
     
-    instance.entityManager.addEntity(Box{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
-    instance.entityManager.addEntity(Box{0 - 30 / 2, 480 - 500, 30, 500}, sf::Color{255, 0, 0, 0});
-    instance.entityManager.addEntity(Box{276, 229, 23 * 4, 59 * 4}, "tree", "l:tree");
-    instance.entityManager.getEntity("l:tree")->removeProperty(EntityProperty::COLLIDABLE);
-    instance.entityManager.getEntity("l:tree")->addProperty(EntityProperty::STATIC);
-    instance.entityManager.addEntity(Box{200, 357, 60 * 2, 54 * 2}, "bush", "n:bush");
-    instance.entityManager.getEntity("n:bush")->removeProperty(EntityProperty::COLLIDABLE);
-    instance.entityManager.getEntity("n:bush")->addProperty(EntityProperty::STATIC);
-    instance.entityManager.getEntity("n:bush")->addProperty(EntityProperty::STATIC);
+    auto temp1box = instance.entityManager.addEntity(Box{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
+    temp1box->addCollisionLayer(~0 ^ LAYER7);
+    auto temp2box = instance.entityManager.addEntity(Box{0 - 30 / 2, 480 - 500, 30, 500}, sf::Color{255, 0, 0, 0});
+    temp2box->addCollisionLayer(LAYER1 | LAYER2 | LAYER3);
+    instance.entityManager.addEntity(Box{276, -1000, 23 * 4, 59 * 4}, "tree", "l:tree");
+    instance.entityManager.getEntity("l:tree")->addCollisionLayer(LAYER2);
+    instance.entityManager.getEntity("l:tree")->removeCollisionLayer(LAYER0);
+    instance.entityManager.addEntity(Box{200, -1000, 60 * 2, 54 * 2}, "bush", "n:bush");
+    instance.entityManager.getEntity("n:bush")->addCollisionLayer(LAYER3);
+    instance.entityManager.getEntity("n:bush")->removeCollisionLayer(LAYER0);
 
     return 0;
 }
@@ -155,6 +155,7 @@ void CGame::_initAssets() {
     CAssetManager::addSpriteContainer("tree", "tree");
     CAssetManager::addSprite("enemyJumping", "MAIN2", Box{212, 22, 52, 182});
     CAssetManager::addSpriteContainer("enemyJumping", "enemyJumping");
+    CAssetManager::addSpriteContainer("yrl", "yrl");
 }
 
 void CGame::_initRelativePaths() {
@@ -294,15 +295,15 @@ void CGame::_onEvent(sf::Event* event) {
                 {
                     auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera), 60, 164}, "player");
                     tempNpc->setTarget(instance.player);
-                    tempNpc->setShaderKey("");
-                    tempNpc->collisionLayer = 1 << 1;
+                    tempNpc->spriteStateTypes[SpriteStateTypes::ASCENDING] = "enemyJumping";
+                    tempNpc->spriteFollowsCollisionBox = false;
                     instance.entityManager.addEntity(tempNpc);
                 }
                     break;
                     
                 case sf::Keyboard::H:
                 {
-                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera), 32, 32}, "yrl");
+                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera), 32 * 4, 32 * 4}, "yrl");
                     //tempNpc->setTarget(instance.entityManager.getEntity("n:bush"));
                     tempNpc->setTarget(instance.player);
                     //tempNpc->setShaderKey("");

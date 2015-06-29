@@ -12,11 +12,13 @@
 CParticle::CParticle(Box rect, sf::Color color, int livingTime /* = 5 */) :
 CEntity(rect, color), _creationTime(_clock.getElapsedTime().asMilliseconds()), _livingTime(livingTime) {
     addProperty(EntityProperty::FLIP_FREEZED);
+    collisionLayer = LAYER1;
 }
 
 CParticle::CParticle(Box rect, std::string spriteKey, int livingTime /* = 5 */) :
 CEntity(rect, spriteKey), _creationTime(_clock.getElapsedTime().asMilliseconds()), _livingTime(livingTime) {
     addProperty(EntityProperty::FLIP_FREEZED);
+    collisionLayer = LAYER1;
 }
 
 void CParticle::_doLogic() {

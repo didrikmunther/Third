@@ -7,3 +7,13 @@
 //
 
 #include "CServerInstance.h"
+
+CServerInstance::CServerInstance() { }
+
+CServerInstance::~CServerInstance() {
+    closeInstance();
+}
+
+void CServerInstance::closeInstance() {
+    entityManager.onCleanup();
+}

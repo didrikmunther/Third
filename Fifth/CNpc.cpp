@@ -31,5 +31,5 @@ void CNpc::_doLogic() {
 }
 
 void CNpc::_collisionLogic(CEntity* target) {
-    CMovable::_collisionLogic(target);
+    CLiving::_collisionLogic(target);
 }

@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include <SFML/Network.hpp>
-#include "CInstance.h"
+#include "CServerInstance.h"
 
 class CServer {
     
@@ -45,7 +45,8 @@ private:
     
     // Misc
     
-    CInstance instance;
+    //CInstance instance;
+    std::map<std::string, CServerInstance*> _instanceVector;
     
     sf::Thread _inputThread;
     

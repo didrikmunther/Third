@@ -50,7 +50,9 @@ int CServer::onExecute() {
         }
         
     }
-        
+    
+    std::cout << "Shutting server down.\n";
+    
     return _onCleanup();
         
 }
@@ -66,7 +68,7 @@ int CServer::_onInit() {
     
     rapidjson::Document d;
     
-    if(d.Parse<0>(jsonString).HasParseError() == false) {
+    if(!d.Parse<0>(jsonString).HasParseError()) {
         const rapidjson::Value& entities = d["entities"];
         for(rapidjson::SizeType i = 0; i < entities.Size(); i++) {
             const rapidjson::Value& entity = entities[i];
@@ -84,7 +86,22 @@ int CServer::_onInit() {
 }
 
 void CServer::_onLoop() {
-    
+    {
+        auto instances = _instanceVector.begin();
+        while(instances != _instanceVector.end()) {
+            auto instance = instances->second;
+            instance->entityManager.onLoop();
+            
+            auto clients = instance->_clients.begin();
+            while(clients != instance->_clients.end()) {
+                auto client = clients->second;
+                
+                // ADD ALL ENTITIES INTO A JSON STRING AND SEND IT TO THE CLIENTS TCP SOCKET
+            }
+            
+            ++instances;
+        }
+    }
 }
 
 void CServer::_handleInput() {
@@ -93,19 +110,28 @@ void CServer::_handleInput() {
         std::string i; getline(std::cin, i);
         
         if     (i == "")            {  }
-        else if(i == "quit" ||
-                i == "exit")        { _isRunning = false; }
-        else if(i == "addentity")   { instance.entityManager.addEntity(Box{0, 0, 0, 0}, sf::Color{255,0,255}); }
+        else if(i == "quit")        { _isRunning = false; }
+        else if(i == "addentity")   { /* instance.entityManager.addEntity(Box{0, 0, 0, 0}, sf::Color{255,0,255}); */ }
         else                        { std::cout << "Command not recognized.\n"; }
     }
     
 }
 
 int CServer::_onRestart() {
-    instance.closeInstance();
+    _onCleanup();
     return 0;
 }
 
 int CServer::_onCleanup() {
+    
+    {
+        auto i = _instanceVector.begin();
+        while(i != _instanceVector.end()) {
+            delete i->second;
+            _instanceVector.erase(i++->first);
+        }
+        _instanceVector.clear();
+    }
+    
     return 0;
 }

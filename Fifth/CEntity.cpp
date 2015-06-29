@@ -183,7 +183,7 @@ bool CEntity::_collision(int x, int y, std::map<std::string, CEntity*>* entities
         if (target == this) continue;
         if (!(target->properties & EntityProperty::COLLIDABLE)) continue;
         if (target->isDead()) continue;
-        //if (!i.second->isOnCollisionLayer(collisionLayer)) return;        // Isn't working right now
+        if (!i.second->isOnCollisionLayer(collisionLayer)) continue;
     
         if(!coordinateCollision(x, y, body.getW(), body.getH(),
                                 target->body.getX(), target->body.getY(), target->body.getW(), target->body.getH()))
@@ -268,35 +268,52 @@ void CEntity::move(std::map<std::string, CEntity*>* entities) {
         if(NewY > 0 && MoveY <= 0) NewY = 0;
         if(NewY < 0 && MoveY >= 0) NewY = 0;
 
-        if(MoveX == 0) NewX = 0;
-        if(MoveY == 0) NewY = 0;
+        //if(MoveX == 0) NewX = 0;
+        //if(MoveY == 0) NewY = 0;
         
         if(MoveX == 0 && MoveY == 0) 	break;
         if(NewX == 0 && NewY == 0) 		break;
     }
 }
 
+//void CEntity::move(std::map<std::string, CEntity*>* entities) {
+//    
+//    int MoveX = round(body.velX);
+//    int MoveY = round(body.velY);
+//    
+//    int StopX = body.getX();
+//    int StopY = body.getY();
+//    
+//    int NewX = 0;
+//    int NewY = 0;
+//    
+//    if(MoveX != 0) {
+//        if(MoveX >= 0) 	NewX =  1;
+//        else 			NewX = -1;
+//    }
+//    
+//    if(MoveY != 0) {
+//        if(MoveY >= 0) 	NewY =  1;
+//        else 			NewY = -1;
+//    }
+//    
+//    collisionLeft = collisionRight = false;
+//    collisionTop = collisionBottom = false;
+//    
+//    do {
+//        MoveX -= NewX;
+//        if(MoveX == 0) break;
+//    } while(_collision(StopX + MoveX, StopY, entities));
+//    body.rect.x = StopX + MoveX;
+//    
+//    do {
+//        MoveY -= NewY;
+//        if(MoveY == 0) break;
+//    } while(_collision(StopX, StopY + MoveY, entities));
+//    body.rect.y = StopY + MoveY;
+//}
+
 void CEntity::_collisionLogic(CEntity *target) {
-    
-//    float momentumX = (float)body.getW() * body.getH() * body.velX;
-//    float targetMomentumX = (float)target->body.getW() * target->body.getH() * target->body.velX;
-//    
-//    float finalMomentumX = momentumX + targetMomentumX;
-//    float finalVelocityX = finalMomentumX / (body.getW() + body.getH() + target->body.getW() + target->body.getH()) / 100;
-//    
-//    //body.velX += finalVelocityX;
-//    target->body.velX += finalVelocityX;
-    
-//    float weight = (body.getW()*body.getH()) / 10000.0f;
-//    
-//    float otherWeight = ( target->body.getW() * target->body.getH() ) / 10000.0f ;
-//    
-//    float movementMass = body.velX*weight;
-//    
-//    float otherMovementMass = (target->body.velX)*otherWeight;
-//    
-//    
-//    body.velX += movementMass*otherMovementMass*(otherWeight/weight);
     
 }
 
@@ -308,10 +325,11 @@ void CEntity::_doLogic() {
             addProperty(EntityProperty::FLIP);
     }
     
-    if(!collisionBottom) {
-        setSpriteContainer(spriteStateTypes[SpriteStateTypes::JUMPING]);
-    } else {
-        setSpriteContainer(spriteStateTypes[SpriteStateTypes::IDLE]);
-    }
+    setSpriteContainer(spriteStateTypes[SpriteStateTypes::IDLE]);
+    
+    if(body.velY < 0)
+        setSpriteContainer(spriteStateTypes[SpriteStateTypes::ASCENDING]);
+    else if(!collisionBottom)
+        setSpriteContainer(spriteStateTypes[SpriteStateTypes::DESCENDING]);
 }
 

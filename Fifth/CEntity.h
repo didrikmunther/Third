@@ -22,7 +22,8 @@
 
 enum SpriteStateTypes {
     IDLE = 0,
-    JUMPING,
+    ASCENDING,
+    DESCENDING,
     TOTAL_SPRITESTATETYPES
 };
 
@@ -43,6 +44,9 @@ public:
     
     int collisionLayer;
     bool isOnCollisionLayer(int collisionLayer);
+    void toggleCollisionLayer(int collisionLayer) { this->collisionLayer ^= collisionLayer; }
+    void addCollisionLayer(int collisionLayer) { this->collisionLayer |= collisionLayer; }
+    void removeCollisionLayer(int collisionLayer) { if(isOnCollisionLayer(collisionLayer)) toggleCollisionLayer(collisionLayer); }
     
     void move(std::map<std::string, CEntity*>* entities);
     bool coordinateCollision(int x, int y, int w, int h, int x2, int y2, int w2, int h2);

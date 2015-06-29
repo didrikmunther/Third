@@ -14,9 +14,9 @@
 
 int main(int argc, const char * argv[]){
     
-    //CServer server;
-    
-    //return server.onExecute();
+//    CServer server;
+//    
+//    return server.onExecute();
     
     CGame game;
     

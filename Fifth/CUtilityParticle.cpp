@@ -13,11 +13,12 @@
 
 CUtilityParticle::CUtilityParticle(Box rect, sf::Color color, int utility) :
 CParticle(rect, color), _basicUtility(utility) {
-    std::cout << utility << "\n";
+    collisionLayer = LAYER0;
 }
 
 CUtilityParticle::CUtilityParticle(Box rect, sf::Color color, int utility, int livingTime) :
 CParticle(rect, color, livingTime), _basicUtility(utility) {
+    collisionLayer = LAYER0;
     
 }
 
