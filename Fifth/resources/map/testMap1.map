@@ -41,8 +41,9 @@
 	],
 
 	"entities": [
-		{"name":"m:player", "type":6,				"rect":[30, 30, 80, 140], 				"spriteContainerKey":"playerPink",		"spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
-		{"name":"m:yrl", "type":7,				"rect":[150, 150, 60, 164], 				"spriteContainerKey":"player", "target":"m:player",		"spriteStateTypes":{"1":"enemyJumping", "2":"enemyJumping"}, "spriteFollowsCollisionBox":false},
+		
+		{"name":"m:seeker1", "type":7, "rect":[150, 150, 60, 164], "spriteContainerKey":"playerPink", "target":"m:player2", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
+        {"name":"m:player2", "type":6, "rect":[30, 30, 80, 140], "spriteContainerKey":"playerPink", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
 		{"name":"l:tree",				"rect":[276, -1000, 92, 236], 			"spriteContainerKey":"tree", 			"collisionLayers":4},
 		{"name":"n:bush",				"rect":[200, -1000, 120, 108], 			"spriteContainerKey":"bush", 			"collisionLayers":8},
 		{								"rect":[-15, 465, 5000, 30], 			"colors":[255, 0, 0, 0],				"collisionLayers":-129},

@@ -105,9 +105,9 @@ int CGame::_onInit() {
     
     NFile::loadMap("resources/map/testMap1.map", &instance);
     
-    CEnemy* enemy = dynamic_cast<CEnemy*>(instance.entityManager.getEntity("m:yrl"));
-    if(enemy != nullptr)
-        instance.seeker = enemy;
+//    CEnemy* enemy = dynamic_cast<CEnemy*>(instance.entityManager.getEntity("m:seeker"));
+//    if(enemy != nullptr)
+//        instance.seeker = enemy;
     
     /*
      LAYER0 // 1
@@ -367,10 +367,22 @@ void CGame::_onEvent(sf::Event* event) {
             break;
             
         case sf::Event::MouseButtonPressed:
-            auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera));
-            if(tempTarget != nullptr && instance.seeker != nullptr) {
-                instance.seeker->setTarget(tempTarget);
-                instance.seeker->say("Target confirmed: " + instance.entityManager.getNameOfEntity(tempTarget), "TESTFONT", ChatBubbleType::SAY);
+            
+            if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+                auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera));
+                if(tempTarget != nullptr) {
+                    std::string toSay = "Name: \"" + instance.entityManager.getNameOfEntity(tempTarget) +
+                    "\", CollisionLayer: " + std::to_string(tempTarget->collisionLayer);
+                    tempTarget->say(toSay, "TESTFONT", ChatBubbleType::SAY);
+                }
+            }
+            
+            if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
+                auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera));
+                if(tempTarget != nullptr && instance.seeker != nullptr) {
+                    instance.seeker->setTarget(tempTarget);
+                    instance.seeker->say("Target confirmed: " + instance.entityManager.getNameOfEntity(tempTarget), "TESTFONT", ChatBubbleType::SAY);
+                }
             }
             break;
     }

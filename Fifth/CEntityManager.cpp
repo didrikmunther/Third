@@ -55,10 +55,7 @@ std::string CEntityManager::addEntity(CEntity* entity, std::string name /* = "" 
 }
 
 CEntity* CEntityManager::getEntity(std::string name) {
-    if(name == "") {
-        std::cout << "Couldn't get entity because it had no name.\n";
-        return nullptr;
-    } else if(_EntityVector.find(name) == _EntityVector.end()) {
+    if(_EntityVector.find(name) == _EntityVector.end()) {
         std::cout << "Couldn't get entity: " << name << ", because it doesn't exist.";
         return nullptr;
     } else {
@@ -219,6 +216,8 @@ void CEntityManager::onLoop() {
     {
         auto i = _EntityVector.begin();
         while(i != _EntityVector.end()) {
+            std::cout << "entity: " << i->first << "\n";
+            
             auto target = (*i).second;
             target->onLoop(&_EntityVector);
             

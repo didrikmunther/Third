@@ -47,18 +47,22 @@ CEntity* NFile::createEntity(CInstance* instance, const rapidjson::Value& jsonEn
     
     switch(type) {
         case EntityTypes::Player:
+        {
             CPlayer* player;
             if(entityParameterHolder.spriteContainerKey == "") {
                 player = new CPlayer(entityParameterHolder.box, entityParameterHolder.color);
             } else {
                 player = new CPlayer(entityParameterHolder.box, entityParameterHolder.spriteContainerKey);
             }
+            
             instance->player = player;
             instance->camera.setTarget(player);
             return player;
+        }
             break;
             
         case EntityTypes::Enemy:
+        {
             CEnemy* enemy;
             if(entityParameterHolder.spriteContainerKey == "") {
                 enemy = new CEnemy(entityParameterHolder.box, entityParameterHolder.color);
@@ -73,10 +77,12 @@ CEntity* NFile::createEntity(CInstance* instance, const rapidjson::Value& jsonEn
             }
             
             return enemy;
+        }
             break;
             
         case EntityTypes::Entity:
         default:
+        {
             CEntity* entity;
             if(entityParameterHolder.spriteContainerKey == "") {
                 entity = new CEntity(entityParameterHolder.box, entityParameterHolder.color);
@@ -84,6 +90,7 @@ CEntity* NFile::createEntity(CInstance* instance, const rapidjson::Value& jsonEn
                 entity = new CEntity(entityParameterHolder.box, entityParameterHolder.spriteContainerKey);
             }
             return entity;
+        }
             break;
     }
 }
@@ -99,6 +106,7 @@ void NFile::loadMap(std::string fileName, CInstance* instance) {
     
     instance->entityManager.onCleanup();
     CAssetManager::onCleanup();
+    instance->player = nullptr;
     
     const rapidjson::Value& fonts = d["fonts"];                                     // Fonts
     for(rapidjson::SizeType i = 0; i < fonts.Size(); i++) {
@@ -200,6 +208,12 @@ void NFile::loadMap(std::string fileName, CInstance* instance) {
             }
         }
         
+    }
+    
+    if(instance->player == nullptr) {
+//        instance->player = new CPlayer(Box{0, 0, 10, 10}, sf::Color{255, 0, 255, 0}); // Isn't working, program crashes
+//        instance->entityManager.addEntity(instance->player, "m:player2");             // Make sure there is a player in the .map
+//        instance->camera.setTarget(instance->player);
     }
     
     std::cout << "Loaded map: \"" << d["name"].GetString() << "\" (\"" << fileName << "\")\n";

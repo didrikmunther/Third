@@ -19,6 +19,7 @@ CEnemy::CEnemy(Box rect, std::string spriteKey) :
 }
 
 void CEnemy::_initMovementValues() {
+    target = nullptr;
     maxSpeed = 5.0f;
     jumpPower = 15.0f;
     accelerationX = 0.1f;
