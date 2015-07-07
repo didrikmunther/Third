@@ -34,7 +34,7 @@ public:
     CEntity* getEntity(std::string name);
     CEntity* getEntityAtCoordinate(int x, int y);
     std::string getNameOfEntity(CEntity* entity);
-    void addEntity(CEntity* entity, std::string name = "");
+    std::string addEntity(CEntity* entity, std::string name = "");
     void addParticle(Box rect, sf::Color color, int livingTime);
     void addParticle(CParticle* particle);
     void addParticleEmitter(sf::IntRect rect, sf::Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, ParticleVelocity velocity);
@@ -43,6 +43,9 @@ public:
     void onRender(CWindow* window, CCamera* camera);
     void onLoop();
     void onCleanup();
+    
+    // Temp
+    void splitEntityToParticles(CEntity* target);
     
     void entityCleanup();
     void particleEmitterCleanup();

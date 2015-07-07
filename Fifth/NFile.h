@@ -10,15 +10,38 @@
 #define __Third__NFile__
 
 #include <stdio.h>
-#include "CSpriteSheet.h"
+#include "CInstance.h"
 
-namespace NFile {
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
+
+struct EntityParameterHolder {
+    Box box;
+    sf::Color color;
+    std::string spriteContainerKey;
+    EntityParameterHolder(Box box, sf::Color color) : box(box), color(color), spriteContainerKey("") {}
+    EntityParameterHolder(Box box, std::string spriteContainerKey) : box(box), spriteContainerKey(spriteContainerKey) {}
+};
+
+class NFile {
+    
+public:
     
     // Load functions
-    void loadKeymap();
-    void testSave(std::string data, std::string key);
+    static rapidjson::Document loadJsonFile(std::string fileName);
+    static void loadMap(std::string fileName, CInstance* instance);
     
-    CSpriteSheet* loadSpriteSheet();
+    // Save functions
+    
+    
+    // Misc functions
+    static void success(std::string successMsg);
+    static void error(std::string errorMsg);       // Todo replace all couts with this
+    static void warning(std::string warningMsg);
+    
+private:
+    static CEntity* createEntity(CInstance* instance, const rapidjson::Value& jsonEntity, EntityParameterHolder entityParameterHolder);
     
 };
 

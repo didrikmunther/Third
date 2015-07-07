@@ -9,6 +9,7 @@
 #include "CGame.h"
 #include <iostream>
 #include "NSurface.h"
+#include "NFile.h"
 #include <cmath>
 #include "Define.h"
 #include "NMouse.h"
@@ -102,60 +103,35 @@ int CGame::_onInit() {
     instance.window.getRenderTexture()->create(SCREEN_WIDTH, SCREEN_HEIGHT);                // Draw unto a texture for applying shaders later
     instance.window.getSprite()->setTexture(instance.window.getRenderTexture()->getTexture());
     
-    _initAssets();
+    NFile::loadMap("resources/map/testMap1.map", &instance);
     
-    instance.player = new CPlayer(Box{30, 30, 16 * 5, 28 * 5}, "playerPink");
-    instance.player->spriteStateTypes[SpriteStateTypes::ASCENDING] = "playerPinkRunning";
-    instance.player->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
-    instance.player->spriteFollowsCollisionBox = false;
-    instance.entityManager.addEntity(instance.player, "m:player");                                                // Layer system: z -> a. visible to nonvisible
-    instance.camera.setTarget(instance.player);
+    CEnemy* enemy = dynamic_cast<CEnemy*>(instance.entityManager.getEntity("m:yrl"));
+    if(enemy != nullptr)
+        instance.seeker = enemy;
     
-    instance.seeker = new CEnemy(Box{150, 150, 60, 164}, "player");
-    instance.entityManager.addEntity(instance.seeker, "m:yrl");
-    instance.seeker->setTarget(instance.player);
-    instance.seeker->spriteStateTypes[SpriteStateTypes::ASCENDING] = "enemyJumping";
-    instance.seeker->spriteStateTypes[SpriteStateTypes::DESCENDING] = "enemyJumping";
-    instance.seeker->spriteFollowsCollisionBox = false;
+    /*
+     LAYER0 // 1
+     LAYER1 // 2
+     LAYER2 // 4
+     LAYER3 // 8
+     LAYER4 // 16
+     LAYER5 // 32
+     LAYER6 // 64
+     LAYER7 // 128
+    */
     
-    auto temp1box = instance.entityManager.addEntity(Box{0 - 30 / 2, 480 - 30 / 2, 5000, 30}, sf::Color{255, 0, 0, 0});
-    temp1box->addCollisionLayer(~0 ^ LAYER7);
-    auto temp2box = instance.entityManager.addEntity(Box{0 - 30 / 2, 480 - 500, 30, 500}, sf::Color{255, 0, 0, 0});
-    temp2box->addCollisionLayer(LAYER1 | LAYER2 | LAYER3);
-    instance.entityManager.addEntity(Box{276, -1000, 23 * 4, 59 * 4}, "tree", "l:tree");
-    instance.entityManager.getEntity("l:tree")->addCollisionLayer(LAYER2);
-    instance.entityManager.getEntity("l:tree")->removeCollisionLayer(LAYER0);
-    instance.entityManager.addEntity(Box{200, -1000, 60 * 2, 54 * 2}, "bush", "n:bush");
-    instance.entityManager.getEntity("n:bush")->addCollisionLayer(LAYER3);
-    instance.entityManager.getEntity("n:bush")->removeCollisionLayer(LAYER0);
+    /*
+     Entity = 0,
+     Particle,   // 1
+     Movable,    // 2
+     UtilityParticle, // 3
+     Living,     // 4
+     Npc,        // 5
+     Player,     // 6
+     Enemy       // 7
+    */
 
     return 0;
-}
-
-void CGame::_initAssets() {
-    CAssetManager::addSpriteSheet("YRLSPRITESHEET", "resources/yrl.png");
-    CAssetManager::addSpriteSheet("MAIN", "resources/gfx.png");
-    CAssetManager::addSpriteSheet("MAIN2", "resources/gfx2.png");
-    CAssetManager::addSpriteSheet("PlayerSpriteSheet", "resources/playerSpritesheet.png");
-    CAssetManager::addSprite("playerPink", "PlayerSpriteSheet", Box{0, 0, 16, 28});
-    CAssetManager::addSprite("playerPinkRunning", "PlayerSpriteSheet", Box{32, 0, 19, 25});
-    CAssetManager::addSprite("yrl", "YRLSPRITESHEET", Box{0,0,32,32});
-    CAssetManager::addSprite("player", "MAIN2", Box{144,396,60,164});
-    CAssetManager::addSprite("bush", "MAIN", Box{160, 91, 30, 28});
-    CAssetManager::addSprite("tree", "MAIN", Box{7,64,23,59});
-    CAssetManager::addSpriteSheet("BG", "resources/bg.png");
-    CAssetManager::addSprite("background", "BG", Box{0,0,128,64});
-    CAssetManager::addFont("TESTFONT", "resources/font.ttf");
-    CAssetManager::addShader("SHADER1", "resources/light.frag", sf::Shader::Type::Fragment);
-    
-    CAssetManager::addSpriteContainer("playerPink", "playerPink", Area{16 * 5, 28 * 5});
-    CAssetManager::addSpriteContainer("playerPinkRunning", "playerPinkRunning", Area{19 * 5, 25 * 5});
-    CAssetManager::addSpriteContainer("player", "player");
-    CAssetManager::addSpriteContainer("bush", "bush");
-    CAssetManager::addSpriteContainer("tree", "tree");
-    CAssetManager::addSprite("enemyJumping", "MAIN2", Box{212, 22, 52, 182});
-    CAssetManager::addSpriteContainer("enemyJumping", "enemyJumping");
-    CAssetManager::addSpriteContainer("yrl", "yrl");
 }
 
 void CGame::_initRelativePaths() {
@@ -315,7 +291,7 @@ void CGame::_onEvent(sf::Event* event) {
                     instance.player->toggleNoclip();
                     break;
                 case keyMap::LOAD_ASSETS:
-                    _initAssets();
+                    NFile::loadMap("resources/map/testMap1.map", &instance);
                     break;
                 case keyMap::TOGGLE_HIDDEN:
                     instance.player->toggleProperty(EntityProperty::HIDDEN);
@@ -392,7 +368,7 @@ void CGame::_onEvent(sf::Event* event) {
             
         case sf::Event::MouseButtonPressed:
             auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera));
-            if(tempTarget != nullptr) {
+            if(tempTarget != nullptr && instance.seeker != nullptr) {
                 instance.seeker->setTarget(tempTarget);
                 instance.seeker->say("Target confirmed: " + instance.entityManager.getNameOfEntity(tempTarget), "TESTFONT", ChatBubbleType::SAY);
             }

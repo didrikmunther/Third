@@ -1,0 +1,51 @@
+{
+	"name":"testMap1",
+	"version":"0.1",
+	"author":"Malaxiz Wayne",
+
+	"fonts": [
+		{"name":"TESTFONT", "path":"resources/ttf/font.ttf"}
+	],
+
+	"shaders": [
+		{"name":"SHADER1", "path":"resources/shader/light.frag", "shaderType":1}
+	],
+
+	"spriteSheets": [
+		{"name":"MAIN", 				"path":"resources/gfx/gfx.png"},
+		{"name":"YRLSPRITESHEET", 		"path":"resources/gfx/yrl.png"},
+		{"name":"MAIN2", 				"path":"resources/gfx/gfx2.png"},
+		{"name":"PlayerSpriteSheet", 	"path":"resources/gfx/playerSpritesheet.png"},
+		{"name":"BG", 					"path":"resources/gfx/bg.png"}
+	],
+
+	"sprites": [
+		{"name":"bush", 				"spriteSheetKey":"MAIN", 				"offsets":[160, 91, 30, 28]},
+		{"name":"tree", 				"spriteSheetKey":"MAIN", 				"offsets":[7, 64, 23, 59]},
+		{"name":"playerPink", 			"spriteSheetKey":"PlayerSpriteSheet", 	"offsets":[0, 0, 16, 28]},
+		{"name":"playerPinkRunning", 	"spriteSheetKey":"PlayerSpriteSheet", 	"offsets":[32, 0, 19, 25]},
+		{"name":"yrl", 					"spriteSheetKey":"YRLSPRITESHEET", 		"offsets":[0, 0, 32, 32]},
+		{"name":"player", 				"spriteSheetKey":"MAIN2", 				"offsets":[144, 396, 60, 164]},
+		{"name":"background", 			"spriteSheetKey":"BG", 					"offsets":[0,0,128,64]},
+		{"name":"enemyJumping", 		"spriteSheetKey":"MAIN2", 				"offsets":[212, 22, 52, 182]}
+	],
+
+	"containers": [
+		{"name":"bush", 				"spriteKey":"bush"},
+		{"name":"tree", 				"spriteKey":"tree"},
+		{"name":"playerPink", 			"spriteKey":"playerPink",				"area":[80, 140]},
+		{"name":"playerPinkRunning", 	"spriteKey":"playerPinkRunning",		"area":[95, 125]},
+		{"name":"player", 				"spriteKey":"player"},
+		{"name":"enemyJumping", 		"spriteKey":"enemyJumping"},
+		{"name":"yrl", 					"spriteKey":"yrl"}
+	],
+
+	"entities": [
+		{"name":"m:player", "type":6,				"rect":[30, 30, 80, 140], 				"spriteContainerKey":"playerPink",		"spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
+		{"name":"m:yrl", "type":7,				"rect":[150, 150, 60, 164], 				"spriteContainerKey":"player", "target":"m:player",		"spriteStateTypes":{"1":"enemyJumping", "2":"enemyJumping"}, "spriteFollowsCollisionBox":false},
+		{"name":"l:tree",				"rect":[276, -1000, 92, 236], 			"spriteContainerKey":"tree", 			"collisionLayers":4},
+		{"name":"n:bush",				"rect":[200, -1000, 120, 108], 			"spriteContainerKey":"bush", 			"collisionLayers":8},
+		{								"rect":[-15, 465, 5000, 30], 			"colors":[255, 0, 0, 0],				"collisionLayers":-129},
+		{								"rect":[-15, -20, 30, 500], 			"colors":[255, 0, 0, 0],				"collisionLayers":15}
+	]
+}

@@ -38,13 +38,20 @@ CEntity* CEntityManager::addEntity(Box rect, std::string spriteKey, std::string 
     }
 }
 
-void CEntityManager::addEntity(CEntity* entity, std::string name /* = "" */) {
+std::string CEntityManager::addEntity(CEntity* entity, std::string name /* = "" */) {
     if(name == "") {
         name = "5:" + std::to_string(++entityID);
         _EntityVector[name] = entity;
-    } else
+    } else if(_EntityVector.find(name) == _EntityVector.end())
         _EntityVector[name] = entity;
+    else {  // Just overwrite the entity
+        auto i = _EntityVector.find(name);
+        delete i->second;
+        _EntityVector[name] = entity;
+    }
+    
     entity->say(name, "TESTFONT", 0);
+    return name;
 }
 
 CEntity* CEntityManager::getEntity(std::string name) {
@@ -114,6 +121,100 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
         i->onRender(window, camera);
 }
 
+// Temp
+
+void CEntityManager::splitEntityToParticles(CEntity* target) {
+    auto offset = target->getSpriteContainer()->getSprite()->getOffset();
+    CSprite* tempSprite1 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
+                                       Box{
+                                           offset->x,
+                                           offset->y,
+                                           offset->w / 2,
+                                           offset->h / 2});
+    CSprite* tempSprite2 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
+                                       Box{
+                                           offset->x + offset->w / 2,
+                                           offset->y,
+                                           offset->w / 2,
+                                           offset->h / 2});
+    CSprite* tempSprite3 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
+                                       Box{
+                                           offset->x,
+                                           offset->y + offset->h / 2,
+                                           offset->w / 2,
+                                           offset->h / 2});
+    CSprite* tempSprite4 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
+                                       Box{
+                                           offset->x + offset->w / 2,
+                                           offset->y + offset->h / 2,
+                                           offset->w / 2,
+                                           offset->h / 2});
+    std::string sprite1 = CAssetManager::addSprite(tempSprite1);
+    std::string sprite2 = CAssetManager::addSprite(tempSprite2);
+    std::string sprite3 = CAssetManager::addSprite(tempSprite3);
+    std::string sprite4 = CAssetManager::addSprite(tempSprite4);
+    
+    CSpriteContainer* tempSpriteContainer1 = new CSpriteContainer(sprite1);
+    CSpriteContainer* tempSpriteContainer2 = new CSpriteContainer(sprite2);
+    CSpriteContainer* tempSpriteContainer3 = new CSpriteContainer(sprite3);
+    CSpriteContainer* tempSpriteContainer4 = new CSpriteContainer(sprite4);
+    
+    std::string spriteContainer1 = CAssetManager::addSpriteContainer(tempSpriteContainer1);
+    std::string spriteContainer2 = CAssetManager::addSpriteContainer(tempSpriteContainer2);
+    std::string spriteContainer3 = CAssetManager::addSpriteContainer(tempSpriteContainer3);
+    std::string spriteContainer4 = CAssetManager::addSpriteContainer(tempSpriteContainer4);
+    
+    int explosionForce = 10;
+    int tempForRand = 5;
+    int livingTime = 2;
+    
+    CParticle* tempParticle1 = new CParticle(Box{
+        target->body.getX(),
+        target->body.getY(),
+        target->body.getW() / 2,
+        target->body.getH() / 2},
+                                             spriteContainer1,
+                                             livingTime + rand() % 3 - 1);
+    tempParticle1->body.velX = rand() % explosionForce - tempForRand;
+    tempParticle1->body.velY = rand() % explosionForce - tempForRand;
+    if(target->hasProperty(EntityProperty::FLIP)) tempParticle1->addProperty(EntityProperty::FLIP);
+    CParticle* tempParticle2 = new CParticle(Box{
+        target->body.getX() + target->body.getW() / 2,
+        target->body.getY(),
+        target->body.getW() / 2,
+        target->body.getH() / 2},
+                                             spriteContainer2,
+                                             livingTime + rand() % 3 - 1);
+    tempParticle2->body.velX = rand() % explosionForce - tempForRand;
+    tempParticle2->body.velY = rand() % explosionForce - tempForRand;
+    if(target->hasProperty(EntityProperty::FLIP)) tempParticle2->addProperty(EntityProperty::FLIP);
+    CParticle* tempParticle3 = new CParticle(Box{
+        target->body.getX(),
+        target->body.getY() + target->body.getH() / 2,
+        target->body.getW() / 2,
+        target->body.getH() / 2},
+                                             spriteContainer3,
+                                             livingTime + rand() % 3 - 1);
+    tempParticle3->body.velX = rand() % explosionForce - tempForRand;
+    tempParticle3->body.velY = rand() % explosionForce - tempForRand;
+    if(target->hasProperty(EntityProperty::FLIP)) tempParticle3->addProperty(EntityProperty::FLIP);
+    CParticle* tempParticle4 = new CParticle(Box{
+        target->body.getX() + target->body.getW() / 2,
+        target->body.getY() + target->body.getH() / 2,
+        target->body.getW() / 2,
+        target->body.getH() / 2},
+                                             spriteContainer4,
+                                             livingTime + rand() % 3);
+    tempParticle4->body.velX = rand() % explosionForce - tempForRand;
+    tempParticle4->body.velY = rand() % explosionForce - tempForRand;
+    if(target->hasProperty(EntityProperty::FLIP)) tempParticle4->addProperty(EntityProperty::FLIP);
+    
+    addParticle(tempParticle1);
+    addParticle(tempParticle2);
+    addParticle(tempParticle3);
+    addParticle(tempParticle4);
+}
+
 void CEntityManager::onLoop() {
     {
         auto i = _EntityVector.begin();
@@ -122,98 +223,8 @@ void CEntityManager::onLoop() {
             target->onLoop(&_EntityVector);
             
             if(target->isDead() && target->hasSprite()) {
-                auto offset = target->getSpriteContainer()->getSprite()->getOffset();
-                CSprite* tempSprite1 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
-                                                    Box{
-                                                       offset->x,
-                                                       offset->y,
-                                                       offset->w / 2,
-                                                       offset->h / 2});
-                CSprite* tempSprite2 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
-                                                   Box{
-                                                       offset->x + offset->w / 2,
-                                                       offset->y,
-                                                       offset->w / 2,
-                                                       offset->h / 2});
-                CSprite* tempSprite3 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
-                                                   Box{
-                                                       offset->x,
-                                                       offset->y + offset->h / 2,
-                                                       offset->w / 2,
-                                                       offset->h / 2});
-                CSprite* tempSprite4 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
-                                                   Box{
-                                                       offset->x + offset->w / 2,
-                                                       offset->y + offset->h / 2,
-                                                       offset->w / 2,
-                                                       offset->h / 2});
-                std::string sprite1 = CAssetManager::addSprite(tempSprite1);
-                std::string sprite2 = CAssetManager::addSprite(tempSprite2);
-                std::string sprite3 = CAssetManager::addSprite(tempSprite3);
-                std::string sprite4 = CAssetManager::addSprite(tempSprite4);
-                
-                CSpriteContainer* tempSpriteContainer1 = new CSpriteContainer(sprite1);
-                CSpriteContainer* tempSpriteContainer2 = new CSpriteContainer(sprite2);
-                CSpriteContainer* tempSpriteContainer3 = new CSpriteContainer(sprite3);
-                CSpriteContainer* tempSpriteContainer4 = new CSpriteContainer(sprite4);
-                
-                std::string spriteContainer1 = CAssetManager::addSpriteContainer(tempSpriteContainer1);
-                std::string spriteContainer2 = CAssetManager::addSpriteContainer(tempSpriteContainer2);
-                std::string spriteContainer3 = CAssetManager::addSpriteContainer(tempSpriteContainer3);
-                std::string spriteContainer4 = CAssetManager::addSpriteContainer(tempSpriteContainer4);
-                
-                int explosionForce = 10;
-                int tempForRand = 5;
-                int livingTime = 2;
-                
-                CParticle* tempParticle1 = new CParticle(Box{
-                                                            target->body.getX(),
-                                                            target->body.getY(),
-                                                            target->body.getW() / 2,
-                                                            target->body.getH() / 2},
-                                                         spriteContainer1,
-                                                         livingTime + rand() % 3 - 1);
-                tempParticle1->body.velX = rand() % explosionForce - tempForRand;
-                tempParticle1->body.velY = rand() % explosionForce - tempForRand;
-                if(target->hasProperty(EntityProperty::FLIP)) tempParticle1->addProperty(EntityProperty::FLIP);
-                CParticle* tempParticle2 = new CParticle(Box{
-                                                            target->body.getX() + target->body.getW() / 2,
-                                                            target->body.getY(),
-                                                            target->body.getW() / 2,
-                                                            target->body.getH() / 2},
-                                                         spriteContainer2,
-                                                         livingTime + rand() % 3 - 1);
-                tempParticle2->body.velX = rand() % explosionForce - tempForRand;
-                tempParticle2->body.velY = rand() % explosionForce - tempForRand;
-                if(target->hasProperty(EntityProperty::FLIP)) tempParticle2->addProperty(EntityProperty::FLIP);
-                CParticle* tempParticle3 = new CParticle(Box{
-                                                            target->body.getX(),
-                                                            target->body.getY() + target->body.getH() / 2,
-                                                            target->body.getW() / 2,
-                                                            target->body.getH() / 2},
-                                                         spriteContainer3,
-                                                         livingTime + rand() % 3 - 1);
-                tempParticle3->body.velX = rand() % explosionForce - tempForRand;
-                tempParticle3->body.velY = rand() % explosionForce - tempForRand;
-                if(target->hasProperty(EntityProperty::FLIP)) tempParticle3->addProperty(EntityProperty::FLIP);
-                CParticle* tempParticle4 = new CParticle(Box{
-                                                            target->body.getX() + target->body.getW() / 2,
-                                                            target->body.getY() + target->body.getH() / 2,
-                                                            target->body.getW() / 2,
-                                                            target->body.getH() / 2},
-                                                         spriteContainer4,
-                                                         livingTime + rand() % 3);
-                tempParticle4->body.velX = rand() % explosionForce - tempForRand;
-                tempParticle4->body.velY = rand() % explosionForce - tempForRand;
-                if(target->hasProperty(EntityProperty::FLIP)) tempParticle4->addProperty(EntityProperty::FLIP);
-                
-                addParticle(tempParticle1);
-                addParticle(tempParticle2);
-                addParticle(tempParticle3);
-                addParticle(tempParticle4);
-                
+                splitEntityToParticles(target);
                 _DeadEntitiesVector[(*i).first] = (*i).second;
-                //target->toRemove = true;
                 _EntityVector.erase(i++);
             }
             
@@ -264,6 +275,8 @@ void CEntityManager::onLoop() {
 }
 
 void CEntityManager::onCleanup() {
+    
+    entityID = 0;
     
     entityCleanup();
     particleEmitterCleanup();

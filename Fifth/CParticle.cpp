@@ -29,9 +29,6 @@ void CParticle::_doLogic() {
     
     if(_clock.getElapsedTime().asMilliseconds() - _creationTime > _livingTime * 1000)
         toRemove = true;
-    
-    if(body.getY() > DESPAWN_HEIGHT)
-        toRemove = true;
 }
 
 void CParticle::_collisionLogic() {
