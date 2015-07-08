@@ -24,7 +24,7 @@ void CMovable::_initMovementValues() {
     jumpPower = 10.0f;
     accelerationX = 1.5f;
     accelerationY = 100.0f;
-    stoppingAccelerationX = accelerationX / 2;
+    stoppingAccelerationX = accelerationX;
     sneakSpeed = (float)maxSpeed / 2.0f;
     isSneaking = false;
     hasWalkedX = false;

@@ -14,6 +14,8 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 
+#include "NFile.h"
+
 CServer::CServer() :
     _isRunning(false), _inputThread(&CServer::_handleInput, this),
     _ns(1000.0f / (float)60), _delta(0), _frames(0), _updates(0),
@@ -22,7 +24,7 @@ CServer::CServer() :
 
 int CServer::onExecute() {
     
-    std::cout << "Starting server...\n";
+    NFile::log(LogType::ALERT, "Starting server...");
     
     if(_onInit() == -1)
         return -1;
@@ -51,7 +53,7 @@ int CServer::onExecute() {
         
     }
     
-    std::cout << "Shutting server down.\n";
+    NFile::log(LogType::ALERT, "Shutting server down.");
     
     return _onCleanup();
         
@@ -81,7 +83,7 @@ int CServer::_onInit() {
     
     _isRunning = true;
     
-    std::cout << "Server started!\n";
+    NFile::log(LogType::SUCCESS, "Server started!");
     return 0;
 }
 

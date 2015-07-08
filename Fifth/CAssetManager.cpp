@@ -24,10 +24,10 @@ CAssetManager::CAssetManager() { }
 
 CSprite* CAssetManager::addSprite(std::string name, std::string spriteSheetKey, Box source) {
     if(_SpriteVector.find(name) != _SpriteVector.end()) {
-        std::cout << "!: Couldn't add sprite: \"" << name << "\", because it already exists.\n";
+        NFile::log(LogType::WARNING, "Couldn't add sprite: \"", name, "\", because it already exists.");
         return _SpriteVector[name];
     } else if(_SpriteSheetVector.find(spriteSheetKey) == _SpriteSheetVector.end()) {
-        std::cout << "!: Couldn't add sprite: \"" << name << "\", because the spritesheet \"" << spriteSheetKey << "\" didn't exist.\n";
+        NFile::log(LogType::WARNING, "Couldn't add sprite: \"", name, "\", because the spritesheet \"", spriteSheetKey, "\" didn't exist.");
         return nullptr;
     } else {
         _SpriteVector[name] = new CSprite(_SpriteSheetVector[spriteSheetKey], source);
@@ -39,7 +39,7 @@ std::string CAssetManager::addSprite(CSprite* sprite, std::string name /* = "" *
     if(name == "")
         name = "reserved:" + std::to_string(_assetId++);
     if(_SpriteVector.find(name) != _SpriteVector.end()) {
-        std::cout << "!: Couldn't add sprite: \"" << name << "\", because it already exists.\n";
+        NFile::log(LogType::WARNING, "Couldn't add sprite: \"", name, "\", because it already exists.");
         return name;
     } else {
         _SpriteVector[name] = sprite;
@@ -49,10 +49,10 @@ std::string CAssetManager::addSprite(CSprite* sprite, std::string name /* = "" *
 
 CSpriteContainer* CAssetManager::addSpriteContainer(std::string name, std::string spriteKey, Area area /* = {-1, -1} */) {
     if(_SpriteContainerVector.find(name) != _SpriteContainerVector.end()) {
-        std::cout << "!: Couldn't add sprite container \"" << name << "\", becuase it already exists.\n";
+        NFile::log(LogType::WARNING, "Couldn't add sprite container \"", name, "\", becuase it already exists.");
         return _SpriteContainerVector[name];
     } else if(_SpriteVector.find(spriteKey) == _SpriteVector.end()) {
-        std::cout << "!: Couldn't add sprite container \"" << name << "\", becuase the sprite \"" << spriteKey << "\" didn't exist.\n";
+        NFile::log(LogType::WARNING, "Couldn't add sprite container \"", name, "\", becuase the sprite \"", spriteKey, "\" didn't exist.");
         return nullptr;
     } else {
         if(area.w > 0 || area.h > 0)
@@ -68,7 +68,7 @@ std::string CAssetManager::addSpriteContainer(CSpriteContainer* spriteContainer,
     if(name == "")
         name = "reserved:" + std::to_string(_assetId++);
     if(_SpriteContainerVector.find(name) != _SpriteContainerVector.end()) {
-        std::cout << "!: Couldn't add sprite container: \"" << name << "\", because it already exists.\n";
+        NFile::log(LogType::WARNING, "Couldn't add sprite container: \"", name, "\", because it already exists.");
         return name;
     } else {
         _SpriteContainerVector[name] = spriteContainer;
@@ -79,15 +79,15 @@ std::string CAssetManager::addSpriteContainer(CSpriteContainer* spriteContainer,
 CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, std::string fileName) {
     //fileName = resourcePath() + fileName;
     if(_SpriteSheetVector.find(name) != _SpriteSheetVector.end()) {
-        std::cout << "!: Couldn't add spritesheet: \"" << name << "\", because it already exists.\n";
+        NFile::log(LogType::WARNING, "Couldn't add spritesheet: \"", name, "\", because it already exists.");
         return _SpriteSheetVector[name];
     } else {
         CSpriteSheet* temp = new CSpriteSheet();
         if(!temp->openFile(fileName)) {
-            std::cout << "!: Couldn't add spritesheet: \"" << name << "\", could not open file \"" << fileName << "\".\n";
+            NFile::log(LogType::WARNING, "Couldn't add spritesheet: \"", name, "\", could not open file \"", fileName, "\".");
             return nullptr;
         } else {
-            std::cout << "Loaded asset: \"" << fileName << "\" as \"" << name << "\"\n";
+            NFile::log(LogType::SUCCESS, "Loaded asset: \"", fileName, "\" as \"", name, "\"");
             _SpriteSheetVector[name] = temp;
             return _SpriteSheetVector[name];
         }
@@ -97,15 +97,15 @@ CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, std::string fileNa
 sf::Font* CAssetManager::addFont(std::string name, std::string fileName) {
     //fileName = resourcePath() + fileName;
     if(_FontVector.find(name) != _FontVector.end()) {
-        std::cout << "!: Couldn't add font: \"" << name << "\", because it already exists.\n";
+        NFile::log(LogType::WARNING, "Couldn't add font: \"", name, "\", because it already exists.");
         return &_FontVector[name];
     } else {
         sf::Font temp;
         if(!temp.loadFromFile(fileName)) {
-            std::cout << "!: Couldn't add font: \"" << name << "\", could not open file \"" << fileName << "\".\n";
+            NFile::log(LogType::WARNING, "Couldn't add font: \"", name, "\", could not open file \"", fileName, "\".");
             return nullptr;
         } else {
-            std::cout << "Loaded font: \"" << fileName << "\" as \"" << name << "\"\n";
+            NFile::log(LogType::SUCCESS, "Loaded font: \"", fileName, "\" as \"", name, "\"");
             _FontVector[name] = temp;
             return &_FontVector[name];
         }
@@ -114,15 +114,15 @@ sf::Font* CAssetManager::addFont(std::string name, std::string fileName) {
 
 sf::Shader* CAssetManager::addShader(std::string name, std::string fileName, sf::Shader::Type type) {
     if(_ShaderVector.find(name) != _ShaderVector.end()) {
-        std::cout << "!: Couldn't add shader: \"" << name << "\", because it already exists.\n";
+        NFile::log(LogType::WARNING, "Couldn't add shader: \"", name, "\", because it already exists.");
         return _ShaderVector[name];
     } else {
         sf::Shader* temp = new sf::Shader;
         if(!temp->loadFromFile(fileName.c_str(), type)) {
-            std::cout << "!: Couldn't add shader: \"" << name << "\", could not open file \"" << fileName << "\".\n";
+            NFile::log(LogType::WARNING, "Couldn't add shader: \"", name, "\", could not open file \"", fileName, "\".");
             return nullptr;
         } else {
-            std::cout << "Loaded shader: \"" << fileName << "\" as \"" << name << "\"\n";
+            NFile::log(LogType::SUCCESS, "Loaded shader: \"", fileName, "\" as \"", name, "\"");
             _ShaderVector[name] = temp;
             return _ShaderVector[name];
         }
@@ -178,6 +178,9 @@ void CAssetManager::removeSpriteContainer(std::string key) {
 }
 
 void CAssetManager::onCleanup() {
+    
+    NFile::log(LogType::ALERT, "Unloading assets!");
+    
     {
         auto i = _SpriteVector.begin();
         while(i != _SpriteVector.end()) {
@@ -199,40 +202,44 @@ void CAssetManager::onCleanup() {
     }
     
     {
-        std::cout << "Unloaded asset: ";
+        std::string toWrite = "";
         auto i = _SpriteSheetVector.begin();
         while(i != _SpriteSheetVector.end()) {
             i->second->onCleanup();
             delete i->second;
             i->second = nullptr;
-            std::cout << " \"" << i->first << "\",";
+            toWrite += " \"" + i->first + "\",";
             _SpriteSheetVector.erase(i++->first);
         }
         _SpriteSheetVector.clear();
-        std::cout << "\n";
+        
+        if(toWrite != "")
+            NFile::log(LogType::SUCCESS, "Unloaded asset: ", toWrite);
     }
     
     {
-        std::cout << "Unloaded font: ";
+        std::string toWrite = "";
         auto i = _FontVector.begin();
         while(i != _FontVector.end()) {
-            std::cout << "\"" << i->first << "\",";
+            toWrite += " \"" + i->first + "\",";
             _FontVector.erase(i++->first);
         }
         _FontVector.clear();
-        std::cout << "\n";
+        if(toWrite != "")
+            NFile::log(LogType::SUCCESS, "Unloaded asset: ", toWrite);
     }
     
     {
-        std::cout << "Unloaded shader: ";
+        std::string toWrite = "";
         auto i = _ShaderVector.begin();
         while(i != _ShaderVector.end()) {
-            std::cout << "\"" << i->first << "\",";
+            toWrite += " \"" + i->first + "\",";
             delete i->second;
             _ShaderVector.erase(i++->first);
         }
         _ShaderVector.clear();
-        std::cout << "\n";
+        if(toWrite != "")
+            NFile::log(LogType::SUCCESS, "Unloaded asset: ", toWrite);
     }
     
 }

@@ -81,8 +81,8 @@ public:
                 break;
         }
         
-        _showMessage(alert, std::forward<T>(t)...);
-        writeToFile(LOG_FILE, alert, std::forward<T>(t)...);
+        _showMessage(alert, std::forward<T>(t)..., "\n");
+        writeToFile(LOG_FILE, alert, std::forward<T>(t)..., "\n");
         
     }
     

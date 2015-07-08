@@ -10,6 +10,7 @@
 #include "CEntityManager.h"
 #include "CCamera.h"
 #include "CSpriteContainer.h"
+#include "NFile.h"
 
 CEntityManager::CEntityManager() : entityID(0), renderFlags(0) {
 }
@@ -56,7 +57,7 @@ std::string CEntityManager::addEntity(CEntity* entity, std::string name /* = "" 
 
 CEntity* CEntityManager::getEntity(std::string name) {
     if(_EntityVector.find(name) == _EntityVector.end()) {
-        std::cout << "Couldn't get entity: " << name << ", because it doesn't exist.";
+        NFile::log(LogType::WARNING, "Couldn't get entity: ", name, ", because it doesn't exist.");
         return nullptr;
     } else {
         return _EntityVector[name];
@@ -272,6 +273,8 @@ void CEntityManager::onLoop() {
 }
 
 void CEntityManager::onCleanup() {
+    
+    NFile::log(LogType::ALERT, "Unloading entities!");
     
     entityID = 0;
     

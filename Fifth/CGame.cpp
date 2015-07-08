@@ -38,13 +38,13 @@ int CGame::onExecute() {
     
     switch(_onInit()){
         case -1:
-            std::cout << "Initializing failed!\n";
+            NFile::log(LogType::ERROR, "Initializing failed!");
             _running = false;
         case 0:
-            std::cout << "Initializing succesful!\n";
+            NFile::log(LogType::SUCCESS, "Initializing succesful!");
     }
     
-    std::cout << "Starting game...\n";
+    NFile::log(LogType::ALERT, "Starting game...");
     
     while(instance.window.getWindow()->isOpen()) {
         sf::Event event;
@@ -83,7 +83,7 @@ int CGame::onExecute() {
         }
     }
     
-    std::cout << "Ending game...\n";
+    NFile::log(LogType::ALERT, "Ending game...");
     
     return _onCleanup();
     
@@ -94,7 +94,7 @@ int CGame::_onInit() {
     _initRelativePaths();
     NFile::clearFile(LOG_FILE);     // Clear log file
     
-    std::cout << "Initializing game...\n";
+    NFile::log(LogType::ALERT, "Initializing game...");
     
     srand((sf::Uint16)time(nullptr));
     
@@ -150,7 +150,7 @@ void CGame::_initRelativePaths() {
         CFRelease(resourcesURL);
         
         chdir(path);
-        std::cout << "Current Path: " << path << std::endl;
+        NFile::log(LogType::ALERT, "Current Path: ", path);
     #endif
     // ----------------------------------------------------------------------------
 }
