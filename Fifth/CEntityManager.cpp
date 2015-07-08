@@ -12,7 +12,7 @@
 #include "CSpriteContainer.h"
 #include "NFile.h"
 
-CEntityManager::CEntityManager() : entityID(0), renderFlags(0) {
+CEntityManager::CEntityManager() : entityID(0), renderFlags(RenderFlags::CLEAR) {
 }
 
 CEntity* CEntityManager::addEntity(Box rect, sf::Color color, std::string name /* = "" */) {
@@ -51,7 +51,7 @@ std::string CEntityManager::addEntity(CEntity* entity, std::string name /* = "" 
         _EntityVector[name] = entity;
     }
     
-    entity->say(name, "TESTFONT", 0);
+    entity->say(name, "TESTFONT", ChatBubbleType::SAY);
     return name;
 }
 
@@ -95,22 +95,22 @@ void CEntityManager::addGuiText(CGuiText* guiText) {
     _GuiTextVector.push_back(guiText);
 }
 
-void CEntityManager::addRenderFlag(int renderFlag) {
-    renderFlags |= renderFlag;
+void CEntityManager::addRenderFlag(RenderFlags renderFlag) {
+    renderFlags |= (int)renderFlag;
 }
-void CEntityManager::removeRenderFlag(int renderFlag) {
+void CEntityManager::removeRenderFlag(RenderFlags renderFlag) {
     if(renderFlags & renderFlag) toggleRenderFlag(renderFlag);
 }
-void CEntityManager::toggleRenderFlag(int renderFlag) {
-    renderFlags ^= renderFlag;
+void CEntityManager::toggleRenderFlag(RenderFlags renderFlag) {
+    renderFlags ^= (int)renderFlag;
 }
 
 void CEntityManager::onRender(CWindow* window, CCamera* camera) {
     for (auto &i: _ParticleVector)
-        i->onRender(window, camera, renderFlags);
+        i->onRender(window, camera, (RenderFlags)renderFlags);
     
     for (auto &i: _EntityVector)
-        i.second->onRender(window, camera, renderFlags);
+        i.second->onRender(window, camera, (RenderFlags)renderFlags);
     
     for (auto &i: _EntityVector)
         i.second->renderAdditional(window, camera, renderFlags);

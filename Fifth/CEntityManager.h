@@ -55,9 +55,9 @@ public:
     int entityID;
     
     int renderFlags;
-    void addRenderFlag(int renderFlag);
-    void removeRenderFlag(int renderFlag);
-    void toggleRenderFlag(int renderFlag);
+    void addRenderFlag(RenderFlags renderFlag);
+    void removeRenderFlag(RenderFlags renderFlag);
+    void toggleRenderFlag(RenderFlags renderFlag);
     
 private:
     std::map<std::string, CEntity*> _EntityVector;

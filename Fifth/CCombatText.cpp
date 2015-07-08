@@ -28,11 +28,6 @@ void CCombatText::onLoop() {
     _y--;
 }
 
-void CCombatText::onRender(CWindow* window, CCamera* camera) {
-//    sf::Text tempText(_textObj->getText()->c_str(), *_textObj->getFont(), _textObj->getSize());
-//    int width = tempText.getLocalBounds().width;
-//    int height = tempText.getLocalBounds().height;
-//    NSurface::renderRect(_x - camera->offsetX(), _y - camera->offsetY(), width, height, *window->getRenderTexture(), 0, 0, 0);
-    
+void CCombatText::onRender(CWindow* window, CCamera* camera) {    
     _textObj->onRender(_x, _y, *window->getRenderTexture(), camera);
 }

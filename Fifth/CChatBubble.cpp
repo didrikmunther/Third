@@ -12,7 +12,7 @@
 #include "Define.h"
 #include <iostream>
 
-CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey, int type) :
+CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey, ChatBubbleType type) :
     _target(target), _type(type), CGuiText(0, 0, text, fontKey),
     _r(0), _g(0), _b(0), _rB(220), _gB(220), _bB(220) {
     

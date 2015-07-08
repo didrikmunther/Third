@@ -34,7 +34,7 @@ struct Area {
     int w, h;
 };
 
-enum CollisionLayers {
+enum CollisionLayers { // CEntity
     LAYER0      = 1 << 0,   // 1
     LAYER1      = 1 << 1,   // 2
     LAYER2      = 1 << 2,   // 4
@@ -45,7 +45,7 @@ enum CollisionLayers {
     LAYER7      = 1 << 7,   // 128
 };
 
-enum EntityTypes {
+enum EntityTypes { // CEntity
     Entity = 0,
     Particle,   // 1
     Movable,    // 2
@@ -54,6 +54,23 @@ enum EntityTypes {
     Npc,        // 5
     Player,     // 6
     Enemy       // 7
+};
+
+enum SpriteStateTypes { // CEntity
+    IDLE = 0,
+    ASCENDING,
+    DESCENDING,
+    WALKING,
+    SNEAKING,
+    RUNNING,
+    TOTAL_SPRITESTATETYPES
+};
+
+enum ChatBubbleType { // CChatBubble
+    SAY = 0,
+    YELL = 1,
+    WHISPER = 2,
+    INSTANT_TALK = 3
 };
 
 enum keyMap {
@@ -86,6 +103,7 @@ enum keyMap {
 };
 
 enum RenderFlags {
+    CLEAR = 0,
     COLLISION_BORDERS = 1 << 0
 };
 

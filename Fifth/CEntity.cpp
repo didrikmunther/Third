@@ -11,7 +11,6 @@
 #include <iostream>
 #include "CCamera.h"
 #include "Define.h"
-#include "CChatBubble.h"
 #include "CEntityManager.h"
 #include "CLiving.h"
 #include "CSpriteContainer.h"
@@ -81,7 +80,7 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
 
 }
 
-void CEntity::onRender(CWindow* window, CCamera* camera, int renderFlags) {
+void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     
     if(toRemove || isDead())
         return;
@@ -100,7 +99,7 @@ bool CEntity::isOnCollisionLayer(int collisionLayer) {
     return this->collisionLayer & collisionLayer;
 }
 
-void CEntity::say(std::string text, std::string fontKey, int type) {
+void CEntity::say(std::string text, std::string fontKey, ChatBubbleType type) {
     CChatBubble* temp = new CChatBubble(text, this, fontKey, type);
     _GuiTextVector.push_back(temp);
 }

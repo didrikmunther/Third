@@ -19,16 +19,7 @@
 #include "CRenderable.h"
 #include "CWindow.h"
 #include "CCollidable.h"
-
-enum SpriteStateTypes {
-    IDLE = 0,
-    ASCENDING,
-    DESCENDING,
-    WALKING,
-    SNEAKING,
-    RUNNING,
-    TOTAL_SPRITESTATETYPES
-};
+#include "CChatBubble.h"
 
 class CGuiText;
 class CCamera;
@@ -43,7 +34,7 @@ public:
     
     void initValues();
     void onLoop(std::map<std::string, CEntity*>* entities);
-    void onRender(CWindow* window, CCamera* camera, int renderFlags);
+    void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
     int collisionLayer;
     bool isOnCollisionLayer(int collisionLayer);
@@ -55,7 +46,7 @@ public:
     bool coordinateCollision(int x, int y, int w, int h, int x2, int y2, int w2, int h2);
     bool coordinateCollision(int x, int y, int w, int h);
     
-    void say(std::string text, std::string fontKey, int type);
+    void say(std::string text, std::string fontKey, ChatBubbleType type);
     void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
     
     bool collisionLeft, collisionRight;
