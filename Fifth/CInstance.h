@@ -28,8 +28,6 @@ public:
     CEntityManager entityManager;
     CPlayer* player;
     
-    CEnemy* seeker;
-    
     void closeInstance();
     
 };

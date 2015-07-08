@@ -68,8 +68,9 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
     if(isDead())
         return;
     
-    if(!hasProperty(EntityProperty::FLYING))
+    if(!hasProperty(EntityProperty::FLYING)) {
         body.velY += GRAVITY;
+    }
     
     _doLogic();
     

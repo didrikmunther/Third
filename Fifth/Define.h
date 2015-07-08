@@ -21,7 +21,9 @@ const int SCREEN_BPP            = 32;
 
 const int GAMEINTERVAL          = 60;
 const int DESPAWN_HEIGHT        = 10000;
-const float GRAVITY               = 0.5;
+const float GRAVITY             = 0.5;
+
+const char LOG_FILE[]           = "debug.log";
 
 struct Box {
     int x, y;

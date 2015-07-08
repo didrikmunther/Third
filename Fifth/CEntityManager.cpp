@@ -216,8 +216,6 @@ void CEntityManager::onLoop() {
     {
         auto i = _EntityVector.begin();
         while(i != _EntityVector.end()) {
-            std::cout << "entity: " << i->first << "\n";
-            
             auto target = (*i).second;
             target->onLoop(&_EntityVector);
             

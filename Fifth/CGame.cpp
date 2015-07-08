@@ -23,6 +23,7 @@
 #include "CEnemy.h"
 #include "CUtilityParticle.h"
 #include "CSpriteContainer.h"
+#include <fstream>
 
 CGame::CGame() :
 _intro("Physics"),
@@ -34,8 +35,6 @@ CGame::~CGame() {
 }
 
 int CGame::onExecute() {
-    
-    std::cout << "Initializing game...\n";
     
     switch(_onInit()){
         case -1:
@@ -78,7 +77,7 @@ int CGame::onExecute() {
             _title.str("");
             _title << _intro << " | " << _updates << " ups, " << _frames << " fps";
             //instance.window.setTitle(_title.str());
-            //instance.entityManager.getEntity("n:bush")->say(_title.str(), "TESTFONT", ChatBubbleType::SAY);
+            instance.entityManager.getEntity("n:bush")->say(_title.str(), "TESTFONT", ChatBubbleType::SAY);
             _updates = 0;
             _frames = 0;
         }
@@ -93,6 +92,9 @@ int CGame::onExecute() {
 int CGame::_onInit() {
     
     _initRelativePaths();
+    NFile::clearFile(LOG_FILE);     // Clear log file
+    
+    std::cout << "Initializing game...\n";
     
     srand((sf::Uint16)time(nullptr));
     
@@ -235,17 +237,12 @@ void CGame::_onEvent(sf::Event* event) {
         case sf::Event::KeyPressed:
             switch(event->key.code) {
                     
-                case sf::Keyboard::U:
-                    instance.seeker->toggleNoclip();
-                    break;
-                    
                 case sf::Keyboard::Y:
                     break;
                     
                 case sf::Keyboard::Q:
                     //CEntity* temp;
                     //temp->say("asdf", "TESTFONT", ChatBubbleType::SAY);     // Crash the game
-                    instance.seeker->heal(10);
                     break;
                     
                 case keyMap::EXIT:
@@ -253,8 +250,7 @@ void CGame::_onEvent(sf::Event* event) {
                     break;
                     
                 case keyMap::SNEAK:
-                    //instance.player->isSneaking = true;
-                    instance.seeker->dealDamage(5);
+                    instance.player->isSneaking = true;
                     break;
                     
                 case keyMap::BLOCK:
@@ -302,9 +298,9 @@ void CGame::_onEvent(sf::Event* event) {
                     break;
                 case keyMap::NEW_WINDOW:
                 {
-                    instance.window.newWindow(_intro, 600, 400);
+                    instance.window.newWindow(_intro, 1920, 1080);
                     instance.camera.onInit(&instance.window);
-                    CAssetManager::onCleanup();
+                    //CAssetManager::onCleanup();
                 }
                     break;
                     
@@ -378,11 +374,11 @@ void CGame::_onEvent(sf::Event* event) {
             }
             
             if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
-                auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera));
-                if(tempTarget != nullptr && instance.seeker != nullptr) {
-                    instance.seeker->setTarget(tempTarget);
-                    instance.seeker->say("Target confirmed: " + instance.entityManager.getNameOfEntity(tempTarget), "TESTFONT", ChatBubbleType::SAY);
-                }
+//                auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera));
+//                if(tempTarget != nullptr && instance.seeker != nullptr) {
+//                    instance.seeker->setTarget(tempTarget);
+//                    instance.seeker->say("Target confirmed: " + instance.entityManager.getNameOfEntity(tempTarget), "TESTFONT", ChatBubbleType::SAY);
+//                }
             }
             break;
     }

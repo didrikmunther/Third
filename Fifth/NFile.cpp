@@ -11,6 +11,7 @@
 #include <iostream>
 #include <fstream>
 #include "CAssetManager.h"
+#include <sstream>
 
 rapidjson::Document NFile::loadJsonFile(std::string fileName) {
     
@@ -37,7 +38,7 @@ rapidjson::Document NFile::loadJsonFile(std::string fileName) {
     
 }
 
-CEntity* NFile::createEntity(CInstance* instance, const rapidjson::Value& jsonEntity, EntityParameterHolder entityParameterHolder) {
+CEntity* NFile::_createEntity(CInstance* instance, const rapidjson::Value& jsonEntity, EntityParameterHolder entityParameterHolder) {
     
     int type;
     if(!jsonEntity.HasMember("type"))
@@ -177,11 +178,11 @@ void NFile::loadMap(std::string fileName, CInstance* instance) {
         if(jsonEntity.HasMember("spriteContainerKey")) {
             const rapidjson::Value& rect = jsonEntity["rect"];
             std::string spriteContainerKey = jsonEntity["spriteContainerKey"].GetString();
-            entity = createEntity(instance, jsonEntity, EntityParameterHolder{Box{rect[0].GetInt(), rect[1].GetInt(), rect[2].GetInt(), rect[3].GetInt()}, spriteContainerKey});
+            entity = _createEntity(instance, jsonEntity, EntityParameterHolder{Box{rect[0].GetInt(), rect[1].GetInt(), rect[2].GetInt(), rect[3].GetInt()}, spriteContainerKey});
         } else {
             const rapidjson::Value& rect = jsonEntity["rect"];
             const rapidjson::Value& colors = jsonEntity["colors"];
-            entity = createEntity(instance, jsonEntity, EntityParameterHolder{Box{rect[0].GetInt(), rect[1].GetInt(), rect[2].GetInt(), rect[3].GetInt()}, sf::Color{(sf::Uint8)colors[0].GetInt(), (sf::Uint8)colors[1].GetInt(), (sf::Uint8)colors[2].GetInt(), (sf::Uint8)colors[3].GetInt()}});
+            entity = _createEntity(instance, jsonEntity, EntityParameterHolder{Box{rect[0].GetInt(), rect[1].GetInt(), rect[2].GetInt(), rect[3].GetInt()}, sf::Color{(sf::Uint8)colors[0].GetInt(), (sf::Uint8)colors[1].GetInt(), (sf::Uint8)colors[2].GetInt(), (sf::Uint8)colors[3].GetInt()}});
         }
         
         std::string entityName;
@@ -210,22 +211,18 @@ void NFile::loadMap(std::string fileName, CInstance* instance) {
         
     }
     
-    if(instance->player == nullptr) {
-//        instance->player = new CPlayer(Box{0, 0, 10, 10}, sf::Color{255, 0, 255, 0}); // Isn't working, program crashes
-//        instance->entityManager.addEntity(instance->player, "m:player2");             // Make sure there is a player in the .map
-//        instance->camera.setTarget(instance->player);
+    if(instance->player == nullptr) {       // In case there is no player in the .map
+        instance->player = new CPlayer(Box{0, 0, 10, 10}, sf::Color{255, 0, 255, 0});
+        instance->entityManager.addEntity(instance->player, "m:player2");
+        instance->camera.setTarget(instance->player);
     }
     
-    std::cout << "Loaded map: \"" << d["name"].GetString() << "\" (\"" << fileName << "\")\n";
+    log(LogType::SUCCESS, "Loaded map: \"", d["name"].GetString(), "\" (\"", fileName.c_str(), "\")\n");
     
 }
 
-void NFile::error(std::string errorMsg) {
-    // Todo add this
+void NFile::clearFile(std::string fileName) {
+    std::cout << "here";
+    std::ofstream file(fileName);
+    file.close();
 }
-
-void NFile::warning(std::string warningMsg) {
-    // Todo add this
-}
-
-

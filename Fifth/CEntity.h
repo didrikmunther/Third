@@ -24,6 +24,9 @@ enum SpriteStateTypes {
     IDLE = 0,
     ASCENDING,
     DESCENDING,
+    WALKING,
+    SNEAKING,
+    RUNNING,
     TOTAL_SPRITESTATETYPES
 };
 

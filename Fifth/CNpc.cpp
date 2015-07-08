@@ -20,10 +20,6 @@ CLiving(rect, spriteKey) {
 
 void CNpc::_initMovementValues() {
     maxSpeed = 5.0f;
-    accelerationX = 1.5f;
-    accelerationY = 100.0f;
-    stoppingAccelerationX = accelerationX * 2;
-    sneakSpeed = (float)maxSpeed / 2.0f;
 }
 
 void CNpc::_doLogic() {

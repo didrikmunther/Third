@@ -16,12 +16,22 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 
+#include <fstream>
+#include <iostream>
+
 struct EntityParameterHolder {
     Box box;
     sf::Color color;
     std::string spriteContainerKey;
     EntityParameterHolder(Box box, sf::Color color) : box(box), color(color), spriteContainerKey("") {}
     EntityParameterHolder(Box box, std::string spriteContainerKey) : box(box), spriteContainerKey(spriteContainerKey) {}
+};
+
+enum LogType {
+    SUCCESS = 0,
+    ERROR,
+    WARNING,
+    ALERT
 };
 
 class NFile {
@@ -33,15 +43,78 @@ public:
     static void loadMap(std::string fileName, CInstance* instance);
     
     // Save functions
+    template<typename... T>
+    static void writeToFile(std::string fileName, T&&... t) {
+        std::ofstream file(fileName, std::ios::app);
+        _writeToFile(file, std::forward<T>(t)...);
+        file.close();
+    }
     
+    static void clearFile(std::string fileName);
     
     // Misc functions
-    static void success(std::string successMsg);
-    static void error(std::string errorMsg);       // Todo replace all couts with this
-    static void warning(std::string warningMsg);
+    
+    template<typename... T>
+    static void log(LogType type, T&&... t) {
+        
+        std::string alert = "";
+        
+        switch(type) {
+            case LogType::SUCCESS:
+                alert = "[SUCCESS] ";
+                break;
+                
+            case LogType::ERROR:
+                alert = "[ERROR] ";
+                break;
+                
+            case LogType::WARNING:
+                alert = "[WARN] ";
+                break;
+                
+            case LogType::ALERT:
+                alert = "[ALERT] ";
+                break;
+                
+            default:
+                alert = "[] ";
+                break;
+        }
+        
+        _showMessage(alert, std::forward<T>(t)...);
+        writeToFile(LOG_FILE, alert, std::forward<T>(t)...);
+        
+    }
     
 private:
-    static CEntity* createEntity(CInstance* instance, const rapidjson::Value& jsonEntity, EntityParameterHolder entityParameterHolder);
+    static CEntity* _createEntity(CInstance* instance, const rapidjson::Value& jsonEntity, EntityParameterHolder entityParameterHolder);
+    
+    /* 
+        Invalid operands error here means that
+        you've sent a non-printable object to
+        either of the logging functions
+    */
+    template<typename T>
+    static void _showMessage(T &&t) {
+        std::cout << t;
+    }
+    
+    template<typename Head, typename... Tail>
+    static void _showMessage(Head &&head, Tail&&... tail) {
+        std::cout << head;
+        _showMessage(std::forward<Tail>(tail)...);
+    }
+    
+    template<typename T>
+    static void _writeToFile(std::ofstream& file, T &&t) {
+        file << t;
+    }
+    
+    template<typename Head, typename... Tail>
+    static void _writeToFile(std::ofstream& file, Head &&head, Tail&&... tail) {
+        file << head;
+        _writeToFile(file, std::forward<Tail>(tail)...);
+    }
     
 };
 
