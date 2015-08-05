@@ -67,7 +67,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
 
 void CChatBubble::onLoop() {
     if(_clock.getElapsedTime().asMilliseconds() > _creationTime + _livingTime * 1000)
-        toRemove = true;
+        _toRemove = true;
 }
 
 void CChatBubble::onRender(CWindow* window, CCamera* camera) {

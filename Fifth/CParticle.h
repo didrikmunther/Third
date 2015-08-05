@@ -19,16 +19,19 @@ public:
     CParticle(Box rect, sf::Color color, int livingTime = 5);
     CParticle(Box rect, std::string spriteKey, int livingTime = 5);
     
+    virtual void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
+    
 protected:
     virtual void _doLogic();
-    virtual void _collisionLogic();
+    virtual bool _collisionLogic(CEntity* target, CollisionSides collisionSides);
     
     int _livingTime;
     
 private:
     
-    sf::Clock _clock;
+    void _init();
     
+    sf::Clock _clock;
     int _creationTime;
 };
 

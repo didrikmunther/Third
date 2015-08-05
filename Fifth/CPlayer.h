@@ -20,12 +20,14 @@ public:
     CPlayer(Box rect, sf::Color color);
     CPlayer(Box rect, std::string spriteKey);
     
+    virtual void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
+    
 protected:
     virtual void _doLogic();
-    virtual void _collisionLogic(CEntity* target);
+    virtual bool _collisionLogic(CEntity* target, CollisionSides collisionSides);
     
 private:
-    virtual void _initMovementValues();
+    void _init();
     
 };
 

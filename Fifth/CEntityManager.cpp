@@ -113,7 +113,10 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
         i.second->onRender(window, camera, (RenderFlags)renderFlags);
     
     for (auto &i: _EntityVector)
-        i.second->renderAdditional(window, camera, renderFlags);
+        i.second->renderAdditional(window, camera, (RenderFlags)renderFlags);
+    
+    for (auto &i: _DeadEntitiesVector)
+        i.second->renderAdditional(window, camera, (RenderFlags)renderFlags);
     
     for (auto &i: _GuiTextVector)
         i->onRender(window, camera);
@@ -227,9 +230,23 @@ void CEntityManager::onLoop() {
             }
             
             
-            if(target->toRemove) {
+            if(target->toRemove()) {
                 delete target;
                 _EntityVector.erase(i++);
+            } else
+                ++i;
+        }
+    }
+    
+    {
+        auto i = _DeadEntitiesVector.begin();
+        while(i != _DeadEntitiesVector.end()) {
+            
+            (*i).second->onLoop(&_EntityVector);
+            
+            if((*i).second->toRemove()) {
+                delete (*i).second;
+                _DeadEntitiesVector.erase(i++);
             } else
                 ++i;
         }
@@ -251,7 +268,7 @@ void CEntityManager::onLoop() {
         auto i = _ParticleVector.begin();
         while(i != _ParticleVector.end()) {
             (*i)->onLoop(&_EntityVector);
-            if((*i)->toRemove) {
+            if((*i)->toRemove()) {
                 delete *i;
                 _ParticleVector.erase(std::remove(_ParticleVector.begin(), _ParticleVector.end(), (*i)), _ParticleVector.end());
             } else
@@ -263,7 +280,7 @@ void CEntityManager::onLoop() {
         auto i = _GuiTextVector.begin();
         while(i != _GuiTextVector.end()) {
             (*i)->onLoop();
-            if((*i)->toRemove) {
+            if((*i)->toRemove()) {
                 delete *i;
                 _GuiTextVector.erase(std::remove(_GuiTextVector.begin(), _GuiTextVector.end(), (*i)), _GuiTextVector.end());
             } else

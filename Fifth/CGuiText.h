@@ -23,7 +23,7 @@ public:
     virtual void onLoop();                                          // Pure virtual
     virtual void onRender(CWindow* window, CCamera* camera); //
     
-    bool toRemove;
+    bool toRemove() { return _toRemove; }
     
 protected:
     std::string _fontKey;
@@ -33,6 +33,8 @@ protected:
     sf::Clock _clock;
     int _livingTime;         // Seconds
     int _creationTime;
+    
+    bool _toRemove;
 };
 
 #endif /* defined(__Third__CGuiText__) */

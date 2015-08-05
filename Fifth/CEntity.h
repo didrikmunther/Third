@@ -21,6 +21,13 @@
 #include "CCollidable.h"
 #include "CChatBubble.h"
 
+struct CollisionSides {
+    bool collisionTop,
+         collisionBottom,
+         collisionRight,
+         collisionLeft;
+};
+
 class CGuiText;
 class CCamera;
 class CEntityManager;
@@ -32,9 +39,12 @@ public:
     CEntity(Box rect, std::string spriteContainerKey);
     ~CEntity();
     
-    void initValues();
+    EntityTypes entityType;
+    
+    virtual void init();
     void onLoop(std::map<std::string, CEntity*>* entities);
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
+    virtual void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
     
     int collisionLayer;
     bool isOnCollisionLayer(int collisionLayer);
@@ -47,13 +57,9 @@ public:
     bool coordinateCollision(int x, int y, int w, int h);
     
     void say(std::string text, std::string fontKey, ChatBubbleType type);
-    void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
     
     bool collisionLeft, collisionRight;
     bool collisionTop, collisionBottom;
-    
-    sf::Color color;
-    bool toRemove;
     
     std::string spriteStateTypes[SpriteStateTypes::TOTAL_SPRITESTATETYPES];
     
@@ -62,18 +68,21 @@ public:
     std::string getSpriteContainerKey();
     std::string spriteContainerKey;
     bool hasSprite();
+    sf::Color color;
     
-    bool isDead();
+    bool isDead() { return _isDead; }
+    bool toRemove() { return _toRemove; }
     
 protected:
     std::vector<CGuiText*> _GuiTextVector;
     void _cleanUpTextVector();
     
-    // Remember to allways call your parents _doLogic, and _collisionLogic function.
+    // Remember to allways call your parents _doLogic, renderAdditional and _collisionLogic function.
     virtual void _doLogic();
-    virtual void _collisionLogic(CEntity* target);
+    virtual bool _collisionLogic(CEntity* target, CollisionSides collisionSides);
     
     bool _isDead;
+    bool _toRemove;
     
 private:
     bool _collision(int x, int y, std::map<std::string, CEntity*>* entities);

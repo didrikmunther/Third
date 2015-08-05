@@ -81,7 +81,7 @@ public:
                 break;
         }
         
-        _showMessage(alert, std::forward<T>(t)..., "\n");
+        _print(alert, std::forward<T>(t)..., "\n");
         writeToFile(LOG_FILE, alert, std::forward<T>(t)..., "\n");
         
     }
@@ -95,14 +95,14 @@ private:
         either of the logging functions
     */
     template<typename T>
-    static void _showMessage(T &&t) {
+    static void _print(T &&t) {
         std::cout << t;
     }
     
     template<typename Head, typename... Tail>
-    static void _showMessage(Head &&head, Tail&&... tail) {
+    static void _print(Head &&head, Tail&&... tail) {
         std::cout << head;
-        _showMessage(std::forward<Tail>(tail)...);
+        _print(std::forward<Tail>(tail)...);
     }
     
     template<typename T>

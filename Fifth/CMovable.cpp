@@ -11,15 +11,17 @@
 
 CMovable::CMovable(Box rect, sf::Color color) :
     CEntity(rect, color) {
-    _initMovementValues();
+    _init();
 }
 
 CMovable::CMovable(Box rect, std::string spriteKey) :
     CEntity(rect, spriteKey) {
-    _initMovementValues();
+    _init();
 }
 
-void CMovable::_initMovementValues() {
+void CMovable::_init() {
+    entityType = EntityTypes::Movable;
+    
     maxSpeed = 10.0f;                   // Default values
     jumpPower = 10.0f;
     accelerationX = 1.5f;
@@ -31,8 +33,14 @@ void CMovable::_initMovementValues() {
     hasWalkedY = false;
 }
 
+void CMovable::renderAdditional(CWindow* window, CCamera* camera, int renderFlags) {
+    CEntity::renderAdditional(window, camera, renderFlags);
+    
+}
+
 void CMovable::goRight() {
     body.velX += accelerationX;
+    
     if(isSneaking) {
         if(body.velX > sneakSpeed)
             body.velX = sneakSpeed;
@@ -46,6 +54,7 @@ void CMovable::goRight() {
 
 void CMovable::goLeft() {
     body.velX -= accelerationX;
+    
     if(isSneaking) {
         if(body.velX < -sneakSpeed)
             body.velX = -sneakSpeed;
@@ -53,12 +62,14 @@ void CMovable::goLeft() {
         if(body.velX < -maxSpeed)
             body.velX = -maxSpeed;
     }
+    
     hasWalkedX = true;
 }
 
 void CMovable::goUp() {
     if(hasProperty(EntityProperty::FLYING)) {
         body.velY -= accelerationY;
+        
         if(isSneaking) {
             if(body.velY < -sneakSpeed)
                 body.velY = -sneakSpeed;
@@ -143,8 +154,9 @@ void CMovable::_doLogic() {
     hasWalkedY = false;
 }
 
-void CMovable::_collisionLogic(CEntity* target) {
-    CEntity::_collisionLogic(target);
+bool CMovable::_collisionLogic(CEntity* target, CollisionSides collisionSides) {
+    bool parentCollision = CEntity::_collisionLogic(target, collisionSides);
+    bool collision = true;
     
-    
+    return parentCollision && collision;
 }

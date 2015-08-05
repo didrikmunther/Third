@@ -56,7 +56,7 @@ int CGame::onExecute() {
         _delta += (now - _lastTime) / _ns;
         _lastTime = now;
         
-        while(_delta >= 1) {
+        while(_delta >= 1) {    // Todo implement variable time step instead of this laggy thing
             if(_delta > 20) {       // To make sure it doesn't freeze
                 instance.entityManager.particleCleanup();
             }

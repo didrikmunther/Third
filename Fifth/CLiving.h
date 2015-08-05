@@ -39,6 +39,8 @@ public:
     CLiving(Box rect, sf::Color color);
     CLiving(Box rect, std::string spriteKey);
     
+    virtual void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
+    
     int dealDamage(int amount, UtilityPosition position = {0, 0});
     int heal(int amount, UtilityPosition position = {0, 0});
 
@@ -46,15 +48,15 @@ public:
     
 protected:
     virtual void _doLogic();
-    virtual void _collisionLogic(CEntity* target);
-    
-private:
-    
-    void _initValues();
+    virtual bool _collisionLogic(CEntity* target, CollisionSides collisionSides);
     
     int _values[ValueTypes::VALUETYPES_TOTAL];
     int _maxValues[ValueTypes::VALUETYPES_TOTAL];
     int _stats[StatTypes::STATTYPES_TOTAL];
+    
+private:
+    
+    void _init();
     
 };
 

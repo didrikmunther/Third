@@ -11,14 +11,16 @@
 #include "CCombatText.h"
 
 CLiving::CLiving(Box rect, sf::Color color) : CMovable(rect, color) {
-    _initValues();
+    _init();
 }
 
 CLiving::CLiving(Box rect, std::string spriteKey) : CMovable(rect, spriteKey) {
-    _initValues();
+    _init();
 }
 
-void CLiving::_initValues() {
+void CLiving::_init() {
+    entityType = EntityTypes::Living;
+    
     _values[ValueTypes::HEALTH]      = _maxValues[ValueTypes::HEALTH] = 1000;
     _values[ValueTypes::KEVLAR]      = _maxValues[ValueTypes::KEVLAR] = 1000;
     _values[ValueTypes::ENERGY]      = _maxValues[ValueTypes::ENERGY] = 100;
@@ -32,7 +34,11 @@ void CLiving::_initValues() {
     _values[ValueTypes::KEVLAR] = 500;
 }
 
-void CLiving::cLivingRender(CWindow *window, CCamera *camera) {
+void CLiving::renderAdditional(CWindow* window, CCamera* camera, int renderFlags) {
+    CMovable::renderAdditional(window, camera, renderFlags);
+    
+    if (isDead())
+        return;
     
     int floatOverHead = 10;
     int bgWidth = 100;
@@ -126,12 +132,14 @@ void CLiving::_doLogic() {
     
 }
 
-void CLiving::_collisionLogic(CEntity* target) {
-    CMovable::_collisionLogic(target);
+bool CLiving::_collisionLogic(CEntity* target, CollisionSides collisionSides) {
+    bool parentCollision = CMovable::_collisionLogic(target, collisionSides);
+    bool collision = true;
     
     if(body.velY > 22 && collisionBottom) {            // Fall damage
         dealDamage(10 * (body.velY - 22) * (_maxValues[ValueTypes::HEALTH] / 500));
     }
     
+    return parentCollision && collision;
 }
 

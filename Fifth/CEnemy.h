@@ -20,13 +20,15 @@ public:
     CEnemy(Box rect, sf::Color color);
     CEnemy(Box rect, std::string spriteKey);
     
+    virtual void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
+    
     void setTarget(CEntity* target);
     CEntity* getTarget();
     
 private:
-    virtual void _initMovementValues();
+    void _init();
     virtual void _doLogic();
-    virtual void _collisionLogic(CEntity* target);
+    virtual bool _collisionLogic(CEntity* target, CollisionSides collisionSides);
     
     CEntity* target;
     

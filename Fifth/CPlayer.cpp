@@ -7,29 +7,49 @@
 //
 
 #include "CPlayer.h"
+#include "CEnemy.h"
 #include "Define.h"
 #include <iostream>
 
 CPlayer::CPlayer(Box rect, sf::Color color) :
     CLiving(rect, color) {
-        _initMovementValues();
+        _init();
 }
 
 CPlayer::CPlayer(Box rect, std::string spriteKey) :
     CLiving(rect, spriteKey) {
         CPlayer(rect, sf::Color{255, 255, 255, 255});
-        _initMovementValues();
+        _init();
 }
 
-void CPlayer::_initMovementValues() {
-    jumpPower = 20.0f;
+void CPlayer::_init() {
+    entityType = EntityTypes::Player;
+    
+    jumpPower = 10.0f;
+    maxSpeed = 10;
+    accelerationX = 4.0;
+}
+
+void CPlayer::renderAdditional(CWindow* window, CCamera* camera, int renderFlags) {
+    CLiving::renderAdditional(window, camera, renderFlags);
+    
 }
 
 void CPlayer::_doLogic() {
     CLiving::_doLogic();
+
 }
 
-void CPlayer::_collisionLogic(CEntity* target) {
-    CLiving::_collisionLogic(target);
+bool CPlayer::_collisionLogic(CEntity* target, CollisionSides collisionSides) {
+    bool parentCollision = CLiving::_collisionLogic(target, collisionSides);
+    bool collision = true;
     
+//    if(collisionSides.collisionBottom) {              // Jumping on enemy head kills them
+//        CEnemy* enemy = dynamic_cast<CEnemy*>(target);
+//        if(enemy != nullptr && !toRemove()) {
+//            enemy->dealDamage(_values[ValueTypes::HEALTH]);
+//        }
+//    }
+    
+    return parentCollision && collision;
 }

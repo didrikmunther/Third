@@ -7,21 +7,29 @@
 //
 
 #include "CEnemy.h"
+#include <iostream>
 
 CEnemy::CEnemy(Box rect, sf::Color color) :
     CNpc(rect, color) {
-        _initMovementValues();
+        _init();
 }
 
 CEnemy::CEnemy(Box rect, std::string spriteKey) :
     CNpc(rect, spriteKey) {
-        _initMovementValues();
+        _init();
 }
 
-void CEnemy::_initMovementValues() {
+void CEnemy::_init() {
+    entityType = EntityTypes::Enemy;
+    
     target = nullptr;
     jumpPower = 15.0f;
     accelerationX = 0.1f;
+}
+
+void CEnemy::renderAdditional(CWindow* window, CCamera* camera, int renderFlags) {
+    CNpc::renderAdditional(window, camera, renderFlags);
+    
 }
 
 void CEnemy::setTarget(CEntity *target) {
@@ -43,6 +51,11 @@ void CEnemy::_doLogic() {
         else if(body.getX() < target->body.getX())
             goRight();
         
+//        if(body.getY() + body.getH() < target->body.getY())
+//            goDown();
+//        else if(body.getY() > target->body.getY())
+//            goUp();
+        
         //if(body.getY() > target->body.getY())
         if(collisionRight || collisionLeft)
             jump();
@@ -54,6 +67,9 @@ void CEnemy::_doLogic() {
     }
 }
 
-void CEnemy::_collisionLogic(CEntity* target) {
-    CNpc::_collisionLogic(target);
+bool CEnemy::_collisionLogic(CEntity* target, CollisionSides collisionSides) {
+    bool parentCollision = CNpc::_collisionLogic(target, collisionSides);
+    bool collision = true;
+    
+    return parentCollision && collision;
 }

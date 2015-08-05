@@ -10,22 +10,32 @@
 
 CNpc::CNpc(Box rect, sf::Color color) :
 CLiving(rect, color) {
-    _initMovementValues();
+    _init();
 }
 
 CNpc::CNpc(Box rect, std::string spriteKey) :
 CLiving(rect, spriteKey) {
-    _initMovementValues();
+    _init();
 }
 
-void CNpc::_initMovementValues() {
+void CNpc::_init() {
+    entityType = EntityTypes::Npc;
+    
     maxSpeed = 5.0f;
+}
+
+void CNpc::renderAdditional(CWindow* window, CCamera* camera, int renderFlags) {
+    CLiving::renderAdditional(window, camera, renderFlags);
+    
 }
 
 void CNpc::_doLogic() {
     CLiving::_doLogic();
 }
 
-void CNpc::_collisionLogic(CEntity* target) {
-    CLiving::_collisionLogic(target);
+bool CNpc::_collisionLogic(CEntity* target, CollisionSides collisionSides) {
+    bool parentCollision = CLiving::_collisionLogic(target, collisionSides);
+    bool collision = true;
+    
+    return parentCollision && collision;
 }

@@ -19,6 +19,8 @@ public:
     CMovable(Box rect, sf::Color color);
     CMovable(Box rect, std::string spriteKey);
     
+    virtual void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
+    
     void goRight();
     void goLeft();
     void goUp();
@@ -36,11 +38,11 @@ public:
     float sneakSpeed;
     
 protected:
-    virtual void _collisionLogic(CEntity* target);
+    virtual bool _collisionLogic(CEntity* target, CollisionSides collisionSides);
     virtual void _doLogic();
     
 private:
-    virtual void _initMovementValues();
+    void _init();
     
 };
 

@@ -21,6 +21,15 @@ CEntity(rect, spriteKey), _creationTime(_clock.getElapsedTime().asMilliseconds()
     collisionLayer = LAYER1;
 }
 
+void CParticle::_init() {
+    entityType = EntityTypes::Particle;
+}
+
+void CParticle::renderAdditional(CWindow* window, CCamera* camera, int renderFlags) {
+    CEntity::renderAdditional(window, camera, renderFlags);
+    
+}
+
 void CParticle::_doLogic() {
     CEntity::_doLogic();
     
@@ -28,9 +37,12 @@ void CParticle::_doLogic() {
         body.velX /= 1.2;
     
     if(_clock.getElapsedTime().asMilliseconds() - _creationTime > _livingTime * 1000)
-        toRemove = true;
+        _toRemove = true;
 }
 
-void CParticle::_collisionLogic() {
+bool CParticle::_collisionLogic(CEntity* target, CollisionSides collisionSides) {
+    bool parentCollision = CEntity::_collisionLogic(target, collisionSides);
+    bool collision = true;
     
+    return parentCollision && collision;
 }

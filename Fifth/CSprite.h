@@ -23,7 +23,7 @@ public:
     
     CSpriteSheet* getSpriteSheet() { return _spriteSheet; }
     Box* getOffset() { return &_rect; }
-    sf::Sprite* getSprite() { return &_sprite; }
+    virtual sf::Sprite* getSprite() { return &_sprite; }
     
 private:
     CSpriteSheet* _spriteSheet; // Don't modify from here

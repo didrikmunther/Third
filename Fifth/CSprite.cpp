@@ -12,8 +12,5 @@ CSprite::CSprite(CSpriteSheet* spriteSheet, Box rect) :
 _spriteSheet(spriteSheet), _rect(rect)
 {
     _sprite.setTexture(*spriteSheet->getTexture());
-    
-    int w = rect.w;
-    int h = rect.h;
-    _sprite.setTextureRect(sf::IntRect{rect.x, rect.y, w, h});
+    _sprite.setTextureRect(sf::IntRect{rect.x, rect.y, rect.w, rect.h});
 }

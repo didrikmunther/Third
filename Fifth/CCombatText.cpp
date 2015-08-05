@@ -24,7 +24,7 @@ CCombatText::CCombatText(int x, int y, sf::Color color, int size, std::string te
 
 void CCombatText::onLoop() {
     if(_clock.getElapsedTime().asMilliseconds() > _creationTime + _livingTime * 1000)
-        toRemove = true;
+        _toRemove = true;
     _y--;
 }
 

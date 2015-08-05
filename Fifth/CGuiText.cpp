@@ -10,7 +10,7 @@
 #include "NSurface.h"
 
 CGuiText::CGuiText(int x, int y, std::string text, std::string fontKey) :
-_x(x), _y(y), _text(text), _fontKey(fontKey), toRemove(false), _creationTime(_clock.getElapsedTime().asMilliseconds()) {
+_x(x), _y(y), _text(text), _fontKey(fontKey), _toRemove(false), _creationTime(_clock.getElapsedTime().asMilliseconds()) {
 }
 
 void CGuiText::onLoop() {

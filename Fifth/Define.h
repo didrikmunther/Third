@@ -15,13 +15,13 @@
 const int NATIVE_SCREEN_WIDTH   = 1920;
 const int NATIVE_SCREEN_HEIGHT  = 1080;
 
-const int SCREEN_WIDTH          = 1280;
-const int SCREEN_HEIGHT         = 720;
+const int SCREEN_WIDTH          = 1920;
+const int SCREEN_HEIGHT         = 1080;
 const int SCREEN_BPP            = 32;
 
 const int GAMEINTERVAL          = 60;
 const int DESPAWN_HEIGHT        = 10000;
-const float GRAVITY             = 0.5;
+const float GRAVITY             = 0.2;
 
 const char LOG_FILE[]           = "debug.log";
 

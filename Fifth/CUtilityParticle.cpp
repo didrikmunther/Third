@@ -11,22 +11,31 @@
 
 #include <iostream>
 
-CUtilityParticle::CUtilityParticle(Box rect, sf::Color color, int utility) :
+CUtilityParticle::CUtilityParticle(Box rect, sf::Color color, BasicUtilities utility) :
 CParticle(rect, color), _basicUtility(utility) {
     collisionLayer = LAYER0;
 }
 
-CUtilityParticle::CUtilityParticle(Box rect, sf::Color color, int utility, int livingTime) :
+CUtilityParticle::CUtilityParticle(Box rect, sf::Color color, BasicUtilities utility, int livingTime) :
 CParticle(rect, color, livingTime), _basicUtility(utility) {
     collisionLayer = LAYER0;
+}
+
+void CUtilityParticle::_init() {
+    entityType = EntityTypes::UtilityParticle;
+}
+
+void CUtilityParticle::renderAdditional(CWindow* window, CCamera* camera, int renderFlags) {
+    CParticle::renderAdditional(window, camera, renderFlags);
     
 }
 
-void CUtilityParticle::_collisionLogic(CEntity* target) {
-    CParticle::_collisionLogic();
+bool CUtilityParticle::_collisionLogic(CEntity* target, CollisionSides collisionSides) {
+    bool parentCollision = CParticle::_collisionLogic(target, collisionSides);
+    bool collision = true;
     
     CLiving* living = dynamic_cast<CLiving*>(target);
-    if(living != nullptr && !toRemove) {
+    if(living != nullptr && !toRemove()) {
         switch(_basicUtility) {
             case BasicUtilities::DAMAGE:
                 living->dealDamage(rand() % 20, UtilityPosition{body.getX(), body.getY()});
@@ -35,10 +44,14 @@ void CUtilityParticle::_collisionLogic(CEntity* target) {
             case BasicUtilities::HEAL:
                 living->heal(rand() % 20, UtilityPosition{body.getX(), body.getY()});
                 break;
+            
+            default:
+                break;
         }
     }
     
-    toRemove = true;
+    _toRemove = true;
+    return parentCollision && collision;
 }
 
 void CUtilityParticle::_doLogic() {
