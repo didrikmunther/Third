@@ -75,7 +75,7 @@ int CGame::onExecute() {
         if(_clock.getElapsedTime().asMilliseconds() - _timer > 1000) {
             _timer += 1000;
             _title.str("");
-            _title << _intro << " | " << _updates << " ups, " << _frames << " fps";
+            _title /* << _intro << " | " */ << _updates << " ups, " << _frames << " fps";
             //instance.window.setTitle(_title.str());
             instance.entityManager.getEntity("n:bush")->say(_title.str(), "TESTFONT", ChatBubbleType::SAY);
             _updates = 0;
@@ -106,10 +106,6 @@ int CGame::_onInit() {
     instance.window.getSprite()->setTexture(instance.window.getRenderTexture()->getTexture());
     
     NFile::loadMap("resources/map/testMap1.map", &instance);
-    
-//    CEnemy* enemy = dynamic_cast<CEnemy*>(instance.entityManager.getEntity("m:seeker"));
-//    if(enemy != nullptr)
-//        instance.seeker = enemy;
     
     /*
      LAYER0 // 1
@@ -179,7 +175,7 @@ void CGame::_handleKeyStates() {
     
     // Other
     
-    if(    sf::Mouse::isButtonPressed(sf::Mouse::Left)) { // damage particle
+    if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) { // damage particle
         int mousePosX = instance.player->body.getX() - (NMouse::absoluteMouseX(instance.window.getWindow()) + instance.camera.offsetX());
         int mousePosY = instance.player->body.getY() - 100 - (NMouse::absoluteMouseY(instance.window.getWindow()) + instance.camera.offsetY());
         float angle = atan2(mousePosY, mousePosX);
@@ -189,7 +185,7 @@ void CGame::_handleKeyStates() {
         
         //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
         
-        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX(), instance.player->body.getY() - 100, 4, 4}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, BasicUtilities::DAMAGE, 10);
+        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX(), instance.player->body.getY() - 100, 4, 4}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::DAMAGE, 10);
         tempParticle->body.velX = velocityX;
         tempParticle->body.velY = velocityY;
         instance.entityManager.addParticle(tempParticle);
@@ -205,7 +201,7 @@ void CGame::_handleKeyStates() {
         
         //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
         
-        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX(), instance.player->body.getY() - 100, 20, 20}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, BasicUtilities::HEAL, 10);
+        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX(), instance.player->body.getY() - 100, 20, 20}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::HEAL, 10);
         tempParticle->body.velX = velocityX;
         tempParticle->body.velY = velocityY;
         instance.entityManager.addParticle(tempParticle);
@@ -250,7 +246,10 @@ void CGame::_onEvent(sf::Event* event) {
                     break;
                     
                 case keyMap::SNEAK:
-                    instance.player->isSneaking = true;
+                    instance.player->setMovementState(MovementState::SNEAKING_MOVEMENT);
+                    break;
+                case sf::Keyboard::LControl:
+                    instance.player->setMovementState(MovementState::RUNNING_MOVEMENT);
                     break;
                     
                 case keyMap::BLOCK:
@@ -352,7 +351,8 @@ void CGame::_onEvent(sf::Event* event) {
         case sf::Event::KeyReleased:
             switch(event->key.code) {
                 case keyMap::SNEAK:
-                    instance.player->isSneaking = false;
+                case sf::Keyboard::LControl:
+                    instance.player->setMovementState(MovementState::WALKING_MOVEMENT);
                     break;
                     
                 default:

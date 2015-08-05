@@ -8,6 +8,7 @@
 
 #include "CParticle.h"
 #include "Define.h"
+#include <NFile.h>
 
 CParticle::CParticle(Box rect, sf::Color color, int livingTime /* = 5 */) :
 CEntity(rect, color), _creationTime(_clock.getElapsedTime().asMilliseconds()), _livingTime(livingTime) {
@@ -25,7 +26,7 @@ void CParticle::_init() {
     entityType = EntityTypes::Particle;
 }
 
-void CParticle::renderAdditional(CWindow* window, CCamera* camera, int renderFlags) {
+void CParticle::renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     CEntity::renderAdditional(window, camera, renderFlags);
     
 }
@@ -33,11 +34,19 @@ void CParticle::renderAdditional(CWindow* window, CCamera* camera, int renderFla
 void CParticle::_doLogic() {
     CEntity::_doLogic();
     
-    if(collisionBottom)
-        body.velX /= 1.2;
+    if(collisionBottom) {
+        body.velX /= 2;
+        if(body.velX > 0)
+            if(body.velX < 0.000001)
+                body.velX = 0;
+        if(body.velX < 0)
+            if(body.velX < -0.000001)
+                body.velX = 0;
+    }
     
-    if(_clock.getElapsedTime().asMilliseconds() - _creationTime > _livingTime * 1000)
+    if(_livingTime > 0 && _clock.getElapsedTime().asMilliseconds() - _creationTime > _livingTime * 1000)
         _toRemove = true;
+    
 }
 
 bool CParticle::_collisionLogic(CEntity* target, CollisionSides collisionSides) {

@@ -19,7 +19,7 @@ public:
     CNpc(Box rect, sf::Color color);
     CNpc(Box rect, std::string spriteKey);
     
-    virtual void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
+    virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
 protected:
     virtual void _doLogic();

@@ -12,6 +12,13 @@
 #include <stdio.h>
 #include "CEntity.h"
 #include <SFML/Graphics.hpp>
+#include <map>
+
+enum MovementState {
+    WALKING_MOVEMENT = 0,
+    SNEAKING_MOVEMENT,
+    RUNNING_MOVEMENT
+};
 
 class CMovable : public CEntity {
     
@@ -19,7 +26,7 @@ public:
     CMovable(Box rect, sf::Color color);
     CMovable(Box rect, std::string spriteKey);
     
-    virtual void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
+    virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
     void goRight();
     void goLeft();
@@ -29,13 +36,12 @@ public:
     
     void toggleNoclip();
     void jump();
-    bool isSneaking;
     
-    float maxSpeed;
+    void setMovementState(MovementState movementState);
+    
     float jumpPower;
     float accelerationX, accelerationY;
     float stoppingAccelerationX;
-    float sneakSpeed;
     
 protected:
     virtual bool _collisionLogic(CEntity* target, CollisionSides collisionSides);
@@ -43,6 +49,9 @@ protected:
     
 private:
     void _init();
+    
+    MovementState _movementState;
+    std::map<MovementState, int> _movementSpeeds;    // A map to get the speed at a specific movementState
     
 };
 

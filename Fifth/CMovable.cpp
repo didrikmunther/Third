@@ -22,32 +22,48 @@ CMovable::CMovable(Box rect, std::string spriteKey) :
 void CMovable::_init() {
     entityType = EntityTypes::Movable;
     
-    maxSpeed = 10.0f;                   // Default values
+    _movementState = MovementState::WALKING_MOVEMENT;
+    _movementSpeeds[MovementState::WALKING_MOVEMENT]   = 10.0f;
+    _movementSpeeds[MovementState::SNEAKING_MOVEMENT] = (float)_movementSpeeds[MovementState::WALKING_MOVEMENT] / 2.0f;
+    _movementSpeeds[MovementState::RUNNING_MOVEMENT]  = (float)_movementSpeeds[MovementState::WALKING_MOVEMENT] * 2.0f;
+    
     jumpPower = 10.0f;
     accelerationX = 1.5f;
     accelerationY = 100.0f;
     stoppingAccelerationX = accelerationX;
-    sneakSpeed = (float)maxSpeed / 2.0f;
-    isSneaking = false;
     hasWalkedX = false;
     hasWalkedY = false;
 }
 
-void CMovable::renderAdditional(CWindow* window, CCamera* camera, int renderFlags) {
+void CMovable::renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     CEntity::renderAdditional(window, camera, renderFlags);
     
+}
+
+void CMovable::setMovementState(MovementState movementState) {
+    //if(collisionBottom)
+    this->_movementState = movementState;
+    
+    switch(movementState) {
+        case MovementState::WALKING_MOVEMENT:
+            setSpriteContainer(spriteStateTypes[SpriteStateTypes::WALKING]);
+            break;
+            
+        case MovementState::SNEAKING_MOVEMENT:
+            setSpriteContainer(spriteStateTypes[SpriteStateTypes::SNEAKING]);
+            break;
+            
+        case MovementState::RUNNING_MOVEMENT:
+            setSpriteContainer(spriteStateTypes[SpriteStateTypes::RUNNING]);
+            break;
+    }
 }
 
 void CMovable::goRight() {
     body.velX += accelerationX;
     
-    if(isSneaking) {
-        if(body.velX > sneakSpeed)
-            body.velX = sneakSpeed;
-    } else {
-        if(body.velX > maxSpeed)
-            body.velX = maxSpeed;
-    }
+    if(body.velX > _movementSpeeds[_movementState])
+        body.velX = _movementSpeeds[_movementState];
     
     hasWalkedX = true;
 }
@@ -55,13 +71,8 @@ void CMovable::goRight() {
 void CMovable::goLeft() {
     body.velX -= accelerationX;
     
-    if(isSneaking) {
-        if(body.velX < -sneakSpeed)
-            body.velX = -sneakSpeed;
-    } else {
-        if(body.velX < -maxSpeed)
-            body.velX = -maxSpeed;
-    }
+    if(body.velX < -_movementSpeeds[_movementState])
+        body.velX = -_movementSpeeds[_movementState];
     
     hasWalkedX = true;
 }
@@ -70,16 +81,10 @@ void CMovable::goUp() {
     if(hasProperty(EntityProperty::FLYING)) {
         body.velY -= accelerationY;
         
-        if(isSneaking) {
-            if(body.velY < -sneakSpeed)
-                body.velY = -sneakSpeed;
-        } else {
-            if(body.velY < -maxSpeed)
-                body.velY = -maxSpeed;
-        }
-    } else {
+        if(body.velY < -_movementSpeeds[_movementState])
+            body.velY = -_movementSpeeds[_movementState];
+    } else
         jump();
-    }
     
     hasWalkedY = true;
 }
@@ -88,13 +93,8 @@ void CMovable::goDown() {
     if(hasProperty(EntityProperty::FLYING)) {
         body.velY += accelerationY;
         
-        if(isSneaking) {
-            if(body.velY > sneakSpeed)
-                body.velY = sneakSpeed;
-        } else {
-            if(body.velY > maxSpeed)
-                body.velY = maxSpeed;
-        }
+        if(body.velY > _movementSpeeds[_movementState])
+                body.velY = _movementSpeeds[_movementState];
     }
     
     hasWalkedY = true;
@@ -118,8 +118,6 @@ void CMovable::jump() {
         body.velY = -jumpPower;
     
 }
-
-
 
 void CMovable::_doLogic() {
     CEntity::_doLogic();

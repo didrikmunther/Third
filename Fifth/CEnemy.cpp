@@ -23,11 +23,12 @@ void CEnemy::_init() {
     entityType = EntityTypes::Enemy;
     
     target = nullptr;
+    setMovementState(MovementState::SNEAKING_MOVEMENT);
     jumpPower = 15.0f;
     accelerationX = 0.1f;
 }
 
-void CEnemy::renderAdditional(CWindow* window, CCamera* camera, int renderFlags) {
+void CEnemy::renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     CNpc::renderAdditional(window, camera, renderFlags);
     
 }
@@ -42,8 +43,6 @@ CEntity* CEnemy::getTarget() {
 
 void CEnemy::_doLogic() {
     CNpc::_doLogic();
-    
-    isSneaking = true;
     
     if(target != nullptr) {
         if(body.getX() > target->body.getX())

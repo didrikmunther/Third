@@ -42,6 +42,9 @@ public:
     static rapidjson::Document loadJsonFile(std::string fileName);
     static void loadMap(std::string fileName, CInstance* instance);
     
+    static void execCommand(rapidjson::Document command, CInstance* instance);
+    static void parseCommands(rapidjson::Document commands, CInstance* instance);
+    
     // Save functions
     template<typename... T>
     static void writeToFile(std::string fileName, T&&... t) {

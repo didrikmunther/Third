@@ -20,7 +20,7 @@ public:
     CPlayer(Box rect, sf::Color color);
     CPlayer(Box rect, std::string spriteKey);
     
-    virtual void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
+    virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
 protected:
     virtual void _doLogic();

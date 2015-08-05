@@ -21,10 +21,9 @@ CLiving(rect, spriteKey) {
 void CNpc::_init() {
     entityType = EntityTypes::Npc;
     
-    maxSpeed = 5.0f;
 }
 
-void CNpc::renderAdditional(CWindow* window, CCamera* camera, int renderFlags) {
+void CNpc::renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     CLiving::renderAdditional(window, camera, renderFlags);
     
 }

@@ -125,10 +125,7 @@ bool CEntity::hasSprite() {
     return true;
 }
 
-void CEntity::renderAdditional(CWindow *window, CCamera *camera, int renderFlags) {
-    
-    if(toRemove() || hasProperty(EntityProperty::HIDDEN))
-        return;
+void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags renderFlags) {
     
     if(renderFlags & RenderFlags::COLLISION_BORDERS && !isDead()) {                             // Render collision boxes
         int r, g, b = 0;
@@ -141,9 +138,10 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, int renderFlags
         NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, *window->getRenderTexture(), r, g, b);  // Bottom line
     }
     
-    for (auto &i: _GuiTextVector)                                                // Render chatbubbles
-        i->onRender(window, camera);
-    
+    if(!hasProperty(EntityProperty::HIDDEN))
+        for (auto &i: _GuiTextVector)                                                // Render chatbubbles
+            i->onRender(window, camera);
+        
 }
 
 bool CEntity::coordinateCollision(int x, int y, int w, int h, int x2, int y2, int w2, int h2) {
@@ -274,8 +272,8 @@ void CEntity::move(std::map<std::string, CEntity*>* entities) {
         if(NewY > 0 && MoveY <= 0) NewY = 0;
         if(NewY < 0 && MoveY >= 0) NewY = 0;
 
-        //if(MoveX == 0) NewX = 0;
-        //if(MoveY == 0) NewY = 0;
+//        if(MoveX == 0) NewX = 0;
+//        if(MoveY == 0) NewY = 0;
         
         if(MoveX == 0 && MoveY == 0) 	break;
         if(NewX == 0 && NewY == 0) 		break;

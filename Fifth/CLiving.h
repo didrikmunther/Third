@@ -39,7 +39,7 @@ public:
     CLiving(Box rect, sf::Color color);
     CLiving(Box rect, std::string spriteKey);
     
-    virtual void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
+    virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
     int dealDamage(int amount, UtilityPosition position = {0, 0});
     int heal(int amount, UtilityPosition position = {0, 0});

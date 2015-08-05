@@ -26,11 +26,10 @@ void CPlayer::_init() {
     entityType = EntityTypes::Player;
     
     jumpPower = 10.0f;
-    maxSpeed = 10;
     accelerationX = 4.0;
 }
 
-void CPlayer::renderAdditional(CWindow* window, CCamera* camera, int renderFlags) {
+void CPlayer::renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     CLiving::renderAdditional(window, camera, renderFlags);
     
 }

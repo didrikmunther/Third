@@ -16,7 +16,7 @@
 rapidjson::Document NFile::loadJsonFile(std::string fileName) {
     
     rapidjson::Document errorDoc;
-    errorDoc.Parse<0>("{\"JSONParsingError\":\"\"}");
+    errorDoc.Parse<0>("{\"JSONParsingError\":\"Unknown reason for error (does the json file have a member called JSONParsingError?)\"}");
     
     std::ifstream file(fileName);
     

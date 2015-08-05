@@ -20,7 +20,7 @@ public:
     CEnemy(Box rect, sf::Color color);
     CEnemy(Box rect, std::string spriteKey);
     
-    virtual void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
+    virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
     void setTarget(CEntity* target);
     CEntity* getTarget();

@@ -44,7 +44,7 @@ public:
     virtual void init();
     void onLoop(std::map<std::string, CEntity*>* entities);
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
-    virtual void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
+    virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
     int collisionLayer;
     bool isOnCollisionLayer(int collisionLayer);

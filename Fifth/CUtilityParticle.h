@@ -21,10 +21,10 @@ enum BasicUtilities {
 class CUtilityParticle : public CParticle {
     
 public:
-    CUtilityParticle(Box rect, sf::Color color, BasicUtilities utility);
-    CUtilityParticle(Box rect, sf::Color color, BasicUtilities utility, int livingTime);
+    CUtilityParticle(Box rect, sf::Color color, CEntity* owner, BasicUtilities utility);
+    CUtilityParticle(Box rect, sf::Color color, CEntity* owner, BasicUtilities utility, int livingTime);
     
-    virtual void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
+    virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
 protected:
     virtual void _doLogic();

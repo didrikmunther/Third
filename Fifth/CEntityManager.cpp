@@ -113,10 +113,12 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
         i.second->onRender(window, camera, (RenderFlags)renderFlags);
     
     for (auto &i: _EntityVector)
-        i.second->renderAdditional(window, camera, (RenderFlags)renderFlags);
+        if(!i.second->toRemove())
+            i.second->renderAdditional(window, camera, (RenderFlags)renderFlags);
     
     for (auto &i: _DeadEntitiesVector)
-        i.second->renderAdditional(window, camera, (RenderFlags)renderFlags);
+        if(!i.second->toRemove())
+            i.second->renderAdditional(window, camera, (RenderFlags)renderFlags);
     
     for (auto &i: _GuiTextVector)
         i->onRender(window, camera);

@@ -19,7 +19,7 @@ public:
     CParticle(Box rect, sf::Color color, int livingTime = 5);
     CParticle(Box rect, std::string spriteKey, int livingTime = 5);
     
-    virtual void renderAdditional(CWindow* window, CCamera* camera, int renderFlags);
+    virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
 protected:
     virtual void _doLogic();
