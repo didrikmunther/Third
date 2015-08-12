@@ -25,7 +25,7 @@ CPlayer::CPlayer(Box rect, std::string spriteKey) :
 void CPlayer::_init() {
     entityType = EntityTypes::Player;
     
-    jumpPower = 10.0f;
+    jumpPower = 20.0f;
     accelerationX = 4.0;
 }
 

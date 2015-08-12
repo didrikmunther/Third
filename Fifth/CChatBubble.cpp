@@ -13,12 +13,12 @@
 #include <iostream>
 
 CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey, ChatBubbleType type) :
-    _target(target), _type(type), CGuiText(0, 0, text, fontKey),
+    _target(target), _type(type), CGuiText(0, 0, text, fontKey), _widestLine(0), _totalHeight(0),
     _r(0), _g(0), _b(0), _rB(220), _gB(220), _bB(220) {
     
-        int textSize = 20;
-        int letterPerSecond = 5;
-        bool instantText = false;
+    int textSize = 20;
+    int letterPerSecond = 5;
+    bool instantText = false;
         
     switch(type) {
         case ChatBubbleType::SAY:
@@ -62,6 +62,19 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
         _livingTime = (int)text.length() / letterPerSecond + 3;
     else
         _livingTime = 0;
+        
+    int width, height;
+        
+    auto i = _TextVector.begin();
+    while(i != _TextVector.end()) {
+        //sf::Text tempText(i->getText()->c_str(), *i->getFont(), i->getSize());
+        width = i->getText()->getLocalBounds().width; //tempText.getLocalBounds().width;
+        height = i->getText()->getLocalBounds().height; //tempText.getLocalBounds().height;
+        if(width > _widestLine)
+            _widestLine = width;
+        _totalHeight += height;
+        i++;
+    }
     
 }
 
@@ -79,55 +92,39 @@ void CChatBubble::onRender(CWindow* window, CCamera* camera) {
     if(_TextVector[0].getFont() == nullptr)
         return;
     
-    int width, height;
-    
-    int widestLine = 0;
-    int totalHeight = 0;
-    auto i = _TextVector.begin();
-    while(i != _TextVector.end()) {
-        sf::Text tempText(i->getText()->c_str(), *i->getFont(), i->getSize());
-        width = tempText.getLocalBounds().width;
-        height = tempText.getLocalBounds().height;
-        if(width > widestLine)
-            widestLine = width;
-        totalHeight += height;
-        i++;
-    }
-    
     int marginX = 4;
     int marginY = 2;
     
     int floatOverHead = 20;
     
-    if(camera->collision(_target->body.getX() + _target->body.getW() / 2 - widestLine / 2,
-                          _target->body.getY() - totalHeight - floatOverHead,
-                          widestLine,
-                          totalHeight))
-        NSurface::renderRect(_target->body.getX() + _target->body.getW() / 2 - widestLine / 2 - camera->offsetX(),
-                             _target->body.getY() - totalHeight - floatOverHead - camera->offsetY(),
-                             widestLine,
-                             totalHeight,
+    if(camera->collision(_target->body.getX() + _target->body.getW() / 2 - _widestLine / 2,
+                          _target->body.getY() - _totalHeight - floatOverHead,
+                          _widestLine,
+                          _totalHeight)) {
+        NSurface::renderRect(_target->body.getX() + _target->body.getW() / 2 - _widestLine / 2 - camera->offsetX(),
+                             _target->body.getY() - _totalHeight - floatOverHead - camera->offsetY(),
+                             _widestLine,
+                             _totalHeight,
                              *window->getRenderTexture(), _rB, _gB, _bB);
     
-    int currentLine = 0;
-    i = _TextVector.begin();
-    while(i != _TextVector.end()) {
-        sf::Text tempText(i->getText()->c_str(), *i->getFont(), i->getSize());
-        width = tempText.getLocalBounds().width;
-        height = tempText.getLocalBounds().height;
-        int posX = _target->body.getX() + _target->body.getW() / 2 - width / 2 + marginX;
-        int posY = _target->body.getY() - totalHeight + height * currentLine - marginY * 2;
-        if(!camera->collision(posX, posY, width + marginX, height + marginY * 2)) {
+        int currentLine = 0;
+        auto i = _TextVector.begin();
+        while(i != _TextVector.end()) {
+            int width = i->getText()->getLocalBounds().width;
+            int height = i->getText()->getLocalBounds().height;
+            int posX = _target->body.getX() + _target->body.getW() / 2 - width / 2 + marginX;
+            int posY = _target->body.getY() - _totalHeight + height * currentLine - marginY * 2;
+            if(!camera->collision(posX, posY, width + marginX, height + marginY * 2)) {
+                currentLine++;
+                i++;
+                continue;
+            }
+            i++->onRender(posX - camera->offsetX(),
+                          posY - camera->offsetY(),
+                          *window->getRenderTexture());
             currentLine++;
-            i++;
-            continue;
         }
-        i++->onRender(posX - camera->offsetX(),
-                      posY - camera->offsetY(),
-                      *window->getRenderTexture());
-        currentLine++;
     }
-    
 }
 
 

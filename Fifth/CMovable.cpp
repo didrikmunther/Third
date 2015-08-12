@@ -31,6 +31,7 @@ void CMovable::_init() {
     accelerationX = 1.5f;
     accelerationY = 100.0f;
     stoppingAccelerationX = accelerationX;
+    stoppingAccelerationY = accelerationY;
     hasWalkedX = false;
     hasWalkedY = false;
 }
@@ -137,11 +138,11 @@ void CMovable::_doLogic() {
     if(!hasWalkedY) {
         if(hasProperty(EntityProperty::FLYING)) {
             if(body.velY < 0) {
-                body.velY += accelerationY;
+                body.velY += stoppingAccelerationY;
                 if(body.velY >= 0)
                     body.velY = 0.0f;
             } else {
-                body.velY -= accelerationY;
+                body.velY -= stoppingAccelerationY;
                 if(body.velY <= 0)
                     body.velY = 0.0f;
             }

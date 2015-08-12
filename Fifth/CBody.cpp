@@ -10,18 +10,18 @@
 
 CBody::CBody(Box rect) :
     velX(0), velY(0) {
-    this->rect = rect;
+    _rect = rect;
 }
 
 int CBody::getX() {
-    return rect.x;
+    return _rect.x;
 }
 int CBody::getY() {
-    return rect.y;
+    return _rect.y;
 }
 int CBody::getW() {
-    return rect.w;
+    return _rect.w;
 }
 int CBody::getH() {
-    return rect.h;
+    return _rect.h;
 }

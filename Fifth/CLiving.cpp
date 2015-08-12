@@ -136,8 +136,9 @@ bool CLiving::_collisionLogic(CEntity* target, CollisionSides collisionSides) {
     bool parentCollision = CMovable::_collisionLogic(target, collisionSides);
     bool collision = true;
     
-    if(body.velY > 15 && collisionSides.collisionBottom) {            // Fall damage
-        dealDamage((body.velY) * (_maxValues[ValueTypes::HEALTH] / (GRAVITY * 166))); // At 0.3 gravity the lethal velocity is 50
+    float jumpDamageHeight = jumpPower + jumpPower / 4;
+    if(body.velY > jumpDamageHeight && collisionSides.collisionBottom) {            // Fall damage
+        dealDamage((body.velY - jumpDamageHeight) * (_maxValues[ValueTypes::HEALTH] / (GRAVITY * 166))); // At 0.3 gravity the lethal velocity is 50
     }
     
     return parentCollision && collision;

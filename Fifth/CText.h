@@ -19,21 +19,23 @@
 class CText : public CRenderable {
     
 public:
-    CText(std::string text, int size, std::string fontKey, sf::Color color);
+    CText(std::string string, int size, std::string fontKey, sf::Color color);
     
     void onRender(int x, int y, sf::RenderTarget& renderTarget, CCamera* camera);
     void onRender(int x, int y, sf::RenderTarget& renderTarget);
     
     sf::Font* getFont();
     int getSize();
-    std::string* getText();
+    std::string* getString();
     sf::Color* getColor();
+    sf::Text* getText();
     
 private:
-    std::string _text;
+    std::string _string;
     int _size;
     std::string _fontKey;
     sf::Color _color;
+    sf::Text _text;
     
 };
 

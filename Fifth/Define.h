@@ -12,9 +12,6 @@
 #ifndef __Third__Define__
 #define __Third__Define__
 
-const int NATIVE_SCREEN_WIDTH   = 1920;
-const int NATIVE_SCREEN_HEIGHT  = 1080;
-
 const int SCREEN_WIDTH          = 1920;
 const int SCREEN_HEIGHT         = 1080;
 const int SCREEN_BPP            = 32;
@@ -63,6 +60,7 @@ enum SpriteStateTypes { // CEntity
     WALKING,
     SNEAKING,
     RUNNING,
+    DUCKING,
     TOTAL_SPRITESTATETYPES
 };
 

@@ -20,7 +20,7 @@ class CCamera;
 class CEntity;
 class CText;
 
-class CChatBubble : public CGuiText{
+class CChatBubble : public CGuiText {
 
 public:
     CChatBubble(std::string text, CEntity* target, std::string fontKey, ChatBubbleType type);

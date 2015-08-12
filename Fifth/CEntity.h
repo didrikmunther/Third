@@ -72,6 +72,7 @@ public:
     
     bool isDead() { return _isDead; }
     bool toRemove() { return _toRemove; }
+    bool hasMoved() { return _hasMoved; };
     
 protected:
     std::vector<CGuiText*> _GuiTextVector;
@@ -86,6 +87,8 @@ protected:
     
 private:
     bool _collision(int x, int y, std::map<std::string, CEntity*>* entities);
+    
+    bool _hasMoved;
     
 };
 

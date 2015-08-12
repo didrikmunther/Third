@@ -64,12 +64,10 @@ void NSurface::renderEntity(CEntity* entity, CWindow* window, sf::IntRect destin
     
 }
 
-void NSurface::renderText(int x, int y, CText* textObj, sf::RenderTarget& target) {
-    sf::Text text(textObj->getText()->c_str(), *textObj->getFont(), textObj->getSize());
-    text.setColor(*textObj->getColor());
-    text.setPosition(x, y);
+void NSurface::renderText(int x, int y, CText* text, sf::RenderTarget& target) {
+    text->getText()->setPosition(x, y);
     
-    target.draw(text);
+    target.draw(*text->getText());
 }
 
 

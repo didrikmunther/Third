@@ -24,7 +24,10 @@ public:
     int getW();
     int getH();
 
-    Box rect;
+private:
+    
+    Box _rect;
+    Box _previousRect;
     
 };
 

@@ -41,7 +41,7 @@ public:
     
     float jumpPower;
     float accelerationX, accelerationY;
-    float stoppingAccelerationX;
+    float stoppingAccelerationX, stoppingAccelerationY;
     
 protected:
     virtual bool _collisionLogic(CEntity* target, CollisionSides collisionSides);

@@ -14,6 +14,7 @@
 #include "Define.h"
 #include "NMouse.h"
 #include <SFML/Graphics.hpp>
+#include <SFML/OpenGL.hpp>
 #include "CText.h"
 #ifdef __APPLE__
 #include "CoreFoundation/CoreFoundation.h"
@@ -128,6 +129,19 @@ int CGame::_onInit() {
      Player,     // 6
      Enemy       // 7
     */
+    
+    // Set color and depth clear value
+    glClearDepth(1.f);
+    glClearColor(0.f, 0.f, 0.f, 0.f);
+    
+    // Enable Z-buffer read and write
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    
+    // Setup a perspective projection
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(90.f, 1.f, 1.f, 500.f);
 
     return 0;
 }
@@ -429,14 +443,55 @@ void CGame::_onRender() {
     
     instance.window.getWindow()->clear();
     instance.window.getRenderTexture()->clear();
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, *instance.window.getRenderTexture(), 255, 255, 255);
     instance.entityManager.onRender(&instance.window, &instance.camera);
     
+//    glMatrixMode(GL_MODELVIEW);
+//    glLoadIdentity();
+//    glTranslatef(0.f, 0.f, -200.f);
+//    glRotatef((int)_clock.getElapsedTime().asSeconds() * 50, 1.f, 0.f, 0.f);
+//    glRotatef((int)_clock.getElapsedTime().asSeconds() * 30, 0.f, 1.f, 0.f);
+//    glRotatef((int)_clock.getElapsedTime().asSeconds() * 90, 0.f, 0.f, 1.f);
+//    
+//    glBegin(GL_QUADS);
+//    
+//    glVertex3f(-50.f, -50.f, -50.f);
+//    glVertex3f(-50.f,  50.f, -50.f);
+//    glVertex3f( 50.f,  50.f, -50.f);
+//    glVertex3f( 50.f, -50.f, -50.f);
+//    
+//    glVertex3f(-50.f, -50.f, 50.f);
+//    glVertex3f(-50.f,  50.f, 50.f);
+//    glVertex3f( 50.f,  50.f, 50.f);
+//    glVertex3f( 50.f, -50.f, 50.f);
+//    
+//    glVertex3f(-50.f, -50.f, -50.f);
+//    glVertex3f(-50.f,  50.f, -50.f);
+//    glVertex3f(-50.f,  50.f,  50.f);
+//    glVertex3f(-50.f, -50.f,  50.f);
+//    
+//    glVertex3f(50.f, -50.f, -50.f);
+//    glVertex3f(50.f,  50.f, -50.f);
+//    glVertex3f(50.f,  50.f,  50.f);
+//    glVertex3f(50.f, -50.f,  50.f);
+//    
+//    glVertex3f(-50.f, -50.f,  50.f);
+//    glVertex3f(-50.f, -50.f, -50.f);
+//    glVertex3f( 50.f, -50.f, -50.f);
+//    glVertex3f( 50.f, -50.f,  50.f);
+//    
+//    glVertex3f(-50.f, 50.f,  50.f);
+//    glVertex3f(-50.f, 50.f, -50.f);
+//    glVertex3f( 50.f, 50.f, -50.f);
+//    glVertex3f( 50.f, 50.f,  50.f);
+//    
+//    glEnd();
+    
     instance.window.getRenderTexture()->display();
     instance.window.getWindow()->draw(*instance.window.getSprite());
     instance.window.getWindow()->display();
-    
 }
 
 int CGame::_onCleanup() {

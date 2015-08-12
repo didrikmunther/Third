@@ -36,22 +36,24 @@ bool CUtilityParticle::_collisionLogic(CEntity* target, CollisionSides collision
     bool collision = true;
     
     if(target != _owner) {
-        CLiving* living = dynamic_cast<CLiving*>(target);
-        if(living != nullptr && !toRemove()) {
-            switch(_basicUtility) {
-                case BasicUtilities::DAMAGE:
-                    living->dealDamage(rand() % 20, UtilityPosition{body.getX(), body.getY()});
-                    break;
+        if(!toRemove()) {       // Avoid unneccesary dynamic_casts
+            CLiving* living = dynamic_cast<CLiving*>(target);
+            if(living != nullptr) {
+                switch(_basicUtility) {
+                    case BasicUtilities::DAMAGE:
+                        living->dealDamage(rand() % 20, UtilityPosition{body.getX(), body.getY()});
+                        break;
+                        
+                    case BasicUtilities::HEAL:
+                        living->heal(rand() % 20, UtilityPosition{body.getX(), body.getY()});
+                        break;
                     
-                case BasicUtilities::HEAL:
-                    living->heal(rand() % 20, UtilityPosition{body.getX(), body.getY()});
-                    break;
-                
-                default:
-                    break;
+                    default:
+                        break;
+                }
             }
+            _toRemove = true;
         }
-        _toRemove = true;
     } else {
         _toRemove = false;
         collision = false;

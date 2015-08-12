@@ -56,6 +56,8 @@ void CEntity::_cleanUpTextVector() {
 
 void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
     
+    _hasMoved = false;
+    
     auto i = _GuiTextVector.begin();
     while(i != _GuiTextVector.end()) {
         (*i)->onLoop();
