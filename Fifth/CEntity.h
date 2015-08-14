@@ -21,6 +21,10 @@
 #include "CCollidable.h"
 #include "CChatBubble.h"
 
+struct GridCoordinates {
+    int x, y;
+};
+
 struct CollisionSides {
     bool collisionTop,
          collisionBottom,
@@ -42,7 +46,7 @@ public:
     EntityTypes entityType;
     
     virtual void init();
-    void onLoop(std::map<std::string, CEntity*>* entities);
+    void onLoop(std::vector<CEntity*>* entities);
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
@@ -52,7 +56,7 @@ public:
     void addCollisionLayer(int collisionLayer) { this->collisionLayer |= collisionLayer; }
     void removeCollisionLayer(int collisionLayer) { if(isOnCollisionLayer(collisionLayer)) toggleCollisionLayer(collisionLayer); }
     
-    void move(std::map<std::string, CEntity*>* entities);
+    void move(std::vector<CEntity*>* entities);
     bool coordinateCollision(int x, int y, int w, int h, int x2, int y2, int w2, int h2);
     bool coordinateCollision(int x, int y, int w, int h);
     
@@ -74,6 +78,8 @@ public:
     bool toRemove() { return _toRemove; }
     bool hasMoved() { return _hasMoved; };
     
+    std::vector<GridCoordinates> gridCoordinates;
+    
 protected:
     std::vector<CGuiText*> _GuiTextVector;
     void _cleanUpTextVector();
@@ -86,7 +92,7 @@ protected:
     bool _toRemove;
     
 private:
-    bool _collision(int x, int y, std::map<std::string, CEntity*>* entities);
+    bool _collision(int x, int y, std::vector<CEntity*>* entities);
     
     bool _hasMoved;
     

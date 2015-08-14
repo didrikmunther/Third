@@ -36,7 +36,7 @@ void CEntity::init() {
     entityType = EntityTypes::Entity;
     
     _isDead             = false;
-    _toRemove            = false;
+    _toRemove           = false;
     properties          = EntityProperty::COLLIDABLE;
     collisionTop        = false;
     collisionBottom     = false;
@@ -54,7 +54,7 @@ void CEntity::_cleanUpTextVector() {
     _GuiTextVector.clear();
 }
 
-void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
+void CEntity::onLoop(std::vector<CEntity*>* entities) {
     
     _hasMoved = false;
     
@@ -81,6 +81,10 @@ void CEntity::onLoop(std::map<std::string, CEntity*>* entities) {
         move(entities);
     else
         body.velY = body.velX = 0;
+    
+    //say(std::to_string(hasMoved()), "TESTFONT", ChatBubbleType::INSTANT_TALK);
+    
+    body.onLoop();
 
 }
 
@@ -163,20 +167,18 @@ bool CEntity::coordinateCollision(int x, int y, int w, int h) {
     return coordinateCollision(x, y, w, h, body.getX(), body.getY(), body.getW(), body.getH());
 }
 
-bool CEntity::_collision(int x, int y, std::map<std::string, CEntity*>* entities) {
+bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities) {
     
     if(!hasProperty(EntityProperty::COLLIDABLE)) return false;
     
     bool colliding = false;
     
-    for (auto &i: *entities) {
-        
-        auto target = i.second;
+    for (auto &target: *entities) {
         
         if (target == this) continue;
         if (!(target->properties & EntityProperty::COLLIDABLE)) continue;
         if (target->isDead()) continue;
-        if (!i.second->isOnCollisionLayer(collisionLayer)) continue;
+        if (!target->isOnCollisionLayer(collisionLayer)) continue;
     
         if(!coordinateCollision(x, y, body.getW(), body.getH(),
                                 target->body.getX(), target->body.getY(), target->body.getW(), target->body.getH()))
@@ -219,7 +221,7 @@ bool CEntity::_collision(int x, int y, std::map<std::string, CEntity*>* entities
         return false;
 }
 
-void CEntity::move(std::map<std::string, CEntity*>* entities) {
+void CEntity::move(std::vector<CEntity*>* entities) {
     
     int MoveX, MoveY;
     
@@ -253,14 +255,14 @@ void CEntity::move(std::map<std::string, CEntity*>* entities) {
     while(true) {
         if(!_collision(StopX + NewX, StopY, entities)) {
             StopX += NewX;
-            body.rect.x += NewX;
+            body._rect.x += NewX;
         } else {
             body.velX = 0;
         }
         
         if(!_collision(StopX, StopY + NewY, entities)) {
             StopY += NewY;
-            body.rect.y += NewY;
+            body._rect.y += NewY;
         } else {
             body.velY = 0;
         }
@@ -280,6 +282,8 @@ void CEntity::move(std::map<std::string, CEntity*>* entities) {
         if(MoveX == 0 && MoveY == 0) 	break;
         if(NewX == 0 && NewY == 0) 		break;
     }
+    
+    _hasMoved = !(body._rect == body._previousRect);
 }
 
 //void CEntity::move(std::map<std::string, CEntity*>* entities) {

@@ -13,6 +13,10 @@ CBody::CBody(Box rect) :
     _rect = rect;
 }
 
+void CBody::onLoop() {
+    _previousRect = _rect;
+}
+
 int CBody::getX() {
     return _rect.x;
 }

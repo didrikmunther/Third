@@ -414,6 +414,18 @@ void CGame::_onLoop() {
     
     instance.entityManager.onLoop();
     instance.camera.onLoop();
+    
+//    std::string toPrint = "";
+//    for(auto &grid: instance.player->gridCoordinates) {
+//        toPrint += "X: ";
+//        toPrint += grid.x;
+//        toPrint += ", Y: ";
+//        toPrint += grid.y;
+//        toPrint += "; ";
+//    }
+//    
+//    NFile::log(LogType::ALERT, "Player grid: ", toPrint);
+    //NFile::log(LogType::ALERT, "asdf: ", instance.player->gridCoordinates[1].x);
 }
 
 //void CGame::_onRender() {

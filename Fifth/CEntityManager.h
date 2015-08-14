@@ -66,6 +66,8 @@ private:
     std::vector<CGuiText*> _GuiTextVector;
     std::map<std::string, CEntity*> _DeadEntitiesVector;
     
+    std::map <int, std::map <int, std::vector<CEntity*>>> _CollisionVector;
+    
 };
 
 #endif /* defined(__Third__CEntityManager__) */

@@ -25,6 +25,13 @@ const char LOG_FILE[]           = "debug.log";
 struct Box {
     int x, y;
     int w, h;
+    
+    bool operator==(const Box& a) {
+        return  x == a.x &&
+                y == a.y &&
+                w == a.w &&
+                h == a.h;
+    }
 };
 
 struct Area {

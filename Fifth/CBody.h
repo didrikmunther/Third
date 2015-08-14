@@ -17,14 +17,14 @@ class CBody {
     
 public:
     CBody(Box rect);
+    void onLoop();
+    
     float velX, velY;
     
     int getX();
     int getY();
     int getW();
     int getH();
-
-private:
     
     Box _rect;
     Box _previousRect;
