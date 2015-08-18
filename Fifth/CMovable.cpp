@@ -9,7 +9,7 @@
 #include "CMovable.h"
 #include "Define.h"
 
-CMovable::CMovable(Box rect, sf::Color color) :
+CMovable::CMovable(Box rect, SDL_Color color) :
     CEntity(rect, color) {
     _init();
 }

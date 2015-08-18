@@ -16,6 +16,10 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
     _target(target), _type(type), CGuiText(0, 0, text, fontKey), _widestLine(0), _totalHeight(0),
     _r(0), _g(0), _b(0), _rB(220), _gB(220), _bB(220) {
     
+    if(CAssetManager::getFont(fontKey) == nullptr) {
+        return;
+    }
+        
     int textSize = 20;
     int letterPerSecond = 5;
     bool instantText = false;
@@ -48,7 +52,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
     std::string currentString = "";
     for(int i = 0; i < splittedText.size(); i++) {
         if(currentSize > 10) {
-            _TextVector.push_back(CText(currentString, textSize, fontKey, sf::Color{(sf::Uint8)_r,(sf::Uint8)_g,(sf::Uint8)_b,255}));
+            _TextVector.push_back(CText(currentString, textSize, fontKey, SDL_Color{(Uint8)_r, (Uint8)_g, (Uint8)_b, 255}));
             currentString = "";
             currentSize = 0;
         }
@@ -56,7 +60,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
         currentString += splittedText[i] + " ";
     }
     if(currentSize > 0)                 // For when the loop quits but there is still text that should be added
-        _TextVector.push_back(CText(currentString, textSize, fontKey, sf::Color{(sf::Uint8)_r,(sf::Uint8)_g,(sf::Uint8)_b,255}));
+        _TextVector.push_back(CText(currentString, textSize, fontKey, SDL_Color{(Uint8)_r, (Uint8)_g, (Uint8)_b, 255}));
         
     if(!instantText)
         _livingTime = (int)text.length() / letterPerSecond + 3;
@@ -67,9 +71,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
         
     auto i = _TextVector.begin();
     while(i != _TextVector.end()) {
-        //sf::Text tempText(i->getText()->c_str(), *i->getFont(), i->getSize());
-        width = i->getText()->getLocalBounds().width; //tempText.getLocalBounds().width;
-        height = i->getText()->getLocalBounds().height; //tempText.getLocalBounds().height;
+        TTF_SizeText(i->getFont(), i->getText()->c_str(), &width, &height);
         if(width > _widestLine)
             _widestLine = width;
         _totalHeight += height;
@@ -79,7 +81,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
 }
 
 void CChatBubble::onLoop() {
-    if(_clock.getElapsedTime().asMilliseconds() > _creationTime + _livingTime * 1000)
+    if(SDL_GetTicks() > _creationTime + _livingTime * 1000)
         _toRemove = true;
 }
 
@@ -105,15 +107,15 @@ void CChatBubble::onRender(CWindow* window, CCamera* camera) {
                              _target->body.getY() - _totalHeight - floatOverHead - camera->offsetY(),
                              _widestLine,
                              _totalHeight,
-                             *window->getRenderTexture(), _rB, _gB, _bB);
+                             window, _rB, _gB, _bB);
     
         int currentLine = 0;
         auto i = _TextVector.begin();
         while(i != _TextVector.end()) {
-            int width = i->getText()->getLocalBounds().width;
-            int height = i->getText()->getLocalBounds().height;
+            int width, height;
+            TTF_SizeText(i->getFont(), i->getText()->c_str(), &width, &height);
             int posX = _target->body.getX() + _target->body.getW() / 2 - width / 2 + marginX;
-            int posY = _target->body.getY() - _totalHeight + height * currentLine - marginY * 2;
+            int posY = _target->body.getY() - _totalHeight + height * currentLine - floatOverHead + marginY * 2;
             if(!camera->collision(posX, posY, width + marginX, height + marginY * 2)) {
                 currentLine++;
                 i++;
@@ -121,7 +123,7 @@ void CChatBubble::onRender(CWindow* window, CCamera* camera) {
             }
             i++->onRender(posX - camera->offsetX(),
                           posY - camera->offsetY(),
-                          *window->getRenderTexture());
+                          window);
             currentLine++;
         }
     }

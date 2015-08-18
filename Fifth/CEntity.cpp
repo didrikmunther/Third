@@ -16,13 +16,13 @@
 #include "CSpriteContainer.h"
 #include <math.h>
 
-CEntity::CEntity(Box rect, sf::Color color) :
+CEntity::CEntity(Box rect, SDL_Color color) :
 spriteContainerKey(""), CCollidable(rect), color(color) {
     init();
 }
 
 CEntity::CEntity(Box rect, std::string spriteContainerKey) :
-spriteContainerKey(spriteContainerKey), CCollidable(rect), color(sf::Color{255,0,255,255}) /* sprite not found color */ {
+spriteContainerKey(spriteContainerKey), CCollidable(rect), color(SDL_Color{255,0,255,255}) /* sprite not found color */ {
     init();
     std::fill(spriteStateTypes, spriteStateTypes+SpriteStateTypes::TOTAL_SPRITESTATETYPES, spriteContainerKey);
     
@@ -97,9 +97,9 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
         if(!hasSprite())
                 NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(),
                                      body.getW(), body.getH(),
-                                     *window->getRenderTexture(), color.r, color.g, color.b);
+                                     window, color.r, color.g, color.b);
         else
-            NSurface::renderEntity(this, window, sf::IntRect{body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW(), body.getH()});
+            NSurface::renderEntity(this, window, body.getX() - camera->offsetX(), body.getY() - camera->offsetY());
     }
 }
 
@@ -138,10 +138,10 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags ren
         if(hasProperty(EntityProperty::COLLIDABLE)) {r = 255; g = 0; b = 0;  }
         else                                        {r = 0; g = 255; b = 255;}
         
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), 1, body.getH() - 1, *window->getRenderTexture(), r, g, b);    // Left line
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW() - 1, 1, *window->getRenderTexture(), r, g, b);      // Top line
-        NSurface::renderRect(body.getX() + body.getW() - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.getH(), *window->getRenderTexture(), r, g, b);  // Right line
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, *window->getRenderTexture(), r, g, b);  // Bottom line
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), 1, body.getH() - 1,window, r, g, b);    // Left line
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW() - 1, 1, window, r, g, b);      // Top line
+        NSurface::renderRect(body.getX() + body.getW() - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.getH(), window, r, g, b);  // Right line
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, window, r, g, b);  // Bottom line
     }
     
     if(!hasProperty(EntityProperty::HIDDEN))

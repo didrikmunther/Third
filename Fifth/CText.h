@@ -10,7 +10,6 @@
 #define __Third__CText__
 
 #include <stdio.h>
-#include <SFML/Graphics.hpp>
 #include "CCamera.h"
 #include <string>
 #include "CAssetManager.h"
@@ -19,23 +18,21 @@
 class CText : public CRenderable {
     
 public:
-    CText(std::string string, int size, std::string fontKey, sf::Color color);
+    CText(std::string text, int size, std::string fontKey, SDL_Color color);
     
-    void onRender(int x, int y, sf::RenderTarget& renderTarget, CCamera* camera);
-    void onRender(int x, int y, sf::RenderTarget& renderTarget);
+    void onRender(int x, int y, CWindow* window, CCamera* camera);
+    void onRender(int x, int y, CWindow* window);
     
-    sf::Font* getFont();
+    TTF_Font* getFont();
     int getSize();
-    std::string* getString();
-    sf::Color* getColor();
-    sf::Text* getText();
+    std::string* getText();
+    SDL_Color* getColor();
     
 private:
-    std::string _string;
+    std::string _text;
     int _size;
     std::string _fontKey;
-    sf::Color _color;
-    sf::Text _text;
+    SDL_Color _color;
     
 };
 

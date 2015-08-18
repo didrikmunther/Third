@@ -36,7 +36,7 @@ struct UtilityPosition {
 class CLiving : public CMovable {
     
 public:
-    CLiving(Box rect, sf::Color color);
+    CLiving(Box rect, SDL_Color color);
     CLiving(Box rect, std::string spriteKey);
     
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);

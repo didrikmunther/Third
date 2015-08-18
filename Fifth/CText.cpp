@@ -9,23 +9,21 @@
 #include "CText.h"
 #include "NSurface.h"
 
-CText::CText(std::string string, int size, std::string fontKey, sf::Color color) :
-_string(string), _size(size), _fontKey(fontKey), _color(color) {
-    _text = sf::Text(getString()->c_str(), *getFont(), getSize());
-    _text.setColor(_color);
+CText::CText(std::string text, int size, std::string fontKey, SDL_Color color) :
+_text(text), _size(size), _fontKey(fontKey), _color(color) {
 }
 
-void CText::onRender(int x, int y, sf::RenderTarget& renderTarget, CCamera* camera) {
+void CText::onRender(int x, int y, CWindow* window, CCamera* camera) {
     if(CAssetManager::getFont(_fontKey) != nullptr)
-        NSurface::renderText(x - camera->offsetX(), y - camera->offsetY(), this, renderTarget);
+        NSurface::renderText(x - camera->offsetX(), y - camera->offsetY(), this, window);
 }
 
-void CText::onRender(int x, int y, sf::RenderTarget& renderTarget) {
+void CText::onRender(int x, int y, CWindow* window) {
     if(CAssetManager::getFont(_fontKey) != nullptr)
-        NSurface::renderText(x, y, this, renderTarget);
+        NSurface::renderText(x, y, this, window);
 }
 
-sf::Font* CText::getFont() {
+TTF_Font* CText::getFont() {
     return CAssetManager::getFont(_fontKey);
 }
 
@@ -33,14 +31,10 @@ int CText::getSize() {
     return _size;
 }
 
-std::string* CText::getString() {
-    return &_string;
-}
-
-sf::Color* CText::getColor() {
-    return &_color;
-}
-
-sf::Text* CText::getText() {
+std::string* CText::getText() {
     return &_text;
+}
+
+SDL_Color* CText::getColor() {
+    return &_color;
 }

@@ -14,7 +14,6 @@
 #include "CSpriteSheet.h"
 #include "CRenderable.h"
 #include "Define.h"
-#include <SFML/Graphics.hpp>
 
 class CSprite {
     
@@ -22,13 +21,11 @@ public:
     CSprite(CSpriteSheet* spriteSheet, Box rect);
     
     CSpriteSheet* getSpriteSheet() { return _spriteSheet; }
-    Box* getOffset() { return &_rect; }
-    virtual sf::Sprite* getSprite() { return &_sprite; }
+    virtual SDL_Rect* getSource() { return &_source; }
     
 private:
     CSpriteSheet* _spriteSheet; // Don't modify from here
-    Box _rect;
-    sf::Sprite _sprite;
+    SDL_Rect _source;
     
 };
 

@@ -8,19 +8,18 @@
 
 #include "CGame.h"
 #include <iostream>
+#include <SDL2_image/SDL_image.h>
+#include <SDL2_ttf/SDL_ttf.h>
 #include "NSurface.h"
 #include "NFile.h"
 #include <cmath>
 #include "Define.h"
 #include "NMouse.h"
-#include <SFML/Graphics.hpp>
-#include <SFML/OpenGL.hpp>
 #include "CText.h"
 #ifdef __APPLE__
 #include "CoreFoundation/CoreFoundation.h"
 #include "ResourcePath.hpp"
 #endif
-#include <SFML/Network.hpp>
 #include "CEnemy.h"
 #include "CUtilityParticle.h"
 #include "CSpriteContainer.h"
@@ -28,7 +27,7 @@
 
 CGame::CGame() :
 _intro("Physics"),
-_lastTime(_clock.getElapsedTime().asMilliseconds()), _timer(_clock.getElapsedTime().asMilliseconds()),
+_lastTime(SDL_GetTicks()), _timer(SDL_GetTicks()), _isRunning(true),
 _ns(1000.0f / (float)GAMEINTERVAL), _delta(0), _frames(0), _updates(0), isFocused(true) {
 }
 
@@ -40,20 +39,19 @@ int CGame::onExecute() {
     switch(_onInit()){
         case -1:
             NFile::log(LogType::ERROR, "Initializing failed!");
-            _running = false;
+            _isRunning = false;
         case 0:
             NFile::log(LogType::SUCCESS, "Initializing succesful!");
     }
     
     NFile::log(LogType::ALERT, "Starting game...");
     
-    while(instance.window.getWindow()->isOpen()) {
-        sf::Event event;
-        while(instance.window.getWindow()->pollEvent(event)){
+    while(_isRunning) {
+        while(SDL_PollEvent(&event)){
             _onEvent(&event);
         }
         
-        float now = _clock.getElapsedTime().asMilliseconds();
+        float now = SDL_GetTicks();
         _delta += (now - _lastTime) / _ns;
         _lastTime = now;
         
@@ -73,7 +71,7 @@ int CGame::onExecute() {
         
         _frames++;
         
-        if(_clock.getElapsedTime().asMilliseconds() - _timer > 1000) {
+        if(SDL_GetTicks() - _timer > 1000) {
             _timer += 1000;
             _title.str("");
             _title /* << _intro << " | " */ << _updates << " ups, " << _frames << " fps";
@@ -97,14 +95,28 @@ int CGame::_onInit() {
     
     NFile::log(LogType::ALERT, "Initializing game...");
     
-    srand((sf::Uint16)time(nullptr));
-    
-    if(instance.window.onInit(_intro, SCREEN_WIDTH, SCREEN_HEIGHT))
+    if(SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+        NFile::log(LogType::ERROR, "SDL_Init failed: ", SDL_GetError());
         return -1;
-    instance.camera.onInit(&instance.window);
+    }
     
-    instance.window.getRenderTexture()->create(SCREEN_WIDTH, SCREEN_HEIGHT);                // Draw unto a texture for applying shaders later
-    instance.window.getSprite()->setTexture(instance.window.getRenderTexture()->getTexture());
+    if(!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+        NFile::log(LogType::ERROR, "IMG_Init failed: ", SDL_GetError());
+        return -1;
+    }
+    
+    if(TTF_Init() != 0) {
+        NFile::log(LogType::ERROR, "TTF_Init failed: ", SDL_GetError());
+        return -1;
+    }
+    
+    srand((Uint16)time(nullptr));
+    
+    if(instance.window.onInit(_intro, SCREEN_WIDTH, SCREEN_HEIGHT)) {
+        NFile::log(LogType::ERROR, "Window.onInit failed: ", SDL_GetError());
+        return -1;
+    }
+    instance.camera.onInit(&instance.window);
     
     NFile::loadMap("resources/map/testMap1.map", &instance);
     
@@ -129,19 +141,6 @@ int CGame::_onInit() {
      Player,     // 6
      Enemy       // 7
     */
-    
-    // Set color and depth clear value
-    glClearDepth(1.f);
-    glClearColor(0.f, 0.f, 0.f, 0.f);
-    
-    // Enable Z-buffer read and write
-    glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE);
-    
-    // Setup a perspective projection
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(90.f, 1.f, 1.f, 500.f);
 
     return 0;
 }
@@ -170,115 +169,117 @@ void CGame::_handleKeyStates() {
     if(!isFocused)
         return;
     
+    const Uint8* keystate = SDL_GetKeyboardState(NULL);
+    
     // Movement
     
-    if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::RIGHT)) {
+    if(keystate[SDL_SCANCODE_D]) {
         instance.player->goRight();
     }
-    if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::LEFT)) {
+    if(keystate[SDL_SCANCODE_A]) {
         instance.player->goLeft();
     }
     
-    if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::UP) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+    if(keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_SPACE]) {
         instance.player->goUp();
     }
     
-    if(sf::Keyboard::isKeyPressed((sf::Keyboard::Key)keyMap::DOWN)) {
+    if(keystate[SDL_SCANCODE_S]) {
         instance.player->goDown();
     }
     
     // Other
     
-    if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) { // damage particle
-        int mousePosX = instance.player->body.getX() - (NMouse::absoluteMouseX(instance.window.getWindow()) + instance.camera.offsetX());
-        int mousePosY = instance.player->body.getY() - 100 - (NMouse::absoluteMouseY(instance.window.getWindow()) + instance.camera.offsetY());
+    if(NMouse::leftMouseButtonPressed()) { // damage particle
+        int mousePosX = instance.player->body.getX() - NMouse::relativeMouseX(&instance.camera);
+        int mousePosY = instance.player->body.getY() - 100 - NMouse::relativeMouseY(&instance.camera);
         float angle = atan2(mousePosY, mousePosX);
         
         const int velocityX = -(cos(angle) * 100);
         const int velocityY = -(sin(angle) * 100);
         
-        //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
+        //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, SDL_Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
         
-        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX(), instance.player->body.getY() - 100, 4, 4}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::DAMAGE, 10);
+        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX(), instance.player->body.getY() - 100, 4, 4}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::DAMAGE, 10);
         tempParticle->body.velX = velocityX;
         tempParticle->body.velY = velocityY;
         instance.entityManager.addParticle(tempParticle);
     }
     
-    if(sf::Mouse::isButtonPressed(sf::Mouse::Right)) {   // heal particle
-        int mousePosX = instance.player->body.getX() - (NMouse::absoluteMouseX(instance.window.getWindow()) + instance.camera.offsetX());
-        int mousePosY = instance.player->body.getY() - 100 - (NMouse::absoluteMouseY(instance.window.getWindow()) + instance.camera.offsetY());
+    if(NMouse::rightMouseButtonPressed()) {   // heal particle
+        int mousePosX = instance.player->body.getX() - NMouse::relativeMouseX(&instance.camera);
+        int mousePosY = instance.player->body.getY() - 100 - NMouse::relativeMouseY(&instance.camera);
         float angle = atan2(mousePosY, mousePosX);
         
         const float velocityX = -(cos(angle) * 100);
         const float velocityY = -(sin(angle) * 100);
         
-        //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
+        //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, SDL_Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
         
-        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX(), instance.player->body.getY() - 100, 20, 20}, sf::Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::HEAL, 10);
+        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX(), instance.player->body.getY() - 100, 20, 20}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::HEAL, 10);
         tempParticle->body.velX = velocityX;
         tempParticle->body.velY = velocityY;
         instance.entityManager.addParticle(tempParticle);
     }
 }
 
-void CGame::_onEvent(sf::Event* event) {
+void CGame::_onEvent(SDL_Event* event) {
     
     //if(event->key.repeat != 0) return;
     
     switch(event->type) {
-        case sf::Event::LostFocus:
-            isFocused = false;
+            
+        case SDL_QUIT:
+            _isRunning = false;
             break;
             
-        case sf::Event::GainedFocus:
-            isFocused = true;
-            break;
-            
-        case sf::Event::Closed:
-            instance.window.getWindow()->close();
-            break;
-            
-        case sf::Event::Resized:
-            //instance.window.updateView(event->size.width, event->size.height);
-            instance.window.setSize(event->size.width, event->size.height);
-            break;
-            
-        case sf::Event::KeyPressed:
-            switch(event->key.code) {
-                    
-                case sf::Keyboard::Y:
+        case SDL_WINDOWEVENT:
+            switch(event->window.event) {
+                case SDL_WINDOWEVENT_FOCUS_GAINED:
+                    isFocused = true;
                     break;
                     
-                case sf::Keyboard::Q:
-                    //CEntity* temp;
-                    //temp->say("asdf", "TESTFONT", ChatBubbleType::SAY);     // Crash the game
+                case SDL_WINDOWEVENT_FOCUS_LOST:
+                    isFocused = false;
                     break;
+            }
+            break;
+            
+//        case sf::Event::Resized:
+//            //instance.window.updateView(event->size.width, event->size.height);
+//            //instance.window.setSize(event->size.width, event->size.height);
+//            break;
+            
+        case SDL_KEYDOWN:
+            switch(event->key.keysym.sym) {
                     
                 case keyMap::EXIT:
-                    instance.window.getWindow()->close();
+                    _isRunning = false;
+                    break;
+                    
+                case SDLK_q:
+                    //CEntity* temp;
+                    //temp->say("asdf", "TESTFONT", ChatBubbleType::SAY);     // Crash the game
                     break;
                     
                 case keyMap::SNEAK:
                     instance.player->setMovementState(MovementState::SNEAKING_MOVEMENT);
                     break;
-                case sf::Keyboard::LControl:
+                    
+                case SDLK_LCTRL:
                     instance.player->setMovementState(MovementState::RUNNING_MOVEMENT);
                     break;
                     
                 case keyMap::BLOCK:
                 {
-                    CEntity* temp = instance.entityManager.addEntity(Box{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera), 40, 40}, sf::Color{0, 0, 255, 0});
+                    CEntity* temp = instance.entityManager.addEntity(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 40, 40}, SDL_Color{0, 0, 255, 0});
                     temp->addProperty(EntityProperty::STATIC);
                 }
                     break;
                     
-//                case keyMap::PARTICLEEM:
-//                    break;
-                    
                 case keyMap::RESET:
                 {
-                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera), 60, 164}, "player");
+                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 60, 164}, "player");
                     tempNpc->setTarget(instance.player);
                     tempNpc->spriteStateTypes[SpriteStateTypes::ASCENDING] = "enemyJumping";
                     tempNpc->spriteFollowsCollisionBox = false;
@@ -286,12 +287,10 @@ void CGame::_onEvent(sf::Event* event) {
                 }
                     break;
                     
-                case sf::Keyboard::H:
+                case SDLK_h:
                 {
-                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera), 32 * 4, 32 * 4}, "yrl");
-                    //tempNpc->setTarget(instance.entityManager.getEntity("n:bush"));
+                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 32 * 4, 32 * 4}, "yrl");
                     tempNpc->setTarget(instance.player);
-                    //tempNpc->setShaderKey("");
                     instance.entityManager.addEntity(tempNpc);
                 }
                     break;
@@ -335,7 +334,7 @@ void CGame::_onEvent(sf::Event* event) {
                     for(int i = 0; i < 50; i++) {
                         text += alphanum[rand() % (sizeof(alphanum) - 1)];
                     }
-                    instance.entityManager.getEntity("n:bush")->say(text, "TESTFONT", ChatBubbleType::YELL);
+                    //instance.entityManager.getEntity("n:bush")->say(text, "TESTFONT", ChatBubbleType::YELL);
                 }
                     break;
                     
@@ -362,10 +361,10 @@ void CGame::_onEvent(sf::Event* event) {
             }
             break;
         
-        case sf::Event::KeyReleased:
-            switch(event->key.code) {
+        case SDL_KEYUP:
+            switch(event->key.keysym.sym) {
                 case keyMap::SNEAK:
-                case sf::Keyboard::LControl:
+                case SDLK_LCTRL:
                     instance.player->setMovementState(MovementState::WALKING_MOVEMENT);
                     break;
                     
@@ -376,10 +375,10 @@ void CGame::_onEvent(sf::Event* event) {
         default:
             break;
             
-        case sf::Event::MouseButtonPressed:
+        case SDL_MOUSEBUTTONDOWN:
             
-            if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-                auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera));
+            if(NMouse::leftMouseButtonPressed()) {
+                auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera));
                 if(tempTarget != nullptr) {
                     std::string toSay = "Name: \"" + instance.entityManager.getNameOfEntity(tempTarget) +
                     "\", CollisionLayer: " + std::to_string(tempTarget->collisionLayer);
@@ -387,7 +386,7 @@ void CGame::_onEvent(sf::Event* event) {
                 }
             }
             
-            if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
+            if(NMouse::rightMouseButtonPressed()) {
 //                auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera));
 //                if(tempTarget != nullptr && instance.seeker != nullptr) {
 //                    instance.seeker->setTarget(tempTarget);
@@ -400,110 +399,18 @@ void CGame::_onEvent(sf::Event* event) {
 }
 
 void CGame::_onLoop() {
-    
-    // Send
-    
-//    sf::UdpSocket socket;
-//    if(socket.bind(1337) != sf::Socket::Done) { /* error */ }
-//    sf::IpAddress adress = sf::IpAddress::LocalHost;
-//    unsigned short port = 1234;
-//    std::string thing = std::to_string(instance.entityManager.getEntity("m:player")->body.getX());
-//    char data[thing.size()];
-//    std::strcpy(data, thing.c_str());
-//    if(socket.send(data, thing.size(), adress, port) != sf::Socket::Done) { /* error */ }
-    
     instance.entityManager.onLoop();
     instance.camera.onLoop();
-    
-//    std::string toPrint = "";
-//    for(auto &grid: instance.player->gridCoordinates) {
-//        toPrint += "X: ";
-//        toPrint += grid.x;
-//        toPrint += ", Y: ";
-//        toPrint += grid.y;
-//        toPrint += "; ";
-//    }
-//    
-//    NFile::log(LogType::ALERT, "Player grid: ", toPrint);
-    //NFile::log(LogType::ALERT, "asdf: ", instance.player->gridCoordinates[1].x);
 }
-
-//void CGame::_onRender() {
-//    
-//    sf::View view1(sf::FloatRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
-//    view1.setViewport(sf::FloatRect(0, 0, 1, 1));
-//    sf::View view2(sf::FloatRect(0.5f, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
-//    view2.setViewport(sf::FloatRect(0.75f, 0, 0.25f, 0.25f));
-//    view2.zoom(2.0f);
-//    
-//    instance.window.getRenderTexture()->clear();
-//    
-//    instance.window.getWindow()->setView(view1);
-//    instance.window.getWindow()->clear();
-//    NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, instance.window.getRenderTexture(), 255, 255, 255);
-//    instance.entityManager.onRender(instance.window.getRenderTexture(), &instance.camera);
-//    
-////    instance.window.getWindow()->setView(view2);
-////    instance.entityManager.onRender(instance.window.getRenderTexture(), &instance.camera);
-//    
-//    instance.window.getRenderTexture()->display();
-//    instance.window.getWindow()->display();
-//    
-//}
 
 void CGame::_onRender() {
     
-    instance.window.getWindow()->clear();
-    instance.window.getRenderTexture()->clear();
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    SDL_SetRenderDrawColor(instance.window.getRenderer(), 255, 255, 255, 255);
+    SDL_RenderClear(instance.window.getRenderer());
     
-    NSurface::renderRect(sf::IntRect{0,0,SCREEN_WIDTH,SCREEN_HEIGHT}, *instance.window.getRenderTexture(), 255, 255, 255);
     instance.entityManager.onRender(&instance.window, &instance.camera);
     
-//    glMatrixMode(GL_MODELVIEW);
-//    glLoadIdentity();
-//    glTranslatef(0.f, 0.f, -200.f);
-//    glRotatef((int)_clock.getElapsedTime().asSeconds() * 50, 1.f, 0.f, 0.f);
-//    glRotatef((int)_clock.getElapsedTime().asSeconds() * 30, 0.f, 1.f, 0.f);
-//    glRotatef((int)_clock.getElapsedTime().asSeconds() * 90, 0.f, 0.f, 1.f);
-//    
-//    glBegin(GL_QUADS);
-//    
-//    glVertex3f(-50.f, -50.f, -50.f);
-//    glVertex3f(-50.f,  50.f, -50.f);
-//    glVertex3f( 50.f,  50.f, -50.f);
-//    glVertex3f( 50.f, -50.f, -50.f);
-//    
-//    glVertex3f(-50.f, -50.f, 50.f);
-//    glVertex3f(-50.f,  50.f, 50.f);
-//    glVertex3f( 50.f,  50.f, 50.f);
-//    glVertex3f( 50.f, -50.f, 50.f);
-//    
-//    glVertex3f(-50.f, -50.f, -50.f);
-//    glVertex3f(-50.f,  50.f, -50.f);
-//    glVertex3f(-50.f,  50.f,  50.f);
-//    glVertex3f(-50.f, -50.f,  50.f);
-//    
-//    glVertex3f(50.f, -50.f, -50.f);
-//    glVertex3f(50.f,  50.f, -50.f);
-//    glVertex3f(50.f,  50.f,  50.f);
-//    glVertex3f(50.f, -50.f,  50.f);
-//    
-//    glVertex3f(-50.f, -50.f,  50.f);
-//    glVertex3f(-50.f, -50.f, -50.f);
-//    glVertex3f( 50.f, -50.f, -50.f);
-//    glVertex3f( 50.f, -50.f,  50.f);
-//    
-//    glVertex3f(-50.f, 50.f,  50.f);
-//    glVertex3f(-50.f, 50.f, -50.f);
-//    glVertex3f( 50.f, 50.f, -50.f);
-//    glVertex3f( 50.f, 50.f,  50.f);
-//    
-//    glEnd();
-    
-    instance.window.getRenderTexture()->display();
-    instance.window.getWindow()->draw(*instance.window.getSprite());
-    instance.window.getWindow()->display();
+    SDL_RenderPresent(instance.window.getRenderer());
 }
 
 int CGame::_onCleanup() {

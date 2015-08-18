@@ -11,12 +11,11 @@
 
 #include <stdio.h>
 #include "CLiving.h"
-#include <SFML/Graphics.hpp>
 
 class CNpc : public CLiving {
     
 public:
-    CNpc(Box rect, sf::Color color);
+    CNpc(Box rect, SDL_Color color);
     CNpc(Box rect, std::string spriteKey);
     
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);

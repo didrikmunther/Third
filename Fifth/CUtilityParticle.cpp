@@ -11,12 +11,12 @@
 
 #include <iostream>
 
-CUtilityParticle::CUtilityParticle(Box rect, sf::Color color, CEntity* owner, BasicUtilities utility) :
+CUtilityParticle::CUtilityParticle(Box rect, SDL_Color color, CEntity* owner, BasicUtilities utility) :
 CParticle(rect, color), _owner(owner), _basicUtility(utility) {
     _init();
 }
 
-CUtilityParticle::CUtilityParticle(Box rect, sf::Color color, CEntity* owner, BasicUtilities utility, int livingTime) :
+CUtilityParticle::CUtilityParticle(Box rect, SDL_Color color, CEntity* owner, BasicUtilities utility, int livingTime) :
 CParticle(rect, color, livingTime), _owner(owner), _basicUtility(utility) {
     _init();
 }

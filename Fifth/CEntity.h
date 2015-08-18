@@ -10,9 +10,9 @@
 #define __Third__CEntity__
 
 #include <stdio.h>
-#include <SFML/Graphics.hpp>
 #include <memory>
 #include <map>
+#include <vector>
 #include "CBody.h"
 #include "CSprite.h"
 #include "CAssetManager.h"
@@ -39,7 +39,7 @@ class CEntityManager;
 class CEntity : public CRenderable, public CCollidable {
     
 public:
-    CEntity(Box rect, sf::Color color);
+    CEntity(Box rect, SDL_Color color);
     CEntity(Box rect, std::string spriteContainerKey);
     ~CEntity();
     
@@ -72,7 +72,7 @@ public:
     std::string getSpriteContainerKey();
     std::string spriteContainerKey;
     bool hasSprite();
-    sf::Color color;
+    SDL_Color color;
     
     bool isDead() { return _isDead; }
     bool toRemove() { return _toRemove; }

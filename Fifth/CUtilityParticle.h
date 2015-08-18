@@ -21,8 +21,8 @@ enum BasicUtilities {
 class CUtilityParticle : public CParticle {
     
 public:
-    CUtilityParticle(Box rect, sf::Color color, CEntity* owner, BasicUtilities utility);
-    CUtilityParticle(Box rect, sf::Color color, CEntity* owner, BasicUtilities utility, int livingTime);
+    CUtilityParticle(Box rect, SDL_Color color, CEntity* owner, BasicUtilities utility);
+    CUtilityParticle(Box rect, SDL_Color color, CEntity* owner, BasicUtilities utility, int livingTime);
     
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     

@@ -15,8 +15,8 @@
 std::map<std::string, CSprite*> CAssetManager::_SpriteVector;
 std::map<std::string, CSpriteContainer*> CAssetManager::_SpriteContainerVector;
 std::map<std::string, CSpriteSheet*> CAssetManager::_SpriteSheetVector;
-std::map<std::string, sf::Font> CAssetManager::_FontVector;
-std::map<std::string, sf::Shader*> CAssetManager::_ShaderVector;
+std::map<std::string, TTF_Font*> CAssetManager::_FontVector;
+//std::map<std::string, sf::Shader*> CAssetManager::_ShaderVector;
 int CAssetManager::_assetId = 0;
 
 CAssetManager::CAssetManager() { }
@@ -76,14 +76,14 @@ std::string CAssetManager::addSpriteContainer(CSpriteContainer* spriteContainer,
     }
 }
 
-CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, std::string fileName) {
+CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, SDL_Renderer* renderer, std::string fileName) {
     //fileName = resourcePath() + fileName;
     if(_SpriteSheetVector.find(name) != _SpriteSheetVector.end()) {
         NFile::log(LogType::WARNING, "Couldn't add spritesheet: \"", name, "\", because it already exists.");
         return _SpriteSheetVector[name];
     } else {
         CSpriteSheet* temp = new CSpriteSheet();
-        if(!temp->openFile(fileName)) {
+        if(!temp->openFile(renderer, fileName)) {
             NFile::log(LogType::WARNING, "Couldn't add spritesheet: \"", name, "\", could not open file \"", fileName, "\".");
             return nullptr;
         } else {
@@ -94,40 +94,39 @@ CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, std::string fileNa
     }
 }
 
-sf::Font* CAssetManager::addFont(std::string name, std::string fileName) {
-    //fileName = resourcePath() + fileName;
+TTF_Font* CAssetManager::addFont(std::string name, std::string fileName, int size) {
     if(_FontVector.find(name) != _FontVector.end()) {
         NFile::log(LogType::WARNING, "Couldn't add font: \"", name, "\", because it already exists.");
-        return &_FontVector[name];
+        return _FontVector[name];
     } else {
-        sf::Font temp;
-        if(!temp.loadFromFile(fileName)) {
+        TTF_Font *temp = TTF_OpenFont(fileName.c_str(), size);
+        if(temp == nullptr) {
             NFile::log(LogType::WARNING, "Couldn't add font: \"", name, "\", could not open file \"", fileName, "\".");
             return nullptr;
         } else {
             NFile::log(LogType::SUCCESS, "Loaded font: \"", fileName, "\" as \"", name, "\"");
             _FontVector[name] = temp;
-            return &_FontVector[name];
+            return _FontVector[name];
         }
     }
 }
 
-sf::Shader* CAssetManager::addShader(std::string name, std::string fileName, sf::Shader::Type type) {
-    if(_ShaderVector.find(name) != _ShaderVector.end()) {
-        NFile::log(LogType::WARNING, "Couldn't add shader: \"", name, "\", because it already exists.");
-        return _ShaderVector[name];
-    } else {
-        sf::Shader* temp = new sf::Shader;
-        if(!temp->loadFromFile(fileName.c_str(), type)) {
-            NFile::log(LogType::WARNING, "Couldn't add shader: \"", name, "\", could not open file \"", fileName, "\".");
-            return nullptr;
-        } else {
-            NFile::log(LogType::SUCCESS, "Loaded shader: \"", fileName, "\" as \"", name, "\"");
-            _ShaderVector[name] = temp;
-            return _ShaderVector[name];
-        }
-    }
-}
+//sf::Shader* CAssetManager::addShader(std::string name, std::string fileName, sf::Shader::Type type) {
+//    if(_ShaderVector.find(name) != _ShaderVector.end()) {
+//        NFile::log(LogType::WARNING, "Couldn't add shader: \"", name, "\", because it already exists.");
+//        return _ShaderVector[name];
+//    } else {
+//        sf::Shader* temp = new sf::Shader;
+//        if(!temp->loadFromFile(fileName.c_str(), type)) {
+//            NFile::log(LogType::WARNING, "Couldn't add shader: \"", name, "\", could not open file \"", fileName, "\".");
+//            return nullptr;
+//        } else {
+//            NFile::log(LogType::SUCCESS, "Loaded shader: \"", fileName, "\" as \"", name, "\"");
+//            _ShaderVector[name] = temp;
+//            return _ShaderVector[name];
+//        }
+//    }
+//}
 
 CSprite* CAssetManager::getSprite(std::string key) {
     auto it = _SpriteVector.find(key);
@@ -153,21 +152,21 @@ CSpriteSheet* CAssetManager::getSpriteSheet(std::string key) {
         return it->second;
 }
 
-sf::Font* CAssetManager::getFont(std::string key) {
+TTF_Font* CAssetManager::getFont(std::string key) {
     auto it = _FontVector.find(key);
     if(it == _FontVector.end())
         return nullptr;
     else
-        return &it->second;
-}
-
-sf::Shader* CAssetManager::getShader(std::string key) {
-    auto it = _ShaderVector.find(key);
-    if(it == _ShaderVector.end())
-        return nullptr;
-    else
         return it->second;
 }
+
+//sf::Shader* CAssetManager::getShader(std::string key) {
+//    auto it = _ShaderVector.find(key);
+//    if(it == _ShaderVector.end())
+//        return nullptr;
+//    else
+//        return it->second;
+//}
 
 void CAssetManager::removeSpriteContainer(std::string key) {
     auto it = _SpriteContainerVector.find(key);
@@ -229,17 +228,17 @@ void CAssetManager::onCleanup() {
             NFile::log(LogType::SUCCESS, "Unloaded asset: ", toWrite);
     }
     
-    {
-        std::string toWrite = "";
-        auto i = _ShaderVector.begin();
-        while(i != _ShaderVector.end()) {
-            toWrite += " \"" + i->first + "\",";
-            delete i->second;
-            _ShaderVector.erase(i++->first);
-        }
-        _ShaderVector.clear();
-        if(toWrite != "")
-            NFile::log(LogType::SUCCESS, "Unloaded asset: ", toWrite);
-    }
+//    {
+//        std::string toWrite = "";
+//        auto i = _ShaderVector.begin();
+//        while(i != _ShaderVector.end()) {
+//            toWrite += " \"" + i->first + "\",";
+//            delete i->second;
+//            _ShaderVector.erase(i++->first);
+//        }
+//        _ShaderVector.clear();
+//        if(toWrite != "")
+//            NFile::log(LogType::SUCCESS, "Unloaded asset: ", toWrite);
+//    }
     
 }

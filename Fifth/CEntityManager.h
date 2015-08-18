@@ -9,7 +9,6 @@
 #ifndef __Third__CEntityManager__
 #define __Third__CEntityManager__
 
-#include <SFML/Graphics.hpp>
 #include <stdio.h>
 #include <memory>
 #include <vector>
@@ -29,15 +28,15 @@ class CEntityManager {
 public:
     CEntityManager();
     
-    CEntity* addEntity(Box rect, sf::Color color, std::string name = "");
+    CEntity* addEntity(Box rect, SDL_Color color, std::string name = "");
     CEntity* addEntity(Box rect, std::string spriteKey, std::string name = "");
     CEntity* getEntity(std::string name);
     CEntity* getEntityAtCoordinate(int x, int y);
     std::string getNameOfEntity(CEntity* entity);
     std::string addEntity(CEntity* entity, std::string name = "");
-    void addParticle(Box rect, sf::Color color, int livingTime);
+    void addParticle(Box rect, SDL_Color color, int livingTime);
     void addParticle(CParticle* particle);
-    void addParticleEmitter(sf::IntRect rect, sf::Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, ParticleVelocity velocity);
+//    void addParticleEmitter(SDL_Rect rect, SDL_Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, ParticleVelocity velocity);
     void addGuiText(CGuiText* guiText);
     
     void onRender(CWindow* window, CCamera* camera);
@@ -62,7 +61,7 @@ public:
 private:
     std::map<std::string, CEntity*> _EntityVector;
     std::vector<CParticle*> _ParticleVector;
-    std::vector<CParticleEmitter*> _ParticleEmitterVector;
+//    std::vector<CParticleEmitter*> _ParticleEmitterVector;
     std::vector<CGuiText*> _GuiTextVector;
     std::map<std::string, CEntity*> _DeadEntitiesVector;
     

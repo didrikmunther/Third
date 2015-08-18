@@ -20,13 +20,13 @@ public:
     CSpriteContainer(std::string spriteKey, Area spriteArea) : spriteKey(spriteKey), spriteArea(spriteArea) {}
     CSpriteContainer(std::string spriteKey) : spriteKey(spriteKey) {
         if(CAssetManager::getSprite(spriteKey) != nullptr)
-            spriteArea = Area {(int)getSprite()->getSprite()->getGlobalBounds().width,
-                               (int)getSprite()->getSprite()->getGlobalBounds().height};
+            spriteArea = Area {(int)getSprite()->getSource()->w,
+                               (int)getSprite()->getSource()->h};
     }
     
     std::string getSpriteKey() { return spriteKey; }
     CSprite* getSprite() { return CAssetManager::getSprite(spriteKey); }
-    //void setSpriteKey(std::string spriteKey) { this->spriteKey = spriteKey; }
+    void setSpriteKey(std::string spriteKey) { this->spriteKey = spriteKey; }
     
     Area spriteArea;
     

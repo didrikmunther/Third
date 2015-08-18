@@ -17,7 +17,7 @@
 class CPlayer : public CLiving {
     
 public:
-    CPlayer(Box rect, sf::Color color);
+    CPlayer(Box rect, SDL_Color color);
     CPlayer(Box rect, std::string spriteKey);
     
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);

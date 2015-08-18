@@ -11,14 +11,14 @@
 #include "Define.h"
 #include <iostream>
 
-CPlayer::CPlayer(Box rect, sf::Color color) :
+CPlayer::CPlayer(Box rect, SDL_Color color) :
     CLiving(rect, color) {
         _init();
 }
 
 CPlayer::CPlayer(Box rect, std::string spriteKey) :
     CLiving(rect, spriteKey) {
-        CPlayer(rect, sf::Color{255, 255, 255, 255});
+        CPlayer(rect, SDL_Color{255, 255, 255, 255});
         _init();
 }
 

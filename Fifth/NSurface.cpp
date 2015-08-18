@@ -11,63 +11,60 @@
 #include "CSpriteContainer.h"
 #include <iostream>
 
-void NSurface::renderRect(int x, int y, int w, int h, sf::RenderTarget& target, int r, int g, int b, int a) {
-    renderRect(sf::IntRect{x,y,w,h}, target, r, g, b, a);
-}
-
-void NSurface::renderRect(sf::IntRect rect, sf::RenderTarget& target, int r, int g, int b, int a) {
-    sf::RectangleShape rectangle(sf::Vector2f(rect.width, rect.height));
-    rectangle.setPosition(rect.left, rect.top);
-    rectangle.setFillColor(sf::Color(r, g, b, a));
+void NSurface::renderRect(int x, int y, int w, int h, CWindow* window, int r, int g, int b, int a) {
+    SDL_Rect rect;
     
-    target.draw(rectangle);
+    rect.x = x;
+    rect.y = y;
+    rect.w = w;
+    rect.h = h;
+    
+    SDL_SetRenderDrawColor(window->getRenderer(), r, g, b, 255);
+    SDL_RenderFillRect(window->getRenderer(), &rect);
 }
 
-void NSurface::renderEntity(CEntity* entity, CWindow* window, sf::IntRect destination) {
+void NSurface::renderRect(SDL_Rect* rect, CWindow* window, int r, int g, int b, int a) {
+    SDL_SetRenderDrawColor(window->getRenderer(), r, g, b, 255);
+    SDL_RenderFillRect(window->getRenderer(), rect);
+}
+
+void NSurface::renderEntity(CEntity* entity, CWindow* window, int x, int y) {
     if(entity->getSpriteContainer()->getSprite() == nullptr) return;
-    auto nsprite = *entity->getSpriteContainer()->getSprite()->getSprite();
-    nsprite.setPosition(destination.left, destination.top);
-    nsprite.setColor(sf::Color{255, 255, 255, (uint8_t)entity->getTransparency()});
+    SDL_Rect* src = entity->getSpriteContainer()->getSprite()->getSource();
+    SDL_Rect destination = {x, y, 0, 0};
+    SDL_SetTextureAlphaMod(entity->getSpriteContainer()->getSprite()->getSpriteSheet()->getTexture(), entity->getTransparency());
     
     int spriteWidth, spriteHeight = 0;
     if(entity->spriteFollowsCollisionBox) {
-        spriteWidth = entity->body.getW();
-        spriteHeight = entity->body.getH();
+        destination.w = entity->body.getW();
+        destination.h = entity->body.getH();
     } else {
-        spriteWidth = entity->getSpriteContainer()->spriteArea.w;
-        spriteHeight = entity->getSpriteContainer()->spriteArea.h;
+        destination.w = entity->getSpriteContainer()->spriteArea.w;
+        destination.h = entity->getSpriteContainer()->spriteArea.h;
     }
     
-    if(entity->hasProperty(EntityProperty::FLIP)) {
-        nsprite.setOrigin({ nsprite.getLocalBounds().width, 0 });
-        nsprite.setScale(-spriteWidth / entity->getSpriteContainer()->getSprite()->getSprite()->getGlobalBounds().width, spriteHeight / entity->getSpriteContainer()->getSprite()->getSprite()->getGlobalBounds().height);
-    } else {
-        nsprite.setScale(spriteWidth / entity->getSpriteContainer()->getSprite()->getSprite()->getGlobalBounds().width, spriteHeight / entity->getSpriteContainer()->getSprite()->getSprite()->getGlobalBounds().height);
-    }
+    SDL_RendererFlip flip;
+    if(entity->hasProperty(EntityProperty::FLIP))
+        flip = SDL_RendererFlip::SDL_FLIP_HORIZONTAL;
+    else
+        flip = SDL_RendererFlip::SDL_FLIP_NONE;
     
-    window->getRenderTexture()->draw(nsprite);
-    
-//    sf::Shader* shader = CAssetManager::getShader(entity->getShaderKey());
-//    sf::RenderStates states;
-//    if(shader != nullptr) {
-//        shader->setParameter("frag_LightOrigin", sf::Vector2f(destination.left + destination.width / 2, destination.top + destination.height / 2));
-//        shader->setParameter("frag_LightColor", sf::Vector3f(0, 255, 0));
-//        shader->setParameter("frag_LightAttenuation", 10);
-//        shader->setParameter("frag_ScreenResolution", sf::Vector2f((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT));
-//        states.shader = shader;
-//        states.blendMode = sf::BlendAdd;
-//    }
-    
-    
-    //window->getRenderTexture()->draw(*window->getSprite(), states);
-    window->getRenderTexture()->draw(*window->getSprite());
+    SDL_RenderCopyEx(window->getRenderer(), entity->getSpriteContainer()->getSprite()->getSpriteSheet()->getTexture(), src, &destination, 0, nullptr, flip);
     
 }
 
-void NSurface::renderText(int x, int y, CText* text, sf::RenderTarget& target) {
-    text->getText()->setPosition(x, y);
-    
-    target.draw(*text->getText());
+void NSurface::renderText(int x, int y, CText* text, CWindow* window) {
+    SDL_Surface *surface = TTF_RenderText_Blended(text->getFont(), (*text->getText()).c_str(), *text->getColor());
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(window->getRenderer(), surface);
+    int w, h;
+    SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
+    renderTexture(window->getRenderer(), SDL_Rect{x, y, w, h}, texture);
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
+}
+
+void NSurface::renderTexture(SDL_Renderer* renderer, SDL_Rect destination, SDL_Texture *texture) {
+    SDL_RenderCopy(renderer, texture, nullptr, &destination);
 }
 
 

@@ -10,7 +10,7 @@
 #include "NSurface.h"
 #include "CCombatText.h"
 
-CLiving::CLiving(Box rect, sf::Color color) : CMovable(rect, color) {
+CLiving::CLiving(Box rect, SDL_Color color) : CMovable(rect, color) {
     _init();
 }
 
@@ -55,17 +55,17 @@ void CLiving::renderAdditional(CWindow* window, CCamera* camera, RenderFlags ren
                              body.getY() - bgHeight - floatOverHead - camera->offsetY(),
                              bgWidth,
                              bgHeight,
-                             *window->getRenderTexture(), 255, 0, 0);
+                             window, 255, 0, 0);
         NSurface::renderRect(body.getX() + body.getW() / 2 - bgWidth / 2 - camera->offsetX(),  // Health
                              body.getY() - bgHeight - floatOverHead - camera->offsetY(),
                              healthWidth,
                              bgHeight,
-                             *window->getRenderTexture(), 0, 255, 0);
+                             window, 0, 255, 0);
         NSurface::renderRect(body.getX() + body.getW() / 2 - bgWidth / 2 - camera->offsetX(),  // Kevlar
                              body.getY() - bgHeight - floatOverHead - camera->offsetY() + bgHeight / 2 + 1,
                              kevlarWidth,
                              bgHeight / 2,
-                             *window->getRenderTexture(), 128, 128, 128);
+                             window, 128, 128, 128);
     }
     
 }
@@ -77,7 +77,7 @@ int CLiving::dealDamage(int amount, UtilityPosition position) {
     if(position.y == 0)
         position.y = body.getY();
     
-    sf::Color damageColor = {255, 0, 0};
+    SDL_Color damageColor = {255, 0, 0};
     
     int* health = &_values[ValueTypes::HEALTH];
     int* kevlar = &_values[ValueTypes::KEVLAR];
@@ -110,7 +110,7 @@ int CLiving::heal(int amount, UtilityPosition position) {
     if(position.y == 0)
         position.y = body.getY();
     
-    sf::Color healingColor = {0, 255, 0};
+    SDL_Color healingColor = {0, 255, 0};
     
     int* health = &_values[ValueTypes::HEALTH];
     *health += amount;

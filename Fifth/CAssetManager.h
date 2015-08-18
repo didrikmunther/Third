@@ -10,8 +10,8 @@
 #define __Third__CAssetManager__
 
 #include <stdio.h>
+#include <SDL2_ttf/SDL_ttf.h>
 #include "CSpriteSheet.h"
-#include <SFML/Graphics.hpp>
 #include "CSprite.h"
 #include <map>
 #include <string>
@@ -27,15 +27,15 @@ public:
     static std::string addSprite(CSprite* sprite, std::string name = "");
     static CSpriteContainer* addSpriteContainer(std::string name, std::string spriteKey, Area area = {-1, -1});
     static std::string addSpriteContainer(CSpriteContainer* spriteContainer, std::string name = "");
-    static CSpriteSheet* addSpriteSheet(std::string name, std::string fileName);
-    static sf::Font* addFont(std::string name, std::string fileName);
-    static sf::Shader* addShader(std::string name, std::string fileName, sf::Shader::Type type);
+    static CSpriteSheet* addSpriteSheet(std::string name, SDL_Renderer* renderer, std::string fileName);
+    static TTF_Font* addFont(std::string name, std::string fileName, int size);
+    //static sf::Shader* addShader(std::string name, std::string fileName, sf::Shader::Type type);
     
     static CSprite* getSprite(std::string key);
     static CSpriteContainer* getSpriteContainer(std::string key);
     static CSpriteSheet* getSpriteSheet(std::string key);
-    static sf::Font* getFont(std::string key);
-    static sf::Shader* getShader(std::string key);
+    static TTF_Font* getFont(std::string key);
+    //static sf::Shader* getShader(std::string key);
     
     static void removeSpriteContainer(std::string key);
     
@@ -45,8 +45,8 @@ private:
     static std::map<std::string, CSprite*> _SpriteVector;
     static std::map<std::string, CSpriteContainer*> _SpriteContainerVector;
     static std::map<std::string, CSpriteSheet*> _SpriteSheetVector;
-    static std::map<std::string, sf::Font> _FontVector;
-    static std::map<std::string, sf::Shader*> _ShaderVector;
+    static std::map<std::string, TTF_Font*> _FontVector;
+    //static std::map<std::string, sf::Shader*> _ShaderVector;
     static int _assetId;
     
 };

@@ -10,13 +10,12 @@
 #define __Third__CParticle__
 
 #include <stdio.h>
-#include <SFML/Graphics.hpp>
 #include "CEntity.h"
 
 class CParticle : public CEntity {
     
 public:
-    CParticle(Box rect, sf::Color color, int livingTime = 5);
+    CParticle(Box rect, SDL_Color color, int livingTime = 5);
     CParticle(Box rect, std::string spriteKey, int livingTime = 5);
     
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
@@ -31,7 +30,6 @@ private:
     
     void _init();
     
-    sf::Clock _clock;
     int _creationTime;
 };
 

@@ -10,7 +10,7 @@
 #define __Fifth__CRenderable__
 
 #include <stdio.h>
-#include <SFML/Graphics.hpp>
+#include <string>
 
 class CRenderable {
 

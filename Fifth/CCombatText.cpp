@@ -9,7 +9,7 @@
 #include "CCombatText.h"
 #include "NSurface.h"
 
-CCombatText::CCombatText(int x, int y, sf::Color color, int size, std::string text, std::string fontKey) : CGuiText(x, y, text, fontKey) {
+CCombatText::CCombatText(int x, int y, SDL_Color color, int size, std::string text, std::string fontKey) : CGuiText(x, y, text, fontKey) {
     
     _livingTime = 2;
     
@@ -23,11 +23,11 @@ CCombatText::CCombatText(int x, int y, sf::Color color, int size, std::string te
 }
 
 void CCombatText::onLoop() {
-    if(_clock.getElapsedTime().asMilliseconds() > _creationTime + _livingTime * 1000)
+    if(SDL_GetTicks() > _creationTime + _livingTime * 1000)
         _toRemove = true;
     _y--;
 }
 
 void CCombatText::onRender(CWindow* window, CCamera* camera) {    
-    _textObj->onRender(_x, _y, *window->getRenderTexture(), camera);
+    _textObj->onRender(_x, _y, window, camera);
 }

@@ -113,22 +113,22 @@ void NFile::loadMap(std::string fileName, CInstance* instance) {
         const rapidjson::Value& fonts = d["fonts"];                                     // Fonts
         for(rapidjson::SizeType i = 0; i < fonts.Size(); i++) {
             const rapidjson::Value& font = fonts[i];
-            if(!(font.HasMember("name") && font.HasMember("path")))
+            if(!(font.HasMember("name") && font.HasMember("path") && font.HasMember("size")))
                 continue;
             
-            CAssetManager::addFont(font["name"].GetString(), font["path"].GetString());
+            CAssetManager::addFont(font["name"].GetString(), font["path"].GetString(), font["size"].GetInt());
         }
 
-        const rapidjson::Value& shaders = d["shaders"];                                 // Shaders
-        for(rapidjson::SizeType i = 0; i < shaders.Size(); i++) {
-            const rapidjson::Value& shader = shaders[i];
-            if(!(shader.HasMember("name") && shader.HasMember("path") && shader.HasMember("shaderType")))
-                continue;
-            if(!shader["shaderType"].IsInt() || !(0 <= shader["shaderType"].GetInt() >= 1))
-                continue;
-            
-            CAssetManager::addShader(shader["name"].GetString(), shader["path"].GetString(), (sf::Shader::Type)shader["shaderType"].GetInt());
-        }
+//        const rapidjson::Value& shaders = d["shaders"];                                 // Shaders
+//        for(rapidjson::SizeType i = 0; i < shaders.Size(); i++) {
+//            const rapidjson::Value& shader = shaders[i];
+//            if(!(shader.HasMember("name") && shader.HasMember("path") && shader.HasMember("shaderType")))
+//                continue;
+//            if(!shader["shaderType"].IsInt() || !(0 <= shader["shaderType"].GetInt() >= 1))
+//                continue;
+//            
+//            CAssetManager::addShader(shader["name"].GetString(), shader["path"].GetString(), (sf::Shader::Type)shader["shaderType"].GetInt());
+//        }
 
         const rapidjson::Value& spriteSheets = d["spriteSheets"];                       // Sprite sheets
         for(rapidjson::SizeType i = 0; i < spriteSheets.Size(); i++) {
@@ -136,7 +136,7 @@ void NFile::loadMap(std::string fileName, CInstance* instance) {
             if(!(spriteSheet.HasMember("name") && spriteSheet.HasMember("path")))
                 continue;
             
-            CAssetManager::addSpriteSheet(spriteSheet["name"].GetString(), spriteSheet["path"].GetString());
+            CAssetManager::addSpriteSheet(spriteSheet["name"].GetString(), instance->window.getRenderer(), spriteSheet["path"].GetString());
         }
 
         const rapidjson::Value& sprites = d["sprites"];                                 // Sprites
@@ -183,7 +183,7 @@ void NFile::loadMap(std::string fileName, CInstance* instance) {
             } else {
                 const rapidjson::Value& rect = jsonEntity["rect"];
                 const rapidjson::Value& colors = jsonEntity["colors"];
-                entity = _createEntity(instance, jsonEntity, EntityParameterHolder{Box{rect[0].GetInt(), rect[1].GetInt(), rect[2].GetInt(), rect[3].GetInt()}, sf::Color{(sf::Uint8)colors[0].GetInt(), (sf::Uint8)colors[1].GetInt(), (sf::Uint8)colors[2].GetInt(), (sf::Uint8)colors[3].GetInt()}});
+                entity = _createEntity(instance, jsonEntity, EntityParameterHolder{Box{rect[0].GetInt(), rect[1].GetInt(), rect[2].GetInt(), rect[3].GetInt()}, SDL_Color{(Uint8)colors[0].GetInt(), (Uint8)colors[1].GetInt(), (Uint8)colors[2].GetInt(), (Uint8)colors[3].GetInt()}});
             }
             
             std::string entityName;
@@ -215,7 +215,7 @@ void NFile::loadMap(std::string fileName, CInstance* instance) {
     }
     
     if(instance->player == nullptr) {       // In case there is no player in the .map
-        instance->player = new CPlayer(Box{0, 0, 10, 10}, sf::Color{255, 0, 255, 0});
+        instance->player = new CPlayer(Box{0, 0, 10, 10}, SDL_Color{255, 0, 255, 0});
         instance->entityManager.addEntity(instance->player, "m:player2");
         instance->camera.setTarget(instance->player);
     }

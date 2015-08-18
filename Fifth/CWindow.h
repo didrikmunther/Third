@@ -10,8 +10,8 @@
 #define __Third__CWindow__
 
 #include <stdio.h>
-#include <SFML/Graphics.hpp>
 #include <string>
+#include <SDL2/SDL.h>
 
 class CWindow {
     
@@ -26,20 +26,17 @@ public:
     int getWidth();
     int getHeight();
     
-    sf::RenderWindow* getWindow();
-    sf::RenderTexture* getRenderTexture();
-    sf::Sprite* getSprite();
+    SDL_Window* getWindow();
+    SDL_Renderer* getRenderer();
     
-    void updateView(int width, int height);
-    void setSize(int width, int height);
+//    void updateView(int width, int height);
+//    void setSize(int width, int height);
     
 private:
-    sf::RenderWindow _window;
-    sf::RenderTexture _renderTexture;
-    sf::Sprite _sprite;
+    SDL_Window* _window;
+    SDL_Renderer* _renderer;
     
-    sf::View _view;
-    sf::View _getLetterboxView(sf::View view, int windowWidth, int windowHeight);
+    //sf::View _getLetterboxView(sf::View view, int windowWidth, int windowHeight);
     
     int _screenHeight, _screenWidth;
     

@@ -16,7 +16,7 @@
 class CCombatText : public CGuiText {
     
 public:
-    CCombatText(int x, int y, sf::Color color, int size, std::string text, std::string fontKey);
+    CCombatText(int x, int y, SDL_Color color, int size, std::string text, std::string fontKey);
     
     virtual void onLoop();
     virtual void onRender(CWindow* window, CCamera* camera);

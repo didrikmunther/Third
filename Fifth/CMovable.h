@@ -11,7 +11,6 @@
 
 #include <stdio.h>
 #include "CEntity.h"
-#include <SFML/Graphics.hpp>
 #include <map>
 
 enum MovementState {
@@ -23,7 +22,7 @@ enum MovementState {
 class CMovable : public CEntity {
     
 public:
-    CMovable(Box rect, sf::Color color);
+    CMovable(Box rect, SDL_Color color);
     CMovable(Box rect, std::string spriteKey);
     
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);

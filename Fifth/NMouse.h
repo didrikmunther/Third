@@ -10,16 +10,18 @@
 #define __Third__NMouse__
 
 #include <stdio.h>
-#include <SFML/Graphics.hpp>
 #include "CCamera.h"
 
 namespace NMouse {
     
-    int absoluteMouseX(sf::RenderWindow* window);
-    int absoluteMouseY(sf::RenderWindow* window);
+    int absoluteMouseX();
+    int absoluteMouseY();
     
-    int relativeMouseX(sf::RenderWindow* window, CCamera* camera);
-    int relativeMouseY(sf::RenderWindow* window, CCamera* camera);
+    int relativeMouseX(CCamera* camera);
+    int relativeMouseY(CCamera* camera);
+    
+    bool leftMouseButtonPressed();
+    bool rightMouseButtonPressed();
     
 };
 

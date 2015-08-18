@@ -10,7 +10,6 @@
 #define __Third__CGuiText__
 
 #include <stdio.h>
-#include <SFML/Graphics.hpp>
 #include <string>
 #include "CWindow.h"
 
@@ -30,7 +29,6 @@ protected:
     std::string _text;
     int _x, _y;
     
-    sf::Clock _clock;
     int _livingTime;         // Seconds
     int _creationTime;
     

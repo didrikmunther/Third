@@ -10,14 +10,14 @@
 #include "Define.h"
 #include <NFile.h>
 
-CParticle::CParticle(Box rect, sf::Color color, int livingTime /* = 5 */) :
-CEntity(rect, color), _creationTime(_clock.getElapsedTime().asMilliseconds()), _livingTime(livingTime) {
+CParticle::CParticle(Box rect, SDL_Color color, int livingTime /* = 5 */) :
+CEntity(rect, color), _creationTime(SDL_GetTicks()), _livingTime(livingTime) {
     addProperty(EntityProperty::FLIP_FREEZED);
     collisionLayer = LAYER1;
 }
 
 CParticle::CParticle(Box rect, std::string spriteKey, int livingTime /* = 5 */) :
-CEntity(rect, spriteKey), _creationTime(_clock.getElapsedTime().asMilliseconds()), _livingTime(livingTime) {
+CEntity(rect, spriteKey), _creationTime(SDL_GetTicks()), _livingTime(livingTime) {
     addProperty(EntityProperty::FLIP_FREEZED);
     collisionLayer = LAYER1;
 }
@@ -44,7 +44,7 @@ void CParticle::_doLogic() {
                 body.velX = 0;
     }
     
-    if(_livingTime > 0 && _clock.getElapsedTime().asMilliseconds() - _creationTime > _livingTime * 1000)
+    if(_livingTime > 0 && SDL_GetTicks() - _creationTime > _livingTime * 1000)
         _toRemove = true;
     
 }

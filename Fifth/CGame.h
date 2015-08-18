@@ -9,13 +9,13 @@
 #ifndef __Third__CGame__
 #define __Third__CGame__
 
-#include <SFML/Graphics.hpp>
 #include <stdio.h>
 #include <sstream>
 #include <string>
 #include "CInstance.h"
 #include "CChatBubble.h"
 #include "CNetwork.h"
+#include <SDL2/SDL.h>
 
 class CGame {
     
@@ -31,11 +31,10 @@ public:
 private:
     
     // Main functions
-    
     int _onInit();
     void _initRelativePaths();
     
-    void _onEvent(sf::Event* event);
+    void _onEvent(SDL_Event* event);
     
     void _handleKeyStates();
     
@@ -46,15 +45,12 @@ private:
     int _onCleanup();
     
     // Main variables
-    
-    bool _running;
+    bool _isRunning;
+    SDL_Event event;
     
     CInstance instance;
     
     // Timer variables
-    
-    sf::Clock _clock;
-    
     float _lastTime;
     float _timer;
     const float _ns;
@@ -63,7 +59,6 @@ private:
     int _updates;
     
     // Misc variables
-    
     std::stringstream _title;
     std::string _intro;
     bool isFocused;

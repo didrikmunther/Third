@@ -21,9 +21,9 @@
 
 struct EntityParameterHolder {
     Box box;
-    sf::Color color;
+    SDL_Color color;
     std::string spriteContainerKey;
-    EntityParameterHolder(Box box, sf::Color color) : box(box), color(color), spriteContainerKey("") {}
+    EntityParameterHolder(Box box, SDL_Color color) : box(box), color(color), spriteContainerKey("") {}
     EntityParameterHolder(Box box, std::string spriteContainerKey) : box(box), spriteContainerKey(spriteContainerKey) {}
 };
 

@@ -4,7 +4,7 @@
 	"author":"Malaxiz Wayne",
 
 	"fonts": [
-		{"name":"TESTFONT", "path":"resources/ttf/font.ttf"}
+		{"name":"TESTFONT", "path":"resources/ttf/font.ttf", "size":20}
 	],
 
 	"shaders": [

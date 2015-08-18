@@ -9,22 +9,34 @@
 #include "NMouse.h"
 #include <iostream>
 
-int NMouse::absoluteMouseX(sf::RenderWindow* window) {
-    sf::Vector2f position = window->mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(*window)));
-    return position.x;
+int NMouse::absoluteMouseX() {
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    return x;
 }
 
-int NMouse::absoluteMouseY(sf::RenderWindow* window) {
-    sf::Vector2f position = window->mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(*window)));
-    return position.y;
+int NMouse::absoluteMouseY() {
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    return y;
 }
 
-int NMouse::relativeMouseX(sf::RenderWindow* window, CCamera* camera) {
-    sf::Vector2f position = window->mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(*window)));
-    return position.x + camera->offsetX();
+int NMouse::relativeMouseX(CCamera* camera) {
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    return x + camera->offsetX();
 }
 
-int NMouse::relativeMouseY(sf::RenderWindow* window, CCamera* camera) {
-    sf::Vector2f position = window->mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(*window)));
-    return position.y + camera->offsetY();
+int NMouse::relativeMouseY(CCamera* camera) {
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    return y + camera->offsetY();
+}
+
+bool NMouse::leftMouseButtonPressed() {
+    return SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT);
+}
+
+bool NMouse::rightMouseButtonPressed() {
+    return SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT);
 }

@@ -16,7 +16,7 @@
 CEntityManager::CEntityManager() : entityID(0), renderFlags(RenderFlags::CLEAR) {
 }
 
-CEntity* CEntityManager::addEntity(Box rect, sf::Color color, std::string name /* = "" */) {
+CEntity* CEntityManager::addEntity(Box rect, SDL_Color color, std::string name /* = "" */) {
     if(name == "") {
         CEntity* tempEntity = new CEntity(rect, color);
         addEntity(tempEntity, name);
@@ -80,7 +80,7 @@ std::string CEntityManager::getNameOfEntity(CEntity *entity) {
     }
 }
 
-void CEntityManager::addParticle(Box rect, sf::Color color, int livingTime) {
+void CEntityManager::addParticle(Box rect, SDL_Color color, int livingTime) {
     _ParticleVector.push_back(new CParticle(rect, color, livingTime));
 }
 
@@ -88,9 +88,9 @@ void CEntityManager::addParticle(CParticle *particle) {
     _ParticleVector.push_back(particle);
 }
 
-void CEntityManager::addParticleEmitter(sf::IntRect rect, sf::Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, ParticleVelocity velocity) {
-    _ParticleEmitterVector.push_back(new CParticleEmitter(rect, color, type, amount, frequency, livingTime, particleLivingTime, velocity));
-}
+//void CEntityManager::addParticleEmitter(SDL_Rect rect, SDL_Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, ParticleVelocity velocity) {
+//    _ParticleEmitterVector.push_back(new CParticleEmitter(rect, color, type, amount, frequency, livingTime, particleLivingTime, velocity));
+//}
 
 void CEntityManager::addGuiText(CGuiText* guiText) {
     _GuiTextVector.push_back(guiText);
@@ -128,8 +128,8 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
     
     for(int y = 0; y < (SCREEN_HEIGHT - (SCREEN_HEIGHT % gridSize)) / gridSize + 50; y++) {
         for(int x = 0; x < (SCREEN_WIDTH - (SCREEN_WIDTH % gridSize)) / gridSize + 50; x++) {
-            NSurface::renderRect(x * gridSize - camera->offsetX(), y * gridSize - camera->offsetY(), 1, gridSize, *window->getRenderTexture(), 100, 200, 0);
-            NSurface::renderRect(x * gridSize - camera->offsetX(), y * gridSize - camera->offsetY(), gridSize, 1, *window->getRenderTexture(), 100, 200, 0);
+            NSurface::renderRect(x * gridSize - camera->offsetX(), y * gridSize - camera->offsetY(), 1, gridSize, window, 100, 200, 0);
+            NSurface::renderRect(x * gridSize - camera->offsetX(), y * gridSize - camera->offsetY(), gridSize, 1, window, 100, 200, 0);
         }
     }
 }
@@ -137,7 +137,7 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
 // Temp
 
 void CEntityManager::splitEntityToParticles(CEntity* target) {
-    auto offset = target->getSpriteContainer()->getSprite()->getOffset();
+    auto offset = target->getSpriteContainer()->getSprite()->getSource();
     CSprite* tempSprite1 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
                                        Box{
                                            offset->x,
@@ -341,17 +341,17 @@ void CEntityManager::onLoop() {
         }
     }
     
-    {
-        auto i = _ParticleEmitterVector.begin();
-        while(i != _ParticleEmitterVector.end()) {
-            (*i)->onLoop(this);
-            if((*i)->toRemove) {
-                delete *i;
-                _ParticleEmitterVector.erase(std::remove(_ParticleEmitterVector.begin(), _ParticleEmitterVector.end(), (*i)), _ParticleEmitterVector.end());
-            } else
-                ++i;
-        }
-    }
+//    {
+//        auto i = _ParticleEmitterVector.begin();
+//        while(i != _ParticleEmitterVector.end()) {
+//            (*i)->onLoop(this);
+//            if((*i)->toRemove) {
+//                delete *i;
+//                _ParticleEmitterVector.erase(std::remove(_ParticleEmitterVector.begin(), _ParticleEmitterVector.end(), (*i)), _ParticleEmitterVector.end());
+//            } else
+//                ++i;
+//        }
+//    }
     
     {
         auto i = _ParticleVector.begin();
@@ -395,7 +395,7 @@ void CEntityManager::onCleanup() {
     entityID = 0;
     
     entityCleanup();
-    particleEmitterCleanup();
+//    particleEmitterCleanup();
     particleCleanup();
 }
 
@@ -419,14 +419,14 @@ void CEntityManager::entityCleanup() {
     }
 }
 
-void CEntityManager::particleEmitterCleanup() {
-    auto i = _ParticleEmitterVector.begin();
-    while(i != _ParticleEmitterVector.end()) {
-        delete *i;
-        i = _ParticleEmitterVector.erase(i);
-    }
-    _ParticleEmitterVector.clear();
-}
+//void CEntityManager::particleEmitterCleanup() {
+//    auto i = _ParticleEmitterVector.begin();
+//    while(i != _ParticleEmitterVector.end()) {
+//        delete *i;
+//        i = _ParticleEmitterVector.erase(i);
+//    }
+//    _ParticleEmitterVector.clear();
+//}
 
 void CEntityManager::particleCleanup() {
     auto i = _ParticleVector.begin();

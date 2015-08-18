@@ -7,13 +7,13 @@
 //d
 
 #include <stdio.h>
-#include <SFML/Graphics.hpp>
+#include <SDL2/SDL.h>
 
 #ifndef __Third__Define__
 #define __Third__Define__
 
-const int SCREEN_WIDTH          = 1920;
-const int SCREEN_HEIGHT         = 1080;
+const int SCREEN_WIDTH          = 1024;
+const int SCREEN_HEIGHT         = 720;
 const int SCREEN_BPP            = 32;
 
 const int GAMEINTERVAL          = 60;
@@ -79,31 +79,31 @@ enum ChatBubbleType { // CChatBubble
 };
 
 enum keyMap {
-    EXIT = sf::Keyboard::Escape,
+    EXIT = SDLK_ESCAPE,
     
-    LEFT = sf::Keyboard::A,
-    RIGHT = sf::Keyboard::D,
-    DOWN = sf::Keyboard::S,
-    UP = sf::Keyboard::W,
-    SNEAK = sf::Keyboard::LShift,
+    LEFT = SDLK_a,
+    RIGHT = SDLK_d,
+    DOWN = SDLK_s,
+    UP = SDLK_w,
+    SNEAK = SDLK_LSHIFT,
     
-    BLOCK = sf::Keyboard::L,
-    PARTICLEEM = sf::Keyboard::I,
-    RESET = sf::Keyboard::J,
+    BLOCK = SDLK_l,
+    PARTICLEEM = SDLK_i,
+    RESET = SDLK_j,
     
-    TOGGLE_NOCLIP = sf::Keyboard::Num1,
-    TOGGLE_HIDDEN = sf::Keyboard::Num2,
-    TOGGLE_COLLISION_BOUNDS = sf::Keyboard::Num3,
+    TOGGLE_NOCLIP = SDLK_1,
+    TOGGLE_HIDDEN = SDLK_2,
+    TOGGLE_COLLISION_BOUNDS = SDLK_3,
     
-    NEW_WINDOW = sf::Keyboard::Num4,
-    LOAD_ASSETS = sf::Keyboard::Num5,
-    NEW_CHAT_BUBBLE = sf::Keyboard::Num6,
+    NEW_WINDOW = SDLK_4,
+    LOAD_ASSETS = SDLK_5,
+    NEW_CHAT_BUBBLE = SDLK_6,
     
-    TARGET_PLAYER = sf::Keyboard::Comma,
-    TARGET_BLOCK = sf::Keyboard::Period,
+    TARGET_PLAYER = SDLK_COMMA,
+    TARGET_BLOCK = SDLK_PERIOD,
     
-    CHANGE_CAMERA_SWAY_UP = sf::Keyboard::Num0,
-    CHANGE_CAMERA_SWAY_DOWN = sf::Keyboard::Num9
+    CHANGE_CAMERA_SWAY_UP = SDLK_0,
+    CHANGE_CAMERA_SWAY_DOWN = SDLK_9
     
 };
 

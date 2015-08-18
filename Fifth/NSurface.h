@@ -10,18 +10,19 @@
 #define __Third__NSurface__
 
 #include <stdio.h>
-#include <SFML/Graphics.hpp>
 #include "CSprite.h"
 #include "CText.h"
 #include "CWindow.h"
 
 namespace NSurface {
 
-    void renderRect(int x, int y, int w, int h, sf::RenderTarget& target, int r, int g, int b, int a = 255);
-    void renderRect(sf::IntRect rect, sf::RenderTarget& target, int r, int g, int b, int a = 255);
+    void renderRect(int x, int y, int w, int h, CWindow* window, int r, int g, int b, int a = 255);
+    void renderRect(SDL_Rect* rect, CWindow* window, int r, int g, int b, int a = 255);
     
-    void renderEntity(CEntity* entity, CWindow* window, sf::IntRect destination);
-    void renderText(int x, int y, CText* text, sf::RenderTarget& target);
+    void renderEntity(CEntity* entity, CWindow* window, int x, int y);
+    void renderSprite(CSprite* sprite, CWindow* window, int x, int y);
+    void renderText(int x, int y, CText* text, CWindow* window);
+    void renderTexture(SDL_Renderer* renderer, SDL_Rect destination, SDL_Texture *texture);
     
 };
 

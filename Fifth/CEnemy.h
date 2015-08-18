@@ -11,13 +11,12 @@
 
 #include <stdio.h>
 #include "CNpc.h"
-#include <SFML/Graphics.hpp>
 #include "CEntity.h"
 
 class CEnemy : public CNpc {
     
 public:
-    CEnemy(Box rect, sf::Color color);
+    CEnemy(Box rect, SDL_Color color);
     CEnemy(Box rect, std::string spriteKey);
     
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);

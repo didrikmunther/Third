@@ -1,19 +1,19 @@
+////
+////  CServerInstance.cpp
+////  Fifth
+////
+////  Created by Didrik Munther on 28/05/15.
+////  Copyright (c) 2015 Didrik Munther. All rights reserved.
+////
 //
-//  CServerInstance.cpp
-//  Fifth
+//#include "CServerInstance.h"
 //
-//  Created by Didrik Munther on 28/05/15.
-//  Copyright (c) 2015 Didrik Munther. All rights reserved.
+//CServerInstance::CServerInstance() { }
 //
-
-#include "CServerInstance.h"
-
-CServerInstance::CServerInstance() { }
-
-CServerInstance::~CServerInstance() {
-    closeInstance();
-}
-
-void CServerInstance::closeInstance() {
-    entityManager.onCleanup();
-}
+//CServerInstance::~CServerInstance() {
+//    closeInstance();
+//}
+//
+//void CServerInstance::closeInstance() {
+//    entityManager.onCleanup();
+//}

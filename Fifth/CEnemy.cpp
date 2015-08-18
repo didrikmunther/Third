@@ -9,7 +9,7 @@
 #include "CEnemy.h"
 #include <iostream>
 
-CEnemy::CEnemy(Box rect, sf::Color color) :
+CEnemy::CEnemy(Box rect, SDL_Color color) :
     CNpc(rect, color) {
         _init();
 }
