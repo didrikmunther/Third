@@ -41,8 +41,8 @@ public:
     
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
-    int dealDamage(int amount, UtilityPosition position = {0, 0});
-    int heal(int amount, UtilityPosition position = {0, 0});
+    int dealDamage(int amount, UtilityPosition position = {0, 0}, CEntity* damager = nullptr);
+    int heal(int amount, UtilityPosition position = {0, 0}, CEntity* healer = nullptr);
 
     void cLivingRender(CWindow *window, CCamera *camera);
     

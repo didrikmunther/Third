@@ -46,7 +46,8 @@ public:
     EntityTypes entityType;
     
     virtual void init();
-    void onLoop(std::vector<CEntity*>* entities);
+    void onLoop();
+    void afterLogicLoop(std::vector<CEntity*>* entities); // After the velocities have been added, move the entity
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     

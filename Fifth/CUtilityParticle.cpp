@@ -55,7 +55,6 @@ bool CUtilityParticle::_collisionLogic(CEntity* target, CollisionSides collision
             _toRemove = true;
         }
     } else {
-        _toRemove = false;
         collision = false;
     }
     

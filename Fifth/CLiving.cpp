@@ -70,7 +70,7 @@ void CLiving::renderAdditional(CWindow* window, CCamera* camera, RenderFlags ren
     
 }
 
-int CLiving::dealDamage(int amount, UtilityPosition position) {
+int CLiving::dealDamage(int amount, UtilityPosition position, CEntity* damager /* = nullptr */) {
     
     if(position.x == 0)
         position.x = body.getX();
@@ -103,7 +103,7 @@ int CLiving::dealDamage(int amount, UtilityPosition position) {
     return damageDone;
 }
 
-int CLiving::heal(int amount, UtilityPosition position) {
+int CLiving::heal(int amount, UtilityPosition position, CEntity* healer /* = nullptr */) {
     
     if(position.x == 0)
         position.x = body.getX();

@@ -54,7 +54,7 @@ void CEntity::_cleanUpTextVector() {
     _GuiTextVector.clear();
 }
 
-void CEntity::onLoop(std::vector<CEntity*>* entities) {
+void CEntity::onLoop() {
     
     _hasMoved = false;
     
@@ -68,24 +68,22 @@ void CEntity::onLoop(std::vector<CEntity*>* entities) {
             ++i;
     }
     
-    if(isDead())
-        return;
-    
-    if(!hasProperty(EntityProperty::FLYING)) {
+    if(!hasProperty(EntityProperty::FLYING))
         body.velY += GRAVITY;
-    }
     
     _doLogic();
+}
+
+void CEntity::afterLogicLoop(std::vector<CEntity *> *entities) {
+    if(isDead())
+        return;
     
     if(!hasProperty(EntityProperty::STATIC))
         move(entities);
     else
         body.velY = body.velX = 0;
     
-    //say(std::to_string(hasMoved()), "TESTFONT", ChatBubbleType::INSTANT_TALK);
-    
     body.onLoop();
-
 }
 
 void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
@@ -93,13 +91,33 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
     if(toRemove() || isDead())
         return;
     
+    int x = body.getX() - camera->offsetX();
+    int y = body.getY() - camera->offsetY();
+    int w = body.getW();
+    int h = body.getH();
+    
     if(camera->collision(this) && !(hasProperty(EntityProperty::HIDDEN))) {
         if(!hasSprite())
-                NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(),
-                                     body.getW(), body.getH(),
+                NSurface::renderRect(x, y, w, h,
                                      window, color.r, color.g, color.b);
-        else
-            NSurface::renderEntity(this, window, body.getX() - camera->offsetX(), body.getY() - camera->offsetY());
+        else {
+            int spriteWidth, spriteHeight = 0;
+            if(spriteFollowsCollisionBox) {
+                spriteWidth = body.getW();
+                spriteHeight = body.getH();
+            } else {
+                spriteWidth = getSpriteContainer()->spriteArea.w;
+                spriteHeight = getSpriteContainer()->spriteArea.h;
+            }
+            
+            SDL_RendererFlip flip;
+            if(hasProperty(EntityProperty::FLIP))
+                flip = SDL_RendererFlip::SDL_FLIP_HORIZONTAL;
+            else
+                flip = SDL_RendererFlip::SDL_FLIP_NONE;
+            
+            NSurface::renderSprite(x, y, spriteWidth, spriteHeight, getSpriteContainer()->getSprite(), window, flip, getTransparency());
+        }
     }
 }
 

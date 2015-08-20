@@ -12,7 +12,7 @@
 #ifndef __Third__Define__
 #define __Third__Define__
 
-const int SCREEN_WIDTH          = 1024;
+const int SCREEN_WIDTH          = 1280;
 const int SCREEN_HEIGHT         = 720;
 const int SCREEN_BPP            = 32;
 
@@ -109,7 +109,11 @@ enum keyMap {
 
 enum RenderFlags {
     CLEAR = 0,
-    COLLISION_BORDERS = 1 << 0
+    COLLISION_BORDERS   = 1 << 0,
+    COLLISION_AREA      = 1 << 1,
+    COLLISION_GRID      = 1 << 2,
+    COLLISION_FULL_AREA = 1 << 3,
+    ENTITY_GRID         = 1 << 4
 };
 
 #endif

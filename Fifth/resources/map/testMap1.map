@@ -47,7 +47,7 @@
         {"name":"m:player4", "type":7, "rect":[600, 0, 80, 140], "spriteContainerKey":"playerPink", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
 		{"name":"l:tree",				"rect":[276, -1000, 92, 236], 			"spriteContainerKey":"tree", 			"collisionLayers":4},
 		{"name":"n:bush",				"rect":[200, -1000, 120, 108], 			"spriteContainerKey":"bush", 			"collisionLayers":8},
-		{								"rect":[-15, 465, 5000, 30], 			"colors":[255, 0, 0, 0],				"collisionLayers":-129},
-		{								"rect":[-15, -20, 30, 500], 			"colors":[255, 0, 0, 0],				"collisionLayers":15}
+		{								"rect":[0, 465, 5000, 30], 			"colors":[255, 0, 0, 0],				"collisionLayers":-129},
+		{								"rect":[0, -20, 30, 500], 			"colors":[255, 0, 0, 0],				"collisionLayers":15}
 	]
 }

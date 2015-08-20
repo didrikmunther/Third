@@ -19,7 +19,7 @@ int CWindow::onInit(std::string title, int width, int height) {
     Uint32 window_flags = SDL_WINDOW_SHOWN;
     Uint32 renderer_flags = SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED | SDL_RENDERER_SOFTWARE;
     
-    _window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+    _window = SDL_CreateWindow(title.c_str(), 0, 0,
                               width, height, window_flags);
     
     if(_window == nullptr) {

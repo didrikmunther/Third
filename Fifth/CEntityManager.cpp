@@ -12,8 +12,9 @@
 #include "CSpriteContainer.h"
 #include "NFile.h"
 #include "NSurface.h"
+#include <sstream>
 
-CEntityManager::CEntityManager() : entityID(0), renderFlags(RenderFlags::CLEAR) {
+CEntityManager::CEntityManager() : entityID(0), renderFlags(RenderFlags::CLEAR), _gridSize(32) {
 }
 
 CEntity* CEntityManager::addEntity(Box rect, SDL_Color color, std::string name /* = "" */) {
@@ -78,6 +79,7 @@ std::string CEntityManager::getNameOfEntity(CEntity *entity) {
         if(i.second == entity)
             return i.first;
     }
+    return "";
 }
 
 void CEntityManager::addParticle(Box rect, SDL_Color color, int livingTime) {
@@ -107,6 +109,16 @@ void CEntityManager::toggleRenderFlag(RenderFlags renderFlag) {
 }
 
 void CEntityManager::onRender(CWindow* window, CCamera* camera) {
+    
+    if(renderFlags & RenderFlags::COLLISION_GRID) {
+        for(int y = - 2; y < (window->getHeight() - (window->getHeight() % _gridSize)) / _gridSize + 2; y++) {
+            for(int x = - 2; x < (window->getWidth() - (window->getWidth() % _gridSize)) / _gridSize + 2; x++) {
+                NSurface::renderRect(x * _gridSize - camera->offsetX() % _gridSize, (y * _gridSize) - (camera->offsetY() % _gridSize), 1, _gridSize, window, 100, 200, 0);
+                NSurface::renderRect(x * _gridSize - camera->offsetX() % _gridSize, (y * _gridSize) - (camera->offsetY() % _gridSize), _gridSize, 1, window, 100, 200, 0);
+            }
+        }
+    }
+    
     for (auto &i: _ParticleVector)
         i->onRender(window, camera, (RenderFlags)renderFlags);
     
@@ -117,21 +129,54 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
         if(!i.second->toRemove())
             i.second->renderAdditional(window, camera, (RenderFlags)renderFlags);
     
+    for (auto &i: _ParticleVector)
+        if(!i->toRemove())
+            i->renderAdditional(window, camera, (RenderFlags)renderFlags);
+    
     for (auto &i: _DeadEntitiesVector)
         if(!i.second->toRemove())
             i.second->renderAdditional(window, camera, (RenderFlags)renderFlags);
     
-    for (auto &i: _GuiTextVector)
-        i->onRender(window, camera);
-    
-    int gridSize = 1024;
-    
-    for(int y = 0; y < (SCREEN_HEIGHT - (SCREEN_HEIGHT % gridSize)) / gridSize + 50; y++) {
-        for(int x = 0; x < (SCREEN_WIDTH - (SCREEN_WIDTH % gridSize)) / gridSize + 50; x++) {
-            NSurface::renderRect(x * gridSize - camera->offsetX(), y * gridSize - camera->offsetY(), 1, gridSize, window, 100, 200, 0);
-            NSurface::renderRect(x * gridSize - camera->offsetX(), y * gridSize - camera->offsetY(), gridSize, 1, window, 100, 200, 0);
+    if(renderFlags & RenderFlags::COLLISION_AREA) {
+        for(auto &i: _EntityVector) {
+            auto target = i.second;
+            int targetX = target->body.getX() + target->body.velX;
+            int targetY = target->body.getY() + target->body.velY;
+            int targetW = target->body.getW() + target->body.velX;
+            int targetH = target->body.getH() + target->body.velY;
+            NSurface::renderRect(targetX - camera->offsetX(), targetY - camera->offsetY(), targetW, targetH, window, 100, 200, 100, 100);
+        }
+        
+        for(auto &i: _ParticleVector) {
+            auto target = i;
+            int targetX = target->body.getX() + target->body.velX;
+            int targetY = target->body.getY() + target->body.velY;
+            int targetW = target->body.getW() + target->body.velX;
+            int targetH = target->body.getH() + target->body.velY;
+            NSurface::renderRect(targetX - camera->offsetX(), targetY - camera->offsetY(), targetW, targetH, window, 100, 200, 100, 100);
         }
     }
+    
+    if(renderFlags & RenderFlags::COLLISION_FULL_AREA) {
+        
+    }
+    
+    if(renderFlags & RenderFlags::ENTITY_GRID) {
+        for(auto &i: _EntityVector) {
+            for(auto &grid: i.second->gridCoordinates) {
+                NSurface::renderRect(grid.x * _gridSize - camera->offsetX(), grid.y * _gridSize - camera->offsetY(), _gridSize, _gridSize, window, 0, 100, 100, 100);
+            }
+        }
+        
+        for(auto &i: _ParticleVector) {
+            for(auto &grid: i->gridCoordinates) {
+                NSurface::renderRect(grid.x * _gridSize - camera->offsetX(), grid.y * _gridSize - camera->offsetY(), _gridSize, _gridSize, window, 0, 100, 100, 100);
+            }
+        }
+    }
+    
+    for (auto &i: _GuiTextVector)
+        i->onRender(window, camera);
 }
 
 // Temp
@@ -228,20 +273,77 @@ void CEntityManager::splitEntityToParticles(CEntity* target) {
     addParticle(tempParticle4);
 }
 
+void loopX(int x1, int x2, int y, std::vector<GridCoordinates>* toManipulate) {
+    for(int x = x1; x < x2; x++) {
+        toManipulate->push_back(GridCoordinates{x, y});
+    }
+}
+
+int getBiggest(std::vector<int> intVector) {
+    if(intVector.size() <= 0)
+        return 0;
+    int biggest = intVector[0];
+    for(auto &i: intVector) {
+        if(i > biggest)
+            biggest = i;
+    }
+    return biggest;
+}
+
+int getSmallest(std::vector<int> intVector) {
+    if(intVector.size() <= 0)
+        return 0;
+    int smallest = intVector[0];
+    for(auto &i: intVector) {
+        if(i < smallest)
+            smallest = i;
+    }
+    return smallest;
+}
+
 std::vector<GridCoordinates> getGrid(CEntity* target, int gridSize) {
-    int upperLeftCorner[2]  = {(target->body.getX() - (target->body.getX() % gridSize)) / gridSize,
-        (target->body.getY() - (target->body.getY() % gridSize)) / gridSize};
-    int upperRightCorner[2] = {(target->body.getX() + target->body.getW() - ((target->body.getX() + target->body.getW()) % gridSize)) / gridSize,
-        (target->body.getY() - (target->body.getY() % gridSize)) / gridSize};
-    int lowerLeftCorner[2]  = {(target->body.getX() - (target->body.getX() % gridSize)) / gridSize,
-        (target->body.getY() + target->body.getH() - ((target->body.getY() + target->body.getH()) % gridSize)) / gridSize};
-    int lowerRightCorner[2] = {(target->body.getX() + target->body.getW() - ((target->body.getX() + target->body.getW()) % gridSize)) / gridSize,
-        (target->body.getY() + target->body.getH() - ((target->body.getY() + target->body.getH()) % gridSize)) / gridSize};
+    
+    int x = target->body.getX();
+    int y = target->body.getY();
+    int w = target->body.getW();
+    int h = target->body.getH();
+    
+    int x2 = target->body.getX() + target->body.velX;
+    int y2 = target->body.getY() + target->body.velY;
+    
+    int targetX = getSmallest({x, x2});
+    int targetY = getSmallest({y, y2});
+    int targetW = getBiggest({x, x2}) - getSmallest({x, x2}) + w;
+    int targetH = getBiggest({y, y2}) - getSmallest({y, y2}) + h;
+    
+    int upperLeftCorner[2]  = {(targetX - (targetX % gridSize)) / gridSize,
+        (targetY - (targetY % gridSize)) / gridSize};
+    int upperRightCorner[2] = {(targetX + targetW - ((targetX + targetW) % gridSize)) / gridSize,
+        (targetY - (targetY % gridSize)) / gridSize};
+    int lowerLeftCorner[2]  = {(targetX - (targetX % gridSize)) / gridSize,
+        (targetY + targetH - ((targetY + targetH) % gridSize)) / gridSize};
+    int lowerRightCorner[2] = {(targetX + targetW - ((targetX + targetW) % gridSize)) / gridSize,
+        (targetY + targetH - ((targetY + targetH) % gridSize)) / gridSize};
     
     std::vector<GridCoordinates> toReturn;
-    for(int y = upperLeftCorner[1] - 1; y < lowerRightCorner[1] + 1; y++) {
-        for(int x = upperLeftCorner[0] - 1; x < lowerRightCorner[0] + 1; x++) {
-            toReturn.push_back(GridCoordinates{x, y});
+    
+    int margin = 1;
+    
+    if(upperLeftCorner[1] - margin < lowerLeftCorner[1] + margin) {
+        for(int y = upperLeftCorner[1] - margin; y < lowerRightCorner[1] + margin; y++) {
+            if(upperLeftCorner[0] - margin < lowerRightCorner[0] + margin) {
+                loopX(upperLeftCorner[0] - margin, lowerRightCorner[0] + margin, y, &toReturn);
+            } else {
+                loopX(lowerRightCorner[0] - margin, upperLeftCorner[0] + margin, y, &toReturn);
+            }
+        }
+    } else {
+        for(int y = lowerRightCorner[1] - margin; y < upperLeftCorner[1] + margin; y++) {
+            if(upperLeftCorner[0] - margin < lowerRightCorner[0] + margin) {
+                loopX(upperLeftCorner[0] - margin, lowerRightCorner[0] + margin, y, &toReturn);
+            } else {
+                loopX(lowerRightCorner[0] - margin, upperLeftCorner[0] + margin, y, &toReturn);
+            }
         }
     }
     
@@ -253,13 +355,13 @@ void CEntityManager::onLoop() {
     {
         _CollisionVector.clear();
         
-        int gridSize = 16;
-        
         for(auto &entity: _EntityVector) {
             auto target = entity.second;
             target->gridCoordinates.clear();
             
-            for(auto &coords: getGrid(target, gridSize)) {
+            target->onLoop();
+            
+            for(auto &coords: getGrid(target, _gridSize)) {
                 _CollisionVector[coords.y][coords.x].push_back(target);
                 target->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
             }
@@ -268,7 +370,9 @@ void CEntityManager::onLoop() {
         for(auto &particle: _ParticleVector) {
             particle->gridCoordinates.clear();
             
-            for(auto &coords: getGrid(particle, gridSize)) {
+            particle->onLoop();
+            
+            for(auto &coords: getGrid(particle, _gridSize)) {
                 particle->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
             }
         }
@@ -277,7 +381,9 @@ void CEntityManager::onLoop() {
             auto target = entity.second;
             target->gridCoordinates.clear();
             
-            for(auto &coords: getGrid(target, gridSize)) {
+            target->onLoop();
+            
+            for(auto &coords: getGrid(target, _gridSize)) {
                 target->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
             }
         }
@@ -289,17 +395,21 @@ void CEntityManager::onLoop() {
         while(i != _EntityVector.end()) {
             auto target = (*i).second;
             
+            std::stringstream toSay;
+            
             std::vector<CEntity*> collisionMap;
-            std::vector<CEntity*> alreadyAdded;
             for (auto &coord: target->gridCoordinates) {
                 for(auto &entity: _CollisionVector[coord.y][coord.x]){
                     if(std::find(collisionMap.begin(), collisionMap.end(), entity) != collisionMap.end())
                         continue;
                     collisionMap.push_back(entity);
+                    toSay << getNameOfEntity(entity) << ", ";
                 }
             }
             
-            target->onLoop(&collisionMap);
+            //target->say(toSay.str(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
+            
+            target->afterLogicLoop(&collisionMap);
             
             if(target->isDead() && target->hasSprite()) {
                 splitEntityToParticles(target);
@@ -331,7 +441,7 @@ void CEntityManager::onLoop() {
                 }
             }
             
-            (*i).second->onLoop(&collisionMap);
+            target->afterLogicLoop(&collisionMap);
             
             if((*i).second->toRemove()) {
                 delete (*i).second;
@@ -356,20 +466,32 @@ void CEntityManager::onLoop() {
     {
         auto i = _ParticleVector.begin();
         while(i != _ParticleVector.end()) {
+            auto target = (*i);
+            
+            std::stringstream toSay;
             
             std::vector<CEntity*> collisionMap;
-            for (auto &coord: (*i)->gridCoordinates) {
+            for (auto &coord: target->gridCoordinates) {
                 for(auto &entity: _CollisionVector[coord.y][coord.x]){
                     if(std::find(collisionMap.begin(), collisionMap.end(), entity) != collisionMap.end())
                         continue;
                     collisionMap.push_back(entity);
+                    toSay << getNameOfEntity(entity) << ", ";
                 }
             }
             
-            (*i)->onLoop(&collisionMap);
-            if((*i)->toRemove()) {
+            //target->say(toSay.str(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
+            
+//            std::vector<CEntity*> collisionMap;
+//            for(auto &entity: _EntityVector) {
+//                collisionMap.push_back(entity.second);
+//            }
+            
+            target->afterLogicLoop(&collisionMap);
+            
+            if(target->toRemove()) {
                 delete *i;
-                _ParticleVector.erase(std::remove(_ParticleVector.begin(), _ParticleVector.end(), (*i)), _ParticleVector.end());
+                _ParticleVector.erase(std::remove(_ParticleVector.begin(), _ParticleVector.end(), target), _ParticleVector.end());
             } else
                 ++i;
         }

@@ -41,8 +41,6 @@ private:
     CameraOffset _offset;
     
     CEntity* _target;
-    
-    
 };
 
 #endif /* defined(__Third__CCamera__) */

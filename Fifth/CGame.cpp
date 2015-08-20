@@ -257,9 +257,21 @@ void CGame::_onEvent(SDL_Event* event) {
                     _isRunning = false;
                     break;
                     
-                case SDLK_q:
-                    //CEntity* temp;
-                    //temp->say("asdf", "TESTFONT", ChatBubbleType::SAY);     // Crash the game
+                case SDLK_m:
+                    instance.entityManager.renderFlags ^= RenderFlags::COLLISION_AREA;
+                    break;
+                    
+                case SDLK_n:
+                    instance.entityManager.renderFlags ^= RenderFlags::COLLISION_GRID;
+                    break;
+                    
+                case SDLK_b:
+                    instance.entityManager.renderFlags ^= RenderFlags::ENTITY_GRID;
+                    break;
+                    
+                case SDLK_v:
+                    instance.player->body._rect.x = 300;
+                    instance.player->body._rect.y = 1000000;
                     break;
                     
                 case keyMap::SNEAK:
@@ -310,9 +322,12 @@ void CGame::_onEvent(SDL_Event* event) {
                     break;
                 case keyMap::NEW_WINDOW:
                 {
-                    instance.window.newWindow(_intro, 1920, 1080);
+                    if(instance.window.newWindow(_intro, 640, 480)) {
+                        NFile::log(LogType::ERROR, "Window.onInit failed: ", SDL_GetError());
+                        return -1;
+                    }
                     instance.camera.onInit(&instance.window);
-                    //CAssetManager::onCleanup();
+                    NFile::loadMap("resources/map/testMap1.map", &instance);
                 }
                     break;
                     
