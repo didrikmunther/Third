@@ -13,6 +13,7 @@
 #include "NFile.h"
 #include "NSurface.h"
 #include <sstream>
+#include "EParticle.h"
 
 CEntityManager::CEntityManager() : entityID(0), renderFlags(RenderFlags::CLEAR), _gridSize(32) {
 }
@@ -83,10 +84,12 @@ std::string CEntityManager::getNameOfEntity(CEntity *entity) {
 }
 
 void CEntityManager::addParticle(Box rect, SDL_Color color, int livingTime) {
-    _ParticleVector.push_back(new CParticle(rect, color, livingTime));
+    CEntity* particle = new CEntity(rect, color);
+    particle->addComponent(new EParticle(particle, livingTime));
+    _ParticleVector.push_back(particle);
 }
 
-void CEntityManager::addParticle(CParticle *particle) {
+void CEntityManager::addParticle(CEntity *particle) {
     _ParticleVector.push_back(particle);
 }
 
@@ -126,15 +129,15 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
         i.second->onRender(window, camera, (RenderFlags)renderFlags);
     
     for (auto &i: _EntityVector)
-        if(!i.second->toRemove())
+        if(!i.second->toRemove)
             i.second->renderAdditional(window, camera, (RenderFlags)renderFlags);
     
     for (auto &i: _ParticleVector)
-        if(!i->toRemove())
+        if(!i->toRemove)
             i->renderAdditional(window, camera, (RenderFlags)renderFlags);
     
     for (auto &i: _DeadEntitiesVector)
-        if(!i.second->toRemove())
+        if(!i.second->toRemove)
             i.second->renderAdditional(window, camera, (RenderFlags)renderFlags);
     
     if(renderFlags & RenderFlags::COLLISION_AREA) {
@@ -226,43 +229,43 @@ void CEntityManager::splitEntityToParticles(CEntity* target) {
     int tempForRand = 5;
     int livingTime = 2;
     
-    CParticle* tempParticle1 = new CParticle(Box{
+    CEntity* tempParticle1 = new CEntity(Box{
         target->body.getX(),
         target->body.getY(),
         target->body.getW() / 2,
         target->body.getH() / 2},
-                                             spriteContainer1,
-                                             livingTime + rand() % 3 - 1);
+                                             spriteContainer1);
+    tempParticle1->addComponent(new EParticle(tempParticle1, livingTime + rand() % 3 - 1));
     tempParticle1->body.velX = rand() % explosionForce - tempForRand;
     tempParticle1->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle1->addProperty(EntityProperty::FLIP);
-    CParticle* tempParticle2 = new CParticle(Box{
+    CEntity* tempParticle2 = new CEntity(Box{
         target->body.getX() + target->body.getW() / 2,
         target->body.getY(),
         target->body.getW() / 2,
         target->body.getH() / 2},
-                                             spriteContainer2,
-                                             livingTime + rand() % 3 - 1);
+                                             spriteContainer2);
+    tempParticle2->addComponent(new EParticle(tempParticle1, livingTime + rand() % 3 - 1));
     tempParticle2->body.velX = rand() % explosionForce - tempForRand;
     tempParticle2->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle2->addProperty(EntityProperty::FLIP);
-    CParticle* tempParticle3 = new CParticle(Box{
+    CEntity* tempParticle3 = new CEntity(Box{
         target->body.getX(),
         target->body.getY() + target->body.getH() / 2,
         target->body.getW() / 2,
         target->body.getH() / 2},
-                                             spriteContainer3,
-                                             livingTime + rand() % 3 - 1);
+                                             spriteContainer3);
+    tempParticle3->addComponent(new EParticle(tempParticle1, livingTime + rand() % 3 - 1));
     tempParticle3->body.velX = rand() % explosionForce - tempForRand;
     tempParticle3->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle3->addProperty(EntityProperty::FLIP);
-    CParticle* tempParticle4 = new CParticle(Box{
+    CEntity* tempParticle4 = new CEntity(Box{
         target->body.getX() + target->body.getW() / 2,
         target->body.getY() + target->body.getH() / 2,
         target->body.getW() / 2,
         target->body.getH() / 2},
-                                             spriteContainer4,
-                                             livingTime + rand() % 3);
+                                             spriteContainer4);
+    tempParticle4->addComponent(new EParticle(tempParticle1, livingTime + rand() % 3 - 1));
     tempParticle4->body.velX = rand() % explosionForce - tempForRand;
     tempParticle4->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle4->addProperty(EntityProperty::FLIP);
@@ -355,7 +358,7 @@ std::vector<GridCoordinates> getGrid(CEntity* target, int gridSize) {
     return toReturn;
 }
 
-void CEntityManager::onLoop() {
+void CEntityManager::onLoop(CInstance* instance) {
     
     {
         _CollisionVector.clear();
@@ -364,7 +367,7 @@ void CEntityManager::onLoop() {
             auto target = entity.second;
             target->gridCoordinates.clear();
             
-            target->onLoop();
+            target->onLoop(instance);
             
             for(auto &coords: getGrid(target, _gridSize)) {
                 _CollisionVector[coords.y][coords.x].push_back(target);
@@ -375,7 +378,7 @@ void CEntityManager::onLoop() {
         for(auto &particle: _ParticleVector) {
             particle->gridCoordinates.clear();
             
-            particle->onLoop();
+            particle->onLoop(instance);
             
             for(auto &coords: getGrid(particle, _gridSize)) {
                 particle->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
@@ -386,7 +389,7 @@ void CEntityManager::onLoop() {
             auto target = entity.second;
             target->gridCoordinates.clear();
             
-            target->onLoop();
+            target->onLoop(instance);
             
             for(auto &coords: getGrid(target, _gridSize)) {
                 target->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
@@ -409,16 +412,16 @@ void CEntityManager::onLoop() {
                 }
             }
             
-            target->afterLogicLoop(&collisionMap);
+            target->afterLogicLoop(&collisionMap, instance);
             
-            if(target->isDead() && target->hasSprite()) {
+            if(target->isDead && target->hasSprite()) {
                 splitEntityToParticles(target);
                 _DeadEntitiesVector[(*i).first] = (*i).second;
                 _EntityVector.erase(i++);
             }
             
             
-            if(target->toRemove()) {
+            if(target->toRemove) {
                 delete target;
                 _EntityVector.erase(i++);
             } else
@@ -441,9 +444,9 @@ void CEntityManager::onLoop() {
                 }
             }
             
-            target->afterLogicLoop(&collisionMap);
+            target->afterLogicLoop(&collisionMap, instance);
             
-            if((*i).second->toRemove()) {
+            if((*i).second->toRemove) {
                 delete (*i).second;
                 _DeadEntitiesVector.erase(i++);
             } else
@@ -477,9 +480,9 @@ void CEntityManager::onLoop() {
                 }
             }
             
-            target->afterLogicLoop(&collisionMap);
+            target->afterLogicLoop(&collisionMap, instance);
             
-            if(target->toRemove()) {
+            if(target->toRemove) {
                 delete *i;
                 _ParticleVector.erase(std::remove(_ParticleVector.begin(), _ParticleVector.end(), target), _ParticleVector.end());
             } else
@@ -507,7 +510,6 @@ void CEntityManager::onCleanup() {
     entityID = 0;
     
     entityCleanup();
-//    particleEmitterCleanup();
     particleCleanup();
 }
 
@@ -515,6 +517,7 @@ void CEntityManager::entityCleanup() {
     {
         auto i = _EntityVector.begin();
         while(i != _EntityVector.end()) {
+            i->second->clearComponents();
             delete i->second;
             _EntityVector.erase(i++->first);
         }

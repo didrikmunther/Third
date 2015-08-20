@@ -38,6 +38,53 @@ struct Area {
     int w, h;
 };
 
+enum MovementState {
+    WALKING_MOVEMENT = 0,
+    SNEAKING_MOVEMENT,
+    RUNNING_MOVEMENT
+};
+
+enum ValueTypes {
+    HEALTH = 0,
+    KEVLAR,
+    STAMINA,
+    ENERGY,
+    VALUETYPES_TOTAL
+};
+
+enum StatTypes {
+    ARMOUR = 0,
+    ATTACK_POWER,
+    ATTACK_SPEED,
+    STATTYPES_TOTAL
+};
+
+struct UtilityPosition {
+    int x, y;
+};
+
+enum BasicUtilities {
+    DAMAGE = 0,
+    HEAL,
+    NONE
+};
+
+enum EntityProperty {
+    COLLIDABLE  = 1 << 0,
+    FLYING      = 1 << 1,
+    HIDDEN      = 1 << 2,
+    STATIC      = 1 << 3,
+    FLIP        = 1 << 4,
+    FLIP_FREEZED= 1 << 5
+};
+
+struct CollisionSides {
+    bool collisionTop,
+    collisionBottom,
+    collisionRight,
+    collisionLeft;
+};
+
 enum CollisionLayers { // CEntity
     LAYER0      = 1 << 0,   // 1
     LAYER1      = 1 << 1,   // 2

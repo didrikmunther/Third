@@ -38,64 +38,64 @@ rapidjson::Document NFile::loadJsonFile(std::string fileName) {
     
 }
 
-CEntity* NFile::_createEntity(CInstance* instance, const rapidjson::Value& jsonEntity, EntityParameterHolder entityParameterHolder) {
-    
-    int type;
-    if(!jsonEntity.HasMember("type"))
-        type = 0;
-    else
-        type = jsonEntity["type"].GetInt();
-    
-    switch(type) {
-        case EntityTypes::Player:
-        {
-            CPlayer* player;
-            if(entityParameterHolder.spriteContainerKey == "") {
-                player = new CPlayer(entityParameterHolder.box, entityParameterHolder.color);
-            } else {
-                player = new CPlayer(entityParameterHolder.box, entityParameterHolder.spriteContainerKey);
-            }
-            
-            instance->player = player;
-            instance->camera.setTarget(player);
-            return player;
-        }
-            break;
-            
-        case EntityTypes::Enemy:
-        {
-            CEnemy* enemy;
-            if(entityParameterHolder.spriteContainerKey == "") {
-                enemy = new CEnemy(entityParameterHolder.box, entityParameterHolder.color);
-            } else {
-                enemy = new CEnemy(entityParameterHolder.box, entityParameterHolder.spriteContainerKey);
-            }
-            
-            if(jsonEntity.HasMember("target")) {
-                CEntity* target = instance->entityManager.getEntity(jsonEntity["target"].GetString());
-                if(target != nullptr)
-                    enemy->setTarget(target);
-            }
-            
-            return enemy;
-        }
-            break;
-            
-        case EntityTypes::Entity:
-        default:
-        {
-            CEntity* entity;
-            if(entityParameterHolder.spriteContainerKey == "") {
-                entity = new CEntity(entityParameterHolder.box, entityParameterHolder.color);
-            } else {
-                entity = new CEntity(entityParameterHolder.box, entityParameterHolder.spriteContainerKey);
-            }
-            return entity;
-        }
-            break;
-    }
-}
-
+//CEntity* NFile::_createEntity(CInstance* instance, const rapidjson::Value& jsonEntity, EntityParameterHolder entityParameterHolder) {
+//    
+//    int type;
+//    if(!jsonEntity.HasMember("type"))
+//        type = 0;
+//    else
+//        type = jsonEntity["type"].GetInt();
+//    
+//    switch(type) {
+//        case EntityTypes::Player:
+//        {
+//            CPlayer* player;
+//            if(entityParameterHolder.spriteContainerKey == "") {
+//                player = new CPlayer(entityParameterHolder.box, entityParameterHolder.color);
+//            } else {
+//                player = new CPlayer(entityParameterHolder.box, entityParameterHolder.spriteContainerKey);
+//            }
+//            
+//            instance->player = player;
+//            instance->camera.setTarget(player);
+//            return player;
+//        }
+//            break;
+//            
+//        case EntityTypes::Enemy:
+//        {
+//            CEnemy* enemy;
+//            if(entityParameterHolder.spriteContainerKey == "") {
+//                enemy = new CEnemy(entityParameterHolder.box, entityParameterHolder.color);
+//            } else {
+//                enemy = new CEnemy(entityParameterHolder.box, entityParameterHolder.spriteContainerKey);
+//            }
+//            
+//            if(jsonEntity.HasMember("target")) {
+//                CEntity* target = instance->entityManager.getEntity(jsonEntity["target"].GetString());
+//                if(target != nullptr)
+//                    enemy->setTarget(target);
+//            }
+//            
+//            return enemy;
+//        }
+//            break;
+//            
+//        case EntityTypes::Entity:
+//        default:
+//        {
+//            CEntity* entity;
+//            if(entityParameterHolder.spriteContainerKey == "") {
+//                entity = new CEntity(entityParameterHolder.box, entityParameterHolder.color);
+//            } else {
+//                entity = new CEntity(entityParameterHolder.box, entityParameterHolder.spriteContainerKey);
+//            }
+//            return entity;
+//        }
+//            break;
+//    }
+//}
+//
 void NFile::loadMap(std::string fileName, CInstance* instance) {
     
     log(LogType::ALERT, "Loading map: \"", fileName.c_str(), "\"");
@@ -118,17 +118,6 @@ void NFile::loadMap(std::string fileName, CInstance* instance) {
             
             CAssetManager::addFont(font["name"].GetString(), font["path"].GetString(), font["size"].GetInt());
         }
-
-//        const rapidjson::Value& shaders = d["shaders"];                                 // Shaders
-//        for(rapidjson::SizeType i = 0; i < shaders.Size(); i++) {
-//            const rapidjson::Value& shader = shaders[i];
-//            if(!(shader.HasMember("name") && shader.HasMember("path") && shader.HasMember("shaderType")))
-//                continue;
-//            if(!shader["shaderType"].IsInt() || !(0 <= shader["shaderType"].GetInt() >= 1))
-//                continue;
-//            
-//            CAssetManager::addShader(shader["name"].GetString(), shader["path"].GetString(), (sf::Shader::Type)shader["shaderType"].GetInt());
-//        }
 
         const rapidjson::Value& spriteSheets = d["spriteSheets"];                       // Sprite sheets
         for(rapidjson::SizeType i = 0; i < spriteSheets.Size(); i++) {
@@ -168,57 +157,57 @@ void NFile::loadMap(std::string fileName, CInstance* instance) {
             }
         }
 
-        const rapidjson::Value& entities = d["entities"];                               // Entities
-        for(rapidjson::SizeType i = 0; i < entities.Size(); i++) {
-            const rapidjson::Value& jsonEntity = entities[i];
-            if(!(jsonEntity.HasMember("rect") && (jsonEntity.HasMember("spriteContainerKey") || jsonEntity.HasMember("colors"))))
-                continue;
-            
-            CEntity* entity;
-            
-            if(jsonEntity.HasMember("spriteContainerKey")) {
-                const rapidjson::Value& rect = jsonEntity["rect"];
-                std::string spriteContainerKey = jsonEntity["spriteContainerKey"].GetString();
-                entity = _createEntity(instance, jsonEntity, EntityParameterHolder{Box{rect[0].GetInt(), rect[1].GetInt(), rect[2].GetInt(), rect[3].GetInt()}, spriteContainerKey});
-            } else {
-                const rapidjson::Value& rect = jsonEntity["rect"];
-                const rapidjson::Value& colors = jsonEntity["colors"];
-                entity = _createEntity(instance, jsonEntity, EntityParameterHolder{Box{rect[0].GetInt(), rect[1].GetInt(), rect[2].GetInt(), rect[3].GetInt()}, SDL_Color{(Uint8)colors[0].GetInt(), (Uint8)colors[1].GetInt(), (Uint8)colors[2].GetInt(), (Uint8)colors[3].GetInt()}});
-            }
-            
-            std::string entityName;
-            
-            if(!jsonEntity.HasMember("name") || jsonEntity["name"] == "") {
-                entityName = instance->entityManager.addEntity(entity);
-            } else {
-                entityName = instance->entityManager.addEntity(entity, jsonEntity["name"].GetString());
-            }
-            
-            if(jsonEntity.HasMember("collisionLayers")) {
-                entity->collisionLayer = jsonEntity["collisionLayers"].GetInt();
-            }
-            if(jsonEntity.HasMember("spriteFollowsCollisionBox")) {
-                entity->spriteFollowsCollisionBox = jsonEntity["spriteFollowsCollisionBox"].GetBool();
-            }
-            if(jsonEntity.HasMember("spriteStateTypes")) {
-                const rapidjson::Value& spriteStates = jsonEntity["spriteStateTypes"];
-                
-                for(int j = 0; j < SpriteStateTypes::TOTAL_SPRITESTATETYPES; j++) {
-                    if(spriteStates.HasMember(std::to_string(j).c_str())) {
-                        entity->spriteStateTypes[j] = spriteStates[std::to_string(j).c_str()].GetString();
-                    }
-                }
-            }
-        }
+//        const rapidjson::Value& entities = d["entities"];                               // Entities
+//        for(rapidjson::SizeType i = 0; i < entities.Size(); i++) {
+//            const rapidjson::Value& jsonEntity = entities[i];
+//            if(!(jsonEntity.HasMember("rect") && (jsonEntity.HasMember("spriteContainerKey") || jsonEntity.HasMember("colors"))))
+//                continue;
+//            
+//            CEntity* entity;
+//            
+//            if(jsonEntity.HasMember("spriteContainerKey")) {
+//                const rapidjson::Value& rect = jsonEntity["rect"];
+//                std::string spriteContainerKey = jsonEntity["spriteContainerKey"].GetString();
+//                entity = _createEntity(instance, jsonEntity, EntityParameterHolder{Box{rect[0].GetInt(), rect[1].GetInt(), rect[2].GetInt(), rect[3].GetInt()}, spriteContainerKey});
+//            } else {
+//                const rapidjson::Value& rect = jsonEntity["rect"];
+//                const rapidjson::Value& colors = jsonEntity["colors"];
+//                entity = _createEntity(instance, jsonEntity, EntityParameterHolder{Box{rect[0].GetInt(), rect[1].GetInt(), rect[2].GetInt(), rect[3].GetInt()}, SDL_Color{(Uint8)colors[0].GetInt(), (Uint8)colors[1].GetInt(), (Uint8)colors[2].GetInt(), (Uint8)colors[3].GetInt()}});
+//            }
+//            
+//            std::string entityName;
+//            
+//            if(!jsonEntity.HasMember("name") || jsonEntity["name"] == "") {
+//                entityName = instance->entityManager.addEntity(entity);
+//            } else {
+//                entityName = instance->entityManager.addEntity(entity, jsonEntity["name"].GetString());
+//            }
+//            
+//            if(jsonEntity.HasMember("collisionLayers")) {
+//                entity->collisionLayer = jsonEntity["collisionLayers"].GetInt();
+//            }
+//            if(jsonEntity.HasMember("spriteFollowsCollisionBox")) {
+//                entity->spriteFollowsCollisionBox = jsonEntity["spriteFollowsCollisionBox"].GetBool();
+//            }
+//            if(jsonEntity.HasMember("spriteStateTypes")) {
+//                const rapidjson::Value& spriteStates = jsonEntity["spriteStateTypes"];
+//                
+//                for(int j = 0; j < SpriteStateTypes::TOTAL_SPRITESTATETYPES; j++) {
+//                    if(spriteStates.HasMember(std::to_string(j).c_str())) {
+//                        entity->spriteStateTypes[j] = spriteStates[std::to_string(j).c_str()].GetString();
+//                    }
+//                }
+//            }
+//        }
         
         log(LogType::SUCCESS, "Loaded map: \"", d["name"].GetString(), "\" (\"", fileName.c_str(), "\")");
     }
     
-    if(instance->player == nullptr) {       // In case there is no player in the .map
-        instance->player = new CPlayer(Box{0, 0, 10, 10}, SDL_Color{255, 0, 255, 0});
-        instance->entityManager.addEntity(instance->player, "m:player2");
-        instance->camera.setTarget(instance->player);
-    }
+//    if(instance->player == nullptr) {       // In case there is no player in the .map
+//        instance->player = new CPlayer(Box{0, 0, 10, 10}, SDL_Color{255, 0, 255, 0});
+//        instance->entityManager.addEntity(instance->player, "m:player2");
+//        instance->camera.setTarget(instance->player);
+//    }
 }
 
 void NFile::clearFile(std::string fileName) {

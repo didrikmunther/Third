@@ -13,9 +13,7 @@
 #include "CEntityManager.h"
 #include "CWindow.h"
 #include "CCamera.h"
-#include "CPlayer.h"
 #include "CCamera.h"
-#include "CEnemy.h"
 
 class CInstance {
     
@@ -26,7 +24,7 @@ public:
     CWindow window;
     
     CEntityManager entityManager;
-    CPlayer* player;
+    CEntity* player;
     
     void closeInstance();
     
