@@ -191,23 +191,29 @@ void CGame::_handleKeyStates() {
     // Other
     
     if(NMouse::leftMouseButtonPressed()) { // damage particle
-        int mousePosX = instance.player->body.getX() - NMouse::relativeMouseX(&instance.camera);
+        int mousePosX = instance.player->body.getX() + instance.player->body.getW() / 2 - NMouse::relativeMouseX(&instance.camera);
         int mousePosY = instance.player->body.getY() - 100 - NMouse::relativeMouseY(&instance.camera);
         float angle = atan2(mousePosY, mousePosX);
         
         const int velocityX = -(cos(angle) * 100);
         const int velocityY = -(sin(angle) * 100);
         
+//        int middleX = instance.player->body.getX() + instance.player->body.getW() / 2;
+//        int middleY = instance.player->body.getY() + instance.player->body.getH() / 2;
+//        
+//        int spawnX = middleX + cos(angle) * -instance.player->body.getH() / 2;
+//        int spawnY = middleY + sin(angle) * -instance.player->body.getH() / 2;
+        
         //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, SDL_Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
         
-        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX(), instance.player->body.getY() - 100, 4, 4}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::DAMAGE, 10);
+        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX() + instance.player->body.getW() / 2, instance.player->body.getY() - 100, 4, 4}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::DAMAGE, 10);
         tempParticle->body.velX = velocityX;
         tempParticle->body.velY = velocityY;
         instance.entityManager.addParticle(tempParticle);
     }
     
     if(NMouse::rightMouseButtonPressed()) {   // heal particle
-        int mousePosX = instance.player->body.getX() - NMouse::relativeMouseX(&instance.camera);
+        int mousePosX = instance.player->body.getX() + instance.player->body.getW() / 2 - NMouse::relativeMouseX(&instance.camera);
         int mousePosY = instance.player->body.getY() - 100 - NMouse::relativeMouseY(&instance.camera);
         float angle = atan2(mousePosY, mousePosX);
         
@@ -216,7 +222,7 @@ void CGame::_handleKeyStates() {
         
         //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, SDL_Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
         
-        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX(), instance.player->body.getY() - 100, 20, 20}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::HEAL, 10);
+        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX() + instance.player->body.getW() / 2, instance.player->body.getY() - 100, 20, 20}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::HEAL, 10);
         tempParticle->body.velX = velocityX;
         tempParticle->body.velY = velocityY;
         instance.entityManager.addParticle(tempParticle);
@@ -274,6 +280,10 @@ void CGame::_onEvent(SDL_Event* event) {
                     instance.player->body._rect.y = 1000000;
                     break;
                     
+                case SDLK_7:
+                    instance.camera.addCameraShake(100.0);
+                    break;
+                    
                 case keyMap::SNEAK:
                     instance.player->setMovementState(MovementState::SNEAKING_MOVEMENT);
                     break;
@@ -312,6 +322,7 @@ void CGame::_onEvent(SDL_Event* event) {
                     break;
                 case keyMap::LOAD_ASSETS:
                     NFile::loadMap("resources/map/testMap1.map", &instance);
+                    instance.camera.onInit(&instance.window);
                     break;
                 case keyMap::TOGGLE_HIDDEN:
                     instance.player->toggleProperty(EntityProperty::HIDDEN);
@@ -420,7 +431,7 @@ void CGame::_onLoop() {
 
 void CGame::_onRender() {
     
-    SDL_SetRenderDrawColor(instance.window.getRenderer(), 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(instance.window.getRenderer(), 245, 245, 245, 255);
     SDL_RenderClear(instance.window.getRenderer());
     
     instance.entityManager.onRender(&instance.window, &instance.camera);
