@@ -29,19 +29,11 @@ public:
     SDL_Window* getWindow();
     SDL_Renderer* getRenderer();
     
-//    void updateView(int width, int height);
-//    void setSize(int width, int height);
-    
 private:
     SDL_Window* _window;
     SDL_Renderer* _renderer;
     
-    //sf::View _getLetterboxView(sf::View view, int windowWidth, int windowHeight);
-    
     int _screenHeight, _screenWidth;
-    
-    
-    
     
 };
 
