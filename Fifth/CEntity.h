@@ -41,7 +41,6 @@ public:
     
     void init();
     void onLoop(CInstance* instance);
-    void afterLogicLoop(std::vector<CEntity*>* entities, CInstance* instance); // After the velocities have been added, move the entity
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     

@@ -87,15 +87,6 @@ void CEntity::onLoop(CInstance* instance) {
         setSpriteContainer(spriteStateTypes[SpriteStateTypes::DESCENDING]);
 }
 
-void CEntity::afterLogicLoop(std::vector<CEntity *> *entities, CInstance* instance) {
-    if(isDead)
-        return;
-    
-    
-    
-    
-}
-
 void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     
     if(toRemove || isDead)
