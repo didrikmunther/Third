@@ -13,7 +13,6 @@
 #include "CEntityManager.h"
 #include "CWindow.h"
 #include "CCamera.h"
-#include "CCamera.h"
 
 class CInstance {
     

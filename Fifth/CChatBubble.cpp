@@ -11,6 +11,7 @@
 #include "NSurface.h"
 #include "Define.h"
 #include <iostream>
+#include "CEntity.h"
 
 CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey, ChatBubbleType type) :
     _target(target), _type(type), CGuiText(0, 0, text, fontKey), _widestLine(0), _totalHeight(0),

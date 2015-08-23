@@ -26,6 +26,7 @@ void EUtilityParticle::onRender(CWindow* window, CCamera* camera) {
 }
 
 void EUtilityParticle::renderAdditional(CWindow* window, CCamera* camera) {
+    EParticle::renderAdditional(window, camera);
     
 }
 
@@ -33,26 +34,34 @@ bool EUtilityParticle::collisionLogic(CEntity* target, CInstance* instance, Coll
     bool toReturn = EParticle::collisionLogic(target, instance, collisionSides);
     
     if(target != _owner) {
-        if(!_parent->toRemove) {       // Avoid unneccesary dynamic_casts
-            ELiving* living = target->getComponent<ELiving>();
-            if(living) {
-                switch(_utility) {
-                    case BasicUtilities::DAMAGE:
-                        living->dealDamage(rand() % 20, UtilityPosition{_parent->body.getX(), _parent->body.getY()});
-                        break;
-                        
-                    case BasicUtilities::HEAL:
-                        living->heal(rand() % 20, UtilityPosition{_parent->body.getX(), _parent->body.getY()});
-                        break;
-                        
-                    default:
-                        break;
+        if(!_parent->toRemove) {
+            if(std::find(_collidedWith.begin(), _collidedWith.end(), target) == _collidedWith.end()) {
+                ELiving* living = target->getComponent<ELiving>();
+                if(living) {
+                    _collidedWith.push_back(target);
+                    switch(_utility) {
+                        case BasicUtilities::DAMAGE:
+                            living->dealDamage(rand() % 20, UtilityPosition{_parent->body.getX(), _parent->body.getY()});
+                            break;
+                            
+                        case BasicUtilities::HEAL:
+                            living->heal(rand() % 20, UtilityPosition{_parent->body.getX(), _parent->body.getY()});
+                            break;
+                            
+                        default:
+                            break;
+                    }
+                    return false;
+                } else {
+                    _parent->toRemove = true;
+                    return true;
                 }
+            } else {
+                return false;
             }
-            _parent->toRemove = true;
         }
     } else {
-        return false && toReturn;
+        return false;
     }
     
     return true && toReturn;

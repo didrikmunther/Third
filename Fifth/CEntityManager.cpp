@@ -14,6 +14,7 @@
 #include "NSurface.h"
 #include <sstream>
 #include "EParticle.h"
+#include "CInstance.h"
 
 CEntityManager::CEntityManager() : entityID(0), renderFlags(RenderFlags::CLEAR), _gridSize(32) {
 }
@@ -378,8 +379,12 @@ void CEntityManager::onLoop(CInstance* instance) {
         for(auto &particle: _ParticleVector) {
             particle->gridCoordinates.clear();
             
-            particle->onLoop(instance);
+            //NFile::log(LogType::ALERT, "Current Entity: ", particle);
             
+            particle->onLoop(instance);
+            if(particle->toRemove)
+                continue;
+               
             for(auto &coords: getGrid(particle, _gridSize)) {
                 particle->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
             }
@@ -424,7 +429,7 @@ void CEntityManager::onLoop(CInstance* instance) {
             if(target->toRemove) {
                 delete target;
                 _EntityVector.erase(i++);
-            } else
+            } else if(i != _EntityVector.end())
                 ++i;
         }
     }
@@ -470,18 +475,22 @@ void CEntityManager::onLoop(CInstance* instance) {
         auto i = _ParticleVector.begin();
         while(i != _ParticleVector.end()) {
             auto target = (*i);
+            if(!target)
+                continue;
             
-            std::vector<CEntity*> collisionMap;
-            for (auto &coord: target->gridCoordinates) {
-                for(auto &entity: _CollisionVector[coord.y][coord.x]){
-                    if(std::find(collisionMap.begin(), collisionMap.end(), entity) != collisionMap.end())
-                        continue;
-                    collisionMap.push_back(entity);
+            if(!target->toRemove) {
+                std::vector<CEntity*> collisionMap;
+                for (auto &coord: target->gridCoordinates) {
+                    for(auto &entity: _CollisionVector[coord.y][coord.x]){
+                        if(std::find(collisionMap.begin(), collisionMap.end(), entity) != collisionMap.end())
+                            continue;
+                        collisionMap.push_back(entity);
+                    }
                 }
+                
+                target->afterLogicLoop(&collisionMap, instance);
             }
-            
-            target->afterLogicLoop(&collisionMap, instance);
-            
+        
             if(target->toRemove) {
                 delete *i;
                 _ParticleVector.erase(std::remove(_ParticleVector.begin(), _ParticleVector.end(), target), _ParticleVector.end());
@@ -517,7 +526,6 @@ void CEntityManager::entityCleanup() {
     {
         auto i = _EntityVector.begin();
         while(i != _EntityVector.end()) {
-            i->second->clearComponents();
             delete i->second;
             _EntityVector.erase(i++->first);
         }
@@ -534,19 +542,13 @@ void CEntityManager::entityCleanup() {
     }
 }
 
-//void CEntityManager::particleEmitterCleanup() {
-//    auto i = _ParticleEmitterVector.begin();
-//    while(i != _ParticleEmitterVector.end()) {
-//        delete *i;
-//        i = _ParticleEmitterVector.erase(i);
-//    }
-//    _ParticleEmitterVector.clear();
-//}
-
 void CEntityManager::particleCleanup() {
     auto i = _ParticleVector.begin();
     while(i != _ParticleVector.end()) {
-        delete *i;
+        if((*i))
+            delete *i;
+        else
+            std::cout << "Whatafuck";
         i = _ParticleVector.erase(i);
     }
     _ParticleVector.clear();

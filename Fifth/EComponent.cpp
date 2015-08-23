@@ -7,7 +7,13 @@
 //
 
 #include "EComponent.h"
+#include <iostream>
 
 EComponent::EComponent(CEntity* parent) {
-    { _parent = parent; }
+    if(parent)
+        _parent = parent;
+    else {
+        delete this;
+        std::cout << "errror\n";
+    }
 }

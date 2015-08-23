@@ -4,7 +4,7 @@
 //
 //  Created by Didrik Munther on 13/03/15.
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
-//d
+//
 
 #include <stdio.h>
 #include <SDL2/SDL.h>
@@ -19,6 +19,8 @@ const int SCREEN_BPP            = 32;
 const int GAMEINTERVAL          = 60;
 const int DESPAWN_HEIGHT        = 10000;
 const float GRAVITY             = 0.3;
+
+const int FALL_DAMAGE_CAMERA_SHAKE_INTENSIFIER = 30;
 
 const char LOG_FILE[]           = "debug.log";
 

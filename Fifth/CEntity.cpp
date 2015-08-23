@@ -15,6 +15,7 @@
 #include "CSpriteContainer.h"
 #include <math.h>
 #include "EComponent.h"
+#include <sstream>
 
 CEntity::CEntity(Box rect, SDL_Color color) :
 spriteContainerKey(""), color(color), body(rect) {
@@ -30,6 +31,7 @@ spriteContainerKey(spriteContainerKey), color(SDL_Color{255,0,255,255}), body(re
 
 CEntity::~CEntity() {
     _cleanUpTextVector();
+    _clearComponents();
 }
 
 void CEntity::init() {
@@ -56,21 +58,31 @@ void CEntity::_cleanUpTextVector() {
 
 void CEntity::onLoop(CInstance* instance) {
     
+    if(toRemove)
+        return;
+    
     _hasMoved = false;
     
     auto i = _GuiTextVector.begin();
     while(i != _GuiTextVector.end()) {
-        (*i)->onLoop();
+        if(!*i) continue;
+        if(!(*i)->toRemove())
+            (*i)->onLoop();
         if((*i)->toRemove()) {
             delete *i;
             _GuiTextVector.erase(std::remove(_GuiTextVector.begin(), _GuiTextVector.end(), (*i)), _GuiTextVector.end());
-        } else
+        } else if(i != _GuiTextVector.end())
             ++i;
     }
     
     for(auto &i: _components) {
-        i.second->onLoop(instance);
+        if(i.second)
+            i.second->onLoop(instance);
     }
+    
+//    std::stringstream ss;
+//    ss << "Components: " << _components.size();
+//    say(ss.str(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
     
     if(!hasProperty(EntityProperty::FLYING))
         body.velY += GRAVITY;
@@ -185,10 +197,12 @@ void CEntity::removeProperty(int property) {
 }
 
 void CEntity::addComponent(EComponent* component) {
+    if(_components.count(&typeid(*component)) != 0)
+        delete _components[&typeid(*component)];
     _components[&typeid(*component)] = component;
 }
 
-void CEntity::clearComponents() {
+void CEntity::_clearComponents() {
     for(auto &i: _components) {
         delete i.second;
     }
@@ -208,13 +222,14 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags ren
         NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, window, r, g, b);  // Bottom line
     }
     
-    for(auto &i: _components) {
-        i.second->renderAdditional(window, camera);
-    }
+    if(!toRemove)
+        for(auto &i: _components)
+            i.second->renderAdditional(window, camera);
     
     if(!hasProperty(EntityProperty::HIDDEN))
         for (auto &i: _GuiTextVector)                                                // Render chatbubbles
-            i->onRender(window, camera);
+            if(!i->toRemove())
+                i->onRender(window, camera);
         
 }
 
@@ -274,16 +289,16 @@ bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities, CInstanc
     }
     
     if(colliding) {
-        std::string toWrite = "";           // Write where the entity is colliding
-        if(collisionTop)
-            toWrite += "Top, ";
-        if(collisionBottom)
-            toWrite += "Bot, ";
-        if(collisionLeft)
-            toWrite += "Left, ";
-        if(collisionRight)
-            toWrite += "Right, ";
-        say(toWrite, "TESTFONT", ChatBubbleType::INSTANT_TALK);
+//        std::string toWrite = "";           // Write where the entity is colliding
+//        if(collisionTop)
+//            toWrite += "Top, ";
+//        if(collisionBottom)
+//            toWrite += "Bot, ";
+//        if(collisionLeft)
+//            toWrite += "Left, ";
+//        if(collisionRight)
+//            toWrite += "Right, ";
+//        say(toWrite, "TESTFONT", ChatBubbleType::INSTANT_TALK);
         return true;
     } else
         return false;

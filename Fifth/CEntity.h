@@ -20,6 +20,7 @@
 #include "CWindow.h"
 #include "CChatBubble.h"
 #include <unordered_map>
+//#include "CInstance.h"
 
 struct GridCoordinates {
     int x, y;
@@ -92,7 +93,7 @@ public:
             return nullptr;
         }
     }
-    void clearComponents();
+    void _clearComponents();
     
     bool hasMoved() { return _hasMoved; };
     bool isDead;

@@ -8,12 +8,15 @@
 
 #include "EParticle.h"
 #include <SDL2/SDL.h>
+#include <iostream>
+#include <sstream>
 
 EParticle::EParticle(CEntity* parent, int livingTime) : EComponent(parent), _livingTime(livingTime), _creationTime(SDL_GetTicks()) {
     
 }
 
 void EParticle::onLoop(CInstance* instance) {
+    
     if(_parent->collisionBottom) {
         _parent->body.velX /= 2;
         if(_parent->body.velX > 0)
@@ -24,8 +27,13 @@ void EParticle::onLoop(CInstance* instance) {
                 _parent->body.velX = 0;
     }
     
-    if(_livingTime > 0 && SDL_GetTicks() - _creationTime > _livingTime * 1000)
+    if(_livingTime >= 0 && SDL_GetTicks() - _creationTime > _livingTime * 1000)
         _parent->toRemove = true;
+    
+    //std::stringstream ss;
+    
+    //ss << "LivingTime: " << (_livingTime * 1000 - SDL_GetTicks() - _creationTime);
+    //_parent->say(ss.str(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
 }
 
 void EParticle::onRender(CWindow* window, CCamera* camera) {

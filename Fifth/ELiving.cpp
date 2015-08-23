@@ -9,6 +9,7 @@
 #include "ELiving.h"
 #include "CCombatText.h"
 #include "CEntity.h"
+#include "CInstance.h"
 
 ELiving::ELiving(CEntity* parent) : EComponent(parent) {
     _values[ValueTypes::HEALTH]      = _maxValues[ValueTypes::HEALTH] = 1000;
@@ -66,9 +67,12 @@ void ELiving::renderAdditional(CWindow* window, CCamera* camera) {
 }
 
 bool ELiving::collisionLogic(CEntity* target, CInstance* instance, CollisionSides collisionSides) {
-    float jumpDamageHeight = 22;
+    float jumpDamageHeight = 16;
     if(_parent->body.velY > jumpDamageHeight && collisionSides.collisionBottom) {            // Fall damage
-        dealDamage((_parent->body.velY - jumpDamageHeight) * (_maxValues[ValueTypes::HEALTH] / (GRAVITY * 166)));
+        //dealDamage((_parent->body.velY - jumpDamageHeight) * (_maxValues[ValueTypes::HEALTH] / (GRAVITY * 166)));
+        dealDamage((_parent->body.velY - jumpDamageHeight) * _maxValues[ValueTypes::HEALTH] / 10);
+        if(_parent == instance->player)
+            instance->camera.addCameraShake((_parent->body.velY - 16) * FALL_DAMAGE_CAMERA_SHAKE_INTENSIFIER);
     }
     
     return true;

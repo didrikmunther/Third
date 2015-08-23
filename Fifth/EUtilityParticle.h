@@ -25,6 +25,7 @@ public:
 protected:
     CEntity* _owner;
     BasicUtilities _utility;
+    std::vector<CEntity*> _collidedWith;
     
 };
 

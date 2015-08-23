@@ -8,13 +8,13 @@
 
 #include "ENpc.h"
 #include "EMovable.h"
+#include "ELiving.h"
 
-ENpc::ENpc(CEntity* parent) : EComponent(parent) {
-    
+ENpc::ENpc(CEntity* parent) : EComponent(parent), _target(nullptr) {
 }
 
 void ENpc::onLoop(CInstance* instance) {
-    if(_target != nullptr) {
+    if(_target && !_target->isDead && !_target->toRemove) {
         if(_parent->body.getX() > _target->body.getX()) {
             EMovable* movable = _parent->getComponent<EMovable>();
             if(movable) {
@@ -53,7 +53,8 @@ bool ENpc::collisionLogic(CEntity* target, CInstance* instance, CollisionSides c
 }
 
 void ENpc::setTarget(CEntity* target) {
-    
+    if(target)
+        _target = target;
 }
 
 CEntity* ENpc::getTarget() {

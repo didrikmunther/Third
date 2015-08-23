@@ -21,6 +21,7 @@
 #include "CGuiText.h"
 
 class CCamera;
+class CInstance;
 
 class CEntityManager {
     

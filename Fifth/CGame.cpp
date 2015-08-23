@@ -49,8 +49,8 @@ int CGame::onExecute() {
     NFile::log(LogType::ALERT, "Starting game...");
     
     while(_isRunning) {
-        while(SDL_PollEvent(&event)){
-            _onEvent(&event);
+        while(SDL_PollEvent(&_event)){
+            _onEvent();
         }
         
         float now = SDL_GetTicks();
@@ -58,8 +58,9 @@ int CGame::onExecute() {
         _lastTime = now;
         
         while(_delta >= 1) {    // Todo implement variable time step instead of this laggy thing
-            if(_delta > 20) {       // To make sure it doesn't freeze
-                instance.entityManager.particleCleanup();
+            if(_delta > 200) {       // To make sure it doesn't freeze
+                _isRunning = false;
+                break;
             }
             
             _handleKeyStates();
@@ -78,7 +79,8 @@ int CGame::onExecute() {
             _title.str("");
             _title /* << _intro << " | " */ << _updates << " ups, " << _frames << " fps";
             //instance.window.setTitle(_title.str());
-            //instance.entityManager.getEntity("n:bush")->say(_title.str(), "TESTFONT", ChatBubbleType::SAY);
+            if(instance.player)
+                instance.player->say(_title.str(), "TESTFONT", ChatBubbleType::SAY);
             _updates = 0;
             _frames = 0;
         }
@@ -122,26 +124,28 @@ int CGame::_onInit() {
     
     NFile::loadMap("resources/map/testMap1.map", &instance);
     
-    CEntity* tempEntity = new CEntity(Box{300, 0, 80, 140}, "playerPink");
+    CEntity* tempEntity = new CEntity(Box{300, 0, 80, 140}, "playerPink");          // Temp player
     tempEntity->addComponent(new EMovable(tempEntity));
     tempEntity->addComponent(new ELiving(tempEntity));
+    tempEntity->getComponent<EMovable>()->jumpPower = 15.0;
     tempEntity->spriteStateTypes[SpriteStateTypes::ASCENDING] = "playerPinkRunning";
     tempEntity->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
     tempEntity->spriteFollowsCollisionBox = false;
     instance.player = tempEntity;
     instance.entityManager.addEntity(instance.player);
     
-    tempEntity = new CEntity(Box{450, 0, 80, 140}, "playerPink");
-    tempEntity->addComponent(new EMovable(tempEntity));
-    tempEntity->addComponent(new ENpc(tempEntity));
-    tempEntity->addComponent(new ELiving(tempEntity));
-    tempEntity->getComponent<ENpc>()->setTarget(instance.player);
-    tempEntity->spriteStateTypes[SpriteStateTypes::ASCENDING] = "playerPinkRunning";
-    tempEntity->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
-    tempEntity->spriteFollowsCollisionBox = false;
-    instance.entityManager.addEntity(tempEntity);
+    auto tempEntity2 = new CEntity(Box{450, 0, 80, 140}, "playerPink");                   // Temp enemy
+    tempEntity2->addComponent(new EMovable(tempEntity2));
+    tempEntity2->addComponent(new ENpc(tempEntity2));
+    tempEntity2->addComponent(new ELiving(tempEntity2));
+    tempEntity2->getComponent<EMovable>()->setMovementState(MovementState::SNEAKING_MOVEMENT);
+    tempEntity2->getComponent<ENpc>()->setTarget(instance.player);
+    tempEntity2->spriteStateTypes[SpriteStateTypes::ASCENDING] = "playerPinkRunning";
+    tempEntity2->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
+    tempEntity2->spriteFollowsCollisionBox = false;
+    instance.entityManager.addEntity(tempEntity2);
     
-    tempEntity = new CEntity(Box{0, 465, 5000, 30}, SDL_Color{255, 0, 0, 0});
+    tempEntity = new CEntity(Box{0, 465, 5000, 30}, SDL_Color{255, 0, 0, 0});       // Temp platforms
     tempEntity->addCollisionLayer(-129);
     tempEntity->addProperty(EntityProperty::STATIC);
     instance.entityManager.addEntity(tempEntity);
@@ -195,14 +199,11 @@ void CGame::_handleKeyStates() {
     
     // Movement
     
-    //if(!instance.player)
-        //return;
+    if(!instance.player)
+        return;
     
     EMovable* movable = instance.player->getComponent<EMovable>();
     if(movable) {
-        
-        std::cout << " here\n";
-        
         if(keystate[SDL_SCANCODE_D]) {
             movable->goRight();
         }
@@ -242,6 +243,8 @@ void CGame::_handleKeyStates() {
         tempParticle->body.velX = velocityX;
         tempParticle->body.velY = velocityY;
         instance.entityManager.addParticle(tempParticle);
+        
+        instance.camera.addCameraShake(1.1);
     }
     
     if(NMouse::rightMouseButtonPressed()) {   // heal particle
@@ -259,12 +262,16 @@ void CGame::_handleKeyStates() {
         tempParticle->body.velX = velocityX;
         tempParticle->body.velY = velocityY;
         instance.entityManager.addParticle(tempParticle);
+        
+        instance.camera.setTarget(tempParticle);
     }
 }
 
-void CGame::_onEvent(SDL_Event* event) {
+void CGame::_onEvent() {
     
     //if(event->key.repeat != 0) return;
+    
+    auto event = &_event;
     
     switch(event->type) {
             
@@ -344,6 +351,10 @@ void CGame::_onEvent(SDL_Event* event) {
                 {
                     auto tempNpc = new CEntity(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 60, 164}, "player");
                     tempNpc->addComponent(new ENpc(tempNpc));
+                    tempNpc->addComponent(new EMovable(tempNpc));
+                    tempNpc->addComponent(new ENpc(tempNpc));
+                    tempNpc->addComponent(new ELiving(tempNpc));
+                    tempNpc->getComponent<EMovable>()->setMovementState(MovementState::SNEAKING_MOVEMENT);
                     tempNpc->getComponent<ENpc>()->setTarget(instance.player);
                     tempNpc->spriteStateTypes[SpriteStateTypes::ASCENDING] = "enemyJumping";
                     tempNpc->spriteFollowsCollisionBox = false;
@@ -355,6 +366,7 @@ void CGame::_onEvent(SDL_Event* event) {
                 {
                     auto tempNpc = new CEntity(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 32 * 4, 32 * 4}, "yrl");
                     tempNpc->addComponent(new ENpc(tempNpc));
+                    tempNpc->addComponent(new ELiving(tempNpc));
                     tempNpc->getComponent<ENpc>()->setTarget(instance.player);
                     instance.entityManager.addEntity(tempNpc);
                 }
@@ -368,11 +380,12 @@ void CGame::_onEvent(SDL_Event* event) {
                     }
                     break;
                 case keyMap::LOAD_ASSETS:
-                    //NFile::loadMap("resources/map/testMap1.map", &instance);
+                    NFile::loadMap("resources/map/testMap1.map", &instance);
                     instance.camera.onInit(&instance.window);
                     break;
                 case keyMap::TOGGLE_HIDDEN:
-                    instance.player->toggleProperty(EntityProperty::HIDDEN);
+                    if(instance.player)
+                        instance.player->toggleProperty(EntityProperty::HIDDEN);
                     break;
                 case keyMap::TOGGLE_COLLISION_BOUNDS:
                     //player->toggleProperty(EntityProperty::FLYING);
@@ -401,13 +414,14 @@ void CGame::_onEvent(SDL_Event* event) {
                     for(int i = 0; i < 100; i++) {
                         text += alphanum[rand() % (sizeof(alphanum) - 1)];
                     }
-                    instance.player->say(text, "TESTFONT", ChatBubbleType::SAY);
+                    if(instance.player)
+                        instance.player->say(text, "TESTFONT", ChatBubbleType::SAY);
                     
                     text = "";
                     for(int i = 0; i < 50; i++) {
                         text += alphanum[rand() % (sizeof(alphanum) - 1)];
                     }
-                    //instance.entityManager.getEntity("n:bush")->say(text, "TESTFONT", ChatBubbleType::YELL);
+                    //i1nstance.entityManager.getEntity("n:bush")->say(text, "TESTFONT", ChatBubbleType::YELL);
                 }
                     break;
                     
