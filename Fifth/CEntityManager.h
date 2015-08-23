@@ -13,6 +13,7 @@
 #include <memory>
 #include <vector>
 #include "CEntity.h"
+#include "CParticle.h"
 #include "CParticleEmitter.h"
 #include "CSprite.h"
 #include <map>
@@ -21,7 +22,6 @@
 #include "CGuiText.h"
 
 class CCamera;
-class CInstance;
 
 class CEntityManager {
     
@@ -35,11 +35,12 @@ public:
     std::string getNameOfEntity(CEntity* entity);
     std::string addEntity(CEntity* entity, std::string name = "");
     void addParticle(Box rect, SDL_Color color, int livingTime);
-    void addParticle(CEntity* entity);
+    void addParticle(CParticle* particle);
+//    void addParticleEmitter(SDL_Rect rect, SDL_Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, ParticleVelocity velocity);
     void addGuiText(CGuiText* guiText);
     
     void onRender(CWindow* window, CCamera* camera);
-    void onLoop(CInstance* instance);
+    void onLoop();
     void onCleanup();
     
     // Temp
@@ -59,7 +60,8 @@ public:
     
 private:
     std::map<std::string, CEntity*> _EntityVector;
-    std::vector<CEntity*> _ParticleVector;
+    std::vector<CParticle*> _ParticleVector;
+//    std::vector<CParticleEmitter*> _ParticleEmitterVector;
     std::vector<CGuiText*> _GuiTextVector;
     std::map<std::string, CEntity*> _DeadEntitiesVector;
     

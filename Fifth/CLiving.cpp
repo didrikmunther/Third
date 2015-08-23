@@ -1,17 +1,26 @@
 //
-//  ELiving.cpp
+//  CLiving.cpp
 //  Fifth
 //
-//  Created by Didrik Munther on 20/08/15.
+//  Created by Didrik Munther on 01/06/15.
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#include "ELiving.h"
+#include "CLiving.h"
+#include "NSurface.h"
 #include "CCombatText.h"
-#include "CEntity.h"
-#include "CInstance.h"
 
-ELiving::ELiving(CEntity* parent) : EComponent(parent) {
+CLiving::CLiving(Box rect, SDL_Color color) : CMovable(rect, color) {
+    _init();
+}
+
+CLiving::CLiving(Box rect, std::string spriteKey) : CMovable(rect, spriteKey) {
+    _init();
+}
+
+void CLiving::_init() {
+    entityType = EntityTypes::Living;
+    
     _values[ValueTypes::HEALTH]      = _maxValues[ValueTypes::HEALTH] = 1000;
     _values[ValueTypes::KEVLAR]      = _maxValues[ValueTypes::KEVLAR] = 1000;
     _values[ValueTypes::ENERGY]      = _maxValues[ValueTypes::ENERGY] = 100;
@@ -19,22 +28,16 @@ ELiving::ELiving(CEntity* parent) : EComponent(parent) {
     _stats [StatTypes::ARMOUR]       = 1;
     _stats [StatTypes::ATTACK_POWER] = 10;
     _stats [StatTypes::ATTACK_SPEED] = 10;
-    
+
     // temp
     _values[ValueTypes::HEALTH] = 750;
     _values[ValueTypes::KEVLAR] = 500;
 }
 
-void ELiving::onLoop(CInstance* instance) {
+void CLiving::renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
+    CMovable::renderAdditional(window, camera, renderFlags);
     
-}
-
-void ELiving::onRender(CWindow* window, CCamera* camera) {
-    
-}
-
-void ELiving::renderAdditional(CWindow* window, CCamera* camera) {
-    if (_parent->isDead || _parent->hasProperty(EntityProperty::HIDDEN))
+    if (isDead() || hasProperty(EntityProperty::HIDDEN))
         return;
     
     int floatOverHead = 10;
@@ -43,46 +46,36 @@ void ELiving::renderAdditional(CWindow* window, CCamera* camera) {
     int healthWidth = ((float)_values[ValueTypes::HEALTH] / _maxValues[ValueTypes::HEALTH]) * bgWidth;
     int kevlarWidth = ((float)_values[ValueTypes::KEVLAR] / _maxValues[ValueTypes::KEVLAR]) * bgWidth;
     
-    if(camera->collision(_parent->body.getX() + _parent->body.getW() / 2 - bgWidth / 2,
-                         _parent->body.getY() - bgHeight - floatOverHead,
+    if(camera->collision(body.getX() + body.getW() / 2 - bgWidth / 2,
+                         body.getY() - bgHeight - floatOverHead,
                          bgWidth,
                          bgHeight)) {
         
-        NSurface::renderRect(_parent->body.getX() + _parent->body.getW() / 2 - bgWidth / 2 - camera->offsetX(),  // Background
-                             _parent->body.getY() - bgHeight - floatOverHead - camera->offsetY(),
+        NSurface::renderRect(body.getX() + body.getW() / 2 - bgWidth / 2 - camera->offsetX(),  // Background
+                             body.getY() - bgHeight - floatOverHead - camera->offsetY(),
                              bgWidth,
                              bgHeight,
                              window, 255, 0, 0);
-        NSurface::renderRect(_parent->body.getX() + _parent->body.getW() / 2 - bgWidth / 2 - camera->offsetX(),  // Health
-                             _parent->body.getY() - bgHeight - floatOverHead - camera->offsetY(),
+        NSurface::renderRect(body.getX() + body.getW() / 2 - bgWidth / 2 - camera->offsetX(),  // Health
+                             body.getY() - bgHeight - floatOverHead - camera->offsetY(),
                              healthWidth,
                              bgHeight,
                              window, 0, 255, 0);
-        NSurface::renderRect(_parent->body.getX() + _parent->body.getW() / 2 - bgWidth / 2 - camera->offsetX(),  // Kevlar
-                             _parent->body.getY() - bgHeight - floatOverHead - camera->offsetY() + bgHeight / 2 + 1,
+        NSurface::renderRect(body.getX() + body.getW() / 2 - bgWidth / 2 - camera->offsetX(),  // Kevlar
+                             body.getY() - bgHeight - floatOverHead - camera->offsetY() + bgHeight / 2 + 1,
                              kevlarWidth,
                              bgHeight / 2,
                              window, 128, 128, 128);
     }
-}
-
-bool ELiving::collisionLogic(CEntity* target, CInstance* instance, CollisionSides collisionSides) {
-    float jumpDamageHeight = 16;
-    if(_parent->body.velY > jumpDamageHeight && collisionSides.collisionBottom) {            // Fall damage
-        //dealDamage((_parent->body.velY - jumpDamageHeight) * (_maxValues[ValueTypes::HEALTH] / (GRAVITY * 166)));
-        dealDamage((_parent->body.velY - jumpDamageHeight) * _maxValues[ValueTypes::HEALTH] / 10);
-        if(_parent == instance->player)
-            instance->camera.addCameraShake((_parent->body.velY - 16) * FALL_DAMAGE_CAMERA_SHAKE_INTENSIFIER);
-    }
     
-    return true;
 }
 
-int ELiving::dealDamage(int amount, UtilityPosition position /* = {0, 0} */, CEntity* damager /* = nullptr */ ) {
+int CLiving::dealDamage(int amount, UtilityPosition position, CEntity* damager /* = nullptr */) {
+    
     if(position.x == 0)
-        position.x = _parent->body.getX();
+        position.x = body.getX();
     if(position.y == 0)
-        position.y = _parent->body.getY();
+        position.y = body.getY();
     
     SDL_Color damageColor = {255, 0, 0};
     
@@ -101,20 +94,21 @@ int ELiving::dealDamage(int amount, UtilityPosition position /* = {0, 0} */, CEn
     *health -= afterKevlar;
     if(*health <= 0) {
         *health = 0;
-        _parent->isDead = true;
+        _isDead = true;
     }
     
     CCombatText* text = new CCombatText(position.x, position.y, damageColor, 20, "-" + std::to_string(damageDone), "TESTFONT");
-    _parent->addGuiText(text);
+    _GuiTextVector.push_back(text);
     
     return damageDone;
 }
 
-int ELiving::heal(int amount, UtilityPosition position /* = {0, 0} */, CEntity* healer /* = nullptr */ ) {
+int CLiving::heal(int amount, UtilityPosition position, CEntity* healer /* = nullptr */) {
+    
     if(position.x == 0)
-        position.x = _parent->body.getX();
+        position.x = body.getX();
     if(position.y == 0)
-        position.y = _parent->body.getY();
+        position.y = body.getY();
     
     SDL_Color healingColor = {0, 255, 0};
     
@@ -128,7 +122,25 @@ int ELiving::heal(int amount, UtilityPosition position /* = {0, 0} */, CEntity* 
     int healed = amount - overHeal;
     
     CCombatText* text = new CCombatText(position.x, position.y, healingColor, 20, "+" + std::to_string(healed), "TESTFONT");
-    _parent->addGuiText(text);
+    _GuiTextVector.push_back(text);
     
     return healed;
 }
+
+void CLiving::_doLogic() {
+    CMovable::_doLogic();
+    
+}
+
+bool CLiving::_collisionLogic(CEntity* target, CollisionSides collisionSides) {
+    bool parentCollision = CMovable::_collisionLogic(target, collisionSides);
+    bool collision = true;
+    
+    float jumpDamageHeight = jumpPower + jumpPower / 4;
+    if(body.velY > jumpDamageHeight && collisionSides.collisionBottom) {            // Fall damage
+        dealDamage((body.velY - jumpDamageHeight) * (_maxValues[ValueTypes::HEALTH] / (GRAVITY * 166))); // At 0.3 gravity the lethal velocity is 50
+    }
+    
+    return parentCollision && collision;
+}
+

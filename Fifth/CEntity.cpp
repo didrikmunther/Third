@@ -12,18 +12,17 @@
 #include "CCamera.h"
 #include "Define.h"
 #include "CEntityManager.h"
+#include "CLiving.h"
 #include "CSpriteContainer.h"
 #include <math.h>
-#include "EComponent.h"
-#include <sstream>
 
 CEntity::CEntity(Box rect, SDL_Color color) :
-spriteContainerKey(""), color(color), body(rect) {
+spriteContainerKey(""), CCollidable(rect), color(color) {
     init();
 }
 
 CEntity::CEntity(Box rect, std::string spriteContainerKey) :
-spriteContainerKey(spriteContainerKey), color(SDL_Color{255,0,255,255}), body(rect) /* sprite not found color */ {
+spriteContainerKey(spriteContainerKey), CCollidable(rect), color(SDL_Color{255,0,255,255}) /* sprite not found color */ {
     init();
     std::fill(spriteStateTypes, spriteStateTypes+SpriteStateTypes::TOTAL_SPRITESTATETYPES, spriteContainerKey);
     
@@ -31,14 +30,13 @@ spriteContainerKey(spriteContainerKey), color(SDL_Color{255,0,255,255}), body(re
 
 CEntity::~CEntity() {
     _cleanUpTextVector();
-    _clearComponents();
 }
 
 void CEntity::init() {
     entityType = EntityTypes::Entity;
     
-    isDead             = false;
-    toRemove           = false;
+    _isDead             = false;
+    _toRemove           = false;
     properties          = EntityProperty::COLLIDABLE;
     collisionTop        = false;
     collisionBottom     = false;
@@ -56,57 +54,32 @@ void CEntity::_cleanUpTextVector() {
     _GuiTextVector.clear();
 }
 
-void CEntity::onLoop(CInstance* instance) {
-    
-    if(toRemove)
-        return;
+void CEntity::onLoop() {
     
     _hasMoved = false;
     
     auto i = _GuiTextVector.begin();
     while(i != _GuiTextVector.end()) {
-        if(!*i) continue;
-        if(!(*i)->toRemove())
-            (*i)->onLoop();
+        (*i)->onLoop();
         if((*i)->toRemove()) {
             delete *i;
             _GuiTextVector.erase(std::remove(_GuiTextVector.begin(), _GuiTextVector.end(), (*i)), _GuiTextVector.end());
-        } else if(i != _GuiTextVector.end())
+        } else
             ++i;
     }
     
-    for(auto &i: _components) {
-        if(i.second)
-            i.second->onLoop(instance);
-    }
-    
-//    std::stringstream ss;
-//    ss << "Components: " << _components.size();
-//    say(ss.str(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
-    
     if(!hasProperty(EntityProperty::FLYING))
         body.velY += GRAVITY;
-    if(!hasProperty(EntityProperty::FLIP_FREEZED)) {
-        if(body.velX > 0)
-            removeProperty(EntityProperty::FLIP);
-        else if(body.velX < 0)
-            addProperty(EntityProperty::FLIP);
-    }
     
-    setSpriteContainer(spriteStateTypes[SpriteStateTypes::IDLE]);
-    
-    if(body.velY < 0)
-        setSpriteContainer(spriteStateTypes[SpriteStateTypes::ASCENDING]);
-    else if(!collisionBottom)
-        setSpriteContainer(spriteStateTypes[SpriteStateTypes::DESCENDING]);
+    _doLogic();
 }
 
-void CEntity::afterLogicLoop(std::vector<CEntity *> *entities, CInstance* instance) {
-    if(isDead)
+void CEntity::afterLogicLoop(std::vector<CEntity *> *entities) {
+    if(isDead())
         return;
     
     if(!hasProperty(EntityProperty::STATIC))
-        move(entities, instance);
+        move(entities);
     else
         body.velY = body.velX = 0;
     
@@ -115,7 +88,7 @@ void CEntity::afterLogicLoop(std::vector<CEntity *> *entities, CInstance* instan
 
 void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     
-    if(toRemove || isDead)
+    if(toRemove() || isDead())
         return;
     
     int x = body.getX() - camera->offsetX();
@@ -145,10 +118,6 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
             
             NSurface::renderSprite(x, y, spriteWidth, spriteHeight, getSpriteContainer()->getSprite(), window, flip, getTransparency());
         }
-    }
-    
-    for(auto &i: _components) {
-        i.second->onRender(window, camera);
     }
 }
 
@@ -180,38 +149,9 @@ bool CEntity::hasSprite() {
     return true;
 }
 
-bool CEntity::hasProperty(int property) {
-    return properties & property;
-}
-
-void CEntity::toggleProperty(int property) {
-    properties ^= property;
-}
-
-void CEntity::addProperty(int property) {
-    properties |= property;
-}
-
-void CEntity::removeProperty(int property) {
-    if(hasProperty(property)) toggleProperty(property);
-}
-
-void CEntity::addComponent(EComponent* component) {
-    if(_components.count(&typeid(*component)) != 0)
-        delete _components[&typeid(*component)];
-    _components[&typeid(*component)] = component;
-}
-
-void CEntity::_clearComponents() {
-    for(auto &i: _components) {
-        delete i.second;
-    }
-    _components.clear();
-}
-
 void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags renderFlags) {
     
-    if(renderFlags & RenderFlags::COLLISION_BORDERS && !isDead) {                             // Render collision boxes
+    if(renderFlags & RenderFlags::COLLISION_BORDERS && !isDead()) {                             // Render collision boxes
         int r, g, b = 0;
         if(hasProperty(EntityProperty::COLLIDABLE)) {r = 255; g = 0; b = 0;  }
         else                                        {r = 0; g = 255; b = 255;}
@@ -222,14 +162,9 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags ren
         NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, window, r, g, b);  // Bottom line
     }
     
-    if(!toRemove)
-        for(auto &i: _components)
-            i.second->renderAdditional(window, camera);
-    
     if(!hasProperty(EntityProperty::HIDDEN))
         for (auto &i: _GuiTextVector)                                                // Render chatbubbles
-            if(!i->toRemove())
-                i->onRender(window, camera);
+            i->onRender(window, camera);
         
 }
 
@@ -250,7 +185,7 @@ bool CEntity::coordinateCollision(int x, int y, int w, int h) {
     return coordinateCollision(x, y, w, h, body.getX(), body.getY(), body.getW(), body.getH());
 }
 
-bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities, CInstance* instance) {
+bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities) {
     
     if(!hasProperty(EntityProperty::COLLIDABLE)) return false;
     
@@ -260,7 +195,7 @@ bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities, CInstanc
         
         if (target == this) continue;
         if (!(target->properties & EntityProperty::COLLIDABLE)) continue;
-        if (target->isDead) continue;
+        if (target->isDead()) continue;
         if (!target->isOnCollisionLayer(collisionLayer)) continue;
     
         if(!coordinateCollision(x, y, body.getW(), body.getH(),
@@ -281,7 +216,7 @@ bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities, CInstanc
         if(x + body.getW() - 1 <= target->body.getX())
             tmpCollisionRight = true;
         
-        colliding = _collisionLogic(target, instance, CollisionSides{tmpCollisionTop, tmpCollisionBottom, tmpCollisionRight, tmpCollisionLeft});
+        colliding = _collisionLogic(target, CollisionSides{tmpCollisionTop, tmpCollisionBottom, tmpCollisionRight, tmpCollisionLeft});
         collisionBottom |= tmpCollisionBottom;
         collisionTop    |= tmpCollisionTop;
         collisionRight  |= tmpCollisionRight;
@@ -304,7 +239,7 @@ bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities, CInstanc
         return false;
 }
 
-void CEntity::move(std::vector<CEntity*>* entities, CInstance* instance) {
+void CEntity::move(std::vector<CEntity*>* entities) {
     
     int MoveX, MoveY;
     
@@ -336,14 +271,14 @@ void CEntity::move(std::vector<CEntity*>* entities, CInstance* instance) {
     collisionTop = collisionBottom = false;
     
     while(true) {
-        if(!_collision(StopX + NewX, StopY, entities, instance)) {
+        if(!_collision(StopX + NewX, StopY, entities)) {
             StopX += NewX;
             body._rect.x += NewX;
         } else {
             body.velX = 0;
         }
         
-        if(!_collision(StopX, StopY + NewY, entities, instance)) {
+        if(!_collision(StopX, StopY + NewY, entities)) {
             StopY += NewY;
             body._rect.y += NewY;
         } else {
@@ -358,6 +293,9 @@ void CEntity::move(std::vector<CEntity*>* entities, CInstance* instance) {
         
         if(NewY > 0 && MoveY <= 0) NewY = 0;
         if(NewY < 0 && MoveY >= 0) NewY = 0;
+
+//        if(MoveX == 0) NewX = 0;
+//        if(MoveY == 0) NewY = 0;
         
         if(MoveX == 0 && MoveY == 0) 	break;
         if(NewX == 0 && NewY == 0) 		break;
@@ -403,13 +341,23 @@ void CEntity::move(std::vector<CEntity*>* entities, CInstance* instance) {
 //    body.rect.y = StopY + MoveY;
 //}
 
-bool CEntity::_collisionLogic(CEntity *target, CInstance* instance, CollisionSides collisionSides) {
-    bool collision = true;
-    
-    for(auto &i: _components) {
-        collision &= i.second->collisionLogic(target, instance, collisionSides);
+bool CEntity::_collisionLogic(CEntity *target, CollisionSides collisionSides) {
+    return true;
+}
+
+void CEntity::_doLogic() {
+    if(!hasProperty(EntityProperty::FLIP_FREEZED)) {
+        if(body.velX > 0)
+            removeProperty(EntityProperty::FLIP);
+        else if(body.velX < 0)
+            addProperty(EntityProperty::FLIP);
     }
     
-    return collision;
+    setSpriteContainer(spriteStateTypes[SpriteStateTypes::IDLE]);
+    
+    if(body.velY < 0)
+        setSpriteContainer(spriteStateTypes[SpriteStateTypes::ASCENDING]);
+    else if(!collisionBottom)
+        setSpriteContainer(spriteStateTypes[SpriteStateTypes::DESCENDING]);
 }
 

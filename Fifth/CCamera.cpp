@@ -10,10 +10,9 @@
 #include <iostream>
 #include "Define.h"
 #include <math.h>
-#include "CEntity.h"
 
 CCamera::CCamera() :
-_offset{0, 0, 0, 0}, cameraSway(10), _noTarget(true) {
+    _offset{0, 0, 0, 0}, cameraSway(10) {
 }
 
 void CCamera::onInit(CWindow* window) {
@@ -22,15 +21,14 @@ void CCamera::onInit(CWindow* window) {
 }
 
 void CCamera::onLoop() {
-    if (!_target)
-        _noTarget = true;
-    if(_noTarget)
+    if (_target == nullptr) {
+        _offset.x = 0;
+        _offset.y = 0;
         return;
+    }
     
-    _cameraShakeStep += 1;
-    
-    float cameraShakeX = floor(sin(_cameraShakeStep * _cameraShakeStep / 2) * _cameraShake);
-    float cameraShakeY = floor(cos(_cameraShakeStep * _cameraShakeStep / 2) * _cameraShake);
+    float cameraShakeX = sin(_cameraShake * _cameraShake) * _cameraShake;
+    float cameraShakeY = cos(_cameraShake * _cameraShake) * _cameraShake;
     
     _offset.x += (((_target->body.getX() + _target->body.getW() / 2) - _offset.w / 2) - _offset.x + cameraShakeX) / cameraSway;
     _offset.y += (((_target->body.getY() + _target->body.getH() / 2) - _offset.h / 2) - _offset.y + cameraShakeY) / cameraSway;
@@ -53,11 +51,7 @@ void CCamera::addCameraShake(float cameraShake) {
 }
 
 void CCamera::setTarget(CEntity* target) {
-    if(target) {
-        this->_target = target;
-        _noTarget = false;
-    } else
-        _noTarget = true;
+    this->_target = target;
 }
 
 bool CCamera::collision(CEntity* entity) {
