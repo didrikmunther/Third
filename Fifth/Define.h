@@ -98,17 +98,6 @@ enum CollisionLayers { // CEntity
     LAYER7      = 1 << 7,   // 128
 };
 
-enum EntityTypes { // CEntity
-    Entity = 0,
-    Particle,   // 1
-    Movable,    // 2
-    UtilityParticle, // 3
-    Living,     // 4
-    Npc,        // 5
-    Player,     // 6
-    Enemy       // 7
-};
-
 enum SpriteStateTypes { // CEntity
     IDLE = 0,
     ASCENDING,

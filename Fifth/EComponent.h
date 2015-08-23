@@ -27,7 +27,6 @@ public:
     virtual void renderAdditional(CWindow* window, CCamera* camera) {  };
     virtual bool collisionLogic(CEntity* target, CInstance* instance, CollisionSides collisionSides) { return true; }
     
-protected:
     CEntity* _parent;
     
 };

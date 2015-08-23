@@ -35,8 +35,6 @@ CEntity::~CEntity() {
 }
 
 void CEntity::init() {
-    entityType = EntityTypes::Entity;
-    
     isDead             = false;
     toRemove           = false;
     properties          = EntityProperty::COLLIDABLE;
@@ -48,12 +46,7 @@ void CEntity::init() {
 }
 
 void CEntity::_cleanUpTextVector() {
-    auto i = _GuiTextVector.begin();
-    while(i != _GuiTextVector.end()) {
-        delete *i;
-        i = _GuiTextVector.erase(i);
-    }
-    _GuiTextVector.clear();
+    //_GuiTextVector.clear();
 }
 
 void CEntity::onLoop(CInstance* instance) {
@@ -63,26 +56,19 @@ void CEntity::onLoop(CInstance* instance) {
     
     _hasMoved = false;
     
-    auto i = _GuiTextVector.begin();
-    while(i != _GuiTextVector.end()) {
-        if(!*i) continue;
-        if(!(*i)->toRemove())
-            (*i)->onLoop();
-        if((*i)->toRemove()) {
-            delete *i;
-            _GuiTextVector.erase(std::remove(_GuiTextVector.begin(), _GuiTextVector.end(), (*i)), _GuiTextVector.end());
-        } else if(i != _GuiTextVector.end())
-            ++i;
-    }
+//    auto i = _GuiTextVector.begin();
+//    while(i != _GuiTextVector.end()) {
+//        (*i)->onLoop();
+//        if((*i)->toRemove())
+//            i = _GuiTextVector.erase(i);
+//        else
+//            ++i;
+//    }
     
     for(auto &i: _components) {
         if(i.second)
             i.second->onLoop(instance);
     }
-    
-//    std::stringstream ss;
-//    ss << "Components: " << _components.size();
-//    say(ss.str(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
     
     if(!hasProperty(EntityProperty::FLYING))
         body.velY += GRAVITY;
@@ -105,12 +91,9 @@ void CEntity::afterLogicLoop(std::vector<CEntity *> *entities, CInstance* instan
     if(isDead)
         return;
     
-    if(!hasProperty(EntityProperty::STATIC))
-        move(entities, instance);
-    else
-        body.velY = body.velX = 0;
     
-    body.onLoop();
+    
+    
 }
 
 void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
@@ -157,8 +140,8 @@ bool CEntity::isOnCollisionLayer(int collisionLayer) {
 }
 
 void CEntity::say(std::string text, std::string fontKey, ChatBubbleType type) {
-    CChatBubble* temp = new CChatBubble(text, this, fontKey, type);
-    _GuiTextVector.push_back(temp);
+    //auto temp = std::make_shared<CChatBubble>(text, this, fontKey, type);
+    //_GuiTextVector.push_back(temp);
 }
 
 void CEntity::setSpriteContainer(std::string spriteContainerKey) {
@@ -196,16 +179,13 @@ void CEntity::removeProperty(int property) {
     if(hasProperty(property)) toggleProperty(property);
 }
 
-void CEntity::addComponent(EComponent* component) {
-    if(_components.count(&typeid(*component)) != 0)
-        delete _components[&typeid(*component)];
+void CEntity::addComponent(std::shared_ptr<EComponent> component) {
+//    if(_components.count(&typeid(*component)) != 0)
+//        delete _components[&typeid(*component)];
     _components[&typeid(*component)] = component;
 }
 
 void CEntity::_clearComponents() {
-    for(auto &i: _components) {
-        delete i.second;
-    }
     _components.clear();
 }
 
@@ -225,12 +205,12 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags ren
     if(!toRemove)
         for(auto &i: _components)
             i.second->renderAdditional(window, camera);
+//    
+//    if(!hasProperty(EntityProperty::HIDDEN))
+//        for (auto &i: _GuiTextVector)                                                // Render chatbubbles
+//            if(!i->toRemove())
+//                i->onRender(window, camera);
     
-    if(!hasProperty(EntityProperty::HIDDEN))
-        for (auto &i: _GuiTextVector)                                                // Render chatbubbles
-            if(!i->toRemove())
-                i->onRender(window, camera);
-        
 }
 
 bool CEntity::coordinateCollision(int x, int y, int w, int h, int x2, int y2, int w2, int h2) {
@@ -364,6 +344,7 @@ void CEntity::move(std::vector<CEntity*>* entities, CInstance* instance) {
     }
     
     _hasMoved = !(body._rect == body._previousRect);
+    body.onLoop();
 }
 
 //void CEntity::move(std::map<std::string, CEntity*>* entities) {

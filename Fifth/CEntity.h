@@ -39,8 +39,6 @@ public:
     CEntity(Box rect, std::string spriteContainerKey);
     ~CEntity();
     
-    EntityTypes entityType;
-    
     void init();
     void onLoop(CInstance* instance);
     void afterLogicLoop(std::vector<CEntity*>* entities, CInstance* instance); // After the velocities have been added, move the entity
@@ -79,14 +77,14 @@ public:
     void addProperty(int property);
     void removeProperty(int property);
     
-    void addGuiText(CGuiText* text) { _GuiTextVector.push_back(text); }
+    //void addGuiText(std::shared_ptr<CGuiText> text) { _GuiTextVector.push_back(text); }
     
-    void addComponent(EComponent* component);
+    void addComponent(std::shared_ptr<EComponent> component);
     template<typename T>
-    T* getComponent() {
+    std::shared_ptr<T> getComponent() {
         if(_components.count(&typeid(T)) != 0)
         {
-            return static_cast<T*>(_components[&typeid(T)]);
+            return std::static_pointer_cast<T>(_components[&typeid(T)]);
         }
         else
         {
@@ -102,9 +100,9 @@ public:
     std::vector<GridCoordinates> gridCoordinates;
     
 protected:
-    std::unordered_map<const std::type_info*, EComponent*> _components;
+    std::unordered_map<const std::type_info*, std::shared_ptr<EComponent>> _components;
     
-    std::vector<CGuiText*> _GuiTextVector;
+    //std::vector<std::shared_ptr<CGuiText>> _GuiTextVector;
     void _cleanUpTextVector();
     
     bool _collisionLogic(CEntity* target, CInstance* instance, CollisionSides collisionSides);

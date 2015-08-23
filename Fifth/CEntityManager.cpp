@@ -19,31 +19,31 @@
 CEntityManager::CEntityManager() : entityID(0), renderFlags(RenderFlags::CLEAR), _gridSize(32) {
 }
 
-CEntity* CEntityManager::addEntity(Box rect, SDL_Color color, std::string name /* = "" */) {
+std::shared_ptr<CEntity> CEntityManager::addEntity(Box rect, SDL_Color color, std::string name /* = "" */) {
     if(name == "") {
-        CEntity* tempEntity = new CEntity(rect, color);
+        auto tempEntity = std::make_shared<CEntity>(rect, color);
         addEntity(tempEntity, name);
         return tempEntity;
     } else {
-        CEntity* tempEntity = new CEntity(rect, color);
+        auto tempEntity = std::make_shared<CEntity>(rect, color);
         addEntity(tempEntity, name);
         return tempEntity;
     }
 }
 
-CEntity* CEntityManager::addEntity(Box rect, std::string spriteKey, std::string name /* = "" */) {
+std::shared_ptr<CEntity> CEntityManager::addEntity(Box rect, std::string spriteKey, std::string name /* = "" */) {
     if(name == "") {
-        CEntity* tempEntity = new CEntity(rect, spriteKey);
+        auto tempEntity = std::make_shared<CEntity>(rect, spriteKey);
         addEntity(tempEntity, name);
         return tempEntity;
     } else {
-        CEntity* tempEntity = new CEntity(rect, spriteKey);
+        auto tempEntity = std::make_shared<CEntity>(rect, spriteKey);
         addEntity(tempEntity, name);
         return tempEntity;
     }
 }
 
-std::string CEntityManager::addEntity(CEntity* entity, std::string name /* = "" */) {
+std::string CEntityManager::addEntity(std::shared_ptr<CEntity> entity, std::string name /* = "" */) {
     if(name == "") {
         name = "5:" + std::to_string(++entityID);
         _EntityVector[name] = entity;
@@ -51,7 +51,6 @@ std::string CEntityManager::addEntity(CEntity* entity, std::string name /* = "" 
         _EntityVector[name] = entity;
     else {  // Just overwrite the entity
         auto i = _EntityVector.find(name);
-        delete i->second;
         _EntityVector[name] = entity;
     }
     
@@ -59,7 +58,7 @@ std::string CEntityManager::addEntity(CEntity* entity, std::string name /* = "" 
     return name;
 }
 
-CEntity* CEntityManager::getEntity(std::string name) {
+std::shared_ptr<CEntity> CEntityManager::getEntity(std::string name) {
     if(_EntityVector.find(name) == _EntityVector.end()) {
         NFile::log(LogType::WARNING, "Couldn't get entity: ", name, ", because it doesn't exist.");
         return nullptr;
@@ -68,7 +67,7 @@ CEntity* CEntityManager::getEntity(std::string name) {
     }
 }
 
-CEntity* CEntityManager::getEntityAtCoordinate(int x, int y) {
+std::shared_ptr<CEntity> CEntityManager::getEntityAtCoordinate(int x, int y) {
     for (auto &i: _EntityVector) {
         if(i.second->coordinateCollision(x, y, 1, 1))
            return i.second;
@@ -76,7 +75,7 @@ CEntity* CEntityManager::getEntityAtCoordinate(int x, int y) {
     return nullptr;
 }
 
-std::string CEntityManager::getNameOfEntity(CEntity *entity) {
+std::string CEntityManager::getNameOfEntity(std::shared_ptr<CEntity> entity) {
     for (auto &i: _EntityVector) {                              // There must be a better way of doing this
         if(i.second == entity)
             return i.first;
@@ -85,12 +84,12 @@ std::string CEntityManager::getNameOfEntity(CEntity *entity) {
 }
 
 void CEntityManager::addParticle(Box rect, SDL_Color color, int livingTime) {
-    CEntity* particle = new CEntity(rect, color);
-    particle->addComponent(new EParticle(particle, livingTime));
+    auto particle = std::make_shared<CEntity>(rect, color);
+    particle->addComponent(std::make_shared<EParticle>(particle.get(), livingTime));
     _ParticleVector.push_back(particle);
 }
 
-void CEntityManager::addParticle(CEntity *particle) {
+void CEntityManager::addParticle(std::shared_ptr<CEntity> particle) {
     _ParticleVector.push_back(particle);
 }
 
@@ -98,7 +97,7 @@ void CEntityManager::addParticle(CEntity *particle) {
 //    _ParticleEmitterVector.push_back(new CParticleEmitter(rect, color, type, amount, frequency, livingTime, particleLivingTime, velocity));
 //}
 
-void CEntityManager::addGuiText(CGuiText* guiText) {
+void CEntityManager::addGuiText(std::shared_ptr<CGuiText> guiText) {
     _GuiTextVector.push_back(guiText);
 }
 
@@ -230,43 +229,43 @@ void CEntityManager::splitEntityToParticles(CEntity* target) {
     int tempForRand = 5;
     int livingTime = 2;
     
-    CEntity* tempParticle1 = new CEntity(Box{
+    std::shared_ptr<CEntity> tempParticle1 = std::make_shared<CEntity>(Box{
         target->body.getX(),
         target->body.getY(),
         target->body.getW() / 2,
         target->body.getH() / 2},
                                              spriteContainer1);
-    tempParticle1->addComponent(new EParticle(tempParticle1, livingTime + rand() % 3 - 1));
+    tempParticle1->addComponent(std::make_shared<EParticle>(tempParticle1.get(), livingTime + rand() % 3 - 1));
     tempParticle1->body.velX = rand() % explosionForce - tempForRand;
     tempParticle1->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle1->addProperty(EntityProperty::FLIP);
-    CEntity* tempParticle2 = new CEntity(Box{
+    std::shared_ptr<CEntity> tempParticle2 = std::make_shared<CEntity>(Box{
         target->body.getX() + target->body.getW() / 2,
         target->body.getY(),
         target->body.getW() / 2,
         target->body.getH() / 2},
                                              spriteContainer2);
-    tempParticle2->addComponent(new EParticle(tempParticle1, livingTime + rand() % 3 - 1));
+    tempParticle2->addComponent(std::make_shared<EParticle>(tempParticle1.get(), livingTime + rand() % 3 - 1));
     tempParticle2->body.velX = rand() % explosionForce - tempForRand;
     tempParticle2->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle2->addProperty(EntityProperty::FLIP);
-    CEntity* tempParticle3 = new CEntity(Box{
+    std::shared_ptr<CEntity> tempParticle3 = std::make_shared<CEntity>(Box{
         target->body.getX(),
         target->body.getY() + target->body.getH() / 2,
         target->body.getW() / 2,
         target->body.getH() / 2},
                                              spriteContainer3);
-    tempParticle3->addComponent(new EParticle(tempParticle1, livingTime + rand() % 3 - 1));
+    tempParticle3->addComponent(std::make_shared<EParticle>(tempParticle1.get(), livingTime + rand() % 3 - 1));
     tempParticle3->body.velX = rand() % explosionForce - tempForRand;
     tempParticle3->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle3->addProperty(EntityProperty::FLIP);
-    CEntity* tempParticle4 = new CEntity(Box{
+    std::shared_ptr<CEntity> tempParticle4 = std::make_shared<CEntity>(Box{
         target->body.getX() + target->body.getW() / 2,
         target->body.getY() + target->body.getH() / 2,
         target->body.getW() / 2,
         target->body.getH() / 2},
                                              spriteContainer4);
-    tempParticle4->addComponent(new EParticle(tempParticle1, livingTime + rand() % 3 - 1));
+    tempParticle4->addComponent(std::make_shared<EParticle>(tempParticle1.get(), livingTime + rand() % 3 - 1));
     tempParticle4->body.velX = rand() % explosionForce - tempForRand;
     tempParticle4->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle4->addProperty(EntityProperty::FLIP);
@@ -361,52 +360,41 @@ std::vector<GridCoordinates> getGrid(CEntity* target, int gridSize) {
 
 void CEntityManager::onLoop(CInstance* instance) {
     
-    {
-        _CollisionVector.clear();
+    _CollisionVector.clear();
+    
+    for(auto &entity: _EntityVector) {
+        auto target = entity.second;
+        target->gridCoordinates.clear();
         
-        for(auto &entity: _EntityVector) {
-            auto target = entity.second;
-            target->gridCoordinates.clear();
-            
-            target->onLoop(instance);
-            
-            for(auto &coords: getGrid(target, _gridSize)) {
-                _CollisionVector[coords.y][coords.x].push_back(target);
-                target->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
-            }
+        target->onLoop(instance);
+        
+        for(auto &coords: getGrid(target.get(), _gridSize)) {
+            _CollisionVector[coords.y][coords.x].push_back(target.get());
+            target->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
         }
-        
-        for(auto &particle: _ParticleVector) {
-            particle->gridCoordinates.clear();
-            
-            //NFile::log(LogType::ALERT, "Current Entity: ", particle);
-            
-            particle->onLoop(instance);
-            if(particle->toRemove)
-                continue;
-               
-            for(auto &coords: getGrid(particle, _gridSize)) {
-                particle->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
-            }
-        }
-        
-        for(auto &entity: _DeadEntitiesVector) {
-            auto target = entity.second;
-            target->gridCoordinates.clear();
-            
-            target->onLoop(instance);
-            
-            for(auto &coords: getGrid(target, _gridSize)) {
-                target->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
-            }
-        }
-        
     }
     
-    {
-        auto i = _EntityVector.begin();
-        while(i != _EntityVector.end()) {
-            auto target = (*i).second;
+    for(auto &particle: _ParticleVector) {
+        auto target = particle;
+        target->gridCoordinates.clear();
+        
+        target->onLoop(instance);
+        
+        for(auto &coords: getGrid(target.get(), _gridSize)) {
+            target->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
+        }
+    }
+    
+    for(auto &deadEntity: _DeadEntitiesVector) {
+        auto target = deadEntity.second;
+        
+        target->onLoop(instance);
+    }
+    
+    
+    for(auto i = _EntityVector.begin(); i != _EntityVector.end();) {
+        auto target = i->second;
+        if(!target->toRemove && !target->isDead) {
             
             std::vector<CEntity*> collisionMap;
             for (auto &coord: target->gridCoordinates) {
@@ -417,30 +405,41 @@ void CEntityManager::onLoop(CInstance* instance) {
                 }
             }
             
-            target->afterLogicLoop(&collisionMap, instance);
-            
-            if(target->isDead && target->hasSprite()) {
-                splitEntityToParticles(target);
-                _DeadEntitiesVector[(*i).first] = (*i).second;
-                _EntityVector.erase(i++);
-            }
-            
-            
-            if(target->toRemove) {
-                delete target;
-                _EntityVector.erase(i++);
-            } else if(i != _EntityVector.end())
-                ++i;
+            if(!target->hasProperty(EntityProperty::STATIC))
+                target->move(&collisionMap, instance);
+            else
+                target->body.velY = target->body.velX = 0;
         }
+        
+        if(target->isDead) {
+            if(target->hasSprite())
+                splitEntityToParticles(target.get());
+            _DeadEntitiesVector[(*i).first] = (*i).second;
+            i = _EntityVector.erase(i);
+            continue;
+        }
+        
+        if(target->toRemove)
+            i = _EntityVector.erase(i);
+        else
+            ++i;
     }
     
-    {
-        auto i = _DeadEntitiesVector.begin();
-        while(i != _DeadEntitiesVector.end()) {
-            auto target = i->second;
+    for(auto i = _DeadEntitiesVector.begin(); i != _DeadEntitiesVector.end();) {
+        auto target = i->second;
+        
+        if(target->toRemove)
+            i = _DeadEntitiesVector.erase(i);
+        else
+            ++i;
+    }
+
+    for(auto i = _ParticleVector.begin(); i != _ParticleVector.end();) {
+        auto target = (*i);
+        
+        if(!target->toRemove && !target->isDead) {
             
             std::vector<CEntity*> collisionMap;
-            std::vector<CEntity*> alreadyAdded;
             for (auto &coord: target->gridCoordinates) {
                 for(auto &entity: _CollisionVector[coord.y][coord.x]){
                     if(std::find(collisionMap.begin(), collisionMap.end(), entity) != collisionMap.end())
@@ -449,67 +448,28 @@ void CEntityManager::onLoop(CInstance* instance) {
                 }
             }
             
-            target->afterLogicLoop(&collisionMap, instance);
-            
-            if((*i).second->toRemove) {
-                delete (*i).second;
-                _DeadEntitiesVector.erase(i++);
-            } else
-                ++i;
+            if(!target->hasProperty(EntityProperty::STATIC))
+                target->move(&collisionMap, instance);
+            else
+                target->body.velY = target->body.velX = 0;
         }
+        
+        if(target->toRemove)
+            i = _ParticleVector.erase(i);
+        else
+            ++i;
     }
     
 //    {
-//        auto i = _ParticleEmitterVector.begin();
-//        while(i != _ParticleEmitterVector.end()) {
-//            (*i)->onLoop(this);
-//            if((*i)->toRemove) {
-//                delete *i;
-//                _ParticleEmitterVector.erase(std::remove(_ParticleEmitterVector.begin(), _ParticleEmitterVector.end(), (*i)), _ParticleEmitterVector.end());
-//            } else
+//        auto i = _GuiTextVector.begin();
+//        while(i != _GuiTextVector.end()) {
+//            (*i)->onLoop();
+//            if((*i)->toRemove())
+//                i = _GuiTextVector.erase(i);
+//            else
 //                ++i;
 //        }
 //    }
-    
-    {
-        auto i = _ParticleVector.begin();
-        while(i != _ParticleVector.end()) {
-            auto target = (*i);
-            if(!target)
-                continue;
-            
-            if(!target->toRemove) {
-                std::vector<CEntity*> collisionMap;
-                for (auto &coord: target->gridCoordinates) {
-                    for(auto &entity: _CollisionVector[coord.y][coord.x]){
-                        if(std::find(collisionMap.begin(), collisionMap.end(), entity) != collisionMap.end())
-                            continue;
-                        collisionMap.push_back(entity);
-                    }
-                }
-                
-                target->afterLogicLoop(&collisionMap, instance);
-            }
-        
-            if(target->toRemove) {
-                delete *i;
-                _ParticleVector.erase(std::remove(_ParticleVector.begin(), _ParticleVector.end(), target), _ParticleVector.end());
-            } else
-                ++i;
-        }
-    }
-    
-    {
-        auto i = _GuiTextVector.begin();
-        while(i != _GuiTextVector.end()) {
-            (*i)->onLoop();
-            if((*i)->toRemove()) {
-                delete *i;
-                _GuiTextVector.erase(std::remove(_GuiTextVector.begin(), _GuiTextVector.end(), (*i)), _GuiTextVector.end());
-            } else
-                ++i;
-        }
-    }
 }
 
 void CEntityManager::onCleanup() {
@@ -523,42 +483,42 @@ void CEntityManager::onCleanup() {
 }
 
 void CEntityManager::entityCleanup() {
-    {
-        auto i = _EntityVector.begin();
-        while(i != _EntityVector.end()) {
-            delete i->second;
-            _EntityVector.erase(i++->first);
-        }
-        _EntityVector.clear();
-    }
     
-    {
-        auto i = _DeadEntitiesVector.begin();
-        while(i != _DeadEntitiesVector.end()) {
-            delete i->second;
-            _DeadEntitiesVector.erase(i++->first);
-        }
-        _DeadEntitiesVector.clear();
-    }
+    _EntityVector.clear();
+    _DeadEntitiesVector.clear();
+    
+//    {
+//        auto i = _EntityVector.begin();
+//        while(i != _EntityVector.end()) {
+//            _EntityVector.erase(i++->first);
+//        }
+//        _EntityVector.clear();
+//    }
+//    
+//    {
+//        auto i = _DeadEntitiesVector.begin();
+//        while(i != _DeadEntitiesVector.end()) {
+//            _DeadEntitiesVector.erase(i++->first);
+//        }
+//        _DeadEntitiesVector.clear();
+//    }
 }
 
 void CEntityManager::particleCleanup() {
-    auto i = _ParticleVector.begin();
-    while(i != _ParticleVector.end()) {
-        if((*i))
-            delete *i;
-        else
-            std::cout << "Whatafuck";
-        i = _ParticleVector.erase(i);
-    }
     _ParticleVector.clear();
+//    auto i = _ParticleVector.begin();
+//    while(i != _ParticleVector.end()) {
+//        i = _ParticleVector.erase(i);
+//    }
+//    _ParticleVector.clear();
 }
 
 void CEntityManager::guiTextCleanup() {
-    auto i = _GuiTextVector.begin();
-    while(i != _GuiTextVector.end()) {
-        delete *i;
-        i = _GuiTextVector.erase(i);
-    }
     _GuiTextVector.clear();
+//    auto i = _GuiTextVector.begin();
+//    while(i != _GuiTextVector.end()) {
+//        delete *i;
+//        i = _GuiTextVector.erase(i);
+//    }
+//    _GuiTextVector.clear();
 }

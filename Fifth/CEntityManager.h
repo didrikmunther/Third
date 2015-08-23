@@ -19,6 +19,7 @@
 #include <string>
 #include "CAssetManager.h"
 #include "CGuiText.h"
+#include <memory>
 
 class CCamera;
 class CInstance;
@@ -28,15 +29,15 @@ class CEntityManager {
 public:
     CEntityManager();
     
-    CEntity* addEntity(Box rect, SDL_Color color, std::string name = "");
-    CEntity* addEntity(Box rect, std::string spriteKey, std::string name = "");
-    CEntity* getEntity(std::string name);
-    CEntity* getEntityAtCoordinate(int x, int y);
-    std::string getNameOfEntity(CEntity* entity);
-    std::string addEntity(CEntity* entity, std::string name = "");
+    std::shared_ptr<CEntity> addEntity(Box rect, SDL_Color color, std::string name = "");
+    std::shared_ptr<CEntity> addEntity(Box rect, std::string spriteKey, std::string name = "");
+    std::shared_ptr<CEntity> getEntity(std::string name);
+    std::shared_ptr<CEntity> getEntityAtCoordinate(int x, int y);
+    std::string getNameOfEntity(std::shared_ptr<CEntity> entity);
+    std::string addEntity(std::shared_ptr<CEntity> entity, std::string name = "");
     void addParticle(Box rect, SDL_Color color, int livingTime);
-    void addParticle(CEntity* entity);
-    void addGuiText(CGuiText* guiText);
+    void addParticle(std::shared_ptr<CEntity> entity);
+    void addGuiText(std::shared_ptr<CGuiText> guiText);
     
     void onRender(CWindow* window, CCamera* camera);
     void onLoop(CInstance* instance);
@@ -58,10 +59,10 @@ public:
     void toggleRenderFlag(RenderFlags renderFlag);
     
 private:
-    std::map<std::string, CEntity*> _EntityVector;
-    std::vector<CEntity*> _ParticleVector;
-    std::vector<CGuiText*> _GuiTextVector;
-    std::map<std::string, CEntity*> _DeadEntitiesVector;
+    std::map<std::string, std::shared_ptr<CEntity>> _EntityVector;
+    std::vector<std::shared_ptr<CEntity>> _ParticleVector;
+    std::vector<std::shared_ptr<CGuiText>> _GuiTextVector;
+    std::map<std::string, std::shared_ptr<CEntity>> _DeadEntitiesVector;
     
     std::map <int, std::map <int, std::vector<CEntity*>>> _CollisionVector;
     int _gridSize;

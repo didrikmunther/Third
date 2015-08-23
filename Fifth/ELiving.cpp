@@ -71,7 +71,7 @@ bool ELiving::collisionLogic(CEntity* target, CInstance* instance, CollisionSide
     if(_parent->body.velY > jumpDamageHeight && collisionSides.collisionBottom) {            // Fall damage
         //dealDamage((_parent->body.velY - jumpDamageHeight) * (_maxValues[ValueTypes::HEALTH] / (GRAVITY * 166)));
         dealDamage((_parent->body.velY - jumpDamageHeight) * _maxValues[ValueTypes::HEALTH] / 10);
-        if(_parent == instance->player)
+        if(_parent == instance->player.get())
             instance->camera.addCameraShake((_parent->body.velY - 16) * FALL_DAMAGE_CAMERA_SHAKE_INTENSIFIER);
     }
     
@@ -104,8 +104,8 @@ int ELiving::dealDamage(int amount, UtilityPosition position /* = {0, 0} */, CEn
         _parent->isDead = true;
     }
     
-    CCombatText* text = new CCombatText(position.x, position.y, damageColor, 20, "-" + std::to_string(damageDone), "TESTFONT");
-    _parent->addGuiText(text);
+    //auto text = std::make_shared<CCombatText>(position.x, position.y, damageColor, 20, "-" + std::to_string(damageDone), "TESTFONT");
+    //_parent->addGuiText(text);
     
     return damageDone;
 }
@@ -127,8 +127,8 @@ int ELiving::heal(int amount, UtilityPosition position /* = {0, 0} */, CEntity* 
     }
     int healed = amount - overHeal;
     
-    CCombatText* text = new CCombatText(position.x, position.y, healingColor, 20, "+" + std::to_string(healed), "TESTFONT");
-    _parent->addGuiText(text);
+    //auto text = std::make_shared<CCombatText>(position.x, position.y, healingColor, 20, "+" + std::to_string(healed), "TESTFONT");
+    //_parent->addGuiText(text);
     
     return healed;
 }

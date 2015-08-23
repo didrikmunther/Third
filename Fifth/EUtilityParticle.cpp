@@ -36,8 +36,8 @@ bool EUtilityParticle::collisionLogic(CEntity* target, CInstance* instance, Coll
     if(target != _owner) {
         if(!_parent->toRemove) {
             if(std::find(_collidedWith.begin(), _collidedWith.end(), target) == _collidedWith.end()) {
-                ELiving* living = target->getComponent<ELiving>();
-                if(living) {
+                auto living = target->getComponent<ELiving>();
+                if(living && !living->_parent->toRemove) {
                     _collidedWith.push_back(target);
                     switch(_utility) {
                         case BasicUtilities::DAMAGE:

@@ -30,6 +30,8 @@ void EParticle::onLoop(CInstance* instance) {
     if(_livingTime >= 0 && SDL_GetTicks() - _creationTime > _livingTime * 1000)
         _parent->toRemove = true;
     
+    _parent->say(std::to_string(_parent->toRemove), "TESTFONT", ChatBubbleType::INSTANT_TALK);
+    
     //std::stringstream ss;
     
     //ss << "LivingTime: " << (_livingTime * 1000 - SDL_GetTicks() - _creationTime);
