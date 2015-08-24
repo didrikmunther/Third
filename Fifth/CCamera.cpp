@@ -17,7 +17,6 @@ CCamera::CCamera() :
 
 void CCamera::onInit(CWindow* window) {
     _offset = {0, 0, window->getWidth(), window->getHeight()};
-    _cameraShake = 0.0;
 }
 
 void CCamera::onLoop() {
@@ -27,15 +26,8 @@ void CCamera::onLoop() {
         return;
     }
     
-    float cameraShakeX = sin(_cameraShake * _cameraShake) * _cameraShake;
-    float cameraShakeY = cos(_cameraShake * _cameraShake) * _cameraShake;
-    
-    _offset.x += (((_target->body.getX() + _target->body.getW() / 2) - _offset.w / 2) - _offset.x + cameraShakeX) / cameraSway;
-    _offset.y += (((_target->body.getY() + _target->body.getH() / 2) - _offset.h / 2) - _offset.y + cameraShakeY) / cameraSway;
-    
-    if(_cameraShake > 0)
-        _cameraShake -= ceil(1.0 * (_cameraShake / 70));
-        //_cameraShake -= 1.0; // Looks better for some reason...
+    _offset.x += (((_target->body.getX() + _target->body.getW() / 2) - _offset.w / 2) - _offset.x) / cameraSway;
+    _offset.y += (((_target->body.getY() + _target->body.getH() / 2) - _offset.h / 2) - _offset.y) / cameraSway;
 }
 
 int CCamera::offsetX() {
@@ -44,10 +36,6 @@ int CCamera::offsetX() {
 
 int CCamera::offsetY() {
     return (int)floor(_offset.y);
-}
-
-void CCamera::addCameraShake(float cameraShake) {
-    _cameraShake += cameraShake;
 }
 
 void CCamera::setTarget(CEntity* target) {
