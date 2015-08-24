@@ -13,7 +13,9 @@
 #include "CEntityManager.h"
 #include "CWindow.h"
 #include "CCamera.h"
-#include <memory>
+#include "CPlayer.h"
+#include "CCamera.h"
+#include "CEnemy.h"
 
 class CInstance {
     
@@ -24,7 +26,7 @@ public:
     CWindow window;
     
     CEntityManager entityManager;
-    std::shared_ptr<CEntity> player;
+    CPlayer* player;
     
     void closeInstance();
     

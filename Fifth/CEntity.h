@@ -18,37 +18,38 @@
 #include "CAssetManager.h"
 #include "CRenderable.h"
 #include "CWindow.h"
+#include "CCollidable.h"
 #include "CChatBubble.h"
-#include <unordered_map>
-//#include "CInstance.h"
 
 struct GridCoordinates {
     int x, y;
 };
 
+struct CollisionSides {
+    bool collisionTop,
+         collisionBottom,
+         collisionRight,
+         collisionLeft;
+};
+
 class CGuiText;
 class CCamera;
 class CEntityManager;
-class EComponent;
-class CInstance;
 
-class ELiving;
-class EMovable;
-class ENpc;
-class EParticle;
-class EUtilityParticle;
-
-class CEntity : public CRenderable {
+class CEntity : public CRenderable, public CCollidable {
     
 public:
     CEntity(Box rect, SDL_Color color);
     CEntity(Box rect, std::string spriteContainerKey);
     ~CEntity();
     
-    void init();
-    void onLoop(CInstance* instance);
+    EntityTypes entityType;
+    
+    virtual void init();
+    void onLoop();
+    void afterLogicLoop(std::vector<CEntity*>* entities); // After the velocities have been added, move the entity
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
-    void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
+    virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
     int collisionLayer;
     bool isOnCollisionLayer(int collisionLayer);
@@ -56,7 +57,7 @@ public:
     void addCollisionLayer(int collisionLayer) { this->collisionLayer |= collisionLayer; }
     void removeCollisionLayer(int collisionLayer) { if(isOnCollisionLayer(collisionLayer)) toggleCollisionLayer(collisionLayer); }
     
-    void move(std::vector<CEntity*>* entities, CInstance* instance);
+    void move(std::vector<CEntity*>* entities);
     bool coordinateCollision(int x, int y, int w, int h, int x2, int y2, int w2, int h2);
     bool coordinateCollision(int x, int y, int w, int h);
     
@@ -74,52 +75,25 @@ public:
     bool hasSprite();
     SDL_Color color;
     
-    CBody body;
-    
-    int properties;
-    bool hasProperty(int property);
-    void toggleProperty(int property);
-    void addProperty(int property);
-    void removeProperty(int property);
-    
-    //void addGuiText(std::shared_ptr<CGuiText> text) { _GuiTextVector.push_back(text); }
-    
-//    void addComponent(std::shared_ptr<EComponent> component);
-//    template<typename T>
-//    std::shared_ptr<T> getComponent() {
-//        if(_components.count(&typeid(T)) != 0)
-//        {
-//            return std::static_pointer_cast<T>(_components[&typeid(T)]);
-//        }
-//        else
-//        {
-//            return nullptr;
-//        }
-//    }
-//    void _clearComponents();
-    
+    bool isDead() { return _isDead; }
+    bool toRemove() { return _toRemove; }
     bool hasMoved() { return _hasMoved; };
-    bool isDead;
-    bool toRemove;
     
     std::vector<GridCoordinates> gridCoordinates;
     
-    EMovable* movable;
-    ELiving* living;
-    ENpc* npc;
-    EParticle* particle;
-    EUtilityParticle* utilityParticle;
-    
 protected:
-    //std::unordered_map<const std::type_info*, std::shared_ptr<EComponent>> _components;
-    
-    //std::vector<std::shared_ptr<CGuiText>> _GuiTextVector;
+    std::vector<CGuiText*> _GuiTextVector;
     void _cleanUpTextVector();
     
-    bool _collisionLogic(CEntity* target, CInstance* instance, CollisionSides collisionSides);
+    // Remember to allways call your parents _doLogic, renderAdditional and _collisionLogic function.
+    virtual void _doLogic();
+    virtual bool _collisionLogic(CEntity* target, CollisionSides collisionSides);
+    
+    bool _isDead;
+    bool _toRemove;
     
 private:
-    bool _collision(int x, int y, std::vector<CEntity*>* entities, CInstance* instance);
+    bool _collision(int x, int y, std::vector<CEntity*>* entities);
     
     bool _hasMoved;
     

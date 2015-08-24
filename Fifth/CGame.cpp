@@ -20,12 +20,10 @@
 #include "CoreFoundation/CoreFoundation.h"
 #include "ResourcePath.hpp"
 #endif
+#include "CEnemy.h"
+#include "CUtilityParticle.h"
 #include "CSpriteContainer.h"
 #include <fstream>
-#include "EMovable.h"
-#include "EUtilityParticle.h"
-#include "ENpc.h"
-#include "ELiving.h"
 
 CGame::CGame() :
 _intro("Physics"),
@@ -49,8 +47,8 @@ int CGame::onExecute() {
     NFile::log(LogType::ALERT, "Starting game...");
     
     while(_isRunning) {
-        while(SDL_PollEvent(&_event)){
-            _onEvent();
+        while(SDL_PollEvent(&event)){
+            _onEvent(&event);
         }
         
         float now = SDL_GetTicks();
@@ -58,9 +56,8 @@ int CGame::onExecute() {
         _lastTime = now;
         
         while(_delta >= 1) {    // Todo implement variable time step instead of this laggy thing
-            if(_delta > 200) {       // To make sure it doesn't freeze
-                //_isRunning = false;
-                //break;
+            if(_delta > 20) {       // To make sure it doesn't freeze
+                instance.entityManager.particleCleanup();
             }
             
             _handleKeyStates();
@@ -79,8 +76,7 @@ int CGame::onExecute() {
             _title.str("");
             _title /* << _intro << " | " */ << _updates << " ups, " << _frames << " fps";
             //instance.window.setTitle(_title.str());
-            if(instance.player)
-                instance.player->say(_title.str(), "TESTFONT", ChatBubbleType::SAY);
+            instance.entityManager.getEntity("n:bush")->say(_title.str(), "TESTFONT", ChatBubbleType::SAY);
             _updates = 0;
             _frames = 0;
         }
@@ -124,46 +120,6 @@ int CGame::_onInit() {
     
     NFile::loadMap("resources/map/testMap1.map", &instance);
     
-    auto tempEntity = std::make_shared<CEntity>(Box{300, 0, 80, 140}, "playerPink");          // Temp player
-    tempEntity->movable = new EMovable(tempEntity.get());
-    tempEntity->living = new ELiving(tempEntity.get());
-    //tempEntity->addComponent(std::make_shared<EMovable>(tempEntity.get()));
-    //tempEntity->addComponent(std::make_shared<ELiving>(tempEntity.get()));
-    //tempEntity->getComponent<EMovable>()->jumpPower = 15.0;
-    tempEntity->spriteStateTypes[SpriteStateTypes::ASCENDING] = "playerPinkRunning";
-    tempEntity->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
-    tempEntity->spriteFollowsCollisionBox = false;
-    instance.player = tempEntity;
-    instance.entityManager.addEntity(instance.player);
-    
-    auto tempEntity2 = std::make_shared<CEntity>(Box{450, 0, 80, 140}, "playerPink");                   // Temp enemy
-    tempEntity2->movable = new EMovable(tempEntity2.get());
-    tempEntity2->npc = new ENpc(tempEntity2.get());
-    tempEntity2->living = new ELiving(tempEntity2.get());
-    tempEntity2->npc->setTarget(tempEntity.get());
-    tempEntity2->movable->setMovementState(MovementState::SNEAKING_MOVEMENT);
-    //tempEntity2->addComponent(std::make_shared<EMovable>(tempEntity2.get()));
-    //tempEntity2->addComponent(std::make_shared<ENpc>(tempEntity2.get()));
-    //tempEntity2->addComponent(std::make_shared<ELiving>(tempEntity2.get()));
-    //tempEntity2->getComponent<EMovable>()->setMovementState(MovementState::SNEAKING_MOVEMENT);
-    //tempEntity2->getComponent<ENpc>()->setTarget(instance.player.get());
-    tempEntity2->spriteStateTypes[SpriteStateTypes::ASCENDING] = "playerPinkRunning";
-    tempEntity2->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
-    tempEntity2->spriteFollowsCollisionBox = false;
-    instance.entityManager.addEntity(tempEntity2);
-    
-    tempEntity = std::make_shared<CEntity>(Box{0, 465, 5000, 30}, SDL_Color{255, 0, 0, 0});       // Temp platforms
-    tempEntity->addCollisionLayer(-129);
-    tempEntity->addProperty(EntityProperty::STATIC);
-    instance.entityManager.addEntity(tempEntity);
-    
-    tempEntity = std::make_shared<CEntity>(Box{0, -20, 30, 500}, SDL_Color{255, 0, 0, 0});
-    tempEntity->addCollisionLayer(15);
-    tempEntity->addProperty(EntityProperty::STATIC);
-    instance.entityManager.addEntity(tempEntity);
-    
-    instance.camera.setTarget(instance.player.get());
-    
     /*
      LAYER0 // 1
      LAYER1 // 2
@@ -173,6 +129,17 @@ int CGame::_onInit() {
      LAYER5 // 32
      LAYER6 // 64
      LAYER7 // 128
+    */
+    
+    /*
+     Entity = 0,
+     Particle,   // 1
+     Movable,    // 2
+     UtilityParticle, // 3
+     Living,     // 4
+     Npc,        // 5
+     Player,     // 6
+     Enemy       // 7
     */
 
     return 0;
@@ -206,25 +173,19 @@ void CGame::_handleKeyStates() {
     
     // Movement
     
-    if(!instance.player)
-        return;
+    if(keystate[SDL_SCANCODE_D]) {
+        instance.player->goRight();
+    }
+    if(keystate[SDL_SCANCODE_A]) {
+        instance.player->goLeft();
+    }
     
-    auto movable = instance.player->movable;//instance.player->getComponent<EMovable>();
-    if(movable) {
-        if(keystate[SDL_SCANCODE_D]) {
-            movable->goRight();
-        }
-        if(keystate[SDL_SCANCODE_A]) {
-            movable->goLeft();
-        }
-        
-        if(keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_SPACE]) {
-            movable->goUp();
-        }
-        
-        if(keystate[SDL_SCANCODE_S]) {
-            movable->goDown();
-        }
+    if(keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_SPACE]) {
+        instance.player->goUp();
+    }
+    
+    if(keystate[SDL_SCANCODE_S]) {
+        instance.player->goDown();
     }
     
     // Other
@@ -245,43 +206,32 @@ void CGame::_handleKeyStates() {
         
         //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, SDL_Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
         
-        auto tempParticle = std::make_shared<CEntity>(Box{instance.player->body.getX() + instance.player->body.getW() / 2, instance.player->body.getY() - 100, 4, 4}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0});
-        //tempParticle->addComponent(std::make_shared<EUtilityParticle>(tempParticle.get(), instance.player.get(), BasicUtilities::DAMAGE, 10));
-        tempParticle->particle = new EUtilityParticle(tempParticle.get(), instance.player.get(), BasicUtilities::DAMAGE, 10);
+        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX() + instance.player->body.getW() / 2, instance.player->body.getY() - 100, 4, 4}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::DAMAGE, 10);
         tempParticle->body.velX = velocityX;
         tempParticle->body.velY = velocityY;
         instance.entityManager.addParticle(tempParticle);
-        
-        instance.camera.addCameraShake(1.1);
-        
-        std::cout << SDL_GetTicks() << "\n";
     }
     
-//    if(NMouse::rightMouseButtonPressed()) {   // heal particle
-//        int mousePosX = instance.player->body.getX() + instance.player->body.getW() / 2 - NMouse::relativeMouseX(&instance.camera);
-//        int mousePosY = instance.player->body.getY() - 100 - NMouse::relativeMouseY(&instance.camera);
-//        float angle = atan2(mousePosY, mousePosX);
-//        
-//        const float velocityX = -(cos(angle) * 100);
-//        const float velocityY = -(sin(angle) * 100);
-//        
-//        //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, SDL_Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
-//        
-//        auto tempParticle = std::make_shared<CEntity>(Box{instance.player->body.getX() + instance.player->body.getW() / 2, instance.player->body.getY() - 100, 4, 4}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0});
-//        tempParticle->addComponent(std::make_shared<EUtilityParticle>(tempParticle.get(), instance.player.get(), BasicUtilities::HEAL, 10));
-//        tempParticle->body.velX = velocityX;
-//        tempParticle->body.velY = velocityY;
-//        instance.entityManager.addParticle(tempParticle);
-//        
-//        instance.camera.setTarget(tempParticle.get());
-//    }
+    if(NMouse::rightMouseButtonPressed()) {   // heal particle
+        int mousePosX = instance.player->body.getX() + instance.player->body.getW() / 2 - NMouse::relativeMouseX(&instance.camera);
+        int mousePosY = instance.player->body.getY() - 100 - NMouse::relativeMouseY(&instance.camera);
+        float angle = atan2(mousePosY, mousePosX);
+        
+        const float velocityX = -(cos(angle) * 100);
+        const float velocityY = -(sin(angle) * 100);
+        
+        //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, SDL_Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
+        
+        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX() + instance.player->body.getW() / 2, instance.player->body.getY() - 100, 20, 20}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::HEAL, 10);
+        tempParticle->body.velX = velocityX;
+        tempParticle->body.velY = velocityY;
+        instance.entityManager.addParticle(tempParticle);
+    }
 }
 
-void CGame::_onEvent() {
+void CGame::_onEvent(SDL_Event* event) {
     
     //if(event->key.repeat != 0) return;
-    
-    auto event = &_event;
     
     switch(event->type) {
             
@@ -335,73 +285,47 @@ void CGame::_onEvent() {
                     break;
                     
                 case keyMap::SNEAK:
-                    if(instance.player) {
-                        auto movable = instance.player->movable;//instance.player->getComponent<EMovable>();
-                        if(movable)
-                            movable->setMovementState(MovementState::SNEAKING_MOVEMENT);
-                    }
+                    instance.player->setMovementState(MovementState::SNEAKING_MOVEMENT);
                     break;
                     
                 case SDLK_LCTRL:
-                    if(instance.player) {
-                        auto movable = instance.player->movable;//instance.player->getComponent<EMovable>();
-                        if(movable)
-                            movable->setMovementState(MovementState::RUNNING_MOVEMENT);
-                    }
+                    instance.player->setMovementState(MovementState::RUNNING_MOVEMENT);
                     break;
                     
                 case keyMap::BLOCK:
                 {
-                    auto temp = instance.entityManager.addEntity(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 40, 40}, SDL_Color{0, 0, 255, 0});
+                    CEntity* temp = instance.entityManager.addEntity(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 40, 40}, SDL_Color{0, 0, 255, 0});
                     temp->addProperty(EntityProperty::STATIC);
                 }
                     break;
                     
                 case keyMap::RESET:
                 {
-                    auto tempNpc = std::make_shared<CEntity>(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 60, 164}, "player");
-                    tempNpc->movable = new EMovable(tempNpc.get());
-                    tempNpc->npc = new ENpc(tempNpc.get());
-                    tempNpc->living = new ELiving(tempNpc.get());
-                    tempNpc->npc->setTarget(instance.player.get());
-                    tempNpc->movable->setMovementState(MovementState::SNEAKING_MOVEMENT);
-                    //tempNpc->addComponent(std::make_shared<ENpc>(tempNpc.get()));
-                    //tempNpc->addComponent(std::make_shared<EMovable>(tempNpc.get()));
-                    //tempNpc->addComponent(std::make_shared<ELiving>(tempNpc.get()));
-                    //tempNpc->getComponent<EMovable>()->setMovementState(MovementState::SNEAKING_MOVEMENT);
-                    //tempNpc->getComponent<ENpc>()->setTarget(instance.player.get());
+                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 60, 164}, "player");
+                    tempNpc->setTarget(instance.player);
                     tempNpc->spriteStateTypes[SpriteStateTypes::ASCENDING] = "enemyJumping";
                     tempNpc->spriteFollowsCollisionBox = false;
                     instance.entityManager.addEntity(tempNpc);
-                    
-                    std::cout << SDL_GetTicks() << "\n";
                 }
                     break;
                     
                 case SDLK_h:
                 {
-//                    auto tempNpc = std::make_shared<CEntity>(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 32 * 4, 32 * 4}, "yrl");
-//                    tempNpc->addComponent(std::make_shared<ENpc>(tempNpc.get()));
-//                    tempNpc->addComponent(std::make_shared<ELiving>(tempNpc.get()));
-//                    tempNpc->getComponent<ENpc>()->setTarget(instance.player.get());
-//                    instance.entityManager.addEntity(tempNpc);
+                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 32 * 4, 32 * 4}, "yrl");
+                    tempNpc->setTarget(instance.player);
+                    instance.entityManager.addEntity(tempNpc);
                 }
                     break;
                     
                 case keyMap::TOGGLE_NOCLIP:
-                    if(instance.player) {
-                        auto movable = instance.player->movable;//instance.player->getComponent<EMovable>();
-                        if(movable)
-                            movable->toggleNoclip();
-                    }
+                    instance.player->toggleNoclip();
                     break;
                 case keyMap::LOAD_ASSETS:
                     NFile::loadMap("resources/map/testMap1.map", &instance);
                     instance.camera.onInit(&instance.window);
                     break;
                 case keyMap::TOGGLE_HIDDEN:
-                    if(instance.player)
-                        instance.player->toggleProperty(EntityProperty::HIDDEN);
+                    instance.player->toggleProperty(EntityProperty::HIDDEN);
                     break;
                 case keyMap::TOGGLE_COLLISION_BOUNDS:
                     //player->toggleProperty(EntityProperty::FLYING);
@@ -414,7 +338,7 @@ void CGame::_onEvent() {
                         return -1;
                     }
                     instance.camera.onInit(&instance.window);
-                    //NFile::loadMap("resources/map/testMap1.map", &instance);
+                    NFile::loadMap("resources/map/testMap1.map", &instance);
                 }
                     break;
                     
@@ -430,22 +354,21 @@ void CGame::_onEvent() {
                     for(int i = 0; i < 100; i++) {
                         text += alphanum[rand() % (sizeof(alphanum) - 1)];
                     }
-                    if(instance.player)
-                        instance.player->say(text, "TESTFONT", ChatBubbleType::SAY);
+                    instance.player->say(text, "TESTFONT", ChatBubbleType::SAY);
                     
                     text = "";
                     for(int i = 0; i < 50; i++) {
                         text += alphanum[rand() % (sizeof(alphanum) - 1)];
                     }
-                    //i1nstance.entityManager.getEntity("n:bush")->say(text, "TESTFONT", ChatBubbleType::YELL);
+                    //instance.entityManager.getEntity("n:bush")->say(text, "TESTFONT", ChatBubbleType::YELL);
                 }
                     break;
                     
                 case keyMap::TARGET_PLAYER:
-                    instance.camera.setTarget(instance.player.get());
+                    instance.camera.setTarget(instance.player);
                     break;
                 case keyMap::TARGET_BLOCK:
-                    instance.camera.setTarget(instance.entityManager.getEntity("m:yrl").get());
+                    instance.camera.setTarget(instance.entityManager.getEntity("m:yrl"));
                     break;
                     
                 case keyMap::CHANGE_CAMERA_SWAY_UP:
@@ -468,11 +391,7 @@ void CGame::_onEvent() {
             switch(event->key.keysym.sym) {
                 case keyMap::SNEAK:
                 case SDLK_LCTRL:
-                    if(instance.player) {
-                        auto movable = instance.player->movable;//instance.player->getComponent<EMovable>();
-                        if(movable)
-                            movable->setMovementState(MovementState::WALKING_MOVEMENT);
-                    }
+                    instance.player->setMovementState(MovementState::WALKING_MOVEMENT);
                     break;
                     
                 default:
@@ -506,7 +425,7 @@ void CGame::_onEvent() {
 }
 
 void CGame::_onLoop() {
-    instance.entityManager.onLoop(&instance);
+    instance.entityManager.onLoop();
     instance.camera.onLoop();
 }
 

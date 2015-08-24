@@ -4,7 +4,7 @@
 //
 //  Created by Didrik Munther on 13/03/15.
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
-//
+//d
 
 #include <stdio.h>
 #include <SDL2/SDL.h>
@@ -19,8 +19,6 @@ const int SCREEN_BPP            = 32;
 const int GAMEINTERVAL          = 60;
 const int DESPAWN_HEIGHT        = 10000;
 const float GRAVITY             = 0.3;
-
-const int FALL_DAMAGE_CAMERA_SHAKE_INTENSIFIER = 30;
 
 const char LOG_FILE[]           = "debug.log";
 
@@ -40,53 +38,6 @@ struct Area {
     int w, h;
 };
 
-enum MovementState {
-    WALKING_MOVEMENT = 0,
-    SNEAKING_MOVEMENT,
-    RUNNING_MOVEMENT
-};
-
-enum ValueTypes {
-    HEALTH = 0,
-    KEVLAR,
-    STAMINA,
-    ENERGY,
-    VALUETYPES_TOTAL
-};
-
-enum StatTypes {
-    ARMOUR = 0,
-    ATTACK_POWER,
-    ATTACK_SPEED,
-    STATTYPES_TOTAL
-};
-
-struct UtilityPosition {
-    int x, y;
-};
-
-enum BasicUtilities {
-    DAMAGE = 0,
-    HEAL,
-    NONE
-};
-
-enum EntityProperty {
-    COLLIDABLE  = 1 << 0,
-    FLYING      = 1 << 1,
-    HIDDEN      = 1 << 2,
-    STATIC      = 1 << 3,
-    FLIP        = 1 << 4,
-    FLIP_FREEZED= 1 << 5
-};
-
-struct CollisionSides {
-    bool collisionTop,
-    collisionBottom,
-    collisionRight,
-    collisionLeft;
-};
-
 enum CollisionLayers { // CEntity
     LAYER0      = 1 << 0,   // 1
     LAYER1      = 1 << 1,   // 2
@@ -96,6 +47,17 @@ enum CollisionLayers { // CEntity
     LAYER5      = 1 << 5,   // 32
     LAYER6      = 1 << 6,   // 64
     LAYER7      = 1 << 7,   // 128
+};
+
+enum EntityTypes { // CEntity
+    Entity = 0,
+    Particle,   // 1
+    Movable,    // 2
+    UtilityParticle, // 3
+    Living,     // 4
+    Npc,        // 5
+    Player,     // 6
+    Enemy       // 7
 };
 
 enum SpriteStateTypes { // CEntity

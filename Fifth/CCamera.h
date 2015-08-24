@@ -10,6 +10,7 @@
 #define __Third__CCamera__
 
 #include <stdio.h>
+#include "CEntity.h"
 #include "CWindow.h"
 
 class CEntity;
@@ -41,10 +42,8 @@ public:
 private:
     CameraOffset _offset;
     float _cameraShake;
-    float _cameraShakeStep;
     
     CEntity* _target;
-    bool _noTarget;
 };
 
 #endif /* defined(__Third__CCamera__) */

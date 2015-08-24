@@ -33,16 +33,22 @@ private:
     // Main functions
     int _onInit();
     void _initRelativePaths();
-    void _onEvent();
+    
+    void _onEvent(SDL_Event* event);
+    
     void _handleKeyStates();
+    
     void _onLoop();
+    
     void _onRender();
+    
     int _onCleanup();
     
     // Main variables
     bool _isRunning;
+    SDL_Event event;
+    
     CInstance instance;
-    SDL_Event _event;
     
     // Timer variables
     float _lastTime;

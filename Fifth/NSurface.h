@@ -14,8 +14,6 @@
 #include "CText.h"
 #include "CWindow.h"
 
-class CText;
-
 namespace NSurface {
 
     void renderRect(int x, int y, int w, int h, CWindow* window, int r, int g, int b, int a = 255);
