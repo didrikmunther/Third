@@ -16,6 +16,8 @@ int CSpriteSheet::openFile(SDL_Renderer* renderer, std::string fileName) {
     SDL_Surface* surface = IMG_Load(fileName.c_str());
     _texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
+    
+    return 1;
 }
 
 SDL_Texture* CSpriteSheet::getTexture() {

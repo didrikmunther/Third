@@ -324,7 +324,6 @@ void CGame::_onEvent(SDL_Event* event) {
                 {
                     if(instance.window.newWindow(_intro, 640, 480)) {
                         NFile::log(LogType::ERROR, "Window.onInit failed: ", SDL_GetError());
-                        return -1;
                     }
                     instance.camera.onInit(&instance.window);
                     NFile::loadMap("resources/map/testMap1.map", &instance);
