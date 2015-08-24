@@ -311,15 +311,10 @@ std::vector<GridCoordinates> getGrid(CEntity* target, int gridSize) {
     int x2 = target->body.getX() + target->body.velX;
     int y2 = target->body.getY() + target->body.velY;
     
-    int biggestX = getBiggest({x, x2});
-    int biggestY = getBiggest({y, y2});
-    int smallestX = getSmallest({x, x2});
-    int smallestY = getSmallest({y, y2});
-    
-    int targetX = smallestX;
-    int targetY = smallestY;
-    int targetW = biggestX - smallestX + w;
-    int targetH = biggestY - smallestY + h;
+    int targetX = getSmallest({x, x2});
+    int targetY = getSmallest({y, y2});
+    int targetW = getBiggest({x, x2}) - getSmallest({x, x2}) + w;
+    int targetH = getBiggest({y, y2}) - getSmallest({y, y2}) + h;
     
     int upperLeftCorner[2]  = {(targetX - (targetX % gridSize)) / gridSize,
         (targetY - (targetY % gridSize)) / gridSize};
@@ -400,14 +395,19 @@ void CEntityManager::onLoop() {
         while(i != _EntityVector.end()) {
             auto target = (*i).second;
             
+            std::stringstream toSay;
+            
             std::vector<CEntity*> collisionMap;
             for (auto &coord: target->gridCoordinates) {
                 for(auto &entity: _CollisionVector[coord.y][coord.x]){
                     if(std::find(collisionMap.begin(), collisionMap.end(), entity) != collisionMap.end())
                         continue;
                     collisionMap.push_back(entity);
+                    toSay << getNameOfEntity(entity) << ", ";
                 }
             }
+            
+            //target->say(toSay.str(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
             
             target->afterLogicLoop(&collisionMap);
             
@@ -468,14 +468,24 @@ void CEntityManager::onLoop() {
         while(i != _ParticleVector.end()) {
             auto target = (*i);
             
+            std::stringstream toSay;
+            
             std::vector<CEntity*> collisionMap;
             for (auto &coord: target->gridCoordinates) {
                 for(auto &entity: _CollisionVector[coord.y][coord.x]){
                     if(std::find(collisionMap.begin(), collisionMap.end(), entity) != collisionMap.end())
                         continue;
                     collisionMap.push_back(entity);
+                    toSay << getNameOfEntity(entity) << ", ";
                 }
             }
+            
+            //target->say(toSay.str(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
+            
+//            std::vector<CEntity*> collisionMap;
+//            for(auto &entity: _EntityVector) {
+//                collisionMap.push_back(entity.second);
+//            }
             
             target->afterLogicLoop(&collisionMap);
             
