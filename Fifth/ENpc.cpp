@@ -16,7 +16,7 @@ ENpc::ENpc(CEntity* parent) : EComponent(parent), _target(nullptr) {
 void ENpc::onLoop(CInstance* instance) {
     if(_target && !_target->isDead && !_target->toRemove) {
         if(_parent->body.getX() > _target->body.getX()) {
-            auto movable = _parent->getComponent<EMovable>();
+            auto movable = _parent->movable;//_parent->getComponent<EMovable>();
             if(movable) {
                 movable->goLeft();
             } else {
@@ -24,7 +24,7 @@ void ENpc::onLoop(CInstance* instance) {
             }
         }
         else if(_parent->body.getX() < _target->body.getX()) {
-            auto movable = _parent->getComponent<EMovable>();
+            auto movable = _parent->movable;//_parent->getComponent<EMovable>();
             if(movable) {
                 movable->goRight();
             } else {
@@ -32,7 +32,7 @@ void ENpc::onLoop(CInstance* instance) {
             }
         }
         if(_parent->collisionRight || _parent->collisionLeft) {
-            auto movable = _parent->getComponent<EMovable>();
+            auto movable = _parent->movable;//_parent->getComponent<EMovable>();
             if(movable) {
                 movable->jump();
             }

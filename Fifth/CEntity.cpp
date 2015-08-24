@@ -17,6 +17,12 @@
 #include "EComponent.h"
 #include <sstream>
 
+#include "ELiving.h"
+#include "EMovable.h"
+#include "ENpc.h"
+#include "EParticle.h"
+#include "EUtilityParticle.h"
+
 CEntity::CEntity(Box rect, SDL_Color color) :
 spriteContainerKey(""), color(color), body(rect) {
     init();
@@ -31,10 +37,17 @@ spriteContainerKey(spriteContainerKey), color(SDL_Color{255,0,255,255}), body(re
 
 CEntity::~CEntity() {
     _cleanUpTextVector();
-    _clearComponents();
+    //_clearComponents();
 }
 
 void CEntity::init() {
+    
+    living = nullptr;
+    movable = nullptr;
+    npc = nullptr;
+    particle = nullptr;
+    utilityParticle = nullptr;
+    
     isDead             = false;
     toRemove           = false;
     properties          = EntityProperty::COLLIDABLE;
@@ -65,10 +78,21 @@ void CEntity::onLoop(CInstance* instance) {
 //            ++i;
 //    }
     
-    for(auto &i: _components) {
-        if(i.second)
-            i.second->onLoop(instance);
-    }
+//    for(auto &i: _components) {
+//        if(i.second)
+//            i.second->onLoop(instance);
+//    }
+    
+    if(living)
+        living->onLoop(instance);
+    if(movable)
+        movable->onLoop(instance);
+    if(npc)
+        npc->onLoop(instance);
+    if(particle)
+        particle->onLoop(instance);
+    if(utilityParticle)
+        utilityParticle->onLoop(instance);
     
     if(!hasProperty(EntityProperty::FLYING))
         body.velY += GRAVITY;
@@ -121,9 +145,20 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
         }
     }
     
-    for(auto &i: _components) {
-        i.second->onRender(window, camera);
-    }
+//    for(auto &i: _components) {
+//        i.second->onRender(window, camera);
+//    }
+    
+    if(living)
+        living->onRender(window, camera);
+    if(movable)
+        movable->onRender(window, camera);
+    if(npc)
+        npc->onRender(window, camera);
+    if(particle)
+        particle->onRender(window, camera);
+    if(utilityParticle)
+        utilityParticle->onRender(window, camera);
 }
 
 bool CEntity::isOnCollisionLayer(int collisionLayer) {
@@ -170,15 +205,15 @@ void CEntity::removeProperty(int property) {
     if(hasProperty(property)) toggleProperty(property);
 }
 
-void CEntity::addComponent(std::shared_ptr<EComponent> component) {
-//    if(_components.count(&typeid(*component)) != 0)
-//        delete _components[&typeid(*component)];
-    _components[&typeid(*component)] = component;
-}
-
-void CEntity::_clearComponents() {
-    _components.clear();
-}
+//void CEntity::addComponent(std::shared_ptr<EComponent> component) {
+////    if(_components.count(&typeid(*component)) != 0)
+////        delete _components[&typeid(*component)];
+//    _components[&typeid(*component)] = component;
+//}
+//
+//void CEntity::_clearComponents() {
+//    _components.clear();
+//}
 
 void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags renderFlags) {
     
@@ -193,10 +228,23 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags ren
         NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, window, r, g, b);  // Bottom line
     }
     
-    if(!toRemove)
-        for(auto &i: _components)
-            i.second->renderAdditional(window, camera);
-//    
+    if(!toRemove) {
+        if(living)
+            living->renderAdditional(window, camera);
+        if(movable)
+            movable->renderAdditional(window, camera);
+        if(npc)
+            npc->renderAdditional(window, camera);
+        if(particle)
+            particle->renderAdditional(window, camera);
+        if(utilityParticle)
+            utilityParticle->renderAdditional(window, camera);
+    }
+    
+//    if(!toRemove)
+//        for(auto &i: _components)
+//            i.second->renderAdditional(window, camera);
+//
 //    if(!hasProperty(EntityProperty::HIDDEN))
 //        for (auto &i: _GuiTextVector)                                                // Render chatbubbles
 //            if(!i->toRemove())
@@ -378,9 +426,20 @@ void CEntity::move(std::vector<CEntity*>* entities, CInstance* instance) {
 bool CEntity::_collisionLogic(CEntity *target, CInstance* instance, CollisionSides collisionSides) {
     bool collision = true;
     
-    for(auto &i: _components) {
-        collision &= i.second->collisionLogic(target, instance, collisionSides);
-    }
+//    for(auto &i: _components) {
+//        collision &= i.second->collisionLogic(target, instance, collisionSides);
+//    }
+    
+    if(living)
+        collision &= living->collisionLogic(target, instance, collisionSides);
+    if(movable)
+        collision &= movable->collisionLogic(target, instance, collisionSides);
+    if(npc)
+        collision &= npc->collisionLogic(target, instance, collisionSides);
+    if(particle)
+        collision &= particle->collisionLogic(target, instance, collisionSides);
+    if(utilityParticle)
+        collision &= utilityParticle->collisionLogic(target, instance, collisionSides);
     
     return collision;
 }

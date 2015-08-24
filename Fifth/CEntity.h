@@ -32,6 +32,12 @@ class CEntityManager;
 class EComponent;
 class CInstance;
 
+class ELiving;
+class EMovable;
+class ENpc;
+class EParticle;
+class EUtilityParticle;
+
 class CEntity : public CRenderable {
     
 public:
@@ -78,19 +84,19 @@ public:
     
     //void addGuiText(std::shared_ptr<CGuiText> text) { _GuiTextVector.push_back(text); }
     
-    void addComponent(std::shared_ptr<EComponent> component);
-    template<typename T>
-    std::shared_ptr<T> getComponent() {
-        if(_components.count(&typeid(T)) != 0)
-        {
-            return std::static_pointer_cast<T>(_components[&typeid(T)]);
-        }
-        else
-        {
-            return nullptr;
-        }
-    }
-    void _clearComponents();
+//    void addComponent(std::shared_ptr<EComponent> component);
+//    template<typename T>
+//    std::shared_ptr<T> getComponent() {
+//        if(_components.count(&typeid(T)) != 0)
+//        {
+//            return std::static_pointer_cast<T>(_components[&typeid(T)]);
+//        }
+//        else
+//        {
+//            return nullptr;
+//        }
+//    }
+//    void _clearComponents();
     
     bool hasMoved() { return _hasMoved; };
     bool isDead;
@@ -98,8 +104,14 @@ public:
     
     std::vector<GridCoordinates> gridCoordinates;
     
+    EMovable* movable;
+    ELiving* living;
+    ENpc* npc;
+    EParticle* particle;
+    EUtilityParticle* utilityParticle;
+    
 protected:
-    std::unordered_map<const std::type_info*, std::shared_ptr<EComponent>> _components;
+    //std::unordered_map<const std::type_info*, std::shared_ptr<EComponent>> _components;
     
     //std::vector<std::shared_ptr<CGuiText>> _GuiTextVector;
     void _cleanUpTextVector();

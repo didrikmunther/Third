@@ -54,6 +54,8 @@ std::string CEntityManager::addEntity(std::shared_ptr<CEntity> entity, std::stri
         _EntityVector[name] = entity;
     }
     
+    std::cout << "here\n";
+    
     //entity->say(name, "TESTFONT", ChatBubbleType::SAY);
     return name;
 }
@@ -85,7 +87,8 @@ std::string CEntityManager::getNameOfEntity(std::shared_ptr<CEntity> entity) {
 
 void CEntityManager::addParticle(Box rect, SDL_Color color, int livingTime) {
     auto particle = std::make_shared<CEntity>(rect, color);
-    particle->addComponent(std::make_shared<EParticle>(particle.get(), livingTime));
+    particle->particle = new EParticle(particle.get(), livingTime);
+    //particle->addComponent(std::make_shared<EParticle>(particle.get(), livingTime));
     _ParticleVector.push_back(particle);
 }
 
@@ -235,7 +238,8 @@ void CEntityManager::splitEntityToParticles(CEntity* target) {
         target->body.getW() / 2,
         target->body.getH() / 2},
                                              spriteContainer1);
-    tempParticle1->addComponent(std::make_shared<EParticle>(tempParticle1.get(), livingTime + rand() % 3 - 1));
+    //tempParticle1->addComponent(std::make_shared<EParticle>(tempParticle1.get(), livingTime + rand() % 3 - 1));
+    tempParticle1->particle = new EParticle(tempParticle1.get(), livingTime + rand() % 3 - 1);
     tempParticle1->body.velX = rand() % explosionForce - tempForRand;
     tempParticle1->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle1->addProperty(EntityProperty::FLIP);
@@ -245,7 +249,8 @@ void CEntityManager::splitEntityToParticles(CEntity* target) {
         target->body.getW() / 2,
         target->body.getH() / 2},
                                              spriteContainer2);
-    tempParticle2->addComponent(std::make_shared<EParticle>(tempParticle1.get(), livingTime + rand() % 3 - 1));
+    //tempParticle2->addComponent(std::make_shared<EParticle>(tempParticle1.get(), livingTime + rand() % 3 - 1));
+    tempParticle2->particle = new EParticle(tempParticle1.get(), livingTime + rand() % 3 - 1);
     tempParticle2->body.velX = rand() % explosionForce - tempForRand;
     tempParticle2->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle2->addProperty(EntityProperty::FLIP);
@@ -255,7 +260,8 @@ void CEntityManager::splitEntityToParticles(CEntity* target) {
         target->body.getW() / 2,
         target->body.getH() / 2},
                                              spriteContainer3);
-    tempParticle3->addComponent(std::make_shared<EParticle>(tempParticle1.get(), livingTime + rand() % 3 - 1));
+    //tempParticle3->addComponent(std::make_shared<EParticle>(tempParticle1.get(), livingTime + rand() % 3 - 1));
+    tempParticle3->particle = new EParticle(tempParticle1.get(), livingTime + rand() % 3 - 1);
     tempParticle3->body.velX = rand() % explosionForce - tempForRand;
     tempParticle3->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle3->addProperty(EntityProperty::FLIP);
@@ -265,7 +271,8 @@ void CEntityManager::splitEntityToParticles(CEntity* target) {
         target->body.getW() / 2,
         target->body.getH() / 2},
                                              spriteContainer4);
-    tempParticle4->addComponent(std::make_shared<EParticle>(tempParticle1.get(), livingTime + rand() % 3 - 1));
+    //tempParticle4->addComponent(std::make_shared<EParticle>(tempParticle1.get(), livingTime + rand() % 3 - 1));
+    tempParticle4->particle = new EParticle(tempParticle1.get(), livingTime + rand() % 3 - 1);
     tempParticle4->body.velX = rand() % explosionForce - tempForRand;
     tempParticle4->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle4->addProperty(EntityProperty::FLIP);
