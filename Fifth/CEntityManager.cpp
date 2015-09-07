@@ -352,9 +352,9 @@ std::vector<GridCoordinates> getGrid(CEntity* target, int gridSize) {
 
 void CEntityManager::onLoop() {
     
+    std::map <int, std::map <int, std::vector<CEntity*>>> _CollisionVector;
+    
     {
-        _CollisionVector.clear();
-        
         for(auto &entity: _EntityVector) {
             auto target = entity.second;
             target->gridCoordinates.clear();
