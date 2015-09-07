@@ -20,8 +20,6 @@ CMovable::CMovable(Box rect, std::string spriteKey) :
 }
 
 void CMovable::_init() {
-    entityType = EntityTypes::Movable;
-    
     _movementState = MovementState::WALKING_MOVEMENT;
     _movementSpeeds[MovementState::WALKING_MOVEMENT]   = 10.0f;
     _movementSpeeds[MovementState::SNEAKING_MOVEMENT] = (float)_movementSpeeds[MovementState::WALKING_MOVEMENT] / 2.0f;

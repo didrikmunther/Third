@@ -20,8 +20,6 @@ CEnemy::CEnemy(Box rect, std::string spriteKey) :
 }
 
 void CEnemy::_init() {
-    entityType = EntityTypes::Enemy;
-    
     target = nullptr;
     setMovementState(MovementState::SNEAKING_MOVEMENT);
     jumpPower = 15.0f;

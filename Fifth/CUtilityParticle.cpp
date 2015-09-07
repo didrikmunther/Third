@@ -23,7 +23,6 @@ CParticle(rect, color, livingTime), _owner(owner), _basicUtility(utility) {
 
 void CUtilityParticle::_init() {
     collisionLayer = LAYER0;
-    entityType = EntityTypes::UtilityParticle;
 }
 
 void CUtilityParticle::renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
@@ -33,32 +32,37 @@ void CUtilityParticle::renderAdditional(CWindow* window, CCamera* camera, Render
 
 bool CUtilityParticle::_collisionLogic(CEntity* target, CollisionSides collisionSides) {
     bool parentCollision = CParticle::_collisionLogic(target, collisionSides);
-    bool collision = true;
     
-    if(target != _owner) {
-        if(!toRemove()) {       // Avoid unneccesary dynamic_casts
-            CLiving* living = dynamic_cast<CLiving*>(target);
-            if(living != nullptr) {
-                switch(_basicUtility) {
-                    case BasicUtilities::DAMAGE:
-                        living->dealDamage(rand() % 20, UtilityPosition{body.getX(), body.getY()});
-                        break;
-                        
-                    case BasicUtilities::HEAL:
-                        living->heal(rand() % 20, UtilityPosition{body.getX(), body.getY()});
-                        break;
-                    
-                    default:
-                        break;
-                }
-            }
-            _toRemove = true;
-        }
-    } else {
-        collision = false;
+    if(target == _owner)
+        return false;
+    
+    if(toRemove())
+        return parentCollision;
+    
+    if(std::find(_hasCollidedWith.begin(), _hasCollidedWith.end(), target) != _hasCollidedWith.end())
+        return false;
+    
+    CLiving* living = dynamic_cast<CLiving*>(target);
+    if(living == nullptr) {
+        _toRemove = true;
+        return parentCollision;
     }
     
-    return parentCollision && collision;
+    switch(_basicUtility) {
+        case BasicUtilities::DAMAGE:
+            living->dealDamage(rand() % 20, UtilityPosition{body.getX(), body.getY()});
+            break;
+        case BasicUtilities::HEAL:
+            living->heal(rand() % 20, UtilityPosition{body.getX(), body.getY()});
+            break;
+            
+        default:
+            break;
+    }
+    
+    _hasCollidedWith.push_back(target);
+    
+    return false;
 }
 
 void CUtilityParticle::_doLogic() {

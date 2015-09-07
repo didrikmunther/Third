@@ -37,6 +37,8 @@ private:
     
     BasicUtilities _basicUtility;
     
+    std::vector<CEntity*> _hasCollidedWith;
+    
 };
 
 #endif /* defined(__Fifth__CUtilityParticle__) */

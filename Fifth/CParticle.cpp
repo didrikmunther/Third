@@ -23,7 +23,6 @@ CEntity(rect, spriteKey), _creationTime(SDL_GetTicks()), _livingTime(livingTime)
 }
 
 void CParticle::_init() {
-    entityType = EntityTypes::Particle;
 }
 
 void CParticle::renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {

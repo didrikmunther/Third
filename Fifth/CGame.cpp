@@ -257,6 +257,26 @@ void CGame::_onEvent(SDL_Event* event) {
                     _isRunning = false;
                     break;
                     
+                case SDLK_8:
+                {
+                    float angle = 0;
+                    int particles = 90;
+                    int velocity = 50;
+                    
+                    for(int i = 0; i < particles; i++) {
+                        angle += 0.0174532925f * (360.0f / particles);
+                        
+                        const float velocityX = -(cos(angle) * velocity);
+                        const float velocityY = -(sin(angle) * velocity);
+                        
+                        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX() + instance.player->body.getW() / 2, instance.player->body.getY() + instance.player->body.getH() / 2, 10, 10}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::DAMAGE, 10);
+                        tempParticle->body.velX = velocityX;
+                        tempParticle->body.velY = velocityY;
+                        instance.entityManager.addParticle(tempParticle);
+                    }
+                }
+                    break;
+                    
                 case SDLK_m:
                     instance.entityManager.renderFlags ^= RenderFlags::COLLISION_AREA;
                     break;

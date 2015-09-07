@@ -19,8 +19,6 @@ CLiving::CLiving(Box rect, std::string spriteKey) : CMovable(rect, spriteKey) {
 }
 
 void CLiving::_init() {
-    entityType = EntityTypes::Living;
-    
     _values[ValueTypes::HEALTH]      = _maxValues[ValueTypes::HEALTH] = 1000;
     _values[ValueTypes::KEVLAR]      = _maxValues[ValueTypes::KEVLAR] = 1000;
     _values[ValueTypes::ENERGY]      = _maxValues[ValueTypes::ENERGY] = 100;

@@ -43,8 +43,6 @@ public:
     CEntity(Box rect, std::string spriteContainerKey);
     ~CEntity();
     
-    EntityTypes entityType;
-    
     virtual void init();
     void onLoop();
     void afterLogicLoop(std::vector<CEntity*>* entities); // After the velocities have been added, move the entity

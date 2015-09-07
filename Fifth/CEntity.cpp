@@ -33,8 +33,6 @@ CEntity::~CEntity() {
 }
 
 void CEntity::init() {
-    entityType = EntityTypes::Entity;
-    
     _isDead             = false;
     _toRemove           = false;
     properties          = EntityProperty::COLLIDABLE;
@@ -293,9 +291,6 @@ void CEntity::move(std::vector<CEntity*>* entities) {
         
         if(NewY > 0 && MoveY <= 0) NewY = 0;
         if(NewY < 0 && MoveY >= 0) NewY = 0;
-
-//        if(MoveX == 0) NewX = 0;
-//        if(MoveY == 0) NewY = 0;
         
         if(MoveX == 0 && MoveY == 0) 	break;
         if(NewX == 0 && NewY == 0) 		break;
@@ -303,43 +298,6 @@ void CEntity::move(std::vector<CEntity*>* entities) {
     
     _hasMoved = !(body._rect == body._previousRect);
 }
-
-//void CEntity::move(std::map<std::string, CEntity*>* entities) {
-//    
-//    int MoveX = round(body.velX);
-//    int MoveY = round(body.velY);
-//    
-//    int StopX = body.getX();
-//    int StopY = body.getY();
-//    
-//    int NewX = 0;
-//    int NewY = 0;
-//    
-//    if(MoveX != 0) {
-//        if(MoveX >= 0) 	NewX =  1;
-//        else 			NewX = -1;
-//    }
-//    
-//    if(MoveY != 0) {
-//        if(MoveY >= 0) 	NewY =  1;
-//        else 			NewY = -1;
-//    }
-//    
-//    collisionLeft = collisionRight = false;
-//    collisionTop = collisionBottom = false;
-//    
-//    do {
-//        MoveX -= NewX;
-//        if(MoveX == 0) break;
-//    } while(_collision(StopX + MoveX, StopY, entities));
-//    body.rect.x = StopX + MoveX;
-//    
-//    do {
-//        MoveY -= NewY;
-//        if(MoveY == 0) break;
-//    } while(_collision(StopX, StopY + MoveY, entities));
-//    body.rect.y = StopY + MoveY;
-//}
 
 bool CEntity::_collisionLogic(CEntity *target, CollisionSides collisionSides) {
     return true;

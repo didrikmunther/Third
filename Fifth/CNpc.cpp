@@ -19,8 +19,6 @@ CLiving(rect, spriteKey) {
 }
 
 void CNpc::_init() {
-    entityType = EntityTypes::Npc;
-    
 }
 
 void CNpc::renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
