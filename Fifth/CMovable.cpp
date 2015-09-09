@@ -109,7 +109,7 @@ void CMovable::toggleNoclip() {
 }
 
 void CMovable::jump() {
-    if (!collisionBottom)
+    if (!collisionSides.bottom)
         return;
     
     body.velY -= accelerationY;

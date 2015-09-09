@@ -68,6 +68,6 @@ bool CUtilityParticle::_collisionLogic(CEntity* target, CollisionSides collision
 void CUtilityParticle::_doLogic() {
     CParticle::_doLogic();
     
-    if(!collisionBottom)
+    if(!collisionSides.bottom)
         body.velY += rand() % 3 - 1;
 }

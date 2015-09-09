@@ -136,7 +136,7 @@ bool CLiving::_collisionLogic(CEntity* target, CollisionSides collisionSides) {
     bool collision = true;
     
     float jumpDamageHeight = jumpPower + jumpPower / 4;
-    if(body.velY > jumpDamageHeight && collisionSides.collisionBottom) {            // Fall damage
+    if(body.velY > jumpDamageHeight && collisionSides.bottom) {            // Fall damage
         dealDamage((body.velY - jumpDamageHeight) * (_maxValues[ValueTypes::HEALTH] / (GRAVITY * 166))); // At 0.3 gravity the lethal velocity is 50
     }
     

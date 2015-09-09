@@ -36,10 +36,7 @@ void CEntity::init() {
     _isDead             = false;
     _toRemove           = false;
     properties          = EntityProperty::COLLIDABLE;
-    collisionTop        = false;
-    collisionBottom     = false;
-    collisionRight      = false;
-    collisionLeft       = false;
+    collisionSides = false;
     collisionLayer = CollisionLayers::LAYER0;
 }
 
@@ -200,25 +197,19 @@ bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities) {
                                 target->body.getX(), target->body.getY(), target->body.getW(), target->body.getH()))
             continue;
         
-        bool tmpCollisionBottom = false,
-             tmpCollisionTop = false,
-             tmpCollisionLeft = false,
-             tmpCollisionRight = false;
+        CollisionSides tmpCollisionSides;
         
         if(y - 1 + body.getH() <= target->body.getY())
-            tmpCollisionBottom = true;
+            tmpCollisionSides.bottom = true;
         if(y + 1 == target->body.getY() + target->body.getH())
-            tmpCollisionTop = true;
+            tmpCollisionSides.top = true;
         if(x + 1 >= target->body.getX() + target->body.getW())
-            tmpCollisionLeft = true;
+            tmpCollisionSides.left = true;
         if(x + body.getW() - 1 <= target->body.getX())
-            tmpCollisionRight = true;
+            tmpCollisionSides.right = true;
         
-        colliding = _collisionLogic(target, CollisionSides{tmpCollisionTop, tmpCollisionBottom, tmpCollisionRight, tmpCollisionLeft});
-        collisionBottom |= tmpCollisionBottom;
-        collisionTop    |= tmpCollisionTop;
-        collisionRight  |= tmpCollisionRight;
-        collisionLeft   |= tmpCollisionLeft;
+        colliding = _collisionLogic(target, tmpCollisionSides);
+        collisionSides |= tmpCollisionSides;
     }
     
     if(colliding) {
@@ -265,8 +256,7 @@ void CEntity::move(std::vector<CEntity*>* entities) {
         else 			NewY = -1;
     }
     
-    collisionLeft = collisionRight = false;
-    collisionTop = collisionBottom = false;
+    collisionSides = false;
     
     while(true) {
         if(!_collision(StopX + NewX, StopY, entities)) {
@@ -315,7 +305,7 @@ void CEntity::_doLogic() {
     
     if(body.velY < 0)
         setSpriteContainer(spriteStateTypes[SpriteStateTypes::ASCENDING]);
-    else if(!collisionBottom)
+    else if(!collisionSides.bottom)
         setSpriteContainer(spriteStateTypes[SpriteStateTypes::DESCENDING]);
 }
 

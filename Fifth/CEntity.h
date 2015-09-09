@@ -26,10 +26,26 @@ struct GridCoordinates {
 };
 
 struct CollisionSides {
-    bool collisionTop,
-         collisionBottom,
-         collisionRight,
-         collisionLeft;
+    CollisionSides() { (*this) = false; }
+    
+    bool top,
+         bottom,
+         right,
+         left;
+    
+    void operator=(bool b) {
+        top    =
+        bottom =
+        right  =
+        left   = false;
+    }
+    
+    void operator|=(CollisionSides b) {
+        top    |= b.top;
+        bottom |= b.bottom;
+        right  |= b.right;
+        left   |= b.left;
+    }
 };
 
 class CGuiText;
@@ -61,8 +77,7 @@ public:
     
     void say(std::string text, std::string fontKey, ChatBubbleType type);
     
-    bool collisionLeft, collisionRight;
-    bool collisionTop, collisionBottom;
+    CollisionSides collisionSides;
     
     std::string spriteStateTypes[SpriteStateTypes::TOTAL_SPRITESTATETYPES];
     
