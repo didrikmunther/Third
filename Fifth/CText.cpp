@@ -14,6 +14,9 @@ _text(text), _size(size), _fontKey(fontKey), _color(color) {
 }
 
 void CText::onRender(int x, int y, CWindow* window, CCamera* camera) {
+    if(!camera->collision(x, y, _size, _size))
+        return;
+    
     if(CAssetManager::getFont(_fontKey) != nullptr)
         NSurface::renderText(x - camera->offsetX(), y - camera->offsetY(), this, window);
 }

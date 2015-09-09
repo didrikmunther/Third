@@ -88,7 +88,8 @@ int CLiving::dealDamage(int amount, UtilityPosition position, CEntity* damager /
         *kevlar = 0;
     }
     int overDamage = (*health-afterKevlar <= 0?amount-(*health-afterKevlar):0);
-    int damageDone = amount - overDamage;
+    int damageDone = amount - overDamage > 0 ? amount - overDamage : 0; // Don't give me a negative int
+    
     *health -= afterKevlar;
     if(*health <= 0) {
         *health = 0;

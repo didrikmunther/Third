@@ -35,10 +35,14 @@ public:
     int offsetX();
     int offsetY();
     
+    void addCameraShake(int interval);
+    
     int cameraSway;
     
 private:
     CameraOffset _offset;
+    float _cameraShakeInterval;
+    float _cameraShake;
     
     CEntity* _target;
 };

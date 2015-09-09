@@ -23,7 +23,7 @@ CPlayer::CPlayer(Box rect, std::string spriteKey) :
 }
 
 void CPlayer::_init() {
-    jumpPower = 20.0f;
+    jumpPower = 15.0f;
     accelerationX = 4.0;
 }
 

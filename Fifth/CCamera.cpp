@@ -17,6 +17,8 @@ CCamera::CCamera() :
 
 void CCamera::onInit(CWindow* window) {
     _offset = {0, 0, window->getWidth(), window->getHeight()};
+    _cameraShakeInterval = 0.0f;
+    _cameraShake = 0.0f;
 }
 
 void CCamera::onLoop() {
@@ -26,8 +28,17 @@ void CCamera::onLoop() {
         return;
     }
     
-    _offset.x += (((_target->body.getX() + _target->body.getW() / 2) - _offset.w / 2) - _offset.x) / cameraSway;
-    _offset.y += (((_target->body.getY() + _target->body.getH() / 2) - _offset.h / 2) - _offset.y) / cameraSway;
+    _cameraShakeInterval++;
+    
+    float cameraShakeX = floor(sin(_cameraShakeInterval * _cameraShakeInterval / 2) * _cameraShake);
+    float cameraShakeY = floor(cos(_cameraShakeInterval * _cameraShakeInterval / 2) * _cameraShake);
+    
+    _offset.x += (((_target->body.getX() + _target->body.getW() / 2) - _offset.w / 2) - _offset.x + cameraShakeX) / cameraSway;
+    _offset.y += (((_target->body.getY() + _target->body.getH() / 2) - _offset.h / 2) - _offset.y + cameraShakeY) / cameraSway;
+    
+    if(_cameraShake > 0)
+        _cameraShake -= ceil(1.0 * (_cameraShake / 70));
+    
 }
 
 int CCamera::offsetX() {
@@ -36,6 +47,10 @@ int CCamera::offsetX() {
 
 int CCamera::offsetY() {
     return (int)floor(_offset.y);
+}
+
+void CCamera::addCameraShake(int interval) {
+    _cameraShake += interval;
 }
 
 void CCamera::setTarget(CEntity* target) {

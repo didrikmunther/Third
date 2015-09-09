@@ -318,8 +318,8 @@ std::vector<GridCoordinates> getGrid(CEntity* target, int gridSize) {
     
     int upperLeftCorner[2]  = {(targetX - (targetX % gridSize)) / gridSize,
         (targetY - (targetY % gridSize)) / gridSize};
-    int upperRightCorner[2] = {(targetX + targetW - ((targetX + targetW) % gridSize)) / gridSize,
-        (targetY - (targetY % gridSize)) / gridSize};
+    //int upperRightCorner[2] = {(targetX + targetW - ((targetX + targetW) % gridSize)) / gridSize,
+    //    (targetY - (targetY % gridSize)) / gridSize};
     int lowerLeftCorner[2]  = {(targetX - (targetX % gridSize)) / gridSize,
         (targetY + targetH - ((targetY + targetH) % gridSize)) / gridSize};
     int lowerRightCorner[2] = {(targetX + targetW - ((targetX + targetW) % gridSize)) / gridSize,

@@ -33,15 +33,15 @@ void CParticle::renderAdditional(CWindow* window, CCamera* camera, RenderFlags r
 void CParticle::_doLogic() {
     CEntity::_doLogic();
     
-    if(collisionBottom) {
-        body.velX /= 2;
-        if(body.velX > 0)
-            if(body.velX < 0.000001)
-                body.velX = 0;
-        if(body.velX < 0)
-            if(body.velX < -0.000001)
-                body.velX = 0;
-    }
+//    if(collisionBottom) {
+//        body.velX /= 2;
+//        if(body.velX > 0)
+//            if(body.velX < 0.000001)
+//                body.velX = 0;
+//        if(body.velX < 0)
+//            if(body.velX < -0.000001)
+//                body.velX = 0;
+//    }
     
     if(_livingTime > 0 && SDL_GetTicks() - _creationTime > _livingTime * 1000)
         _toRemove = true;

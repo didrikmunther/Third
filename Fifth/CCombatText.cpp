@@ -26,6 +26,7 @@ void CCombatText::onLoop() {
     if(SDL_GetTicks() > _creationTime + _livingTime * 1000)
         _toRemove = true;
     _y--;
+    _x += floor(cos(_y * 25) * 2); // Use _y as an incrementor here
 }
 
 void CCombatText::onRender(CWindow* window, CCamera* camera) {    

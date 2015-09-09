@@ -273,8 +273,13 @@ void CGame::_onEvent(SDL_Event* event) {
                         tempParticle->body.velX = velocityX;
                         tempParticle->body.velY = velocityY;
                         instance.entityManager.addParticle(tempParticle);
+                        instance.camera.setTarget(tempParticle);
                     }
                 }
+                    break;
+                    
+                case SDLK_7:
+                    instance.camera.addCameraShake(100);
                     break;
                     
                 case SDLK_m:
