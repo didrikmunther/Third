@@ -172,8 +172,10 @@ int CLiving::heal(int amount, UtilityPosition position, CEntity* healer /* = nul
 void CLiving::_doLogic() {
     CMovable::_doLogic();
     
-    _animatedBufferedValues[ValueTypes::HEALTH] -= _animatedBufferedValues[ValueTypes::HEALTH] > 0 ?_animatedBufferedIncrements[ValueTypes::HEALTH] : _animatedBufferedValues[ValueTypes::HEALTH] ;
-    _animatedBufferedValues[ValueTypes::KEVLAR] -= _animatedBufferedValues[ValueTypes::KEVLAR] > 0 ?_animatedBufferedIncrements[ValueTypes::KEVLAR] : _animatedBufferedValues[ValueTypes::KEVLAR] ;
+    _animatedBufferedValues[ValueTypes::KEVLAR] -= _animatedBufferedValues[ValueTypes::KEVLAR] > 0 ?_animatedBufferedIncrements[ValueTypes::KEVLAR] : _animatedBufferedValues[ValueTypes::KEVLAR]; // If negative value set to 0
+    if(_animatedBufferedValues[ValueTypes::KEVLAR] == 0) { // Don't increment hp until kevlar is animated
+        _animatedBufferedValues[ValueTypes::HEALTH] -= _animatedBufferedValues[ValueTypes::HEALTH] > 0 ?_animatedBufferedIncrements[ValueTypes::HEALTH] : _animatedBufferedValues[ValueTypes::HEALTH];
+    }
     
     if(_hasBeenDamaged || _hasBeenHealed) {
          _timer = SDL_GetTicks();
@@ -188,7 +190,7 @@ void CLiving::_doLogic() {
         _animatedBufferedValues[ValueTypes::KEVLAR] = _bufferedValues[ValueTypes::KEVLAR];
         
 //        _animatedBufferedIncrements[ValueTypes::HEALTH] = _animatedBufferedValues[ValueTypes::HEALTH] /(1000.0f / GAMEINTERVAL);
-//        _animatedBufferedIncrements[ValueTypes::KEVLAR] = _animatedBufferedValues[ValueTypes::KEVLAR] /(1000.0f / GAMEINTERVAL);
+//        _animatedBufferedIncrements[ValueTypes::KEVLAR] = _animatedBufferedValues[ValueTypes::KEVLAR] /(1000.0f / GAMEINTERVAL); // Make the animation happen in exactly one second
         
         _animatedBufferedIncrements[ValueTypes::HEALTH] =
         _animatedBufferedIncrements[ValueTypes::KEVLAR] = 10;

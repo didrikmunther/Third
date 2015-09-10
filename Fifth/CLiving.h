@@ -50,9 +50,11 @@ protected:
     
     int _values[ValueTypes::VALUETYPES_TOTAL];
     int _maxValues[ValueTypes::VALUETYPES_TOTAL];
+    
     int _bufferedValues[ValueTypes::VALUETYPES_TOTAL];
     int _animatedBufferedValues[ValueTypes::VALUETYPES_TOTAL];
     float _animatedBufferedIncrements[ValueTypes::VALUETYPES_TOTAL];
+    
     int _stats[StatTypes::STATTYPES_TOTAL];
     
 private:
