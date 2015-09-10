@@ -20,7 +20,7 @@ CLiving::CLiving(Box rect, std::string spriteKey) : CMovable(rect, spriteKey) {
 }
 
 void CLiving::_init() {
-    _delay = 2000; // Ms
+    _delay = 1000; // Ms
     _timer = SDL_GetTicks();
     std::fill(_bufferedValues, _bufferedValues+ValueTypes::VALUETYPES_TOTAL, 0);
     std::fill(_animatedBufferedValues, _animatedBufferedValues+ValueTypes::VALUETYPES_TOTAL, 0);
@@ -69,32 +69,32 @@ void CLiving::renderAdditional(CWindow* window, CCamera* camera, RenderFlags ren
                              window, 255, 0, 0);
         NSurface::renderRect(body.getX() + body.getW() / 2 - bgWidth / 2 - camera->offsetX(),  // Buffered h
                              body.getY() - bgHeight - floatOverHead - camera->offsetY(),
-                             bufferedHealthWidth,
+                             (int)ceil(bufferedHealthWidth),
                              bgHeight,
                              window, 234, 245, 166);
         NSurface::renderRect(body.getX() + body.getW() / 2 - bgWidth / 2 - camera->offsetX(),  // Animated h
                              body.getY() - bgHeight - floatOverHead - camera->offsetY(),
-                             bufferedHealthAnimated,
+                             (int)ceil(bufferedHealthAnimated),
                              bgHeight,
                              window, 235, 245, 166);
         NSurface::renderRect(body.getX() + body.getW() / 2 - bgWidth / 2 - camera->offsetX(),  // Health
                              body.getY() - bgHeight - floatOverHead - camera->offsetY(),
-                             healthWidth,
+                             (int)ceil(healthWidth),
                              bgHeight,
                              window, 0, 255, 0);
         NSurface::renderRect(body.getX() + body.getW() / 2 - bgWidth / 2 - camera->offsetX(),  // Buffered k
                              body.getY() - bgHeight - floatOverHead - camera->offsetY() + bgHeight / 2 + 1,
-                             bufferedKevlarWidth,
+                             (int)ceil(bufferedKevlarWidth),
                              bgHeight / 2,
                              window, 200, 128, 255);
         NSurface::renderRect(body.getX() + body.getW() / 2 - bgWidth / 2 - camera->offsetX(),  // Animated k
                              body.getY() - bgHeight - floatOverHead - camera->offsetY() + bgHeight / 2 + 1,
-                             bufferedKevlarAnimated,
+                             (int)ceil(bufferedKevlarAnimated),
                              bgHeight / 2,
                              window, 200, 128, 255);
         NSurface::renderRect(body.getX() + body.getW() / 2 - bgWidth / 2 - camera->offsetX(),  // Kevlar
                              body.getY() - bgHeight - floatOverHead - camera->offsetY() + bgHeight / 2 + 1,
-                             kevlarWidth,
+                             (int)ceil(kevlarWidth),
                              bgHeight / 2,
                              window, 128, 128, 128);
     }
@@ -130,7 +130,7 @@ int CLiving::dealDamage(int amount, UtilityPosition position, CEntity* damager /
     }
     
     _bufferedValues[ValueTypes::KEVLAR] += amount - afterKevlar;
-    _bufferedValues[ValueTypes::HEALTH] += afterKevlar;
+    _bufferedValues[ValueTypes::HEALTH] += _values[ValueTypes::HEALTH] > _bufferedValues[ValueTypes::HEALTH] + _values[ValueTypes::HEALTH] ? -_bufferedValues[ValueTypes::HEALTH] : afterKevlar; // If health is overlapping the buffered damage, set the buffered damage to 0 by adding it to (-)itself.
     
 
     CCombatText* text = new CCombatText(position.x, position.y, damageColor, 20, "-" + std::to_string(damageDone), "TESTFONT");
@@ -159,6 +159,8 @@ int CLiving::heal(int amount, UtilityPosition position, CEntity* healer /* = nul
     }
     int healed = amount - overHeal;
     
+    _bufferedValues[ValueTypes::HEALTH] -= healed;
+    
     CCombatText* text = new CCombatText(position.x, position.y, healingColor, 20, "+" + std::to_string(healed), "TESTFONT");
     _GuiTextVector.push_back(text);
     
@@ -186,7 +188,7 @@ void CLiving::_doLogic() {
         //_animatedBufferedIncrements[ValueTypes::HEALTH] = _animatedBufferedValues[ValueTypes::HEALTH] /(1000.0f / GAMEINTERVAL);
         //_animatedBufferedIncrements[ValueTypes::KEVLAR] = _animatedBufferedValues[ValueTypes::KEVLAR] /(1000.0f / GAMEINTERVAL);
         
-        _animatedBufferedIncrements[ValueTypes::HEALTH] = 10;
+        _animatedBufferedIncrements[ValueTypes::HEALTH] =
         _animatedBufferedIncrements[ValueTypes::KEVLAR] = 10;
         
         _bufferedValues[ValueTypes::HEALTH] =
