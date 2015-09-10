@@ -15,10 +15,10 @@
 
 class CEntity;
 
-typedef struct CameraOffset {
+struct CameraOffset {
     float   x, y;
     int     w, h;
-} CameraOffset;
+};
 
 class CCamera {
     

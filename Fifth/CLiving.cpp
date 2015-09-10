@@ -120,7 +120,7 @@ int CLiving::dealDamage(int amount, UtilityPosition position, CEntity* damager /
         afterKevlar = -*kevlar;
         *kevlar = 0;
     }
-    int overDamage = *health-afterKevlar <= 0 ? amount-(*health-afterKevlar) : 0;
+    int overDamage = *health-afterKevlar <= 0 ? amount-(*health-afterKevlar) : -1;
     int damageDone = amount - overDamage > 0 ? amount - overDamage : 0;
 
     *health -= afterKevlar;
@@ -172,21 +172,23 @@ int CLiving::heal(int amount, UtilityPosition position, CEntity* healer /* = nul
 void CLiving::_doLogic() {
     CMovable::_doLogic();
     
-    _animatedBufferedValues[ValueTypes::HEALTH] -= _animatedBufferedValues[ValueTypes::HEALTH] > 0 ?_animatedBufferedIncrements[ValueTypes::HEALTH] : 0 ;
-    _animatedBufferedValues[ValueTypes::KEVLAR] -= _animatedBufferedValues[ValueTypes::KEVLAR] > 0 ?_animatedBufferedIncrements[ValueTypes::KEVLAR] : 0 ;
+    _animatedBufferedValues[ValueTypes::HEALTH] -= _animatedBufferedValues[ValueTypes::HEALTH] > 0 ?_animatedBufferedIncrements[ValueTypes::HEALTH] : _animatedBufferedValues[ValueTypes::HEALTH] ;
+    _animatedBufferedValues[ValueTypes::KEVLAR] -= _animatedBufferedValues[ValueTypes::KEVLAR] > 0 ?_animatedBufferedIncrements[ValueTypes::KEVLAR] : _animatedBufferedValues[ValueTypes::KEVLAR] ;
     
     if(_hasBeenDamaged || _hasBeenHealed) {
          _timer = SDL_GetTicks();
     }
     
-    if(SDL_GetTicks() - _timer > _delay) {
+    if(SDL_GetTicks() - _timer > _delay
+       && _animatedBufferedValues[ValueTypes::HEALTH] == 0
+       && _animatedBufferedValues[ValueTypes::KEVLAR] == 0) {
         _timer += _delay;
         
         _animatedBufferedValues[ValueTypes::HEALTH] = _bufferedValues[ValueTypes::HEALTH];
         _animatedBufferedValues[ValueTypes::KEVLAR] = _bufferedValues[ValueTypes::KEVLAR];
         
-        //_animatedBufferedIncrements[ValueTypes::HEALTH] = _animatedBufferedValues[ValueTypes::HEALTH] /(1000.0f / GAMEINTERVAL);
-        //_animatedBufferedIncrements[ValueTypes::KEVLAR] = _animatedBufferedValues[ValueTypes::KEVLAR] /(1000.0f / GAMEINTERVAL);
+//        _animatedBufferedIncrements[ValueTypes::HEALTH] = _animatedBufferedValues[ValueTypes::HEALTH] /(1000.0f / GAMEINTERVAL);
+//        _animatedBufferedIncrements[ValueTypes::KEVLAR] = _animatedBufferedValues[ValueTypes::KEVLAR] /(1000.0f / GAMEINTERVAL);
         
         _animatedBufferedIncrements[ValueTypes::HEALTH] =
         _animatedBufferedIncrements[ValueTypes::KEVLAR] = 10;
