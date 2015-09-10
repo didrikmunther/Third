@@ -18,13 +18,10 @@
 #include <SDL2/SDL.h>
 
 class CGame {
-    
     friend class CNetwork;
     
 public:
-    
     CGame();
-    ~CGame();
     
     int onExecute();
     

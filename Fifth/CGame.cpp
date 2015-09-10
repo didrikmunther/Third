@@ -26,12 +26,9 @@
 #include <fstream>
 
 CGame::CGame() :
-_intro("Physics"),
+_intro("Third"),
 _lastTime(SDL_GetTicks()), _timer(SDL_GetTicks()), _isRunning(true),
 _ns(1000.0f / (float)GAMEINTERVAL), _delta(0), _frames(0), _updates(0), isFocused(true) {
-}
-
-CGame::~CGame() {
 }
 
 int CGame::onExecute() {
@@ -113,7 +110,7 @@ int CGame::_onInit() {
     srand((Uint16)time(nullptr));
     
     if(instance.window.onInit(_intro, SCREEN_WIDTH, SCREEN_HEIGHT)) {
-        NFile::log(LogType::ERROR, "Window.onInit failed: ", SDL_GetError());
+        NFile::log(LogType::ERROR, "Window initialization failed!");
         return -1;
     }
     instance.camera.onInit(&instance.window);
@@ -131,17 +128,6 @@ int CGame::_onInit() {
      LAYER7 // 128
     */
     
-    /*
-     Entity = 0,
-     Particle,   // 1
-     Movable,    // 2
-     UtilityParticle, // 3
-     Living,     // 4
-     Npc,        // 5
-     Player,     // 6
-     Enemy       // 7
-    */
-
     return 0;
 }
 

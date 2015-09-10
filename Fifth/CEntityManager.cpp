@@ -355,6 +355,16 @@ void CEntityManager::onLoop() {
     std::map <int, std::map <int, std::vector<CEntity*>>> _CollisionVector;
     
     {
+        for(auto &particle: _ParticleVector) {
+            particle->gridCoordinates.clear();
+            
+            particle->onLoop();
+            
+            for(auto &coords: getGrid(particle, _gridSize)) {
+                particle->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
+            }
+        }
+        
         for(auto &entity: _EntityVector) {
             auto target = entity.second;
             target->gridCoordinates.clear();
@@ -364,16 +374,6 @@ void CEntityManager::onLoop() {
             for(auto &coords: getGrid(target, _gridSize)) {
                 _CollisionVector[coords.y][coords.x].push_back(target);
                 target->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
-            }
-        }
-        
-        for(auto &particle: _ParticleVector) {
-            particle->gridCoordinates.clear();
-            
-            particle->onLoop();
-            
-            for(auto &coords: getGrid(particle, _gridSize)) {
-                particle->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
             }
         }
         

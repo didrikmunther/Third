@@ -43,8 +43,6 @@ public:
     
     int dealDamage(int amount, UtilityPosition position = {0, 0}, CEntity* damager = nullptr);
     int heal(int amount, UtilityPosition position = {0, 0}, CEntity* healer = nullptr);
-
-    void cLivingRender(CWindow *window, CCamera *camera);
     
 protected:
     virtual void _doLogic();
@@ -52,12 +50,19 @@ protected:
     
     int _values[ValueTypes::VALUETYPES_TOTAL];
     int _maxValues[ValueTypes::VALUETYPES_TOTAL];
+    int _bufferedValues[ValueTypes::VALUETYPES_TOTAL];
+    int _animatedBufferedValues[ValueTypes::VALUETYPES_TOTAL];
+    float _animatedBufferedIncrements[ValueTypes::VALUETYPES_TOTAL];
     int _stats[StatTypes::STATTYPES_TOTAL];
     
 private:
-    
     void _init();
     
+    int _delay;
+    int _timer;
+
+    bool _hasBeenDamaged;
+    bool _hasBeenHealed;
 };
 
 #endif /* defined(__Fifth__CLiving__) */
