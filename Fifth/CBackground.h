@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <string>
 
+
 struct BackgroundOffset {
     int x, y;
 };

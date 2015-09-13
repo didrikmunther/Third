@@ -6,13 +6,19 @@
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#include <iostream>
+#include <sstream>
+
 #include "CEntityManager.h"
 #include "CCamera.h"
 #include "CSpriteContainer.h"
 #include "NFile.h"
 #include "NSurface.h"
-#include <sstream>
+#include "CEntity.h"
+#include "CParticle.h"
+#include "CSprite.h"
+#include "CGuiText.h"
+#include "CBackground.h"
+
 
 CEntityManager::CEntityManager() : entityID(0), renderFlags(RenderFlags::CLEAR), _gridSize(32) {
 }

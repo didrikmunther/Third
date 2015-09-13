@@ -11,9 +11,11 @@
 #define __Third__CSprite__
 
 #include <stdio.h>
-#include "CSpriteSheet.h"
-#include "CRenderable.h"
+
 #include "Define.h"
+
+
+class CSpriteSheet;
 
 class CSprite {
     

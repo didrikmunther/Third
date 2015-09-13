@@ -10,9 +10,12 @@
 #define __Third__NSurface__
 
 #include <stdio.h>
-#include "CSprite.h"
-#include "CText.h"
-#include "CWindow.h"
+#include <SDL2/SDL.h>
+
+
+class CWindow;
+class CText;
+class CSprite;
 
 namespace NSurface {
 

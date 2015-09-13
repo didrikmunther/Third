@@ -10,11 +10,12 @@
 #define __Third__CAssetManager__
 
 #include <stdio.h>
-#include <SDL2_ttf/SDL_ttf.h>
-#include "CSpriteSheet.h"
-#include "CSprite.h"
 #include <map>
 #include <string>
+#include <SDL2_ttf/SDL_ttf.h>
+
+#include "CSprite.h"
+
 
 class CSpriteContainer;
 

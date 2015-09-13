@@ -6,8 +6,10 @@
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#include "CSpriteSheet.h"
 #include <SDL2_image/SDL_image.h>
+
+#include "CSpriteSheet.h"
+
 
 CSpriteSheet::CSpriteSheet() {
 }

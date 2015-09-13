@@ -9,6 +9,7 @@
 #include "CGuiText.h"
 #include "NSurface.h"
 
+
 CGuiText::CGuiText(int x, int y, std::string text, std::string fontKey) :
 _x(x), _y(y), _text(text), _fontKey(fontKey), _toRemove(false), _creationTime(SDL_GetTicks()) {
 }

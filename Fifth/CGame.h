@@ -12,10 +12,12 @@
 #include <stdio.h>
 #include <sstream>
 #include <string>
+#include <SDL2/SDL.h>
+
 #include "CInstance.h"
 #include "CChatBubble.h"
 #include "CNetwork.h"
-#include <SDL2/SDL.h>
+
 
 class CGame {
     friend class CNetwork;

@@ -10,10 +10,10 @@
 #define __Third__CCamera__
 
 #include <stdio.h>
-#include "CEntity.h"
-#include "CWindow.h"
+
 
 class CEntity;
+class CWindow;
 
 struct CameraOffset {
     float   x, y;

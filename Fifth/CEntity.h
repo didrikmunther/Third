@@ -13,13 +13,51 @@
 #include <memory>
 #include <map>
 #include <vector>
-#include "CBody.h"
-#include "CSprite.h"
-#include "CAssetManager.h"
+
 #include "CRenderable.h"
-#include "CWindow.h"
 #include "CCollidable.h"
-#include "CChatBubble.h"
+
+
+class CSpriteContainer;
+class CGuiText;
+class CCamera;
+class CEntityManager;
+class CWindow;
+
+enum class ChatBubbleType;
+
+enum CollisionLayers {
+    LAYER0      = 1 << 0,   // 1
+    LAYER1      = 1 << 1,   // 2
+    LAYER2      = 1 << 2,   // 4
+    LAYER3      = 1 << 3,   // 8
+    LAYER4      = 1 << 4,   // 16
+    LAYER5      = 1 << 5,   // 32
+    LAYER6      = 1 << 6,   // 64
+    LAYER7      = 1 << 7,   // 128
+};
+
+enum EntityTypes { // temp
+    Entity = 0,
+    Particle,   // 1
+    Movable,    // 2
+    UtilityParticle, // 3
+    Living,     // 4
+    Npc,        // 5
+    Player,     // 6
+    Enemy       // 7
+};
+
+enum SpriteStateTypes {
+    IDLE = 0,
+    ASCENDING,
+    DESCENDING,
+    WALKING,
+    SNEAKING,
+    RUNNING,
+    DUCKING,
+    TOTAL_SPRITESTATETYPES
+};
 
 struct GridCoordinates {
     int x, y;
@@ -37,7 +75,7 @@ struct CollisionSides {
         top    =
         bottom =
         right  =
-        left   = false;
+        left   = b;
     }
     
     void operator|=(CollisionSides b) {
@@ -47,10 +85,6 @@ struct CollisionSides {
         left   |= b.left;
     }
 };
-
-class CGuiText;
-class CCamera;
-class CEntityManager;
 
 class CEntity : public CRenderable, public CCollidable {
     

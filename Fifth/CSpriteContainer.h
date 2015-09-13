@@ -10,9 +10,11 @@
 #define __Fifth__CSpriteContainer__
 
 #include <stdio.h>
-#include "CSprite.h"
+
 #include "CAssetManager.h"
-#include <iostream>
+
+
+class CSprite;
 
 class CSpriteContainer {
     

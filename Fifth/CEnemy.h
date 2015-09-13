@@ -10,8 +10,9 @@
 #define __Fifth__CEnemy__
 
 #include <stdio.h>
+
 #include "CNpc.h"
-#include "CEntity.h"
+
 
 class CEnemy : public CNpc {
     

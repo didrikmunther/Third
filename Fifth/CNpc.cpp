@@ -8,6 +8,7 @@
 
 #include "CNpc.h"
 
+
 CNpc::CNpc(Box rect, SDL_Color color) :
 CLiving(rect, color) {
     _init();

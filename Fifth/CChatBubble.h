@@ -10,14 +10,23 @@
 #define __Third__CChatBubble__
 
 #include <stdio.h>
-#include "CGuiText.h"
-#include "CText.h"
 #include <string>
 #include <vector>
+
+#include "CGuiText.h"
+#include "CText.h"
+
 
 class CCamera;
 class CEntity;
 class CText;
+
+enum class ChatBubbleType { // CChatBubble
+    SAY = 0,
+    YELL = 1,
+    WHISPER = 2,
+    INSTANT_TALK = 3
+};
 
 class CChatBubble : public CGuiText {
 

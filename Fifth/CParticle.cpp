@@ -7,8 +7,7 @@
 //
 
 #include "CParticle.h"
-#include "Define.h"
-#include "NFile.h"
+
 
 CParticle::CParticle(Box rect, SDL_Color color, int livingTime /* = 5 */) :
 CEntity(rect, color), _creationTime(SDL_GetTicks()), _livingTime(livingTime) {

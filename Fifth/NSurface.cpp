@@ -7,9 +7,12 @@
 //
 
 #include "NSurface.h"
-#include "Define.h"
 #include "CSpriteContainer.h"
-#include <iostream>
+#include "CSpriteSheet.h"
+#include "CSprite.h"
+#include "CText.h"
+#include "CWindow.h"
+
 
 void NSurface::renderRect(int x, int y, int w, int h, CWindow* window, int r, int g, int b, int a /* = 255 */) {
     SDL_Rect rect;

@@ -10,7 +10,9 @@
 #define __Fifth__CUtilityParticle__
 
 #include <stdio.h>
+
 #include "CParticle.h"
+
 
 enum BasicUtilities {
     DAMAGE = 0,

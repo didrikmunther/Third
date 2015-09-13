@@ -7,10 +7,10 @@
 //
 
 #include "CBackground.h"
-#include "CWindow.h"
 #include "CCamera.h"
 #include "CSpriteContainer.h"
 #include "NSurface.h"
+
 
 CBackground::CBackground(std::string spriteContainerKey, float parallax, BackgroundOffset backgroundOffset) :
     _spriteContainerKey(spriteContainerKey), _parallax(parallax), _backgroundOffset(backgroundOffset) {  }

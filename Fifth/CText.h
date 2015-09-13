@@ -10,10 +10,16 @@
 #define __Third__CText__
 
 #include <stdio.h>
-#include "CCamera.h"
 #include <string>
-#include "CAssetManager.h"
+
+#include <SDL2/SDL.h>
+#include <SDL2_ttf/SDL_ttf.h>
+
 #include "CRenderable.h"
+
+
+class CCamera;
+class CWindow;
 
 class CText : public CRenderable {
     

@@ -10,7 +10,9 @@
 #define __Fifth__CCollidable__
 
 #include <stdio.h>
+
 #include "CBody.h"
+
 
 enum EntityProperty {
     COLLIDABLE  = 1 << 0,

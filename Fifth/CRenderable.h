@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <string>
 
+
 class CRenderable {
 
 public:

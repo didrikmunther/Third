@@ -6,8 +6,11 @@
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
+#include <SDL2/SDL.h>
+
 #include "NMouse.h"
-#include <iostream>
+#include "CCamera.h"
+
 
 int NMouse::absoluteMouseX() {
     int x, y;

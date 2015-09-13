@@ -10,9 +10,9 @@
 #define __Fifth__CLiving__
 
 #include <stdio.h>
-#include "CWindow.h"
-#include "CCamera.h"
+
 #include "CMovable.h"
+
 
 enum ValueTypes {
     HEALTH = 0,

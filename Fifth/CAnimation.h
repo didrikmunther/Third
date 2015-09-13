@@ -14,6 +14,7 @@
 
 #include "CSprite.h"
 
+
 class CAnimation : public CSprite {
 
 public:

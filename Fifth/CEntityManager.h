@@ -12,17 +12,19 @@
 #include <stdio.h>
 #include <memory>
 #include <vector>
-#include "CEntity.h"
-#include "CParticle.h"
-#include "CParticleEmitter.h"
-#include "CSprite.h"
 #include <map>
 #include <string>
-#include "CAssetManager.h"
-#include "CGuiText.h"
-#include "CBackground.h"
 
+#include "Define.h"
+
+
+class CEntity;
+class CParticle;
+class CSprite;
+class CGuiText;
+class CBackground;
 class CCamera;
+class CWindow;
 
 class CEntityManager {
     

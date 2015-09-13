@@ -10,8 +10,12 @@
 #define __Fifth__CCombatText__
 
 #include <stdio.h>
+#include <SDL2/SDL.h>
+
 #include "CGuiText.h"
-#include "CText.h"
+
+
+class CText;
 
 class CCombatText : public CGuiText {
     

@@ -8,6 +8,7 @@
 
 #include "CInstance.h"
 
+
 CInstance::CInstance() {
 }
 

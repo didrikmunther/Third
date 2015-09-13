@@ -10,9 +10,9 @@
 #define __Third__CPlayer__
 
 #include <stdio.h>
+
 #include "CLiving.h"
-#include "CSprite.h"
-#include "CAssetManager.h"
+
 
 class CPlayer : public CLiving {
     

@@ -10,12 +10,13 @@
 #define __Fifth__CInstance__
 
 #include <stdio.h>
+
 #include "CEntityManager.h"
 #include "CWindow.h"
 #include "CCamera.h"
-#include "CPlayer.h"
-#include "CCamera.h"
-#include "CEnemy.h"
+
+
+class CPlayer;
 
 class CInstance {
     

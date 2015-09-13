@@ -7,8 +7,8 @@
 //
 
 #include "CWindow.h"
-#include <iostream>
 #include "NFile.h"
+
 
 CWindow::CWindow() :
     _screenWidth(0), _screenHeight(0) {

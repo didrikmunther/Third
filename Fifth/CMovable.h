@@ -10,8 +10,10 @@
 #define __Fifth__CMovable__
 
 #include <stdio.h>
-#include "CEntity.h"
 #include <map>
+
+#include "CEntity.h"
+
 
 enum MovementState {
     WALKING_MOVEMENT = 0,

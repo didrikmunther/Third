@@ -10,14 +10,15 @@
 #define __Third__NFile__
 
 #include <stdio.h>
-#include "CInstance.h"
+#include <fstream>
+#include <iostream>
 
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 
-#include <fstream>
-#include <iostream>
+#include "CInstance.h"
+
 
 struct EntityParameterHolder {
     Box box;

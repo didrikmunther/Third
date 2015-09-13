@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 
+
 #ifndef __Third__Define__
 #define __Third__Define__
 
@@ -35,46 +36,6 @@ struct Box {
 
 struct Area {
     int w, h;
-};
-
-enum CollisionLayers { // CEntity
-    LAYER0      = 1 << 0,   // 1
-    LAYER1      = 1 << 1,   // 2
-    LAYER2      = 1 << 2,   // 4
-    LAYER3      = 1 << 3,   // 8
-    LAYER4      = 1 << 4,   // 16
-    LAYER5      = 1 << 5,   // 32
-    LAYER6      = 1 << 6,   // 64
-    LAYER7      = 1 << 7,   // 128
-};
-
-enum EntityTypes { // CEntity
-    Entity = 0,
-    Particle,   // 1
-    Movable,    // 2
-    UtilityParticle, // 3
-    Living,     // 4
-    Npc,        // 5
-    Player,     // 6
-    Enemy       // 7
-};
-
-enum SpriteStateTypes { // CEntity
-    IDLE = 0,
-    ASCENDING,
-    DESCENDING,
-    WALKING,
-    SNEAKING,
-    RUNNING,
-    DUCKING,
-    TOTAL_SPRITESTATETYPES
-};
-
-enum ChatBubbleType { // CChatBubble
-    SAY = 0,
-    YELL = 1,
-    WHISPER = 2,
-    INSTANT_TALK = 3
 };
 
 enum keyMap {

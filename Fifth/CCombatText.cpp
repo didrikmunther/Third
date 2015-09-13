@@ -8,6 +8,8 @@
 
 #include "CCombatText.h"
 #include "NSurface.h"
+#include "CText.h"
+
 
 CCombatText::CCombatText(int x, int y, SDL_Color color, int size, std::string text, std::string fontKey) : CGuiText(x, y, text, fontKey) {
     

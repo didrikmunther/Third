@@ -6,10 +6,12 @@
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#include "CCamera.h"
-#include <iostream>
-#include "Define.h"
 #include <math.h>
+
+#include "CCamera.h"
+#include "CWindow.h"
+#include "CEntity.h"
+
 
 CCamera::CCamera() :
     _offset{0, 0, 0, 0}, cameraSway(10) {

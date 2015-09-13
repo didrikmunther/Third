@@ -6,10 +6,13 @@
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
+#include <SDL2/SDL.h>
+
 #include "CLiving.h"
 #include "NSurface.h"
 #include "CCombatText.h"
-#include <SDL2/SDL.h>
+#include "CCamera.h"
+
 
 CLiving::CLiving(Box rect, SDL_Color color) : CMovable(rect, color) {
     _init();

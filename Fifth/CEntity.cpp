@@ -6,15 +6,18 @@
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
+#include <math.h>
+
 #include "CEntity.h"
 #include "NSurface.h"
-#include <iostream>
 #include "CCamera.h"
 #include "Define.h"
 #include "CEntityManager.h"
 #include "CLiving.h"
 #include "CSpriteContainer.h"
-#include <math.h>
+#include "CGuiText.h"
+#include "CChatBubble.h"
+
 
 CEntity::CEntity(Box rect, SDL_Color color) :
 spriteContainerKey(""), CCollidable(rect), color(color) {

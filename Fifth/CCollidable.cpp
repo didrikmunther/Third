@@ -7,7 +7,7 @@
 //
 
 #include "CCollidable.h"
-#include "CBody.h"
+
 
 CCollidable::CCollidable(Box rect) : body(rect) {
     

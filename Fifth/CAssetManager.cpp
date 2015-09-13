@@ -7,10 +7,10 @@
 //
 
 #include "CAssetManager.h"
-#include <iostream>
 #include "NFile.h"
-#include "ResourcePath.hpp"
 #include "CSpriteContainer.h"
+#include "CSpriteSheet.h"
+
 
 std::map<std::string, CSprite*> CAssetManager::_SpriteVector;
 std::map<std::string, CSpriteContainer*> CAssetManager::_SpriteContainerVector;

@@ -6,12 +6,17 @@
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#include "NFile.h"
-#include "Define.h"
 #include <iostream>
 #include <fstream>
-#include "CAssetManager.h"
 #include <sstream>
+
+#include "NFile.h"
+#include "Define.h"
+#include "CAssetManager.h"
+
+#include "CPlayer.h"
+#include "CEnemy.h"
+
 
 rapidjson::Document NFile::loadJsonFile(std::string fileName) {
     

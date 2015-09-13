@@ -11,8 +11,9 @@
 
 #include <stdio.h>
 #include <string>
-#include "CWindow.h"
 
+
+class CWindow;
 class CCamera;
 
 class CGuiText {

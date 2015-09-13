@@ -9,7 +9,6 @@
 #include "CUtilityParticle.h"
 #include "CLiving.h"
 
-#include <iostream>
 
 CUtilityParticle::CUtilityParticle(Box rect, SDL_Color color, CEntity* owner, BasicUtilities utility) :
 CParticle(rect, color), _owner(owner), _basicUtility(utility) {

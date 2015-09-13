@@ -8,7 +8,6 @@
 
 #include "CSprite.h"
 
+
 CSprite::CSprite(CSpriteSheet* spriteSheet, Box rect) :
-_spriteSheet(spriteSheet), _source({rect.x, rect.y, rect.w, rect.h})
-{
-}
+_spriteSheet(spriteSheet), _source({rect.x, rect.y, rect.w, rect.h}) {  }

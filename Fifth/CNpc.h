@@ -10,7 +10,9 @@
 #define __Fifth__CNpc__
 
 #include <stdio.h>
+
 #include "CLiving.h"
+
 
 class CNpc : public CLiving {
     

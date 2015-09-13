@@ -6,11 +6,14 @@
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#include "CChatBubble.h"
 #include <sstream>
+
+#include "CChatBubble.h"
+#include "CAssetManager.h"
+#include "CEntity.h"
 #include "NSurface.h"
-#include "Define.h"
-#include <iostream>
+#include "CCamera.h"
+
 
 CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey, ChatBubbleType type) :
     _target(target), _type(type), CGuiText(0, 0, text, fontKey), _widestLine(0), _totalHeight(0),

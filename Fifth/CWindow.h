@@ -13,6 +13,7 @@
 #include <string>
 #include <SDL2/SDL.h>
 
+
 class CWindow {
     
 public:

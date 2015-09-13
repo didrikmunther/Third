@@ -7,9 +7,7 @@
 //
 
 #include "CPlayer.h"
-#include "CEnemy.h"
-#include "Define.h"
-#include <iostream>
+
 
 CPlayer::CPlayer(Box rect, SDL_Color color) :
     CLiving(rect, color) {

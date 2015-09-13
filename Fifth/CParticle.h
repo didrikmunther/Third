@@ -10,7 +10,9 @@
 #define __Third__CParticle__
 
 #include <stdio.h>
+
 #include "CEntity.h"
+
 
 class CParticle : public CEntity {
     

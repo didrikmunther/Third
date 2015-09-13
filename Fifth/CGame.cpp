@@ -6,24 +6,30 @@
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#include "CGame.h"
-#include <iostream>
+#include <fstream>
+#include <cmath>
+
 #include <SDL2_image/SDL_image.h>
 #include <SDL2_ttf/SDL_ttf.h>
+
+#include "CGame.h"
 #include "NSurface.h"
 #include "NFile.h"
-#include <cmath>
 #include "Define.h"
 #include "NMouse.h"
 #include "CText.h"
+#include "CUtilityParticle.h"
+#include "CSpriteContainer.h"
+#include "CBackground.h"
+
+#include "CEnemy.h"
+#include "CPlayer.h"
+
 #ifdef __APPLE__
 #include "CoreFoundation/CoreFoundation.h"
 #include "ResourcePath.hpp"
 #endif
-#include "CEnemy.h"
-#include "CUtilityParticle.h"
-#include "CSpriteContainer.h"
-#include <fstream>
+
 
 CGame::CGame() :
 _intro("Third"),
