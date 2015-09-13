@@ -37,7 +37,8 @@
 		{"name":"playerPinkRunning", 	"spriteKey":"playerPinkRunning",		"area":[95, 125]},
 		{"name":"player", 				"spriteKey":"player"},
 		{"name":"enemyJumping", 		"spriteKey":"enemyJumping"},
-		{"name":"yrl", 					"spriteKey":"yrl"}
+		{"name":"yrl", 					"spriteKey":"yrl"},
+		{"name":"bg", 					"spriteKey":"background",               "area":[256, 128]}
 	],
 
 	"entities": [

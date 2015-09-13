@@ -10,18 +10,33 @@
 #define __Fifth__CBackground__
 
 #include <stdio.h>
-#include "CSprite.h"
+#include <string>
+
+struct BackgroundOffset {
+    int x, y;
+};
+
+class CWindow;
+class CSpriteContainer;
+class CCamera;
 
 class CBackground {
     
 public:
-    CBackground();
+    CBackground(std::string spriteContainerKey, float parallax, BackgroundOffset backgroundOffset = {0, 0});
     
-    int getParallax();
-    void setParallax(int parallax);
+    void onRender(CWindow* window, CCamera* camera);
+    
+    float getParallax();
+    void setParallax(float parallax);
+    
+    std::string getSpriteContainerKey();
+    void setSpriteContainerKey(std::string spriteContainerKey);
     
 private:
-    int parallax;
+    float _parallax;
+    std::string _spriteContainerKey;
+    BackgroundOffset _backgroundOffset;
     
 };
 

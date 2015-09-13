@@ -20,6 +20,7 @@
 #include <string>
 #include "CAssetManager.h"
 #include "CGuiText.h"
+#include "CBackground.h"
 
 class CCamera;
 
@@ -36,8 +37,8 @@ public:
     std::string addEntity(CEntity* entity, std::string name = "");
     void addParticle(Box rect, SDL_Color color, int livingTime);
     void addParticle(CParticle* particle);
-//    void addParticleEmitter(SDL_Rect rect, SDL_Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, ParticleVelocity velocity);
     void addGuiText(CGuiText* guiText);
+    void addBackground(std::string name, CBackground* background);
     
     void onRender(CWindow* window, CCamera* camera);
     void onLoop();
@@ -61,9 +62,10 @@ public:
 private:
     std::map<std::string, CEntity*> _EntityVector;
     std::vector<CParticle*> _ParticleVector;
-//    std::vector<CParticleEmitter*> _ParticleEmitterVector;
     std::vector<CGuiText*> _GuiTextVector;
     std::map<std::string, CEntity*> _DeadEntitiesVector;
+    
+    std::map<std::string, CBackground*> _BackgroundVector;
     
     int _gridSize;
     

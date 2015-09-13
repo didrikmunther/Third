@@ -98,6 +98,10 @@ void CEntityManager::addGuiText(CGuiText* guiText) {
     _GuiTextVector.push_back(guiText);
 }
 
+void CEntityManager::addBackground(std::string name, CBackground* background) {
+    _BackgroundVector[name] = background;
+}
+
 void CEntityManager::addRenderFlag(RenderFlags renderFlag) {
     renderFlags |= (int)renderFlag;
 }
@@ -109,6 +113,10 @@ void CEntityManager::toggleRenderFlag(RenderFlags renderFlag) {
 }
 
 void CEntityManager::onRender(CWindow* window, CCamera* camera) {
+    
+    for(auto &i: _BackgroundVector) {
+        i.second->onRender(window, camera);
+    }
     
     if(renderFlags & RenderFlags::COLLISION_GRID) {
         for(int y = - 2; y < (window->getHeight() - (window->getHeight() % _gridSize)) / _gridSize + 2; y++) {
@@ -517,7 +525,6 @@ void CEntityManager::onCleanup() {
     entityID = 0;
     
     entityCleanup();
-//    particleEmitterCleanup();
     particleCleanup();
 }
 
@@ -539,16 +546,16 @@ void CEntityManager::entityCleanup() {
         }
         _DeadEntitiesVector.clear();
     }
+    
+    {
+        auto i = _BackgroundVector.begin();
+        while(i != _BackgroundVector.end()) {
+            delete i->second;
+            _BackgroundVector.erase(i++->first);
+        }
+        _BackgroundVector.clear();
+    }
 }
-
-//void CEntityManager::particleEmitterCleanup() {
-//    auto i = _ParticleEmitterVector.begin();
-//    while(i != _ParticleEmitterVector.end()) {
-//        delete *i;
-//        i = _ParticleEmitterVector.erase(i);
-//    }
-//    _ParticleEmitterVector.clear();
-//}
 
 void CEntityManager::particleCleanup() {
     auto i = _ParticleVector.begin();

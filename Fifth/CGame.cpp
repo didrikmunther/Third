@@ -28,7 +28,7 @@
 CGame::CGame() :
 _intro("Third"),
 _lastTime(SDL_GetTicks()), _timer(SDL_GetTicks()), _isRunning(true),
-_ns(1000.0f / (float)GAMEINTERVAL), _delta(0), _frames(0), _updates(0), isFocused(true) {
+_ns(1000.0f / GAME_INTERVAL), _delta(0), _frames(0), _updates(0), isFocused(true) {
 }
 
 int CGame::onExecute() {
@@ -116,6 +116,9 @@ int CGame::_onInit() {
     instance.camera.onInit(&instance.window);
     
     NFile::loadMap("resources/map/testMap1.map", &instance);
+    
+    CBackground* background = new CBackground("bg", 0.1, BackgroundOffset{-200, -300});
+    instance.entityManager.addBackground("main", background);
     
     /*
      LAYER0 // 1
