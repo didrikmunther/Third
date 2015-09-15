@@ -20,9 +20,13 @@ void CBackground::onRender(CWindow* window, CCamera* camera) {
     
     if(!spriteContainer) return;
     
-    float scale = 9.0f;
+    int amountX = 2;//ceil(spriteContainer->spriteArea.w / camera->getWidth()) + 1;
     
-    NSurface::renderSprite(-camera->offsetX() * _parallax + _backgroundOffset.x, -camera->offsetY() * _parallax + _backgroundOffset.y, spriteContainer->spriteArea.w * scale, spriteContainer->spriteArea.h * scale, spriteContainer->getSprite(), window, SDL_RendererFlip::SDL_FLIP_NONE);
+    for(int i = -1; i < amountX; i++) {
+        NSurface::renderSprite(i * _backgroundOffset.scale * spriteContainer->spriteArea.w + -camera->offsetX() * _parallax, -camera->offsetY() * _parallax + _backgroundOffset.y, spriteContainer->spriteArea.w * _backgroundOffset.scale, spriteContainer->spriteArea.h * _backgroundOffset.scale, spriteContainer->getSprite(), window, SDL_RendererFlip::SDL_FLIP_NONE);
+    }
+    
+//    NSurface::renderSprite(-camera->offsetX() * _parallax + _backgroundOffset.x, -camera->offsetY() * _parallax + _backgroundOffset.y, spriteContainer->spriteArea.w * scale, spriteContainer->spriteArea.h * scale, spriteContainer->getSprite(), window, SDL_RendererFlip::SDL_FLIP_NONE);
 }
 
 float CBackground::getParallax() {

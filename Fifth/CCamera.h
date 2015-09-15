@@ -35,6 +35,9 @@ public:
     int offsetX();
     int offsetY();
     
+    int getWidth() { return _offset.w; }
+    int getHeight() { return _offset.h; }
+    
     void addCameraShake(int interval);
     
     int cameraSway;

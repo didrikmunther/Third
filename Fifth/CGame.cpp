@@ -123,7 +123,7 @@ int CGame::_onInit() {
     
     NFile::loadMap("resources/map/testMap1.map", &instance);
     
-    CBackground* background = new CBackground("bg", 0.1, BackgroundOffset{-200, -300});
+    CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
     instance.entityManager.addBackground("main", background);
     
     /*
@@ -268,7 +268,6 @@ void CGame::_onEvent(SDL_Event* event) {
                         tempParticle->body.velX = velocityX;
                         tempParticle->body.velY = velocityY;
                         instance.entityManager.addParticle(tempParticle);
-                        instance.camera.setTarget(tempParticle);
                     }
                 }
                     break;

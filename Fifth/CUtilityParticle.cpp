@@ -32,7 +32,7 @@ void CUtilityParticle::renderAdditional(CWindow* window, CCamera* camera, Render
 bool CUtilityParticle::_collisionLogic(CEntity* target, CollisionSides collisionSides) {
     bool parentCollision = CParticle::_collisionLogic(target, collisionSides);
     
-    if(target == _owner)
+    if(target == _owner && _basicUtility != BasicUtilities::HEAL)
         return false;
     
     if(toRemove())

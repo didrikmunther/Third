@@ -16,12 +16,14 @@
 		{"name":"YRLSPRITESHEET", 		"path":"resources/gfx/yrl.png"},
 		{"name":"MAIN2", 				"path":"resources/gfx/gfx2.png"},
 		{"name":"PlayerSpriteSheet", 	"path":"resources/gfx/playerSpritesheet.png"},
-		{"name":"BG", 					"path":"resources/gfx/bg.png"}
+		{"name":"BG", 					"path":"resources/gfx/bg.png"},
+        {"name":"BG2", 					"path":"resources/gfx/bg2.png"}
 	],
 
 	"sprites": [
 		{"name":"bush", 				"spriteSheetKey":"MAIN", 				"offsets":[160, 91, 30, 28]},
 		{"name":"tree", 				"spriteSheetKey":"MAIN", 				"offsets":[7, 64, 23, 59]},
+        {"name":"background2", 			"spriteSheetKey":"BG2", 				"offsets":[0, 0, 1080, 720]},
 		{"name":"playerPink", 			"spriteSheetKey":"PlayerSpriteSheet", 	"offsets":[0, 0, 16, 28]},
 		{"name":"playerPinkRunning", 	"spriteSheetKey":"PlayerSpriteSheet", 	"offsets":[32, 0, 19, 25]},
 		{"name":"yrl", 					"spriteSheetKey":"YRLSPRITESHEET", 		"offsets":[0, 0, 32, 32]},
@@ -38,7 +40,8 @@
 		{"name":"player", 				"spriteKey":"player"},
 		{"name":"enemyJumping", 		"spriteKey":"enemyJumping"},
 		{"name":"yrl", 					"spriteKey":"yrl"},
-		{"name":"bg", 					"spriteKey":"background",               "area":[256, 128]}
+		{"name":"bg", 					"spriteKey":"background",               "area":[256, 128]},
+        {"name":"bg2", 					"spriteKey":"background2",              "area":[180, 120]}
 	],
 
 	"entities": [

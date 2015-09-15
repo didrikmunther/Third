@@ -15,6 +15,9 @@
 
 struct BackgroundOffset {
     int x, y;
+    float scale;
+    BackgroundOffset(int x, int y, float scale = 1)
+    : x(x), y(y), scale(scale) {  }
 };
 
 class CWindow;

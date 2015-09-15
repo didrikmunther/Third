@@ -123,7 +123,7 @@ int CLiving::dealDamage(int amount, UtilityPosition position, CEntity* damager /
         afterKevlar = -*kevlar;
         *kevlar = 0;
     }
-    int overDamage = *health-afterKevlar <= 0 ? amount-(*health-afterKevlar) : -1;
+    int overDamage = *health - afterKevlar <= 0 ? amount - (*health - afterKevlar) : -1;
     int damageDone = amount - overDamage > 0 ? amount - overDamage : 0;
 
     *health -= afterKevlar;
@@ -134,7 +134,6 @@ int CLiving::dealDamage(int amount, UtilityPosition position, CEntity* damager /
     
     _bufferedValues[ValueTypes::KEVLAR] += amount - afterKevlar;
     _bufferedValues[ValueTypes::HEALTH] += _values[ValueTypes::HEALTH] > _bufferedValues[ValueTypes::HEALTH] + _values[ValueTypes::HEALTH] ? -_bufferedValues[ValueTypes::HEALTH] : afterKevlar; // If health is overlapping the buffered damage, set the buffered damage to 0 by adding it to (-)itself.
-    
 
     CCombatText* text = new CCombatText(position.x, position.y, damageColor, 20, "-" + std::to_string(damageDone), "TESTFONT");
     _GuiTextVector.push_back(text);
