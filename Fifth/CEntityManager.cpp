@@ -421,8 +421,6 @@ void CEntityManager::onLoop() {
                 }
             }
             
-            //target->say(toSay.str(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
-            
             target->afterLogicLoop(&collisionMap);
             
             if(target->isDead() && target->hasSprite()) {
@@ -465,18 +463,6 @@ void CEntityManager::onLoop() {
         }
     }
     
-//    {
-//        auto i = _ParticleEmitterVector.begin();
-//        while(i != _ParticleEmitterVector.end()) {
-//            (*i)->onLoop(this);
-//            if((*i)->toRemove) {
-//                delete *i;
-//                _ParticleEmitterVector.erase(std::remove(_ParticleEmitterVector.begin(), _ParticleEmitterVector.end(), (*i)), _ParticleEmitterVector.end());
-//            } else
-//                ++i;
-//        }
-//    }
-    
     {
         auto i = _ParticleVector.begin();
         while(i != _ParticleVector.end()) {
@@ -493,13 +479,6 @@ void CEntityManager::onLoop() {
                     toSay << getNameOfEntity(entity) << ", ";
                 }
             }
-            
-            //target->say(toSay.str(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
-            
-//            std::vector<CEntity*> collisionMap;
-//            for(auto &entity: _EntityVector) {
-//                collisionMap.push_back(entity.second);
-//            }
             
             target->afterLogicLoop(&collisionMap);
             
@@ -521,6 +500,13 @@ void CEntityManager::onLoop() {
             } else
                 ++i;
         }
+    }
+    
+    for(auto &i: _EntityVector) { // Add delayed particles of all entities, like bullets
+        for(auto &particle: i.second->particlesToAdd) {
+            addParticle(particle);
+        }
+        i.second->particlesToAdd.clear();
     }
 }
 

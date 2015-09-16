@@ -16,15 +16,17 @@
 
 #include "CRenderable.h"
 #include "CCollidable.h"
+#include "CChatBubble.h"
 
 
+class CParticle;
 class CSpriteContainer;
 class CGuiText;
 class CCamera;
 class CEntityManager;
 class CWindow;
 
-enum class ChatBubbleType;
+enum class BasicUtilities;
 
 enum CollisionLayers {
     LAYER0      = 1 << 0,   // 1
@@ -127,6 +129,9 @@ public:
     bool hasMoved() { return _hasMoved; };
     
     std::vector<GridCoordinates> gridCoordinates;
+    
+    void shoot(float angle, BasicUtilities basicUtility);
+    std::vector<CParticle*> particlesToAdd;
     
 protected:
     std::vector<CGuiText*> _GuiTextVector;

@@ -41,6 +41,11 @@ bool CUtilityParticle::_collisionLogic(CEntity* target, CollisionSides collision
     if(std::find(_hasCollidedWith.begin(), _hasCollidedWith.end(), target) != _hasCollidedWith.end())
         return false;
     
+//    if(_hasCollidedWith.size() > 2) {
+//        _toRemove = true;
+//        return parentCollision;
+//    }
+    
     CLiving* living = dynamic_cast<CLiving*>(target);
     if(living == nullptr) {
         _toRemove = true;
@@ -67,6 +72,6 @@ bool CUtilityParticle::_collisionLogic(CEntity* target, CollisionSides collision
 void CUtilityParticle::_doLogic() {
     CParticle::_doLogic();
     
-    if(!collisionSides.bottom)
-        body.velY += rand() % 3 - 1;
+//    if(!collisionSides.bottom)
+//        body.velY += rand() % 3 - 1;
 }

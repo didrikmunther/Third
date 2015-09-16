@@ -14,7 +14,7 @@
 #include "CParticle.h"
 
 
-enum BasicUtilities {
+enum class BasicUtilities {
     DAMAGE = 0,
     HEAL,
     NONE

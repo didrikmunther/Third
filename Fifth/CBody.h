@@ -13,6 +13,9 @@
 
 #include "Define.h"
 
+struct Position {
+    int x, y;
+};
 
 class CBody {
     
@@ -26,6 +29,8 @@ public:
     int getY();
     int getW();
     int getH();
+    
+    Position getCenter() { return Position{getX() + getW() / 2, getY() + getH() / 2}; }
     
     Box _rect;
     Box _previousRect;

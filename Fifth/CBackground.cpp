@@ -20,7 +20,7 @@ void CBackground::onRender(CWindow* window, CCamera* camera) {
     
     if(!spriteContainer) return;
     
-    int amountX = 2;//ceil(spriteContainer->spriteArea.w / camera->getWidth()) + 1;
+    int amountX = ceil(spriteContainer->spriteArea.w / camera->getWidth()) + 1;
     
     for(int i = -1; i < amountX; i++) {
         NSurface::renderSprite(i * _backgroundOffset.scale * spriteContainer->spriteArea.w + -camera->offsetX() * _parallax, -camera->offsetY() * _parallax + _backgroundOffset.y, spriteContainer->spriteArea.w * _backgroundOffset.scale, spriteContainer->spriteArea.h * _backgroundOffset.scale, spriteContainer->getSprite(), window, SDL_RendererFlip::SDL_FLIP_NONE);

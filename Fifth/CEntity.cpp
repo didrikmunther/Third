@@ -16,7 +16,8 @@
 #include "CLiving.h"
 #include "CSpriteContainer.h"
 #include "CGuiText.h"
-#include "CChatBubble.h"
+#include "CParticle.h"
+#include "CUtilityParticle.h"
 
 
 CEntity::CEntity(Box rect, SDL_Color color) :
@@ -53,7 +54,6 @@ void CEntity::_cleanUpTextVector() {
 }
 
 void CEntity::onLoop() {
-    
     _hasMoved = false;
     
     auto i = _GuiTextVector.begin();
@@ -145,6 +145,22 @@ bool CEntity::hasSprite() {
         return false;
     }
     return true;
+}
+
+void CEntity::shoot(float angle, BasicUtilities basicUtility) {
+    
+    int precision = 100;
+    int spread = 2000;
+    
+    angle += (rand() % precision - precision / 2) / (float)spread;
+    
+    float velX = cos(angle) * 50;
+    float velY = sin(angle) * 50;
+    
+    CUtilityParticle* tempParticle = new CUtilityParticle(Box{body.getX(), body.getY() - 100, 8, 8}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, this, basicUtility, 10);
+    tempParticle->body.velX = velX;
+    tempParticle->body.velY = velY;
+    particlesToAdd.push_back(tempParticle);
 }
 
 void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags renderFlags) {

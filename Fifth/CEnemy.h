@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 #include "CNpc.h"
+#include "NSurface.h"
 
 
 class CEnemy : public CNpc {
@@ -30,7 +31,11 @@ private:
     virtual void _doLogic();
     virtual bool _collisionLogic(CEntity* target, CollisionSides collisionSides);
     
+    std::vector<Triangle> triangles;
+    
     CEntity* target;
+    
+    int _shootTimer;
     
 };
 

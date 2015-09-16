@@ -186,35 +186,19 @@ void CGame::_handleKeyStates() {
     // Other
     
     if(NMouse::leftMouseButtonPressed()) { // damage particle
-        int mousePosX = instance.player->body.getX() - NMouse::relativeMouseX(&instance.camera);
-        int mousePosY = instance.player->body.getY() - 100 - NMouse::relativeMouseY(&instance.camera);
+        int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body.getX();
+        int mousePosY = NMouse::relativeMouseY(&instance.camera) - (instance.player->body.getY() - 100);
         float angle = atan2(mousePosY, mousePosX);
         
-        const int velocityX = -(cos(angle) * 100);
-        const int velocityY = -(sin(angle) * 100);
-        
-        //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, SDL_Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
-        
-        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX(), instance.player->body.getY() - 100, 4, 4}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::DAMAGE, 10);
-        tempParticle->body.velX = velocityX;
-        tempParticle->body.velY = velocityY;
-        instance.entityManager.addParticle(tempParticle);
+        instance.player->shoot(angle, BasicUtilities::DAMAGE);
     }
     
     if(NMouse::rightMouseButtonPressed()) {   // heal particle
-        int mousePosX = instance.player->body.getX() - NMouse::relativeMouseX(&instance.camera);
-        int mousePosY = instance.player->body.getY() - 100 - NMouse::relativeMouseY(&instance.camera);
+        int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body.getX();
+        int mousePosY = NMouse::relativeMouseY(&instance.camera) - (instance.player->body.getY() - 100);
         float angle = atan2(mousePosY, mousePosX);
         
-        const float velocityX = -(cos(angle) * 100);
-        const float velocityY = -(sin(angle) * 100);
-        
-        //instance.entityManager.addParticleEmitter(sf::IntRect{instance.player->body.getX(), instance.player->body.getY() - 100, 10, 10}, SDL_Color{ (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), (sf::Uint8)(rand() % 255), 0}, ParticleTypes::UTILITY_PARTICLE, 1, 1, 1, 10, ParticleVelocity{(float)velocityX, (float)velocityY});
-        
-        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX(), instance.player->body.getY() - 100, 20, 20}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::HEAL, 10);
-        tempParticle->body.velX = velocityX;
-        tempParticle->body.velY = velocityY;
-        instance.entityManager.addParticle(tempParticle);
+        instance.player->shoot(angle, BasicUtilities::HEAL);
     }
 }
 
@@ -240,11 +224,6 @@ void CGame::_onEvent(SDL_Event* event) {
             }
             break;
             
-//        case sf::Event::Resized:
-//            //instance.window.updateView(event->size.width, event->size.height);
-//            //instance.window.setSize(event->size.width, event->size.height);
-//            break;
-            
         case SDL_KEYDOWN:
             switch(event->key.keysym.sym) {
                     
@@ -256,18 +235,11 @@ void CGame::_onEvent(SDL_Event* event) {
                 {
                     float angle = 0;
                     int particles = 90;
-                    int velocity = 50;
                     
                     for(int i = 0; i < particles; i++) {
-                        angle += 0.0174532925f * (360.0f / particles);
+                        angle += (360.0f / particles) / (360 / (2 * M_PI)); // convert raidans to degrees
                         
-                        const float velocityX = -(cos(angle) * velocity);
-                        const float velocityY = -(sin(angle) * velocity);
-                        
-                        CUtilityParticle* tempParticle = new CUtilityParticle(Box{instance.player->body.getX() + instance.player->body.getW() / 2, instance.player->body.getY() + instance.player->body.getH() / 2, 10, 10}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, instance.player, BasicUtilities::DAMAGE, 10);
-                        tempParticle->body.velX = velocityX;
-                        tempParticle->body.velY = velocityY;
-                        instance.entityManager.addParticle(tempParticle);
+                        instance.player->shoot(angle, BasicUtilities::DAMAGE);
                     }
                 }
                     break;

@@ -16,6 +16,29 @@
 class CWindow;
 class CText;
 class CSprite;
+class CCamera;
+
+struct Color {
+    int r, g, b, a;
+};
+
+struct Line {
+    int x, y;
+    int x2, y2;
+    
+    Line normalizeWithCamera(CCamera* camera);
+};
+
+struct Triangle {
+    Line a, b, c;
+    Color color;
+    
+    Triangle(Line a, Line b, Line c) :
+             a(a), b(b), c(c),
+             color(Color{255, 0, 0, 255}) {  }
+    
+    Triangle normalizeWithCamera(CCamera* camera);
+};
 
 namespace NSurface {
 
@@ -23,6 +46,8 @@ namespace NSurface {
     void renderSprite(int x, int y, int w, int h, CSprite* sprite, CWindow* window, SDL_RendererFlip flip, int a = 255);
     void renderText(int x, int y, CText* text, CWindow* window);
     void renderTexture(int x, int y, int w, int h, SDL_Renderer* renderer, SDL_Texture *texture);
+    void renderLine(Line line, SDL_Renderer* renderer, CCamera* camera = nullptr);
+    void renderTriangle(Triangle triangle, SDL_Renderer* renderer, CCamera* camera = nullptr);
     
 };
 

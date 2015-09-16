@@ -12,7 +12,16 @@
 #include "CSprite.h"
 #include "CText.h"
 #include "CWindow.h"
+#include "CCamera.h"
 
+
+Triangle Triangle::normalizeWithCamera(CCamera* camera) {
+    return Triangle{a.normalizeWithCamera(camera), b.normalizeWithCamera(camera), c.normalizeWithCamera(camera)};
+}
+
+Line Line::normalizeWithCamera(CCamera* camera) {
+    return Line{x - camera->offsetX(), y - camera->offsetY(), x2 - camera->offsetX(), y2 - camera->offsetY()};
+}
 
 void NSurface::renderRect(int x, int y, int w, int h, CWindow* window, int r, int g, int b, int a /* = 255 */) {
     SDL_Rect rect;
@@ -47,6 +56,24 @@ void NSurface::renderText(int x, int y, CText* text, CWindow* window) {
 void NSurface::renderTexture(int x, int y, int w, int h, SDL_Renderer* renderer, SDL_Texture *texture) {
     SDL_Rect destination = {x, y, w, h};
     SDL_RenderCopy(renderer, texture, nullptr, &destination);
+}
+
+void NSurface::renderLine(Line line, SDL_Renderer* renderer, CCamera* camera /* = nullptr */) {
+    if(camera)
+        line = line.normalizeWithCamera(camera);
+    
+    SDL_RenderDrawLine(renderer, line.x, line.y, line.x2, line.y2);
+}
+
+void NSurface::renderTriangle(Triangle triangle, SDL_Renderer* renderer, CCamera* camera /* = nullptr */) {
+    if(camera)
+        triangle = triangle.normalizeWithCamera(camera);
+    
+    SDL_SetRenderDrawColor(renderer, triangle.color.r, triangle.color.g, triangle.color.b, triangle.color.a);
+    
+    renderLine(triangle.a, renderer);
+    renderLine(triangle.b, renderer);
+    renderLine(triangle.c, renderer);
 }
 
 
