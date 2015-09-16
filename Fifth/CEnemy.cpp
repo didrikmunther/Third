@@ -75,12 +75,14 @@ void CEnemy::_doLogic() {
             float thisVelX = body.velX;
             float thisVelY = body.velY;
             
+            float bulletVelocity = 50.0f;
+            
             double maxError = 0.000000001;
             
             double dx = targetX - thisX;
             double dy = targetY - thisY;
             double targetDistance = sqrt(dx * dx + dy * dy);
-            double impactTime = targetDistance / 100;
+            double impactTime = targetDistance / bulletVelocity;
             double radian = atan2(dy, dx);
             
             int maxIterations = 100;
@@ -89,7 +91,7 @@ void CEnemy::_doLogic() {
                 dy = targetY - thisY + (targetVelY - thisVelY) * impactTime;
                 
                 targetDistance = sqrt(dx * dx + dy * dy);
-                impactTime = targetDistance / 100;
+                impactTime = targetDistance / bulletVelocity;
                 double newRadian = atan2(dy, dx);
                 
                 double curError = fabs(newRadian - radian);
@@ -105,7 +107,7 @@ void CEnemy::_doLogic() {
             
             if(SDL_GetTicks() - _shootTimer > fireDelay) {
                 
-                shoot(radian, BasicUtilities::NONE);
+                shoot(radian, BasicUtilities::HEAL);
                 
                 _shootTimer += fireDelay;
             }

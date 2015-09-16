@@ -18,7 +18,7 @@ const int SCREEN_HEIGHT         = 720;
 const int SCREEN_BPP            = 32;
 
 const int GAME_INTERVAL          = 60;
-const float GRAVITY             = 0.3;
+const float GRAVITY             = 0.3f;
 
 const char LOG_FILE[]           = "debug.log";
 
