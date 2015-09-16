@@ -25,17 +25,16 @@ struct Color {
 struct Line {
     int x, y;
     int x2, y2;
+    Color color;
+    
+    Line(int x, int y, int x2, int y2, Color color = Color{255, 0, 0, 255}) :
+    x(x), y(y), x2(x2), y2(y2), color(color) {  }
     
     Line normalizeWithCamera(CCamera* camera);
 };
 
 struct Triangle {
     Line a, b, c;
-    Color color;
-    
-    Triangle(Line a, Line b, Line c) :
-             a(a), b(b), c(c),
-             color(Color{255, 0, 0, 255}) {  }
     
     Triangle normalizeWithCamera(CCamera* camera);
 };

@@ -99,15 +99,19 @@ void CEnemy::_doLogic() {
                 if(curError <= maxError) break;
             }
             
+            Color distanceColor = Color{0, 0, 255, 255};
+            Color velocityColor = Color{0, 255, 0, 255};
+            Color targetColor   = Color{255, 0, 0, 255};
+            
             triangles.push_back(Triangle{
-                Line{targetX, targetY, thisX, thisY},
-                Line{(int)(targetX + targetVelX * impactTime), (int)(targetY + targetVelY * impactTime), thisX, thisY},
-                Line{targetX, targetY, (int)(targetX + targetVelX * impactTime), (int)(targetY + targetVelY * impactTime)}
+                Line{targetX, targetY, thisX, thisY, distanceColor},
+                Line{(int)(targetX + targetVelX * impactTime), (int)(targetY + targetVelY * impactTime), thisX, thisY, targetColor},
+                Line{targetX, targetY, (int)(targetX + targetVelX * impactTime), (int)(targetY + targetVelY * impactTime), velocityColor}
             });
             
             if(SDL_GetTicks() - _shootTimer > fireDelay) {
                 
-                shoot(radian, BasicUtilities::HEAL);
+                shoot(radian, BasicUtilities::NONE);
                 
                 _shootTimer += fireDelay;
             }

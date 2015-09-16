@@ -20,7 +20,7 @@ Triangle Triangle::normalizeWithCamera(CCamera* camera) {
 }
 
 Line Line::normalizeWithCamera(CCamera* camera) {
-    return Line{x - camera->offsetX(), y - camera->offsetY(), x2 - camera->offsetX(), y2 - camera->offsetY()};
+    return Line{x - camera->offsetX(), y - camera->offsetY(), x2 - camera->offsetX(), y2 - camera->offsetY(), color};
 }
 
 void NSurface::renderRect(int x, int y, int w, int h, CWindow* window, int r, int g, int b, int a /* = 255 */) {
@@ -62,14 +62,13 @@ void NSurface::renderLine(Line line, SDL_Renderer* renderer, CCamera* camera /* 
     if(camera)
         line = line.normalizeWithCamera(camera);
     
+    SDL_SetRenderDrawColor(renderer, line.color.r, line.color.g, line.color.b, line.color.a);
     SDL_RenderDrawLine(renderer, line.x, line.y, line.x2, line.y2);
 }
 
 void NSurface::renderTriangle(Triangle triangle, SDL_Renderer* renderer, CCamera* camera /* = nullptr */) {
     if(camera)
         triangle = triangle.normalizeWithCamera(camera);
-    
-    SDL_SetRenderDrawColor(renderer, triangle.color.r, triangle.color.g, triangle.color.b, triangle.color.a);
     
     renderLine(triangle.a, renderer);
     renderLine(triangle.b, renderer);
