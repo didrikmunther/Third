@@ -207,7 +207,7 @@ void CAssetManager::onCleanup() {
             i->second->onCleanup();
             delete i->second;
             i->second = nullptr;
-            toWrite += " \"" + i->first + "\",";
+            toWrite += "\"" + i->first + "\", ";
             _SpriteSheetVector.erase(i++->first);
         }
         _SpriteSheetVector.clear();
@@ -220,7 +220,7 @@ void CAssetManager::onCleanup() {
         std::string toWrite = "";
         auto i = _FontVector.begin();
         while(i != _FontVector.end()) {
-            toWrite += " \"" + i->first + "\",";
+            toWrite += "\"" + i->first + "\", ";
             _FontVector.erase(i++->first);
         }
         _FontVector.clear();

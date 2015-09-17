@@ -36,6 +36,7 @@ private:
     CEntity* target;
     
     int _shootTimer;
+    bool _renderTriangle;
     
 };
 

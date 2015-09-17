@@ -18,7 +18,6 @@ const int SCREEN_HEIGHT         = 720;
 const int SCREEN_BPP            = 32;
 
 const int GAME_INTERVAL          = 60;
-const float GRAVITY             = 0.3f;
 
 const char LOG_FILE[]           = "debug.log";
 
@@ -73,7 +72,8 @@ enum RenderFlags {
     COLLISION_AREA      = 1 << 1,
     COLLISION_GRID      = 1 << 2,
     COLLISION_FULL_AREA = 1 << 3,
-    ENTITY_GRID         = 1 << 4
+    ENTITY_GRID         = 1 << 4,
+    ENEMY_TRIANGLE      = 1 << 5
 };
 
 #endif

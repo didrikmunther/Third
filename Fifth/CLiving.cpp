@@ -12,6 +12,7 @@
 #include "NSurface.h"
 #include "CCombatText.h"
 #include "CCamera.h"
+#include "CGlobalSettings.h"
 
 
 CLiving::CLiving(Box rect, SDL_Color color) : CMovable(rect, color) {
@@ -211,7 +212,7 @@ bool CLiving::_collisionLogic(CEntity* target, CollisionSides collisionSides) {
     
     float jumpDamageHeight = jumpPower + jumpPower / 4;
     if(body.velY > jumpDamageHeight && collisionSides.bottom) {            // Fall damage
-        dealDamage((body.velY - jumpDamageHeight) * (_maxValues[ValueTypes::HEALTH] / (GRAVITY * 166))); // At 0.3 gravity the lethal velocity is 50
+        dealDamage((body.velY - jumpDamageHeight) * (_maxValues[ValueTypes::HEALTH] / (CGlobalSettings::GRAVITY * 166))); // At 0.3 gravity the lethal velocity is 50
     }
     
     return parentCollision && collision;

@@ -28,13 +28,21 @@ void CEnemy::_init() {
     jumpPower = 15.0f;
     accelerationX = 0.1f;
     _shootTimer = SDL_GetTicks();
+    _renderTriangle = false;
 }
 
 void CEnemy::renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     CNpc::renderAdditional(window, camera, renderFlags);
     
-    for(auto &i: triangles)
-        NSurface::renderTriangle(i, window->getRenderer(), camera);
+    if(renderFlags & RenderFlags::ENEMY_TRIANGLE && !isDead()) {
+        _renderTriangle = true;
+        
+        for(auto &i: triangles)
+            NSurface::renderTriangle(i, window->getRenderer(), camera);
+        
+    } else {
+        _renderTriangle = false;
+    }
     
 }
 
@@ -61,7 +69,7 @@ void CEnemy::_doLogic() {
         int fireRate = 300; // Bullets per minute
         int fireDelay = (60.0f / fireRate) * 1000;
         
-        { // add this to the firerate limiter for better performance, but the triangels limited to fireRate
+        if(SDL_GetTicks() - _shootTimer > fireDelay || _renderTriangle) {
             
             triangles.clear();
             
@@ -111,7 +119,7 @@ void CEnemy::_doLogic() {
             
             if(SDL_GetTicks() - _shootTimer > fireDelay) {
                 
-                shoot(radian, BasicUtilities::NONE);
+                shoot(radian, BasicUtilities::DAMAGE);
                 
                 _shootTimer += fireDelay;
             }

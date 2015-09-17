@@ -21,6 +21,7 @@
 #include "CUtilityParticle.h"
 #include "CSpriteContainer.h"
 #include "CBackground.h"
+#include "CGlobalSettings.h"
 
 #include "CEnemy.h"
 #include "CPlayer.h"
@@ -261,8 +262,15 @@ void CGame::_onEvent(SDL_Event* event) {
                     break;
                     
                 case SDLK_v:
-                    instance.player->body._rect.x = 300;
-                    instance.player->body._rect.y = 1000000;
+                    instance.entityManager.renderFlags ^= RenderFlags::ENEMY_TRIANGLE;
+                    break;
+                    
+                case SDLK_RIGHTBRACKET:
+                    CGlobalSettings::GRAVITY += 0.1;
+                    break;
+                    
+                case SDLK_LEFTBRACKET:
+                    CGlobalSettings::GRAVITY -= 0.1;
                     break;
                     
                 case keyMap::SNEAK:
@@ -280,7 +288,7 @@ void CGame::_onEvent(SDL_Event* event) {
                 }
                     break;
                     
-                case keyMap::RESET:
+                case SDLK_j:
                 {
                     auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 60, 164}, "player");
                     tempNpc->setTarget(instance.player);
@@ -302,7 +310,11 @@ void CGame::_onEvent(SDL_Event* event) {
                     instance.player->toggleNoclip();
                     break;
                 case keyMap::LOAD_ASSETS:
+                {
                     NFile::loadMap("resources/map/testMap1.map", &instance);
+                    CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
+                    instance.entityManager.addBackground("main", background);
+                }
                     break;
                 case keyMap::TOGGLE_HIDDEN:
                     instance.player->toggleProperty(EntityProperty::HIDDEN);
@@ -422,6 +434,8 @@ int CGame::_onCleanup() {
     instance.entityManager.onCleanup();
     CAssetManager::onCleanup();
     instance.window.onCleanup();
+    
+    NFile::log(LogType::ALERT, "Exiting game.");
     
     return 0;
 }

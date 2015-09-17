@@ -14,5 +14,4 @@ int main(int argc, const char * argv[]){
     CGame game;
     
     return game.onExecute();
-    
 }

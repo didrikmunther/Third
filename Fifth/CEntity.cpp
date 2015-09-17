@@ -18,6 +18,7 @@
 #include "CGuiText.h"
 #include "CParticle.h"
 #include "CUtilityParticle.h"
+#include "CGlobalSettings.h"
 
 
 CEntity::CEntity(Box rect, SDL_Color color) :
@@ -67,7 +68,7 @@ void CEntity::onLoop() {
     }
     
     if(!hasProperty(EntityProperty::FLYING))
-        body.velY += GRAVITY;
+        body.velY += CGlobalSettings::GRAVITY;
     
     _doLogic();
 }
@@ -251,7 +252,7 @@ void CEntity::move(std::vector<CEntity*>* entities) {
     
     int MoveX, MoveY;
     
-    if(GRAVITY < 0.5) {         // Check if gravity can be rounded up, otherwise wonkyness happens
+    if(CGlobalSettings::GRAVITY < 0.5) {         // Check if gravity can be rounded up, otherwise wonkyness happens
         MoveX = ceil(body.velX);
         MoveY = ceil(body.velY);
     } else {
