@@ -30,6 +30,10 @@ void CLiving::_init() {
     std::fill(_animatedBufferedValues, _animatedBufferedValues+ValueTypes::VALUETYPES_TOTAL, 0);
     std::fill(_animatedBufferedIncrements, _animatedBufferedIncrements+ValueTypes::VALUETYPES_TOTAL, 0);
     
+    _hasBeenDamaged     =
+    _hasBeenHealed      =
+    _hasTakenFallDamage = false;
+    
     _values[ValueTypes::HEALTH]      = _maxValues[ValueTypes::HEALTH] = 1000;
     _values[ValueTypes::KEVLAR]      = _maxValues[ValueTypes::KEVLAR] = 1000;
     _values[ValueTypes::ENERGY]      = _maxValues[ValueTypes::ENERGY] = 100;
@@ -210,9 +214,11 @@ bool CLiving::_collisionLogic(CEntity* target, CollisionSides collisionSides) {
     bool parentCollision = CMovable::_collisionLogic(target, collisionSides);
     bool collision = true;
     
+    _hasTakenFallDamage = false;
     float jumpDamageHeight = jumpPower + jumpPower / 4;
     if(body.velY > jumpDamageHeight && collisionSides.bottom) {            // Fall damage
         dealDamage((body.velY - jumpDamageHeight) * (_maxValues[ValueTypes::HEALTH] / (CGlobalSettings::GRAVITY * 166))); // At 0.3 gravity the lethal velocity is 50
+        _hasTakenFallDamage = true;
     }
     
     return parentCollision && collision;

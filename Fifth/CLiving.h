@@ -57,6 +57,8 @@ protected:
     
     int _stats[StatTypes::STATTYPES_TOTAL];
     
+    bool _hasTakenFallDamage;
+    
 private:
     void _init();
     

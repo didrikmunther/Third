@@ -131,5 +131,16 @@ bool CEnemy::_collisionLogic(CEntity* target, CollisionSides collisionSides) {
     bool parentCollision = CNpc::_collisionLogic(target, collisionSides);
     bool collision = true;
     
+    if(_hasTakenFallDamage) {
+        float angle = 0;
+        int particles = 90;
+        
+        for(int i = 0; i < particles; i++) {
+            angle += (360.0f / particles) / (360 / (2 * M_PI)); // convert raidans to degrees
+            
+            shoot(angle, BasicUtilities::DAMAGE);
+        }
+    }
+    
     return parentCollision && collision;
 }

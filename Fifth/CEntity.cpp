@@ -255,7 +255,7 @@ void CEntity::move(std::vector<CEntity*>* entities) {
     if(CGlobalSettings::GRAVITY < 0.5) {         // Check if gravity can be rounded up, otherwise wonkyness happens
         MoveX = ceil(body.velX);
         MoveY = ceil(body.velY);
-    } else {
+    } else if(CGlobalSettings::GRAVITY != 0) {
         MoveX = round(body.velX);
         MoveY = round(body.velY);
     }

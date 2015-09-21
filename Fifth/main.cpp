@@ -14,4 +14,9 @@ int main(int argc, const char * argv[]){
     CGame game;
     
     return game.onExecute();
+    
+//    std::stringstream ss;             // Component system component saving
+//    ss << typeid(CEntity).name();
+//    std::string str = ss.str();
+//    std::cout << str << "\n";
 }

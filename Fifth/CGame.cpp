@@ -8,6 +8,7 @@
 
 #include <fstream>
 #include <cmath>
+#include <iomanip>
 
 #include <SDL2_image/SDL_image.h>
 #include <SDL2_ttf/SDL_ttf.h>
@@ -69,6 +70,8 @@ int CGame::onExecute() {
             
             _updates++;
             _delta--;
+            
+            instance.entityManager.getEntity("n:bush")->say(_title.str() + " Gravity: " + std::to_string(CGlobalSettings::GRAVITY), "TESTFONT", ChatBubbleType::INSTANT_TALK);
         }
         
         _onRender();
@@ -78,9 +81,7 @@ int CGame::onExecute() {
         if(SDL_GetTicks() - _timer > 1000) {
             _timer += 1000;
             _title.str("");
-            _title /* << _intro << " | " */ << _updates << " ups, " << _frames << " fps";
-            //instance.window.setTitle(_title.str());
-            instance.entityManager.getEntity("n:bush")->say(_title.str(), "TESTFONT", ChatBubbleType::SAY);
+            _title << _updates << " ups, " << _frames << " fps";
             _updates = 0;
             _frames = 0;
         }
@@ -267,10 +268,15 @@ void CGame::_onEvent(SDL_Event* event) {
                     
                 case SDLK_RIGHTBRACKET:
                     CGlobalSettings::GRAVITY += 0.1;
+                    
+                    if(-0.1 * 100 < CGlobalSettings::GRAVITY * 100 && CGlobalSettings::GRAVITY * 100 < 0.1 * 100)
+                        CGlobalSettings::GRAVITY = 0.0f;
                     break;
                     
                 case SDLK_LEFTBRACKET:
                     CGlobalSettings::GRAVITY -= 0.1;
+                    if(-0.1 * 100 < CGlobalSettings::GRAVITY * 100 && CGlobalSettings::GRAVITY * 100 < 0.1 * 100)
+                        CGlobalSettings::GRAVITY = 0.0f;
                     break;
                     
                 case keyMap::SNEAK:
