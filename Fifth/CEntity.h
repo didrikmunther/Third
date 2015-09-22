@@ -13,10 +13,13 @@
 #include <memory>
 #include <map>
 #include <vector>
+#include <sstream>
 
 #include "CRenderable.h"
 #include "CCollidable.h"
 #include "CChatBubble.h"
+
+#include "EComponent.h"
 
 
 class CParticle;
@@ -25,6 +28,7 @@ class CGuiText;
 class CCamera;
 class CEntityManager;
 class CWindow;
+class CInstance;
 
 enum class BasicUtilities;
 
@@ -90,14 +94,16 @@ struct CollisionSides {
 
 class CEntity : public CRenderable, public CCollidable {
     
+friend class EComponent;
+    friend class CEntityManager;
+    
 public:
     CEntity(Box rect, SDL_Color color);
     CEntity(Box rect, std::string spriteContainerKey);
     ~CEntity();
     
     virtual void init();
-    void onLoop();
-    void afterLogicLoop(std::vector<CEntity*>* entities); // After the velocities have been added, move the entity
+    void onLoop(CInstance* instance);
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
@@ -131,23 +137,66 @@ public:
     std::vector<GridCoordinates> gridCoordinates;
     
     void shoot(float angle, BasicUtilities basicUtility);
-    std::vector<CParticle*> particlesToAdd;
+    std::vector<CEntity*> particlesToAdd;
+    
+    template<typename T, typename ... A>
+    void addComponent(A && ... args) {
+        
+        std::string type = _getType<T>();
+        
+        if(components.count(type) != 0)
+            delete components[type];
+        
+        components[type] = new T(this, std::forward<A>(args) ...);
+    }
+    
+    template<typename T>
+    void addComponent(T* component) {
+        
+        std::string type = _getType<T>();
+        
+        if(components.count(type) != 0)
+            delete components[type];
+        
+        components[type] = component;
+        
+    }
+    
+    template<typename T>
+    T* getComponent() {
+        
+        std::string type = _getType<T>();
+        
+        if(components.count(type))
+            return static_cast<T*>(components[type]);
+        else
+            return nullptr;
+    }
+    
+    bool _isDead;
     
 protected:
     std::vector<CGuiText*> _GuiTextVector;
     void _cleanUpTextVector();
+    void _cleanUpComponents();
     
-    // Remember to allways call your parents _doLogic, renderAdditional and _collisionLogic function.
-    virtual void _doLogic();
-    virtual bool _collisionLogic(CEntity* target, CollisionSides collisionSides);
+    virtual bool _onCollision(CEntity* target, CollisionSides* collisionSides);
     
-    bool _isDead;
+    std::map<std::string, EComponent*> components;
+    
+    
     bool _toRemove;
     
 private:
     bool _collision(int x, int y, std::vector<CEntity*>* entities);
-    
     bool _hasMoved;
+    
+    template<typename T>
+    std::string _getType() {
+        std::stringstream type;
+        type << typeid(T).name();
+        return type.str();
+    }
     
 };
 

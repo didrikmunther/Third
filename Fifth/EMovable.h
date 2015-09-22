@@ -1,17 +1,17 @@
 //
-//  CMovable.h
+//  EMovable.h
 //  Fifth
 //
-//  Created by Didrik Munther on 28/05/15.
+//  Created by Didrik Munther on 21/09/15.
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#ifndef __Fifth__CMovable__
-#define __Fifth__CMovable__
+#ifndef __Fifth__EMovable__
+#define __Fifth__EMovable__
 
 #include <stdio.h>
-#include <map>
 
+#include "EComponent.h"
 #include "CEntity.h"
 
 
@@ -21,13 +21,12 @@ enum MovementState {
     RUNNING_MOVEMENT
 };
 
-class CMovable : public CEntity {
+class EMovable : public EComponent {
     
 public:
-    CMovable(Box rect, SDL_Color color);
-    CMovable(Box rect, std::string spriteKey);
+    EMovable(CEntity* parent);
     
-    virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
+    void onLoop(CInstance* instance);
     
     void goRight();
     void goLeft();
@@ -44,16 +43,10 @@ public:
     float accelerationX, accelerationY;
     float stoppingAccelerationX, stoppingAccelerationY;
     
-protected:
-    virtual bool _collisionLogic(CEntity* target, CollisionSides collisionSides);
-    virtual void _doLogic();
-    
 private:
-    void _init();
-    
     MovementState _movementState;
     std::map<MovementState, int> _movementSpeeds;    // A map to get the speed at a specific movementState
     
 };
 
-#endif /* defined(__Fifth__CMovable__) */
+#endif /* defined(__Fifth__EMovable__) */

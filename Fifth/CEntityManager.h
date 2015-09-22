@@ -19,31 +19,28 @@
 
 
 class CEntity;
-class CParticle;
 class CSprite;
 class CGuiText;
 class CBackground;
 class CCamera;
 class CWindow;
+class CInstance;
 
 class CEntityManager {
     
 public:
     CEntityManager();
     
-    CEntity* addEntity(Box rect, SDL_Color color, std::string name = "");
-    CEntity* addEntity(Box rect, std::string spriteKey, std::string name = "");
     CEntity* getEntity(std::string name);
     CEntity* getEntityAtCoordinate(int x, int y);
     std::string getNameOfEntity(CEntity* entity);
     std::string addEntity(CEntity* entity, std::string name = "");
-    void addParticle(Box rect, SDL_Color color, int livingTime);
-    void addParticle(CParticle* particle);
+    void addParticle(CEntity* particle);
     void addGuiText(CGuiText* guiText);
     void addBackground(std::string name, CBackground* background);
     
     void onRender(CWindow* window, CCamera* camera);
-    void onLoop();
+    void onLoop(CInstance* instance);
     void onCleanup();
     
     // Temp
@@ -63,7 +60,7 @@ public:
     
 private:
     std::map<std::string, CEntity*> _EntityVector;
-    std::vector<CParticle*> _ParticleVector;
+    std::vector<CEntity*> _ParticleVector;
     std::vector<CGuiText*> _GuiTextVector;
     std::map<std::string, CEntity*> _DeadEntitiesVector;
     

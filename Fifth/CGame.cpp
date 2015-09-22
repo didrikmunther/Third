@@ -13,19 +13,20 @@
 #include <SDL2_image/SDL_image.h>
 #include <SDL2_ttf/SDL_ttf.h>
 
-#include "CGame.h"
-#include "NSurface.h"
-#include "NFile.h"
 #include "Define.h"
-#include "NMouse.h"
+#include "CGame.h"
+#include "CEntity.h"
 #include "CText.h"
-#include "CUtilityParticle.h"
 #include "CSpriteContainer.h"
 #include "CBackground.h"
-#include "CGlobalSettings.h"
 
-#include "CEnemy.h"
-#include "CPlayer.h"
+#include "EMovable.h"
+#include "EUtility.h"
+#include "ELiving.h"
+
+#include "NMouse.h"
+#include "NSurface.h"
+#include "NFile.h"
 
 #ifdef __APPLE__
 #include "CoreFoundation/CoreFoundation.h"
@@ -71,7 +72,7 @@ int CGame::onExecute() {
             _updates++;
             _delta--;
             
-            instance.entityManager.getEntity("n:bush")->say(_title.str() + " Gravity: " + std::to_string(CGlobalSettings::GRAVITY), "TESTFONT", ChatBubbleType::INSTANT_TALK);
+            //instance.player->say(_title.str() + " Gravity: " + std::to_string(CGlobalSettings::GRAVITY), "TESTFONT", ChatBubbleType::INSTANT_TALK);
         }
         
         _onRender();
@@ -128,6 +129,47 @@ int CGame::_onInit() {
     CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
     instance.entityManager.addBackground("main", background);
     
+    
+    
+    auto temp = new CEntity(Box{50, -100, 80, 140}, "playerPink");
+    temp->spriteFollowsCollisionBox = false;
+    temp->spriteStateTypes[SpriteStateTypes::ASCENDING] =
+    temp->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
+    temp->addComponent<EMovable>();
+    temp->addComponent<ELiving>();
+    instance.entityManager.addEntity(temp);
+    instance.player = temp;
+    instance.camera.setTarget(temp);
+    
+    temp = new CEntity(Box{0, 50, 5000, 20}, SDL_Color{255, 0, 0, 255});
+    temp->collisionLayer = -129; // all layers
+    temp->addProperty(EntityProperty::STATIC);
+    instance.entityManager.addEntity(temp);
+    
+    temp = new CEntity(Box{0, -4950, 20, 5000}, SDL_Color{255, 0, 0, 255});
+    temp->collisionLayer = -129;
+    temp->addProperty(EntityProperty::STATIC);
+    instance.entityManager.addEntity(temp);
+
+    
+    
+    /*
+    
+     
+     
+     "entities": [
+     {"name":"m:player2", "type":6, "rect":[300, 0, 80, 140], "spriteContainerKey":"playerPink", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
+     {"name":"m:seeker1", "type":7, "rect":[150,	0, 80, 140], "spriteContainerKey":"playerPink", "target":"m:player2", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
+     {"name":"m:player3", "type":7, "rect":[450, 0, 80, 140], "spriteContainerKey":"playerPink", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
+     {"name":"m:player4", "type":7, "rect":[600, 0, 80, 140], "spriteContainerKey":"playerPink", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
+     {"name":"l:tree",				"rect":[276, -1000, 92, 236], 			"spriteContainerKey":"tree", 			"collisionLayers":4},
+     {"name":"n:bush",				"rect":[200, -1000, 120, 108], 			"spriteContainerKey":"bush", 			"collisionLayers":8},
+     {								"rect":[0, 465, 5000, 30], 			"colors":[255, 0, 0, 0],				"collisionLayers":-129},
+     {								"rect":[0, -20, 30, 500], 			"colors":[255, 0, 0, 0],				"collisionLayers":15}
+     ]
+     
+    */
+    
     /*
      LAYER0 // 1
      LAYER1 // 2
@@ -170,21 +212,25 @@ void CGame::_handleKeyStates() {
     
     // Movement
     
-    if(keystate[SDL_SCANCODE_D]) {
-        instance.player->goRight();
-    }
-    if(keystate[SDL_SCANCODE_A]) {
-        instance.player->goLeft();
-    }
+    EMovable* movable = instance.player->getComponent<EMovable>();
     
-    if(keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_SPACE]) {
-        instance.player->goUp();
-    }
-    
-    if(keystate[SDL_SCANCODE_S]) {
-        instance.player->goDown();
-    }
-    
+    if(movable) {
+        if(keystate[SDL_SCANCODE_D]) {
+            movable->goRight();
+        }
+        if(keystate[SDL_SCANCODE_A]) {
+            movable->goLeft();
+        }
+        
+        if(keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_SPACE]) {
+            movable->goUp();
+        }
+        
+        if(keystate[SDL_SCANCODE_S]) {
+            movable->goDown();
+        }
+}
+
     // Other
     
     if(NMouse::leftMouseButtonPressed()) { // damage particle
@@ -204,225 +250,8 @@ void CGame::_handleKeyStates() {
     }
 }
 
-void CGame::_onEvent(SDL_Event* event) {
-    
-    //if(event->key.repeat != 0) return;
-    
-    switch(event->type) {
-            
-        case SDL_QUIT:
-            _isRunning = false;
-            break;
-            
-        case SDL_WINDOWEVENT:
-            switch(event->window.event) {
-                case SDL_WINDOWEVENT_FOCUS_GAINED:
-                    isFocused = true;
-                    break;
-                    
-                case SDL_WINDOWEVENT_FOCUS_LOST:
-                    isFocused = false;
-                    break;
-            }
-            break;
-            
-        case SDL_KEYDOWN:
-            switch(event->key.keysym.sym) {
-                    
-                case keyMap::EXIT:
-                    _isRunning = false;
-                    break;
-                    
-                case SDLK_8:
-                {
-                    float angle = 0;
-                    int particles = 90;
-                    
-                    for(int i = 0; i < particles; i++) {
-                        angle += (360.0f / particles) / (360 / (2 * M_PI)); // convert raidans to degrees
-                        
-                        instance.player->shoot(angle, BasicUtilities::DAMAGE);
-                    }
-                }
-                    break;
-                    
-                case SDLK_7:
-                    instance.camera.addCameraShake(100);
-                    break;
-                    
-                case SDLK_m:
-                    instance.entityManager.renderFlags ^= RenderFlags::COLLISION_AREA;
-                    break;
-                    
-                case SDLK_n:
-                    instance.entityManager.renderFlags ^= RenderFlags::COLLISION_GRID;
-                    break;
-                    
-                case SDLK_b:
-                    instance.entityManager.renderFlags ^= RenderFlags::ENTITY_GRID;
-                    break;
-                    
-                case SDLK_v:
-                    instance.entityManager.renderFlags ^= RenderFlags::ENEMY_TRIANGLE;
-                    break;
-                    
-                case SDLK_RIGHTBRACKET:
-                    CGlobalSettings::GRAVITY += 0.1;
-                    
-                    if(-0.1 * 100 < CGlobalSettings::GRAVITY * 100 && CGlobalSettings::GRAVITY * 100 < 0.1 * 100)
-                        CGlobalSettings::GRAVITY = 0.0f;
-                    break;
-                    
-                case SDLK_LEFTBRACKET:
-                    CGlobalSettings::GRAVITY -= 0.1;
-                    if(-0.1 * 100 < CGlobalSettings::GRAVITY * 100 && CGlobalSettings::GRAVITY * 100 < 0.1 * 100)
-                        CGlobalSettings::GRAVITY = 0.0f;
-                    break;
-                    
-                case keyMap::SNEAK:
-                    instance.player->setMovementState(MovementState::SNEAKING_MOVEMENT);
-                    break;
-                    
-                case SDLK_LCTRL:
-                    instance.player->setMovementState(MovementState::RUNNING_MOVEMENT);
-                    break;
-                    
-                case keyMap::BLOCK:
-                {
-                    CEntity* temp = instance.entityManager.addEntity(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 40, 40}, SDL_Color{0, 0, 255, 0});
-                    temp->addProperty(EntityProperty::STATIC);
-                }
-                    break;
-                    
-                case SDLK_j:
-                {
-                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 60, 164}, "player");
-                    tempNpc->setTarget(instance.player);
-                    tempNpc->spriteStateTypes[SpriteStateTypes::ASCENDING] = "enemyJumping";
-                    tempNpc->spriteFollowsCollisionBox = false;
-                    instance.entityManager.addEntity(tempNpc);
-                }
-                    break;
-                    
-                case SDLK_h:
-                {
-                    auto tempNpc = new CEnemy(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 32 * 4, 32 * 4}, "yrl");
-                    tempNpc->setTarget(instance.player);
-                    instance.entityManager.addEntity(tempNpc);
-                }
-                    break;
-                    
-                case keyMap::TOGGLE_NOCLIP:
-                    instance.player->toggleNoclip();
-                    break;
-                case keyMap::LOAD_ASSETS:
-                {
-                    NFile::loadMap("resources/map/testMap1.map", &instance);
-                    CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
-                    instance.entityManager.addBackground("main", background);
-                }
-                    break;
-                case keyMap::TOGGLE_HIDDEN:
-                    instance.player->toggleProperty(EntityProperty::HIDDEN);
-                    break;
-                case keyMap::TOGGLE_COLLISION_BOUNDS:
-                    //player->toggleProperty(EntityProperty::FLYING);
-                    instance.entityManager.toggleRenderFlag(RenderFlags::COLLISION_BORDERS);
-                    break;
-                case keyMap::NEW_WINDOW:
-                {
-                    if(instance.window.newWindow(_intro, 640, 480)) {
-                        NFile::log(LogType::ERROR, "Window.onInit failed: ", SDL_GetError());
-                    }
-                    instance.camera.onInit(&instance.window);
-                    NFile::loadMap("resources/map/testMap1.map", &instance);
-                }
-                    break;
-                    
-                case keyMap::NEW_CHAT_BUBBLE:
-                {
-                    const char alphanum[] =                     // Randomize a string
-                    "0123456789"
-                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                    "abcdefghijklmnopqrstuvwxyz"
-                    "          ";
-                    
-                    std::string text = "";
-                    for(int i = 0; i < 100; i++) {
-                        text += alphanum[rand() % (sizeof(alphanum) - 1)];
-                    }
-                    instance.player->say(text, "TESTFONT", ChatBubbleType::SAY);
-                    
-                    text = "";
-                    for(int i = 0; i < 50; i++) {
-                        text += alphanum[rand() % (sizeof(alphanum) - 1)];
-                    }
-                    //instance.entityManager.getEntity("n:bush")->say(text, "TESTFONT", ChatBubbleType::YELL);
-                }
-                    break;
-                    
-                case keyMap::TARGET_PLAYER:
-                    instance.camera.setTarget(instance.player);
-                    break;
-                case keyMap::TARGET_BLOCK:
-                    instance.camera.setTarget(instance.entityManager.getEntity("m:yrl"));
-                    break;
-                    
-                case keyMap::CHANGE_CAMERA_SWAY_UP:
-                        instance.camera.cameraSway += 10;
-                    break;
-                case keyMap::CHANGE_CAMERA_SWAY_DOWN:
-                    if(instance.camera.cameraSway <= 10)
-                        instance.camera.cameraSway = 1;
-                    else
-                        instance.camera.cameraSway -= 10;
-                    break;
-                    
-                default:
-                    break;
-                    
-            }
-            break;
-        
-        case SDL_KEYUP:
-            switch(event->key.keysym.sym) {
-                case keyMap::SNEAK:
-                case SDLK_LCTRL:
-                    instance.player->setMovementState(MovementState::WALKING_MOVEMENT);
-                    break;
-                    
-                default:
-                    break;
-            }
-            break;
-        default:
-            break;
-            
-        case SDL_MOUSEBUTTONDOWN:
-            
-            if(NMouse::leftMouseButtonPressed()) {
-                auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera));
-                if(tempTarget != nullptr) {
-                    std::string toSay = "Name: \"" + instance.entityManager.getNameOfEntity(tempTarget) +
-                    "\", CollisionLayer: " + std::to_string(tempTarget->collisionLayer);
-                    tempTarget->say(toSay, "TESTFONT", ChatBubbleType::SAY);
-                }
-            }
-            
-            if(NMouse::rightMouseButtonPressed()) {
-//                auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.window.getWindow(), &instance.camera), NMouse::relativeMouseY(instance.window.getWindow(), &instance.camera));
-//                if(tempTarget != nullptr && instance.seeker != nullptr) {
-//                    instance.seeker->setTarget(tempTarget);
-//                    instance.seeker->say("Target confirmed: " + instance.entityManager.getNameOfEntity(tempTarget), "TESTFONT", ChatBubbleType::SAY);
-//                }
-            }
-            break;
-    }
-    
-}
-
 void CGame::_onLoop() {
-    instance.entityManager.onLoop();
+    instance.entityManager.onLoop(&instance);
     instance.camera.onLoop();
 }
 

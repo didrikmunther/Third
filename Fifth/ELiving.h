@@ -1,17 +1,17 @@
 //
-//  CLiving.h
+//  ELiving.h
 //  Fifth
 //
-//  Created by Didrik Munther on 01/06/15.
+//  Created by Didrik Munther on 22/09/15.
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#ifndef __Fifth__CLiving__
-#define __Fifth__CLiving__
+#ifndef __Fifth__ELiving__
+#define __Fifth__ELiving__
 
 #include <stdio.h>
 
-#include "CMovable.h"
+#include "EComponent.h"
 
 
 enum ValueTypes {
@@ -33,21 +33,21 @@ struct UtilityPosition {
     int x, y;
 };
 
-class CLiving : public CMovable {
+class ELiving : public EComponent {
     
 public:
-    CLiving(Box rect, SDL_Color color);
-    CLiving(Box rect, std::string spriteKey);
+    ELiving(CEntity* parent);
     
-    virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
+    void onLoop(CInstance* instance);
+    void onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
+    bool onCollision(CEntity* target, CollisionSides* collisionSides);
     
     int dealDamage(int amount, UtilityPosition position = {0, 0}, CEntity* damager = nullptr);
     int heal(int amount, UtilityPosition position = {0, 0}, CEntity* healer = nullptr);
     
-protected:
-    virtual void _doLogic();
-    virtual bool _collisionLogic(CEntity* target, CollisionSides collisionSides);
+    bool _hasTakenFallDamage;
     
+protected:
     int _values[ValueTypes::VALUETYPES_TOTAL];
     int _maxValues[ValueTypes::VALUETYPES_TOTAL];
     
@@ -57,16 +57,14 @@ protected:
     
     int _stats[StatTypes::STATTYPES_TOTAL];
     
-    bool _hasTakenFallDamage;
-    
 private:
-    void _init();
-    
     int _delay;
     int _timer;
-
+    
     bool _hasBeenDamaged;
     bool _hasBeenHealed;
+    
 };
 
-#endif /* defined(__Fifth__CLiving__) */
+
+#endif /* defined(__Fifth__ELiving__) */

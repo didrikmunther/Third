@@ -11,6 +11,8 @@
 #include "CCamera.h"
 #include "CAssetManager.h"
 
+#include <iostream>
+
 
 CText::CText(std::string text, int size, std::string fontKey, SDL_Color color) :
 _text(text), _size(size), _fontKey(fontKey), _color(color) {

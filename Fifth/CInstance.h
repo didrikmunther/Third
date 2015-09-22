@@ -16,8 +16,6 @@
 #include "CCamera.h"
 
 
-class CPlayer;
-
 class CInstance {
     
 public:
@@ -27,7 +25,7 @@ public:
     CWindow window;
     
     CEntityManager entityManager;
-    CPlayer* player;
+    CEntity* player;
     
     void closeInstance();
     

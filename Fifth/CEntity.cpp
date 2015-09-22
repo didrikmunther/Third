@@ -13,12 +13,14 @@
 #include "CCamera.h"
 #include "Define.h"
 #include "CEntityManager.h"
-#include "CLiving.h"
 #include "CSpriteContainer.h"
 #include "CGuiText.h"
-#include "CParticle.h"
-#include "CUtilityParticle.h"
 #include "CGlobalSettings.h"
+#include "CInstance.h"
+#include "EParticle.h"
+#include "EUtility.h"
+
+#include <iostream>
 
 
 CEntity::CEntity(Box rect, SDL_Color color) :
@@ -35,6 +37,7 @@ spriteContainerKey(spriteContainerKey), CCollidable(rect), color(SDL_Color{255,0
 
 CEntity::~CEntity() {
     _cleanUpTextVector();
+    _cleanUpComponents();
 }
 
 void CEntity::init() {
@@ -54,7 +57,7 @@ void CEntity::_cleanUpTextVector() {
     _GuiTextVector.clear();
 }
 
-void CEntity::onLoop() {
+void CEntity::onLoop(CInstance* instance) {
     _hasMoved = false;
     
     auto i = _GuiTextVector.begin();
@@ -70,19 +73,24 @@ void CEntity::onLoop() {
     if(!hasProperty(EntityProperty::FLYING))
         body.velY += CGlobalSettings::GRAVITY;
     
-    _doLogic();
-}
-
-void CEntity::afterLogicLoop(std::vector<CEntity *> *entities) {
-    if(isDead())
-        return;
+    {
+        if(!hasProperty(EntityProperty::FLIP_FREEZED)) {
+            if(body.velX > 0)
+                removeProperty(EntityProperty::FLIP);
+            else if(body.velX < 0)
+                addProperty(EntityProperty::FLIP);
+        }
+        
+        setSpriteContainer(spriteStateTypes[SpriteStateTypes::IDLE]);
+        
+        if(body.velY < 0)
+            setSpriteContainer(spriteStateTypes[SpriteStateTypes::ASCENDING]);
+        else if(!collisionSides.bottom)
+            setSpriteContainer(spriteStateTypes[SpriteStateTypes::DESCENDING]);
+    }
     
-    if(!hasProperty(EntityProperty::STATIC))
-        move(entities);
-    else
-        body.velY = body.velX = 0;
-    
-    body.onLoop();
+    for(auto &i: components)
+        i.second->onLoop(instance);
 }
 
 void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
@@ -117,6 +125,10 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
             
             NSurface::renderSprite(x, y, spriteWidth, spriteHeight, getSpriteContainer()->getSprite(), window, flip, getTransparency());
         }
+    }
+    
+    for(auto &i: components) {
+        i.second->onRender(window, camera, renderFlags);
     }
 }
 
@@ -158,7 +170,11 @@ void CEntity::shoot(float angle, BasicUtilities basicUtility) {
     float velX = cos(angle) * 50;
     float velY = sin(angle) * 50;
     
-    CUtilityParticle* tempParticle = new CUtilityParticle(Box{body.getX(), body.getY() - 100, 8, 8}, SDL_Color{ (Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0}, this, basicUtility, 10);
+    CEntity* tempParticle = new CEntity(Box{body.getX(), body.getY() - 100, 8, 8}, SDL_Color{(Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0});
+    tempParticle->addComponent<EParticle>(10);
+    //tempParticle->addComponent<EUtility>(basicUtility);
+    EUtility* utilityComponent = new EUtility(tempParticle, this, basicUtility);
+    tempParticle->addComponent<EUtility>(utilityComponent);
     tempParticle->body.velX = velX;
     tempParticle->body.velY = velY;
     particlesToAdd.push_back(tempParticle);
@@ -177,10 +193,14 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags ren
         NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, window, r, g, b);  // Bottom line
     }
     
+    for(auto &i: components) {
+        i.second->onRenderAdditional(window, camera, renderFlags);
+    }
+    
     if(!hasProperty(EntityProperty::HIDDEN))
         for (auto &i: _GuiTextVector)                                                // Render chatbubbles
             i->onRender(window, camera);
-        
+    
 }
 
 bool CEntity::coordinateCollision(int x, int y, int w, int h, int x2, int y2, int w2, int h2) {
@@ -228,7 +248,7 @@ bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities) {
         if(x + body.getW() - 1 <= target->body.getX())
             tmpCollisionSides.right = true;
         
-        colliding = _collisionLogic(target, tmpCollisionSides);
+        colliding = _onCollision(target, &tmpCollisionSides);
         collisionSides |= tmpCollisionSides;
     }
     
@@ -249,6 +269,11 @@ bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities) {
 }
 
 void CEntity::move(std::vector<CEntity*>* entities) {
+    
+    if(hasProperty(EntityProperty::STATIC) || isDead()) {
+        body.velY = body.velX = 0;
+        return;
+    }
     
     int MoveX, MoveY;
     
@@ -307,25 +332,26 @@ void CEntity::move(std::vector<CEntity*>* entities) {
     }
     
     _hasMoved = !(body._rect == body._previousRect);
+    body.onLoop();
 }
 
-bool CEntity::_collisionLogic(CEntity *target, CollisionSides collisionSides) {
-    return true;
-}
-
-void CEntity::_doLogic() {
-    if(!hasProperty(EntityProperty::FLIP_FREEZED)) {
-        if(body.velX > 0)
-            removeProperty(EntityProperty::FLIP);
-        else if(body.velX < 0)
-            addProperty(EntityProperty::FLIP);
+bool CEntity::_onCollision(CEntity *target, CollisionSides* collisionSides) {
+    bool toReturn = true;
+    
+    for(auto &i: components) {
+        bool ans = i.second->onCollision(target, collisionSides);
+        toReturn = toReturn && ans;
     }
     
-    setSpriteContainer(spriteStateTypes[SpriteStateTypes::IDLE]);
-    
-    if(body.velY < 0)
-        setSpriteContainer(spriteStateTypes[SpriteStateTypes::ASCENDING]);
-    else if(!collisionSides.bottom)
-        setSpriteContainer(spriteStateTypes[SpriteStateTypes::DESCENDING]);
+    return toReturn;
+}
+
+void CEntity::_cleanUpComponents() {
+    auto i = components.begin();
+    while(i != components.end()) {
+        delete i->second;
+        components.erase(i++->first);
+    }
+    components.clear();
 }
 

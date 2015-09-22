@@ -14,37 +14,14 @@
 #include "NFile.h"
 #include "NSurface.h"
 #include "CEntity.h"
-#include "CParticle.h"
 #include "CSprite.h"
 #include "CGuiText.h"
 #include "CBackground.h"
+#include "EParticle.h"
+#include "CInstance.h"
 
 
 CEntityManager::CEntityManager() : entityID(0), renderFlags(RenderFlags::CLEAR), _gridSize(32) {
-}
-
-CEntity* CEntityManager::addEntity(Box rect, SDL_Color color, std::string name /* = "" */) {
-    if(name == "") {
-        CEntity* tempEntity = new CEntity(rect, color);
-        addEntity(tempEntity, name);
-        return tempEntity;
-    } else {
-        CEntity* tempEntity = new CEntity(rect, color);
-        addEntity(tempEntity, name);
-        return tempEntity;
-    }
-}
-
-CEntity* CEntityManager::addEntity(Box rect, std::string spriteKey, std::string name /* = "" */) {
-    if(name == "") {
-        CEntity* tempEntity = new CEntity(rect, spriteKey);
-        addEntity(tempEntity, name);
-        return tempEntity;
-    } else {
-        CEntity* tempEntity = new CEntity(rect, spriteKey);
-        addEntity(tempEntity, name);
-        return tempEntity;
-    }
 }
 
 std::string CEntityManager::addEntity(CEntity* entity, std::string name /* = "" */) {
@@ -88,11 +65,7 @@ std::string CEntityManager::getNameOfEntity(CEntity *entity) {
     return "";
 }
 
-void CEntityManager::addParticle(Box rect, SDL_Color color, int livingTime) {
-    _ParticleVector.push_back(new CParticle(rect, color, livingTime));
-}
-
-void CEntityManager::addParticle(CParticle *particle) {
+void CEntityManager::addParticle(CEntity *particle) {
     _ParticleVector.push_back(particle);
 }
 
@@ -240,43 +213,43 @@ void CEntityManager::splitEntityToParticles(CEntity* target) {
     int tempForRand = 5;
     int livingTime = 2;
     
-    CParticle* tempParticle1 = new CParticle(Box{
+    CEntity* tempParticle1 = new CEntity(Box{
         target->body.getX(),
         target->body.getY(),
         target->body.getW() / 2,
         target->body.getH() / 2},
-                                             spriteContainer1,
-                                             livingTime + rand() % 3 - 1);
+        spriteContainer1);
+    tempParticle1->addComponent<EParticle>(livingTime + rand() % 3 - 1);
     tempParticle1->body.velX = rand() % explosionForce - tempForRand;
     tempParticle1->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle1->addProperty(EntityProperty::FLIP);
-    CParticle* tempParticle2 = new CParticle(Box{
+    CEntity* tempParticle2 = new CEntity(Box{
         target->body.getX() + target->body.getW() / 2,
         target->body.getY(),
         target->body.getW() / 2,
         target->body.getH() / 2},
-                                             spriteContainer2,
-                                             livingTime + rand() % 3 - 1);
+        spriteContainer2);
+    tempParticle2->addComponent<EParticle>(livingTime + rand() % 3 - 1);
     tempParticle2->body.velX = rand() % explosionForce - tempForRand;
     tempParticle2->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle2->addProperty(EntityProperty::FLIP);
-    CParticle* tempParticle3 = new CParticle(Box{
+    CEntity* tempParticle3 = new CEntity(Box{
         target->body.getX(),
         target->body.getY() + target->body.getH() / 2,
         target->body.getW() / 2,
         target->body.getH() / 2},
-                                             spriteContainer3,
-                                             livingTime + rand() % 3 - 1);
+        spriteContainer3);
+    tempParticle3->addComponent<EParticle>(livingTime + rand() % 3 - 1);
     tempParticle3->body.velX = rand() % explosionForce - tempForRand;
     tempParticle3->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle3->addProperty(EntityProperty::FLIP);
-    CParticle* tempParticle4 = new CParticle(Box{
+    CEntity* tempParticle4 = new CEntity(Box{
         target->body.getX() + target->body.getW() / 2,
         target->body.getY() + target->body.getH() / 2,
         target->body.getW() / 2,
         target->body.getH() / 2},
-                                             spriteContainer4,
-                                             livingTime + rand() % 3);
+        spriteContainer4);
+    tempParticle4->addComponent<EParticle>(livingTime + rand() % 3 - 1);
     tempParticle4->body.velX = rand() % explosionForce - tempForRand;
     tempParticle4->body.velY = rand() % explosionForce - tempForRand;
     if(target->hasProperty(EntityProperty::FLIP)) tempParticle4->addProperty(EntityProperty::FLIP);
@@ -364,7 +337,7 @@ std::vector<GridCoordinates> getGrid(CEntity* target, int gridSize) {
     return toReturn;
 }
 
-void CEntityManager::onLoop() {
+void CEntityManager::onLoop(CInstance* instance) {
     
     std::map <int, std::map <int, std::vector<CEntity*>>> _CollisionVector;
     
@@ -372,7 +345,7 @@ void CEntityManager::onLoop() {
         for(auto &particle: _ParticleVector) {
             particle->gridCoordinates.clear();
             
-            particle->onLoop();
+            particle->onLoop(instance);
             
             for(auto &coords: getGrid(particle, _gridSize)) {
                 particle->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
@@ -383,7 +356,7 @@ void CEntityManager::onLoop() {
             auto target = entity.second;
             target->gridCoordinates.clear();
             
-            target->onLoop();
+            target->onLoop(instance);
             
             for(auto &coords: getGrid(target, _gridSize)) {
                 _CollisionVector[coords.y][coords.x].push_back(target);
@@ -395,13 +368,12 @@ void CEntityManager::onLoop() {
             auto target = entity.second;
             target->gridCoordinates.clear();
             
-            target->onLoop();
+            target->onLoop(instance);
             
             for(auto &coords: getGrid(target, _gridSize)) {
                 target->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
             }
         }
-        
     }
     
     {
@@ -409,32 +381,34 @@ void CEntityManager::onLoop() {
         while(i != _EntityVector.end()) {
             auto target = (*i).second;
             
-            std::stringstream toSay;
-            
             std::vector<CEntity*> collisionMap;
             for (auto &coord: target->gridCoordinates) {
                 for(auto &entity: _CollisionVector[coord.y][coord.x]){
                     if(std::find(collisionMap.begin(), collisionMap.end(), entity) != collisionMap.end())
                         continue;
                     collisionMap.push_back(entity);
-                    toSay << getNameOfEntity(entity) << ", ";
                 }
             }
             
-            target->afterLogicLoop(&collisionMap);
+            target->move(&collisionMap);
+            
+            for(auto &i: target->components) {
+                std::cout << i.first;
+            }
+            std::cout << "\n";
             
             if(target->isDead() && target->hasSprite()) {
                 splitEntityToParticles(target);
                 _DeadEntitiesVector[(*i).first] = (*i).second;
                 _EntityVector.erase(i++);
+            } else if(target->toRemove()) {
+                delete target;
+                _EntityVector.erase(i++->first);
+            } else {
+                ++i;
             }
             
-            
-            if(target->toRemove()) {
-                delete target;
-                _EntityVector.erase(i++);
-            } else
-                ++i;
+
         }
     }
     
@@ -453,7 +427,7 @@ void CEntityManager::onLoop() {
                 }
             }
             
-            target->afterLogicLoop(&collisionMap);
+            target->move(&collisionMap);
             
             if((*i).second->toRemove()) {
                 delete (*i).second;
@@ -480,7 +454,7 @@ void CEntityManager::onLoop() {
                 }
             }
             
-            target->afterLogicLoop(&collisionMap);
+            target->move(&collisionMap);
             
             if(target->toRemove()) {
                 delete *i;
