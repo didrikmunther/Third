@@ -34,7 +34,7 @@ void EEnemy::onLoop(CInstance* instance) {
         return;
     
     EMovable* movable = parent->getComponent<EMovable>();
-    if(movable) {
+    if(movable && !_target->isDead()) {
         if(parent->body.getX() > _target->body.getX())
             movable->goLeft();
         else if(parent->body.getX() < _target->body.getX())
@@ -44,7 +44,52 @@ void EEnemy::onLoop(CInstance* instance) {
             movable->jump();
     }
     
+    shootTarget();
+}
 
+void EEnemy::onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
+    if(renderFlags & RenderFlags::ENEMY_TRIANGLE && !*isDead()) {
+        _renderTriangle = true;
+        
+        for(auto &i: _triangles)
+            NSurface::renderTriangle(i, window->getRenderer(), camera);
+        
+    } else {
+        _renderTriangle = false;
+    }
+}
+
+bool EEnemy::onCollision(CEntity* target, CollisionSides* collisionSides) {
+    
+    ELiving* living = parent->getComponent<ELiving>();
+    
+    if(living && living->_hasTakenFallDamage) {
+        float angle = 0;
+        int particles = 18;
+        
+        for(int i = 0; i < particles; i++) {
+            angle += (360.0f / particles) / (360 / (2 * M_PI)); // convert raidans to degrees
+            
+            parent->shoot(angle, BasicUtilities::DAMAGE);
+        }
+    }
+    
+    return true;
+}
+
+void EEnemy::setTarget(CEntity* target) {
+    _target = target;
+}
+
+CEntity* EEnemy::getTarget() {
+    return _target;
+}
+
+void EEnemy::shootTarget() {
+    
+    if(!_renderTriangle)
+        return;
+    
     int fireRate = 300; // Bullets per minute
     int fireDelay = (60.0f / fireRate) * 1000;
     
@@ -103,42 +148,4 @@ void EEnemy::onLoop(CInstance* instance) {
             _shootTimer += fireDelay;
         }
     }
-}
-
-void EEnemy::onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
-    if(renderFlags & RenderFlags::ENEMY_TRIANGLE && !*isDead()) {
-        _renderTriangle = true;
-        
-        for(auto &i: _triangles)
-            NSurface::renderTriangle(i, window->getRenderer(), camera);
-        
-    } else {
-        _renderTriangle = false;
-    }
-}
-
-bool EEnemy::onCollision(CEntity* target, CollisionSides* collisionSides) {
-    
-    ELiving* living = parent->getComponent<ELiving>();
-    
-    if(living && living->_hasTakenFallDamage) {
-        float angle = 0;
-        int particles = 90;
-        
-        for(int i = 0; i < particles; i++) {
-            angle += (360.0f / particles) / (360 / (2 * M_PI)); // convert raidans to degrees
-            
-            parent->shoot(angle, BasicUtilities::DAMAGE);
-        }
-    }
-    
-    return true;
-}
-
-void EEnemy::setTarget(CEntity* target) {
-    _target = target;
-}
-
-CEntity* EEnemy::getTarget() {
-    return _target;
 }
