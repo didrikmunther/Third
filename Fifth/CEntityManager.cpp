@@ -69,10 +69,6 @@ void CEntityManager::addParticle(CEntity *particle) {
     _ParticleVector.push_back(particle);
 }
 
-//void CEntityManager::addParticleEmitter(SDL_Rect rect, SDL_Color color, int type, int amount, int frequency, int livingTime, int particleLivingTime, ParticleVelocity velocity) {
-//    _ParticleEmitterVector.push_back(new CParticleEmitter(rect, color, type, amount, frequency, livingTime, particleLivingTime, velocity));
-//}
-
 void CEntityManager::addGuiText(CGuiText* guiText) {
     _GuiTextVector.push_back(guiText);
 }
@@ -84,9 +80,11 @@ void CEntityManager::addBackground(std::string name, CBackground* background) {
 void CEntityManager::addRenderFlag(RenderFlags renderFlag) {
     renderFlags |= (int)renderFlag;
 }
+
 void CEntityManager::removeRenderFlag(RenderFlags renderFlag) {
     if(renderFlags & renderFlag) toggleRenderFlag(renderFlag);
 }
+
 void CEntityManager::toggleRenderFlag(RenderFlags renderFlag) {
     renderFlags ^= (int)renderFlag;
 }
@@ -167,7 +165,6 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
 }
 
 // Temp
-
 void CEntityManager::splitEntityToParticles(CEntity* target) {
     auto offset = target->getSpriteContainer()->getSprite()->getSource();
     CSprite* tempSprite1 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
@@ -392,11 +389,6 @@ void CEntityManager::onLoop(CInstance* instance) {
             
             target->move(&collisionMap);
             
-            for(auto &i: target->components) {
-                std::cout << i.first;
-            }
-            std::cout << "\n";
-            
             if(target->isDead() && target->hasSprite()) {
                 splitEntityToParticles(target);
                 _DeadEntitiesVector[(*i).first] = (*i).second;
@@ -407,8 +399,6 @@ void CEntityManager::onLoop(CInstance* instance) {
             } else {
                 ++i;
             }
-            
-
         }
     }
     

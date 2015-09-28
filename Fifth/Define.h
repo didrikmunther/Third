@@ -73,7 +73,8 @@ enum RenderFlags {
     COLLISION_GRID      = 1 << 2,
     COLLISION_FULL_AREA = 1 << 3,
     ENTITY_GRID         = 1 << 4,
-    ENEMY_TRIANGLE      = 1 << 5
+    ENEMY_TRIANGLE      = 1 << 5,
+    TRACE_BULLETS       = 1 << 6
 };
 
 #endif

@@ -10,8 +10,10 @@
 #define __Fifth__EUtility__
 
 #include <stdio.h>
+#include <vector>
 
 #include "EComponent.h"
+#include "CBody.h"
 
 
 enum class BasicUtilities {
@@ -24,8 +26,14 @@ class EUtility : public EComponent {
     
 public:
     EUtility(CEntity* parent, CEntity* owner, BasicUtilities basicUtility);
+    ~EUtility();
     
+    void onLoop(CInstance* instance);
+    void onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     bool onCollision(CEntity* target, CollisionSides* collisionSides);
+    
+    std::vector<Position> positions;
+    int removeTimer;
     
 private:
     BasicUtilities _basicUtility;

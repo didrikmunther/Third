@@ -16,7 +16,6 @@ std::map<std::string, CSprite*> CAssetManager::_SpriteVector;
 std::map<std::string, CSpriteContainer*> CAssetManager::_SpriteContainerVector;
 std::map<std::string, CSpriteSheet*> CAssetManager::_SpriteSheetVector;
 std::map<std::string, TTF_Font*> CAssetManager::_FontVector;
-//std::map<std::string, sf::Shader*> CAssetManager::_ShaderVector;
 int CAssetManager::_assetId = 0;
 
 CAssetManager::CAssetManager() { }
@@ -111,23 +110,6 @@ TTF_Font* CAssetManager::addFont(std::string name, std::string fileName, int siz
     }
 }
 
-//sf::Shader* CAssetManager::addShader(std::string name, std::string fileName, sf::Shader::Type type) {
-//    if(_ShaderVector.find(name) != _ShaderVector.end()) {
-//        NFile::log(LogType::WARNING, "Couldn't add shader: \"", name, "\", because it already exists.");
-//        return _ShaderVector[name];
-//    } else {
-//        sf::Shader* temp = new sf::Shader;
-//        if(!temp->loadFromFile(fileName.c_str(), type)) {
-//            NFile::log(LogType::WARNING, "Couldn't add shader: \"", name, "\", could not open file \"", fileName, "\".");
-//            return nullptr;
-//        } else {
-//            NFile::log(LogType::SUCCESS, "Loaded shader: \"", fileName, "\" as \"", name, "\"");
-//            _ShaderVector[name] = temp;
-//            return _ShaderVector[name];
-//        }
-//    }
-//}
-
 CSprite* CAssetManager::getSprite(std::string key) {
     auto it = _SpriteVector.find(key);
     if(it == _SpriteVector.end())
@@ -159,14 +141,6 @@ TTF_Font* CAssetManager::getFont(std::string key) {
     else
         return it->second;
 }
-
-//sf::Shader* CAssetManager::getShader(std::string key) {
-//    auto it = _ShaderVector.find(key);
-//    if(it == _ShaderVector.end())
-//        return nullptr;
-//    else
-//        return it->second;
-//}
 
 void CAssetManager::removeSpriteContainer(std::string key) {
     auto it = _SpriteContainerVector.find(key);

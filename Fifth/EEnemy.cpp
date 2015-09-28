@@ -43,6 +43,7 @@ void EEnemy::onLoop(CInstance* instance) {
         if(parent->collisionSides.right || parent->collisionSides.left)
             movable->jump();
     }
+    
 
     int fireRate = 300; // Bullets per minute
     int fireDelay = (60.0f / fireRate) * 1000;

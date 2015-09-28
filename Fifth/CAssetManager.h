@@ -30,13 +30,11 @@ public:
     static std::string addSpriteContainer(CSpriteContainer* spriteContainer, std::string name = "");
     static CSpriteSheet* addSpriteSheet(std::string name, SDL_Renderer* renderer, std::string fileName);
     static TTF_Font* addFont(std::string name, std::string fileName, int size);
-    //static sf::Shader* addShader(std::string name, std::string fileName, sf::Shader::Type type);
     
     static CSprite* getSprite(std::string key);
     static CSpriteContainer* getSpriteContainer(std::string key);
     static CSpriteSheet* getSpriteSheet(std::string key);
     static TTF_Font* getFont(std::string key);
-    //static sf::Shader* getShader(std::string key);
     
     static void removeSpriteContainer(std::string key);
     
@@ -47,7 +45,6 @@ private:
     static std::map<std::string, CSpriteContainer*> _SpriteContainerVector;
     static std::map<std::string, CSpriteSheet*> _SpriteSheetVector;
     static std::map<std::string, TTF_Font*> _FontVector;
-    //static std::map<std::string, sf::Shader*> _ShaderVector;
     static int _assetId;
     
 };

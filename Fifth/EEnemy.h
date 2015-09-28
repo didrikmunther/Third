@@ -27,6 +27,8 @@ public:
     void setTarget(CEntity* target);
     CEntity* getTarget();
     
+    void shootTarget();
+    
 private:
     std::vector<Triangle> _triangles;
     

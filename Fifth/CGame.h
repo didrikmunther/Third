@@ -46,7 +46,6 @@ private:
     // Main variables
     bool _isRunning;
     SDL_Event event;
-    
     CInstance instance;
     
     // Timer variables

@@ -16,8 +16,8 @@
 #include <sstream>
 
 #include "CRenderable.h"
-#include "CCollidable.h"
 #include "CChatBubble.h"
+#include "CBody.h"
 
 #include "EComponent.h"
 
@@ -29,6 +29,7 @@ class CCamera;
 class CEntityManager;
 class CWindow;
 class CInstance;
+class EUtility;
 
 enum class BasicUtilities;
 
@@ -43,15 +44,13 @@ enum CollisionLayers {
     LAYER7      = 1 << 7,   // 128
 };
 
-enum EntityTypes { // temp
-    Entity = 0,
-    Particle,   // 1
-    Movable,    // 2
-    UtilityParticle, // 3
-    Living,     // 4
-    Npc,        // 5
-    Player,     // 6
-    Enemy       // 7
+enum EntityProperty {
+    COLLIDABLE  = 1 << 0,
+    FLYING      = 1 << 1,
+    HIDDEN      = 1 << 2,
+    STATIC      = 1 << 3,
+    FLIP        = 1 << 4,
+    FLIP_FREEZED= 1 << 5
 };
 
 enum SpriteStateTypes {
@@ -92,7 +91,7 @@ struct CollisionSides {
     }
 };
 
-class CEntity : public CRenderable, public CCollidable {
+class CEntity : public CRenderable {
     
 friend class EComponent;
     friend class CEntityManager;
@@ -113,12 +112,19 @@ public:
     void addCollisionLayer(int collisionLayer) { this->collisionLayer |= collisionLayer; }
     void removeCollisionLayer(int collisionLayer) { if(isOnCollisionLayer(collisionLayer)) toggleCollisionLayer(collisionLayer); }
     
+    int properties;
+    bool hasProperty(int property);
+    void toggleProperty(int property);
+    void addProperty(int property);
+    void removeProperty(int property);
+    
     void move(std::vector<CEntity*>* entities);
     bool coordinateCollision(int x, int y, int w, int h, int x2, int y2, int w2, int h2);
     bool coordinateCollision(int x, int y, int w, int h);
     
     void say(std::string text, std::string fontKey, ChatBubbleType type);
     
+    CBody body;
     CollisionSides collisionSides;
     
     std::string spriteStateTypes[SpriteStateTypes::TOTAL_SPRITESTATETYPES];

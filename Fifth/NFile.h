@@ -91,7 +91,7 @@ public:
     }
     
 private:
-    static CEntity* _createEntity(CInstance* instance, const rapidjson::Value& jsonEntity, EntityParameterHolder entityParameterHolder);
+//    static CEntity* _createEntity(CInstance* instance, const rapidjson::Value& jsonEntity, EntityParameterHolder entityParameterHolder);
     
     /* 
         Invalid operands error here means that

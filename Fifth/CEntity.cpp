@@ -24,12 +24,12 @@
 
 
 CEntity::CEntity(Box rect, SDL_Color color) :
-spriteContainerKey(""), CCollidable(rect), color(color) {
+spriteContainerKey(""), body(rect), color(color) {
     init();
 }
 
 CEntity::CEntity(Box rect, std::string spriteContainerKey) :
-spriteContainerKey(spriteContainerKey), CCollidable(rect), color(SDL_Color{255,0,255,255}) /* sprite not found color */ {
+spriteContainerKey(spriteContainerKey), body(rect), color(SDL_Color{255,0,255,255}) /* sprite not found color */ {
     init();
     std::fill(spriteStateTypes, spriteStateTypes+SpriteStateTypes::TOTAL_SPRITESTATETYPES, spriteContainerKey);
     
@@ -141,6 +141,22 @@ void CEntity::say(std::string text, std::string fontKey, ChatBubbleType type) {
     _GuiTextVector.push_back(temp);
 }
 
+bool CEntity::hasProperty(int property) {
+    return properties & property;
+}
+
+void CEntity::toggleProperty(int property) {
+    properties ^= property;
+}
+
+void CEntity::addProperty(int property) {
+    properties |= property;
+}
+
+void CEntity::removeProperty(int property) {
+    if(hasProperty(property)) toggleProperty(property);
+}
+
 void CEntity::setSpriteContainer(std::string spriteContainerKey) {
     this->spriteContainerKey = spriteContainerKey;
 }
@@ -162,21 +178,21 @@ bool CEntity::hasSprite() {
 
 void CEntity::shoot(float angle, BasicUtilities basicUtility) {
     
-    int precision = 100;
-    int spread = 2000;
+    int precision = 20;
+    int spread = 200;
     
     angle += (rand() % precision - precision / 2) / (float)spread;
     
-    float velX = cos(angle) * 50;
-    float velY = sin(angle) * 50;
+    float velocity = 20;
+    float velX = cos(angle) * (velocity);
+    float velY = sin(angle) * (velocity);
     
     CEntity* tempParticle = new CEntity(Box{body.getX(), body.getY() - 100, 8, 8}, SDL_Color{(Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0});
     tempParticle->addComponent<EParticle>(10);
-    //tempParticle->addComponent<EUtility>(basicUtility);
     EUtility* utilityComponent = new EUtility(tempParticle, this, basicUtility);
     tempParticle->addComponent<EUtility>(utilityComponent);
-    tempParticle->body.velX = velX;
-    tempParticle->body.velY = velY;
+    tempParticle->body.velX = velX + body.velX;
+    tempParticle->body.velY = velY + body.velY;
     particlesToAdd.push_back(tempParticle);
 }
 
@@ -192,7 +208,7 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags ren
         NSurface::renderRect(body.getX() + body.getW() - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.getH(), window, r, g, b);  // Right line
         NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, window, r, g, b);  // Bottom line
     }
-    
+        
     for(auto &i: components) {
         i.second->onRenderAdditional(window, camera, renderFlags);
     }

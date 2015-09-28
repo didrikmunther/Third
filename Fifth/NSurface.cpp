@@ -59,8 +59,11 @@ void NSurface::renderTexture(int x, int y, int w, int h, SDL_Renderer* renderer,
 }
 
 void NSurface::renderLine(Line line, SDL_Renderer* renderer, CCamera* camera /* = nullptr */) {
-    if(camera)
+    if(camera) {
         line = line.normalizeWithCamera(camera);
+//        if(!camera->collision(line.x, line.y, line.x2, line.y2))
+//            return;
+    }
     
     SDL_SetRenderDrawColor(renderer, line.color.r, line.color.g, line.color.b, line.color.a);
     SDL_RenderDrawLine(renderer, line.x, line.y, line.x2, line.y2);

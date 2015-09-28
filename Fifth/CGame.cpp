@@ -19,6 +19,7 @@
 #include "CText.h"
 #include "CSpriteContainer.h"
 #include "CBackground.h"
+#include "CGlobalSettings.h"
 
 #include "EMovable.h"
 #include "EUtility.h"
@@ -72,7 +73,7 @@ int CGame::onExecute() {
             _updates++;
             _delta--;
             
-            //instance.player->say(_title.str() + " Gravity: " + std::to_string(CGlobalSettings::GRAVITY), "TESTFONT", ChatBubbleType::INSTANT_TALK);
+            instance.entityManager.getEntity("n:bush")->say(_title.str() + " Gravity: " + std::to_string(CGlobalSettings::GRAVITY), "TESTFONT", ChatBubbleType::INSTANT_TALK);
         }
         
         _onRender();
@@ -131,12 +132,17 @@ int CGame::_onInit() {
     
     
     
-    auto temp = new CEntity(Box{50, -100, 80, 140}, "playerPink");
+    auto temp = new CEntity(Box{100, -1000, 30 * 5, 28 * 5}, "bush");
+    temp->collisionLayer = CollisionLayers::LAYER4; // all layers
+    instance.entityManager.addEntity(temp, "n:bush");
+    
+    temp = new CEntity(Box{50, -100, 80, 140}, "playerPink");
     temp->spriteFollowsCollisionBox = false;
     temp->spriteStateTypes[SpriteStateTypes::ASCENDING] =
     temp->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
     temp->addComponent<EMovable>();
     temp->addComponent<ELiving>();
+    temp->getComponent<EMovable>()->jumpPower = 15.0f;
     instance.entityManager.addEntity(temp);
     instance.player = temp;
     instance.camera.setTarget(temp);
@@ -149,9 +155,7 @@ int CGame::_onInit() {
     temp = new CEntity(Box{0, -4950, 20, 5000}, SDL_Color{255, 0, 0, 255});
     temp->collisionLayer = -129;
     temp->addProperty(EntityProperty::STATIC);
-    instance.entityManager.addEntity(temp);
-
-    
+    instance.entityManager.addEntity(temp);    
     
     /*
     
@@ -201,53 +205,6 @@ void CGame::_initRelativePaths() {
         NFile::log(LogType::ALERT, "Current Path: ", path);
     #endif
     // ----------------------------------------------------------------------------
-}
-
-void CGame::_handleKeyStates() {
-    
-    if(!isFocused)
-        return;
-    
-    const Uint8* keystate = SDL_GetKeyboardState(NULL);
-    
-    // Movement
-    
-    EMovable* movable = instance.player->getComponent<EMovable>();
-    
-    if(movable) {
-        if(keystate[SDL_SCANCODE_D]) {
-            movable->goRight();
-        }
-        if(keystate[SDL_SCANCODE_A]) {
-            movable->goLeft();
-        }
-        
-        if(keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_SPACE]) {
-            movable->goUp();
-        }
-        
-        if(keystate[SDL_SCANCODE_S]) {
-            movable->goDown();
-        }
-}
-
-    // Other
-    
-    if(NMouse::leftMouseButtonPressed()) { // damage particle
-        int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body.getX();
-        int mousePosY = NMouse::relativeMouseY(&instance.camera) - (instance.player->body.getY() - 100);
-        float angle = atan2(mousePosY, mousePosX);
-        
-        instance.player->shoot(angle, BasicUtilities::DAMAGE);
-    }
-    
-    if(NMouse::rightMouseButtonPressed()) {   // heal particle
-        int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body.getX();
-        int mousePosY = NMouse::relativeMouseY(&instance.camera) - (instance.player->body.getY() - 100);
-        float angle = atan2(mousePosY, mousePosX);
-        
-        instance.player->shoot(angle, BasicUtilities::HEAL);
-    }
 }
 
 void CGame::_onLoop() {

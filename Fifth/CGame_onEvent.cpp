@@ -20,6 +20,53 @@
 #include "NMouse.h"
 
 
+void CGame::_handleKeyStates() {
+    
+    if(!isFocused)
+        return;
+    
+    const Uint8* keystate = SDL_GetKeyboardState(NULL);
+    
+    // Movement
+    
+    EMovable* movable = instance.player->getComponent<EMovable>();
+    
+    if(movable) {
+        if(keystate[SDL_SCANCODE_D]) {
+            movable->goRight();
+        }
+        if(keystate[SDL_SCANCODE_A]) {
+            movable->goLeft();
+        }
+        
+        if(keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_SPACE]) {
+            movable->goUp();
+        }
+        
+        if(keystate[SDL_SCANCODE_S]) {
+            movable->goDown();
+        }
+    }
+    
+    // Other
+    
+    if(NMouse::leftMouseButtonPressed()) { // damage particle
+        int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body.getX();
+        int mousePosY = NMouse::relativeMouseY(&instance.camera) - (instance.player->body.getY() - 100);
+        float angle = atan2(mousePosY, mousePosX);
+        
+        instance.player->shoot(angle, BasicUtilities::DAMAGE);
+    }
+    
+    if(NMouse::rightMouseButtonPressed()) {   // heal particle
+        int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body.getX();
+        int mousePosY = NMouse::relativeMouseY(&instance.camera) - (instance.player->body.getY() - 100);
+        float angle = atan2(mousePosY, mousePosX);
+        
+        instance.player->shoot(angle, BasicUtilities::HEAL);
+    }
+}
+
 void CGame::_onEvent(SDL_Event* event) {
     
     //if(event->key.repeat != 0) return;
@@ -81,6 +128,10 @@ void CGame::_onEvent(SDL_Event* event) {
                     
                 case SDLK_v:
                     instance.entityManager.renderFlags ^= RenderFlags::ENEMY_TRIANGLE;
+                    break;
+                    
+                case SDLK_c:
+                    instance.entityManager.renderFlags ^= RenderFlags::TRACE_BULLETS;
                     break;
                     
                 case SDLK_RIGHTBRACKET:
