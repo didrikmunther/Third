@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <string>
 
+#include "Define.h"
+
 
 class CWindow;
 class CCamera;
@@ -20,8 +22,8 @@ class CGuiText {
 public:
     CGuiText(int x, int y, std::string text, std::string fontKey);
     
-    virtual void onLoop();                                          // Pure virtual
-    virtual void onRender(CWindow* window, CCamera* camera); //
+    virtual void onLoop() {  }
+    virtual void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {  }
     
     bool toRemove() { return _toRemove; }
     

@@ -11,6 +11,11 @@
 
 #include <stdio.h>
 #include <vector>
+#include <string>
+
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
 
 #include "Define.h"
 
@@ -34,13 +39,15 @@ public:
     virtual void onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {  }
     virtual bool onCollision(CEntity* target, CollisionSides* collisionSides) { return true; }
     
+    virtual void serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc) {  }
+    virtual void deserialize(rapidjson::Value* value) {  }
+    
     CEntity* parent;
+    
+    std::string type;
     
 protected:
     
-    // Remember to access these values with a * in front, otherwise they'll return the adress only
-    bool* isDead();
-    bool* toRemove();
     std::vector<CGuiText*>* guiTextVector();
     
 };

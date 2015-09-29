@@ -37,35 +37,6 @@ struct Area {
     int w, h;
 };
 
-enum keyMap {
-    EXIT = SDLK_ESCAPE,
-    
-    LEFT = SDLK_a,
-    RIGHT = SDLK_d,
-    DOWN = SDLK_s,
-    UP = SDLK_w,
-    SNEAK = SDLK_LSHIFT,
-    
-    BLOCK = SDLK_l,
-    PARTICLEEM = SDLK_i,
-    RESET = SDLK_j,
-    
-    TOGGLE_NOCLIP = SDLK_1,
-    TOGGLE_HIDDEN = SDLK_2,
-    TOGGLE_COLLISION_BOUNDS = SDLK_3,
-    
-    NEW_WINDOW = SDLK_4,
-    LOAD_ASSETS = SDLK_5,
-    NEW_CHAT_BUBBLE = SDLK_6,
-    
-    TARGET_PLAYER = SDLK_COMMA,
-    TARGET_BLOCK = SDLK_PERIOD,
-    
-    CHANGE_CAMERA_SWAY_UP = SDLK_0,
-    CHANGE_CAMERA_SWAY_DOWN = SDLK_9
-    
-};
-
 enum RenderFlags {
     CLEAR = 0,
     COLLISION_BORDERS   = 1 << 0,
@@ -74,7 +45,8 @@ enum RenderFlags {
     COLLISION_FULL_AREA = 1 << 3,
     ENTITY_GRID         = 1 << 4,
     ENEMY_TRIANGLE      = 1 << 5,
-    TRACE_BULLETS       = 1 << 6
+    TRACE_BULLETS       = 1 << 6,
+    RENDER_COMBAT_TEXT  = 1 << 7
 };
 
 #endif

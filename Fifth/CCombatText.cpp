@@ -31,6 +31,7 @@ void CCombatText::onLoop() {
     _x += floor(cos(_y * 25) * 2); // Use _y as an incrementor here
 }
 
-void CCombatText::onRender(CWindow* window, CCamera* camera) {    
-    _textObj->onRender(_x, _y, window, camera);
+void CCombatText::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
+    if(renderFlags & RenderFlags::RENDER_COMBAT_TEXT)
+        _textObj->onRender(_x, _y, window, camera);
 }

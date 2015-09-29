@@ -17,24 +17,21 @@
 
 
 EUtility::EUtility(CEntity* parent, CEntity* owner, BasicUtilities basicUtility) : EComponent(parent) {
-    parent->collisionLayer = LAYER0;
+    parent->collisionLayer = CollisionLayers::LAYER0;
     _basicUtility = basicUtility;
     _owner = owner;
     removeTimer = -1;
 }
 
-EUtility::~EUtility() {
-    positions.clear();
-}
-
 void EUtility::onLoop(CInstance* instance) {
+    
     positions.push_back(Position{parent->body.getX(), parent->body.getY()});
     
     if(removeTimer != -1)
         removeTimer--;
     
     if(removeTimer == 0)
-        *toRemove() = true;
+        parent->toRemove = true;
 }
 
 void EUtility::onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
@@ -60,7 +57,7 @@ bool EUtility::onCollision(CEntity* target, CollisionSides* collisionSides) {
     if(target == _owner && _basicUtility != BasicUtilities::HEAL)
         return false;
     
-    if(*toRemove())
+    if(parent->toRemove)
         return true;
     
     if(std::find(_hasCollidedWith.begin(), _hasCollidedWith.end(), target) != _hasCollidedWith.end())

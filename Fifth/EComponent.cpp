@@ -18,14 +18,6 @@ EComponent::~EComponent() {
     
 }
 
-bool* EComponent::isDead() {
-    return &parent->_isDead;
-}
-
-bool* EComponent::toRemove() {
-    return &parent->_toRemove;
-}
-
 std::vector<CGuiText*>* EComponent::guiTextVector() {
     return &parent->_GuiTextVector;
 }

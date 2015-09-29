@@ -59,12 +59,11 @@ public:
     void toggleRenderFlag(RenderFlags renderFlag);
     
 private:
-    std::map<std::string, CEntity*> _EntityVector;
-    std::vector<CEntity*> _ParticleVector;
-    std::vector<CGuiText*> _GuiTextVector;
-    std::map<std::string, CEntity*> _DeadEntitiesVector;
-    
-    std::map<std::string, CBackground*> _BackgroundVector;
+    std::map<std::string, CEntity*> _entities;
+    std::vector<CEntity*> _particles;
+    std::vector<CGuiText*> _guiTextElements;
+    std::map<std::string, CEntity*> _deadEntities;
+    std::map<std::string, CBackground*> _backgrounds;
     
     int _gridSize;
     

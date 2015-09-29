@@ -21,19 +21,21 @@
 #include "CInstance.h"
 
 
-CEntityManager::CEntityManager() : entityID(0), renderFlags(RenderFlags::CLEAR), _gridSize(32) {
+CEntityManager::CEntityManager() : entityID(0), _gridSize(32) {
+    renderFlags = RenderFlags::CLEAR |
+                  RenderFlags::RENDER_COMBAT_TEXT;
 }
 
 std::string CEntityManager::addEntity(CEntity* entity, std::string name /* = "" */) {
     if(name == "") {
         name = "5:" + std::to_string(++entityID);
-        _EntityVector[name] = entity;
-    } else if(_EntityVector.find(name) == _EntityVector.end())
-        _EntityVector[name] = entity;
+        _entities[name] = entity;
+    } else if(_entities.find(name) == _entities.end())
+        _entities[name] = entity;
     else {  // Just overwrite the entity
-        auto i = _EntityVector.find(name);
+        auto i = _entities.find(name);
         delete i->second;
-        _EntityVector[name] = entity;
+        _entities[name] = entity;
     }
     
     //entity->say(name, "TESTFONT", ChatBubbleType::SAY);
@@ -41,16 +43,16 @@ std::string CEntityManager::addEntity(CEntity* entity, std::string name /* = "" 
 }
 
 CEntity* CEntityManager::getEntity(std::string name) {
-    if(_EntityVector.find(name) == _EntityVector.end()) {
+    if(_entities.find(name) == _entities.end()) {
         NFile::log(LogType::WARNING, "Couldn't get entity: ", name, ", because it doesn't exist.");
         return nullptr;
     } else {
-        return _EntityVector[name];
+        return _entities[name];
     }
 }
 
 CEntity* CEntityManager::getEntityAtCoordinate(int x, int y) {
-    for (auto &i: _EntityVector) {
+    for (auto &i: _entities) {
         if(i.second->coordinateCollision(x, y, 1, 1))
            return i.second;
     }
@@ -58,7 +60,7 @@ CEntity* CEntityManager::getEntityAtCoordinate(int x, int y) {
 }
 
 std::string CEntityManager::getNameOfEntity(CEntity *entity) {
-    for (auto &i: _EntityVector) {                              // There must be a better way of doing this
+    for (auto &i: _entities) {                              // There must be a better way of doing this
         if(i.second == entity)
             return i.first;
     }
@@ -66,15 +68,15 @@ std::string CEntityManager::getNameOfEntity(CEntity *entity) {
 }
 
 void CEntityManager::addParticle(CEntity *particle) {
-    _ParticleVector.push_back(particle);
+    _particles.push_back(particle);
 }
 
 void CEntityManager::addGuiText(CGuiText* guiText) {
-    _GuiTextVector.push_back(guiText);
+    _guiTextElements.push_back(guiText);
 }
 
 void CEntityManager::addBackground(std::string name, CBackground* background) {
-    _BackgroundVector[name] = background;
+    _backgrounds[name] = background;
 }
 
 void CEntityManager::addRenderFlag(RenderFlags renderFlag) {
@@ -91,7 +93,7 @@ void CEntityManager::toggleRenderFlag(RenderFlags renderFlag) {
 
 void CEntityManager::onRender(CWindow* window, CCamera* camera) {
     
-    for(auto &i: _BackgroundVector) {
+    for(auto &i: _backgrounds) {
         i.second->onRender(window, camera);
     }
     
@@ -104,26 +106,26 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
         }
     }
     
-    for (auto &i: _ParticleVector)
+    for (auto &i: _particles)
         i->onRender(window, camera, (RenderFlags)renderFlags);
     
-    for (auto &i: _EntityVector)
+    for (auto &i: _entities)
         i.second->onRender(window, camera, (RenderFlags)renderFlags);
     
-    for (auto &i: _EntityVector)
-        if(!i.second->toRemove())
+    for (auto &i: _entities)
+        if(!i.second->toRemove)
             i.second->renderAdditional(window, camera, (RenderFlags)renderFlags);
     
-    for (auto &i: _ParticleVector)
-        if(!i->toRemove())
+    for (auto &i: _particles)
+        if(!i->toRemove)
             i->renderAdditional(window, camera, (RenderFlags)renderFlags);
     
-    for (auto &i: _DeadEntitiesVector)
-        if(!i.second->toRemove())
+    for (auto &i: _deadEntities)
+        if(!i.second->toRemove)
             i.second->renderAdditional(window, camera, (RenderFlags)renderFlags);
     
     if(renderFlags & RenderFlags::COLLISION_AREA) {
-        for(auto &i: _EntityVector) {
+        for(auto &i: _entities) {
             auto target = i.second;
             int targetX = target->body.getX() + target->body.velX;
             int targetY = target->body.getY() + target->body.velY;
@@ -132,7 +134,7 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
             NSurface::renderRect(targetX - camera->offsetX(), targetY - camera->offsetY(), targetW, targetH, window, 100, 200, 100, 100);
         }
         
-        for(auto &i: _ParticleVector) {
+        for(auto &i: _particles) {
             auto target = i;
             int targetX = target->body.getX() + target->body.velX;
             int targetY = target->body.getY() + target->body.velY;
@@ -147,21 +149,21 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
     }
     
     if(renderFlags & RenderFlags::ENTITY_GRID) {
-        for(auto &i: _EntityVector) {
+        for(auto &i: _entities) {
             for(auto &grid: i.second->gridCoordinates) {
                 NSurface::renderRect(grid.x * _gridSize - camera->offsetX(), grid.y * _gridSize - camera->offsetY(), _gridSize, _gridSize, window, 0, 100, 100, 100);
             }
         }
         
-        for(auto &i: _ParticleVector) {
+        for(auto &i: _particles) {
             for(auto &grid: i->gridCoordinates) {
                 NSurface::renderRect(grid.x * _gridSize - camera->offsetX(), grid.y * _gridSize - camera->offsetY(), _gridSize, _gridSize, window, 0, 100, 100, 100);
             }
         }
     }
     
-    for (auto &i: _GuiTextVector)
-        i->onRender(window, camera);
+    for (auto &i: _guiTextElements)
+        i->onRender(window, camera, (RenderFlags)renderFlags);
 }
 
 // Temp
@@ -339,7 +341,7 @@ void CEntityManager::onLoop(CInstance* instance) {
     std::map <int, std::map <int, std::vector<CEntity*>>> _CollisionVector;
     
     {
-        for(auto &particle: _ParticleVector) {
+        for(auto &particle: _particles) {
             particle->gridCoordinates.clear();
             
             particle->onLoop(instance);
@@ -349,7 +351,7 @@ void CEntityManager::onLoop(CInstance* instance) {
             }
         }
         
-        for(auto &entity: _EntityVector) {
+        for(auto &entity: _entities) {
             auto target = entity.second;
             target->gridCoordinates.clear();
             
@@ -361,7 +363,7 @@ void CEntityManager::onLoop(CInstance* instance) {
             }
         }
         
-        for(auto &entity: _DeadEntitiesVector) {
+        for(auto &entity: _deadEntities) {
             auto target = entity.second;
             target->gridCoordinates.clear();
             
@@ -374,8 +376,8 @@ void CEntityManager::onLoop(CInstance* instance) {
     }
     
     {
-        auto i = _EntityVector.begin();
-        while(i != _EntityVector.end()) {
+        auto i = _entities.begin();
+        while(i != _entities.end()) {
             auto target = (*i).second;
             
             std::vector<CEntity*> collisionMap;
@@ -389,13 +391,13 @@ void CEntityManager::onLoop(CInstance* instance) {
             
             target->move(&collisionMap);
             
-            if(target->isDead() && target->hasSprite()) {
+            if(target->isDead && target->hasSprite()) {
                 splitEntityToParticles(target);
-                _DeadEntitiesVector[(*i).first] = (*i).second;
-                _EntityVector.erase(i++);
-            } else if(target->toRemove()) {
+                _deadEntities[(*i).first] = (*i).second;
+                _entities.erase(i++);
+            } else if(target->toRemove) {
                 delete target;
-                _EntityVector.erase(i++->first);
+                _entities.erase(i++->first);
             } else {
                 ++i;
             }
@@ -403,8 +405,8 @@ void CEntityManager::onLoop(CInstance* instance) {
     }
     
     {
-        auto i = _DeadEntitiesVector.begin();
-        while(i != _DeadEntitiesVector.end()) {
+        auto i = _deadEntities.begin();
+        while(i != _deadEntities.end()) {
             auto target = i->second;
             
             std::vector<CEntity*> collisionMap;
@@ -419,17 +421,17 @@ void CEntityManager::onLoop(CInstance* instance) {
             
             target->move(&collisionMap);
             
-            if((*i).second->toRemove()) {
+            if((*i).second->toRemove) {
                 delete (*i).second;
-                _DeadEntitiesVector.erase(i++);
+                _deadEntities.erase(i++);
             } else
                 ++i;
         }
     }
     
     {
-        auto i = _ParticleVector.begin();
-        while(i != _ParticleVector.end()) {
+        auto i = _particles.begin();
+        while(i != _particles.end()) {
             auto target = (*i);
             
             std::stringstream toSay;
@@ -446,27 +448,27 @@ void CEntityManager::onLoop(CInstance* instance) {
             
             target->move(&collisionMap);
             
-            if(target->toRemove()) {
+            if(target->toRemove) {
                 delete *i;
-                _ParticleVector.erase(std::remove(_ParticleVector.begin(), _ParticleVector.end(), target), _ParticleVector.end());
+                _particles.erase(std::remove(_particles.begin(), _particles.end(), target), _particles.end());
             } else
                 ++i;
         }
     }
     
     {
-        auto i = _GuiTextVector.begin();
-        while(i != _GuiTextVector.end()) {
+        auto i = _guiTextElements.begin();
+        while(i != _guiTextElements.end()) {
             (*i)->onLoop();
             if((*i)->toRemove()) {
                 delete *i;
-                _GuiTextVector.erase(std::remove(_GuiTextVector.begin(), _GuiTextVector.end(), (*i)), _GuiTextVector.end());
+                _guiTextElements.erase(std::remove(_guiTextElements.begin(), _guiTextElements.end(), (*i)), _guiTextElements.end());
             } else
                 ++i;
         }
     }
     
-    for(auto &i: _EntityVector) { // Add delayed particles of all entities, like bullets
+    for(auto &i: _entities) { // Add delayed particles of all entities, like bullets
         for(auto &particle: i.second->particlesToAdd) {
             addParticle(particle);
         }
@@ -486,47 +488,47 @@ void CEntityManager::onCleanup() {
 
 void CEntityManager::entityCleanup() {
     {
-        auto i = _EntityVector.begin();
-        while(i != _EntityVector.end()) {
+        auto i = _entities.begin();
+        while(i != _entities.end()) {
             delete i->second;
-            _EntityVector.erase(i++->first);
+            _entities.erase(i++->first);
         }
-        _EntityVector.clear();
+        _entities.clear();
     }
     
     {
-        auto i = _DeadEntitiesVector.begin();
-        while(i != _DeadEntitiesVector.end()) {
+        auto i = _deadEntities.begin();
+        while(i != _deadEntities.end()) {
             delete i->second;
-            _DeadEntitiesVector.erase(i++->first);
+            _deadEntities.erase(i++->first);
         }
-        _DeadEntitiesVector.clear();
+        _deadEntities.clear();
     }
     
     {
-        auto i = _BackgroundVector.begin();
-        while(i != _BackgroundVector.end()) {
+        auto i = _backgrounds.begin();
+        while(i != _backgrounds.end()) {
             delete i->second;
-            _BackgroundVector.erase(i++->first);
+            _backgrounds.erase(i++->first);
         }
-        _BackgroundVector.clear();
+        _backgrounds.clear();
     }
 }
 
 void CEntityManager::particleCleanup() {
-    auto i = _ParticleVector.begin();
-    while(i != _ParticleVector.end()) {
+    auto i = _particles.begin();
+    while(i != _particles.end()) {
         delete *i;
-        i = _ParticleVector.erase(i);
+        i = _particles.erase(i);
     }
-    _ParticleVector.clear();
+    _particles.clear();
 }
 
 void CEntityManager::guiTextCleanup() {
-    auto i = _GuiTextVector.begin();
-    while(i != _GuiTextVector.end()) {
+    auto i = _guiTextElements.begin();
+    while(i != _guiTextElements.end()) {
         delete *i;
-        i = _GuiTextVector.erase(i);
+        i = _guiTextElements.erase(i);
     }
-    _GuiTextVector.clear();
+    _guiTextElements.clear();
 }

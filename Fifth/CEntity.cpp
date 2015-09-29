@@ -19,6 +19,7 @@
 #include "CInstance.h"
 #include "EParticle.h"
 #include "EUtility.h"
+#include "CChatBubble.h"
 
 #include <iostream>
 
@@ -41,8 +42,8 @@ CEntity::~CEntity() {
 }
 
 void CEntity::init() {
-    _isDead             = false;
-    _toRemove           = false;
+    isDead             = false;
+    toRemove           = false;
     properties          = EntityProperty::COLLIDABLE;
     collisionSides = false;
     collisionLayer = CollisionLayers::LAYER0;
@@ -89,13 +90,30 @@ void CEntity::onLoop(CInstance* instance) {
             setSpriteContainer(spriteStateTypes[SpriteStateTypes::DESCENDING]);
     }
     
-    for(auto &i: components)
+    for(auto& i: components)
         i.second->onLoop(instance);
+    
+    // --
+    
+    rapidjson::Document d;
+    d.Parse("{}");
+    
+    rapidjson::Value entityValue(rapidjson::kObjectType);
+    serialize(&entityValue, &d.GetAllocator());
+    
+    d.AddMember("this", entityValue, d.GetAllocator());
+    
+    rapidjson::StringBuffer sb;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
+    d.Accept(writer);
+    
+    if(!isDead && !getComponent<EParticle>())
+        say(sb.GetString(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
 }
 
 void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     
-    if(toRemove() || isDead())
+    if(toRemove || isDead)
         return;
     
     int x = body.getX() - camera->offsetX();
@@ -129,6 +147,26 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
     
     for(auto &i: components) {
         i.second->onRender(window, camera, renderFlags);
+    }
+}
+
+void CEntity::serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc) {
+    
+    rapidjson::Value componentValues(rapidjson::kObjectType);
+    for(auto& i: components) {
+        rapidjson::Value component(rapidjson::kObjectType);
+        i.second->serialize(&component, alloc);
+        componentValues.AddMember(rapidjson::Value(i.second->type.c_str(), *alloc), component, *alloc);
+    }
+    
+    value->AddMember("components", componentValues, *alloc);
+    
+}
+
+void CEntity::deserialize(rapidjson::Value* value) {
+    
+    for(auto& i: components) {
+        i.second->deserialize(value);
     }
 }
 
@@ -198,7 +236,7 @@ void CEntity::shoot(float angle, BasicUtilities basicUtility) {
 
 void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags renderFlags) {
     
-    if(renderFlags & RenderFlags::COLLISION_BORDERS && !isDead()) {                             // Render collision boxes
+    if(renderFlags & RenderFlags::COLLISION_BORDERS && !isDead) {                             // Render collision boxes
         int r, g, b = 0;
         if(hasProperty(EntityProperty::COLLIDABLE)) {r = 255; g = 0; b = 0;  }
         else                                        {r = 0; g = 255; b = 255;}
@@ -206,7 +244,7 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags ren
         NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), 1, body.getH() - 1,window, r, g, b);    // Left line
         NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW() - 1, 1, window, r, g, b);      // Top line
         NSurface::renderRect(body.getX() + body.getW() - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.getH(), window, r, g, b);  // Right line
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, window, r, g, b);  // Bottom line
+        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, window, r, g, b);  // Bosttom line
     }
         
     for(auto &i: components) {
@@ -215,7 +253,7 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags ren
     
     if(!hasProperty(EntityProperty::HIDDEN))
         for (auto &i: _GuiTextVector)                                                // Render chatbubbles
-            i->onRender(window, camera);
+            i->onRender(window, camera, renderFlags);
     
 }
 
@@ -246,7 +284,7 @@ bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities) {
         
         if (target == this) continue;
         if (!(target->properties & EntityProperty::COLLIDABLE)) continue;
-        if (target->isDead()) continue;
+        if (target->isDead) continue;
         if (!target->isOnCollisionLayer(collisionLayer)) continue;
     
         if(!coordinateCollision(x, y, body.getW(), body.getH(),
@@ -286,7 +324,7 @@ bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities) {
 
 void CEntity::move(std::vector<CEntity*>* entities) {
     
-    if(hasProperty(EntityProperty::STATIC) || isDead()) {
+    if(hasProperty(EntityProperty::STATIC) || isDead) {
         body.velY = body.velX = 0;
         return;
     }
@@ -299,6 +337,9 @@ void CEntity::move(std::vector<CEntity*>* entities) {
     } else if(CGlobalSettings::GRAVITY != 0) {
         MoveX = round(body.velX);
         MoveY = round(body.velY);
+    } else {
+        MoveX =
+        MoveY = 0;
     }
     
     int StopX = body.getX();

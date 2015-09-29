@@ -93,7 +93,7 @@ void CGame::_onEvent(SDL_Event* event) {
         case SDL_KEYDOWN:
             switch(event->key.keysym.sym) {
                     
-                case keyMap::EXIT:
+                case SDLK_ESCAPE:
                     _isRunning = false;
                     break;
                     
@@ -134,6 +134,10 @@ void CGame::_onEvent(SDL_Event* event) {
                     instance.entityManager.renderFlags ^= RenderFlags::TRACE_BULLETS;
                     break;
                     
+                case SDLK_x:
+                    instance.entityManager.renderFlags ^= RenderFlags::RENDER_COMBAT_TEXT;
+                    break;
+                    
                 case SDLK_RIGHTBRACKET:
                     CGlobalSettings::GRAVITY += 0.1;
                     
@@ -147,7 +151,7 @@ void CGame::_onEvent(SDL_Event* event) {
                         CGlobalSettings::GRAVITY = 0.0f;
                     break;
                     
-                case keyMap::SNEAK:
+                case SDLK_LSHIFT:
                     if(movable)
                         movable->setMovementState(MovementState::SNEAKING_MOVEMENT);
                     break;
@@ -157,10 +161,11 @@ void CGame::_onEvent(SDL_Event* event) {
                         movable->setMovementState(MovementState::RUNNING_MOVEMENT);
                     break;
                     
-                case keyMap::BLOCK:
+                case SDLK_l:
                 {
                     CEntity* temp = new CEntity(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 40, 40}, SDL_Color{0, 0, 255, 0});
                     temp->addProperty(EntityProperty::STATIC);
+                    temp->addCollisionLayer(-129);
                     instance.entityManager.addEntity(temp);
                 }
                     break;
@@ -177,25 +182,25 @@ void CGame::_onEvent(SDL_Event* event) {
                 }
                     break;
                     
-                case keyMap::TOGGLE_NOCLIP:
+                case SDLK_1:
                     if(movable)
                         movable->toggleNoclip();
                     break;
-                case keyMap::LOAD_ASSETS:
+                case SDLK_5:
                 {
                     //NFile::loadMap("resources/map/testMap1.map", &instance);
                     CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
                     instance.entityManager.addBackground("main", background);
                 }
                     break;
-                case keyMap::TOGGLE_HIDDEN:
+                case SDLK_2:
                     instance.player->toggleProperty(EntityProperty::HIDDEN);
                     break;
-                case keyMap::TOGGLE_COLLISION_BOUNDS:
+                case SDLK_3:
                     //player->toggleProperty(EntityProperty::FLYING);
                     instance.entityManager.toggleRenderFlag(RenderFlags::COLLISION_BORDERS);
                     break;
-                case keyMap::NEW_WINDOW:
+                case SDLK_4:
                 {
                     if(instance.window.newWindow(_intro, 640, 480)) {
                         NFile::log(LogType::ERROR, "Window.onInit failed: ", SDL_GetError());
@@ -205,7 +210,7 @@ void CGame::_onEvent(SDL_Event* event) {
                 }
                     break;
                     
-                case keyMap::NEW_CHAT_BUBBLE:
+                case SDLK_6:
                 {
                     const char alphanum[] =                     // Randomize a string
                     "0123456789"
@@ -227,17 +232,17 @@ void CGame::_onEvent(SDL_Event* event) {
                 }
                     break;
                     
-                case keyMap::TARGET_PLAYER:
+                case SDLK_COMMA:
                     instance.camera.setTarget(instance.player);
                     break;
-                case keyMap::TARGET_BLOCK:
+                case SDLK_PERIOD:
                     instance.camera.setTarget(instance.entityManager.getEntity("m:yrl"));
                     break;
                     
-                case keyMap::CHANGE_CAMERA_SWAY_UP:
+                case SDLK_0:
                     instance.camera.cameraSway += 10;
                     break;
-                case keyMap::CHANGE_CAMERA_SWAY_DOWN:
+                case SDLK_9:
                     if(instance.camera.cameraSway <= 10)
                         instance.camera.cameraSway = 1;
                     else
@@ -252,7 +257,7 @@ void CGame::_onEvent(SDL_Event* event) {
             
         case SDL_KEYUP:
             switch(event->key.keysym.sym) {
-                case keyMap::SNEAK:
+                case SDLK_LSHIFT:
                 case SDLK_LCTRL:
                     if(movable)
                         movable->setMovementState(MovementState::WALKING_MOVEMENT);
@@ -279,7 +284,7 @@ void CGame::_onEvent(SDL_Event* event) {
             if(NMouse::rightMouseButtonPressed()) {
                 auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera));
                 if(tempTarget != nullptr) {
-                    tempTarget->_isDead = true;
+                    tempTarget->isDead = true;
                 }
             }
             break;

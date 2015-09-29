@@ -13,12 +13,12 @@
 
 EParticle::EParticle(CEntity* parent, int livingTime) : EComponent(parent) {
     parent->addProperty(EntityProperty::FLIP_FREEZED);
-    parent->collisionLayer = LAYER1;
+    parent->collisionLayer = CollisionLayers::LAYER1;
     _livingTime = livingTime;
     _creationTime = SDL_GetTicks();
 }
 
 void EParticle::onLoop(CInstance* instance) {
     if(_livingTime > 0 && SDL_GetTicks() - _creationTime > _livingTime * 1000)
-        *toRemove() = true;
+        parent->toRemove = true;
 }

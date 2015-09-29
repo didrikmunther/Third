@@ -42,6 +42,9 @@ public:
     void onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     bool onCollision(CEntity* target, CollisionSides* collisionSides);
     
+    void serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc);
+    void deserialize(rapidjson::Value* value);
+    
     int dealDamage(int amount, UtilityPosition position = {0, 0}, CEntity* damager = nullptr);
     int heal(int amount, UtilityPosition position = {0, 0}, CEntity* healer = nullptr);
     

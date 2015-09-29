@@ -34,7 +34,7 @@ public:
     CChatBubble(std::string text, CEntity* target, std::string fontKey, ChatBubbleType type);
     
     void onLoop();
-    void onRender(CWindow* window, CCamera* camera);
+    void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
 private:
     

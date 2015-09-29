@@ -76,7 +76,7 @@ void ELiving::onLoop(CInstance* instance) {
 }
 
 void ELiving::onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
-    if (parent->isDead() || parent->hasProperty(EntityProperty::HIDDEN))
+    if (parent->isDead || parent->hasProperty(EntityProperty::HIDDEN))
         return;
     
     int floatOverHead = 10;
@@ -151,6 +151,15 @@ bool ELiving::onCollision(CEntity* target, CollisionSides* collisionSides) {
     return true;
 }
 
+void ELiving::serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc) {
+    value->AddMember("health", _values[ValueTypes::HEALTH], *alloc);
+    value->AddMember("kevlar", _values[ValueTypes::KEVLAR], *alloc);
+}
+
+void ELiving::deserialize(rapidjson::Value* value) {
+    
+}
+
 int ELiving::dealDamage(int amount, UtilityPosition position /* = {0, 0} */, CEntity* damager /* = nullptr */) {
     SDL_Color damageColor = {255, 0, 0};
     
@@ -175,7 +184,7 @@ int ELiving::dealDamage(int amount, UtilityPosition position /* = {0, 0} */, CEn
     *health -= afterKevlar;
     if(*health <= 0) {
         *health = 0;
-        *isDead() = true;
+        parent->isDead = true;
     }
     
     _bufferedValues[ValueTypes::KEVLAR] += amount - afterKevlar;

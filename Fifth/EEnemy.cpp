@@ -34,7 +34,7 @@ void EEnemy::onLoop(CInstance* instance) {
         return;
     
     EMovable* movable = parent->getComponent<EMovable>();
-    if(movable && !_target->isDead()) {
+    if(movable && !_target->isDead) {
         if(parent->body.getX() > _target->body.getX())
             movable->goLeft();
         else if(parent->body.getX() < _target->body.getX())
@@ -48,7 +48,7 @@ void EEnemy::onLoop(CInstance* instance) {
 }
 
 void EEnemy::onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
-    if(renderFlags & RenderFlags::ENEMY_TRIANGLE && !*isDead()) {
+    if(renderFlags & RenderFlags::ENEMY_TRIANGLE && !parent->isDead) {
         _renderTriangle = true;
         
         for(auto &i: _triangles)
@@ -106,9 +106,10 @@ void EEnemy::shootTarget() {
         int thisY = parent->body.getY() - 100;
         float thisVelX = parent->body.velX;
         float thisVelY = parent->body.velY;
+
+        float bulletVelocity = 20.0f;
         
-        float bulletVelocity = 50.0f;
-        
+
         double maxError = 0.000000001;
         
         double dx = targetX - thisX;

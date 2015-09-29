@@ -88,7 +88,7 @@ void CChatBubble::onLoop() {
         _toRemove = true;
 }
 
-void CChatBubble::onRender(CWindow* window, CCamera* camera) {
+void CChatBubble::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     
     if(_target == nullptr)
         return;

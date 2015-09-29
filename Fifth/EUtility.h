@@ -26,7 +26,6 @@ class EUtility : public EComponent {
     
 public:
     EUtility(CEntity* parent, CEntity* owner, BasicUtilities basicUtility);
-    ~EUtility();
     
     void onLoop(CInstance* instance);
     void onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
