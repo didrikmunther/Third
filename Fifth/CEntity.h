@@ -18,6 +18,7 @@
 #include "CRenderable.h"
 #include "CChatBubble.h"
 #include "CBody.h"
+#include "NFile.h"
 
 #include "EComponent.h"
 
@@ -49,11 +50,10 @@ namespace CollisionLayers {
 namespace EntityProperty {
     enum EntityProperty {
         COLLIDABLE  = 1 << 0,
-        FLYING      = 1 << 1,
-        HIDDEN      = 1 << 2,
-        STATIC      = 1 << 3,
-        FLIP        = 1 << 4,
-        FLIP_FREEZED= 1 << 5
+        HIDDEN      = 1 << 1,
+        STATIC      = 1 << 2,
+        FLIP        = 1 << 3,
+        FLIP_FREEZED= 1 << 4
     };
 }
     
@@ -152,20 +152,8 @@ public:
     void shoot(float angle, BasicUtilities basicUtility);
     std::vector<CEntity*> particlesToAdd;
     
-    void addComponent(LuaScript* script) {
-        EComponent* component = new EComponent(this, script);
-        components[script->getName()] = component;
-        std::cout << "Added component " << script->getName() << "\n";
-    }
-    
-    EComponent* getComponent(std::string key) {
-        if(!components.count(key)) {
-            std::cout << "no such component: " << key << ".\n";
-            return nullptr;
-        }
-        
-        return components[key];
-    }
+    void addComponent(LuaScript* script);
+    EComponent* getComponent(std::string key);
     
     bool isDead;
     bool toRemove;

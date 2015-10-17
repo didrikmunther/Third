@@ -31,7 +31,7 @@ void CGame::_handleKeyStates() {
 //    else
 //        return;
 
-    auto movable = instance.player->getComponent("Movable");
+    auto movable = instance.player->getComponent("Standard/Movable");
     
     if(keystate[SDL_SCANCODE_D]) {
         movable->callSimpleFunction("goRight");
@@ -185,8 +185,11 @@ void CGame::_onEvent(SDL_Event* event) {
                     break;
                     
                 case SDLK_1:
-//                    if(movable)
-//                        movable->toggleNoclip();
+                {
+                    auto movable = instance.player->getComponent("Standard/Movable");
+                    
+                    movable->callSimpleFunction("toggleNoClip");
+                }
                     break;
                 case SDLK_5:
                 {

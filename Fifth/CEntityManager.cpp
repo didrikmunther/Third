@@ -207,9 +207,9 @@ void CEntityManager::splitEntityToParticles(CEntity* target) {
     std::string spriteContainer3 = CAssetManager::addSpriteContainer(tempSpriteContainer3);
     std::string spriteContainer4 = CAssetManager::addSpriteContainer(tempSpriteContainer4);
     
-    int explosionForce = 10;
-    int tempForRand = 5;
-    int livingTime = 2;
+//    int explosionForce = 10;
+//    int tempForRand = 5;
+//    int livingTime = 2;
     
 //    CEntity* tempParticle1 = new CEntity(Box{
 //        target->body->getX(),

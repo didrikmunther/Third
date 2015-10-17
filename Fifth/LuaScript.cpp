@@ -8,6 +8,7 @@
 
 #include "LuaScript.h"
 #include "CEntity.h"
+#include "NFile.h"
 
 
 LuaScript::LuaScript(lua_State* L, std::string path)
@@ -29,7 +30,7 @@ void LuaScript::doFile() {
 
 luabridge::LuaRef* LuaScript::getObjectCreation() {
     if(_objectCreationFunction.isNil())  
-        std::cout << "No creation function for script \"" << _path << "\".\n";
+        NFile::log(LogType::ERROR, "No creation function for script \"", _path, "\"");
     
     return &_objectCreationFunction;
 }
@@ -43,6 +44,7 @@ std::string LuaScript::getPath() {
 }
 
 std::string LuaScript::getName() {
-    std::string dir = _path.substr(_path.find_last_of("/") + 1, _path.size() - _path.find_last_of("/"));
-    return dir.substr(0, dir.find("."));
+    std::string dir = _path.substr(_path.find("/") + 1, _path.size() - _path.find("/"));
+    dir = dir.substr(dir.find("/") + 1, dir.size() - dir.find("/"));
+    return dir.substr(0, dir.find("."));;
 }

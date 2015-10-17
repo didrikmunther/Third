@@ -130,7 +130,7 @@ int CGame::_onInit() {
     CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
     instance.entityManager.addBackground("main", background);
     
-    movableScript = new LuaScript(instance.L, "resources/scripts/Movable.lua");
+    movableScript = new LuaScript(instance.L, "resources/scripts/Standard/Movable.lua");
     
     auto temp = new CEntity(Box{50, -500, 80, 140}, "playerPink");
     temp->spriteFollowsCollisionBox = false;
@@ -207,7 +207,9 @@ void CGame::_initRelativePaths() {
 
 void CGame::_initLua() {
     luaL_openlibs(instance.L);
-    luaL_dofile(instance.L, "resources/scripts/class.lua");
+    luaL_dofile(instance.L, "resources/scripts/Standard/class.lua");
+    luaL_dofile(instance.L, "resources/scripts/Standard/bitwise.lua");
+    luaL_dofile(instance.L, "resources/scripts/Standard/standard.lua");
     
     luabridge::getGlobalNamespace(instance.L)
     
@@ -216,6 +218,7 @@ void CGame::_initLua() {
             .addConstructor<void(*) (Box, std::string)>()
             .addData("body", &CEntity::body)
             .addData("collisionSides", &CEntity::collisionSides)
+            .addData("properties", &CEntity::properties)
         .endClass()
     
         .beginClass<CBody>("Body")          // Body

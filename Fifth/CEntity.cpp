@@ -69,24 +69,22 @@ void CEntity::onLoop(CInstance* instance) {
             ++i;
     }
     
-    if(!hasProperty(EntityProperty::FLYING))
-        body->velY += CGlobalSettings::GRAVITY;
+    body->velY += CGlobalSettings::GRAVITY;
     
-    {
-        if(!hasProperty(EntityProperty::FLIP_FREEZED)) {
-            if(body->velX > 0)
-                removeProperty(EntityProperty::FLIP);
-            else if(body->velX < 0)
-                addProperty(EntityProperty::FLIP);
-        }
-        
-        setSpriteContainer(spriteStateTypes[SpriteStateTypes::IDLE]);
-        
-        if(body->velY < 0)
-            setSpriteContainer(spriteStateTypes[SpriteStateTypes::ASCENDING]);
-        else if(!collisionSides.bottom)
-            setSpriteContainer(spriteStateTypes[SpriteStateTypes::DESCENDING]);
+    if(!hasProperty(EntityProperty::FLIP_FREEZED)) {
+        if(body->velX > 0)
+            removeProperty(EntityProperty::FLIP);
+        else if(body->velX < 0)
+            addProperty(EntityProperty::FLIP);
     }
+    
+    setSpriteContainer(spriteStateTypes[SpriteStateTypes::IDLE]);
+    
+    if(body->velY < 0)
+        setSpriteContainer(spriteStateTypes[SpriteStateTypes::ASCENDING]);
+    else if(!collisionSides.bottom)
+        setSpriteContainer(spriteStateTypes[SpriteStateTypes::DESCENDING]);
+    
     
     for(auto& i: components)
         i.second->onLoop(instance);
@@ -230,6 +228,25 @@ void CEntity::shoot(float angle, BasicUtilities basicUtility) {
 //    tempParticle->body->velX = velX + body->velX;
 //    tempParticle->body->velY = velY + body->velY;
 //    particlesToAdd.push_back(tempParticle);
+}
+
+void CEntity::addComponent(LuaScript* script) {
+    if(getComponent(script->getName())) {
+        NFile::log(LogType::WARNING, "Component already exists: ", script->getName(), ".");
+        delete components[script->getName()];
+    }
+    
+    EComponent* component = new EComponent(this, script);
+    components[script->getName()] = component;
+}
+
+EComponent* CEntity::getComponent(std::string key) {
+    if(!components.count(key)) {
+        NFile::log(LogType::ERROR, "No such component: ", key, ".");
+        return nullptr;
+    }
+    
+    return components[key];
 }
 
 void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags renderFlags) {

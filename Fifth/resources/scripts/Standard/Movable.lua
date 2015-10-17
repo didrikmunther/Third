@@ -4,7 +4,7 @@ Movable = class (
     function(self, parent)
         self.parent = parent
 
-        self.jumpPower = 10.0
+        self.jumpPower = 15.0
         self.accelerationX = 1.5
         self.accelerationY = 100.0
         self.stoppingAccelerationX = 1.5
@@ -13,11 +13,14 @@ Movable = class (
         self.hasWalkedX = false
         self.hasWalkedY = false
 
+        self.isFlying = false
+
         self.WALKING_MOVEMENT = 0
         self.SNEAKING_MOVEMENT = 1
         self.RUNNING_MOVEMENT = 2
 
         self.movementState = self.WALKING_MOVEMENT
+
         self.movementSpeeds = {}
         self.movementSpeeds[self.WALKING_MOVEMENT] = 10.0
         self.movementSpeeds[self.SNEAKING_MOVEMENT] = self.movementSpeeds[self.WALKING_MOVEMENT] / 2.0
@@ -28,9 +31,6 @@ Movable = class (
 
 function Movable:onLoop()
     body = self.parent.body
-
-    --body.velX = body.velX + 0.1
-    --self.hasWalkedX = true
 
 	if(not self.hasWalkedX) then
         if(body.velX < 0) then
@@ -47,7 +47,7 @@ function Movable:onLoop()
     end
     
     if(not self.hasWalkedY) then
-        if(false) then --if(parent.hasProperty(EntityProperty::FLYING)) then
+        if(self.isFlying) then
             if(body.velY < 0) then
                 body.velY = body.velY + self.stoppingAccelerationY
                 if(body.velY >= 0) then
@@ -94,7 +94,7 @@ end
 function Movable:goUp()
     body = self.parent.body
 
-	if(false) then --if(parent.hasProperty(EntityProperty::FLYING)) then
+	if(self.isFlying) then
         body.velY = body.velY - self.accelerationY
         
         if(body.velY < -self.movementSpeeds[self.movementState]) then
@@ -110,7 +110,7 @@ end
 function Movable:goDown()
     body = self.parent.body
 
-	if(false) then --if(hasProperty(EntityProperty::FLYING)) then
+	if(self.isFlying) then
         body.velY = body.velY + self.accelerationY
         
         if(body.velY > self.movementSpeeds[self.movementState]) then
@@ -131,6 +131,20 @@ function Movable:jump()
     body.velY = body.velY - self.accelerationY
     if(body.velY < -self.jumpPower) then
         body.velY = -self.jumpPower
+    end
+end
+
+function Movable:setMovementState(movementState)
+    self.movementState = movementState
+end
+
+function Movable:toggleNoClip()
+    if(self.isFlying) then
+        self.isFlying = false
+        self.parent.properties = BitOR(EntityProperty.COLLIDABLE, self.parent.properties)
+    else
+        self.isFlying = true
+        self.parent.properties = BitAND(BitNOT(EntityProperty.COLLIDABLE), self.parent.properties)
     end
 end
 
