@@ -19,6 +19,8 @@
 #include "CNetwork.h"
 
 
+class LuaScript;
+
 class CGame {
     friend class CNetwork;
     
@@ -32,15 +34,12 @@ private:
     // Main functions
     int _onInit();
     void _initRelativePaths();
+    void _initLua();
     
     void _onEvent(SDL_Event* event);
-    
     void _handleKeyStates();
-    
     void _onLoop();
-    
     void _onRender();
-    
     int _onCleanup();
     
     // Main variables
@@ -60,6 +59,8 @@ private:
     std::stringstream _title;
     std::string _intro;
     bool isFocused;
+    
+    LuaScript* movableScript;
     
 };
 

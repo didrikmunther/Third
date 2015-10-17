@@ -133,7 +133,7 @@ public:
     bool coordinateCollision(int x, int y, int w, int h);
     std::vector<GridCoordinates> gridCoordinates;
     
-    CBody body;
+    CBody* body;
     CollisionSides collisionSides;
     
     void say(std::string text, std::string fontKey, ChatBubbleType type);
@@ -152,49 +152,19 @@ public:
     void shoot(float angle, BasicUtilities basicUtility);
     std::vector<CEntity*> particlesToAdd;
     
-    template<typename T, typename ... A>
-    void addComponent(A && ... args) {
-        
-        std::string type = _getType<T>();
-        
-        if(components.count(type) != 0)
-            delete components[type];
-        
-        T* component = new T(this, std::forward<A>(args) ...);
-        component->type = type;
-        components[type] = component;
+    void addComponent(LuaScript* script) {
+        EComponent* component = new EComponent(this, script);
+        components[script->getName()] = component;
+        std::cout << "Added component " << script->getName() << "\n";
     }
     
-    template<typename T>
-    void addComponent(T* component) {
-        
-        std::string type = _getType<T>();
-        component->type = type;
-        
-        if(components.count(type) != 0)
-            delete components[type];
-        
-        components[type] = component;
-        
-    }
-    
-    template<typename T>
-    T* getComponent() {
-        
-        std::string type = _getType<T>();
-        
-        if(components.count(type))
-            return static_cast<T*>(components[type]);
-        else
+    EComponent* getComponent(std::string key) {
+        if(!components.count(key)) {
+            std::cout << "no such component: " << key << ".\n";
             return nullptr;
-    }
-    
-    EComponent* getComponent(std::string type) {
+        }
         
-        if(components.count(type))
-            return components[type];
-        else
-            return nullptr;
+        return components[key];
     }
     
     bool isDead;

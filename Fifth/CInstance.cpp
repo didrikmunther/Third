@@ -9,7 +9,10 @@
 #include "CInstance.h"
 
 
-CInstance::CInstance() {
+CInstance::CInstance()
+    : L(luaL_newstate())
+{
+    
 }
 
 void CInstance::closeInstance() {

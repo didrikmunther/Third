@@ -12,12 +12,14 @@
 #include <stdio.h>
 #include <vector>
 #include <string>
+#include <map>
 
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 
 #include "Define.h"
+#include "LuaObject.h"
 
 
 class CInstance;
@@ -31,23 +33,23 @@ struct CollisionSides;
 class EComponent {
     
 public:
-    EComponent(CEntity* parent);
-    virtual ~EComponent();
+    EComponent(CEntity* parent, LuaScript* script);
+    ~EComponent();
     
-    virtual void onLoop(CInstance* instance) {  }
-    virtual void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {  }
-    virtual void onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {  }
-    virtual bool onCollision(CEntity* target, CollisionSides* collisionSides) { return true; }
+    void onLoop(CInstance* instance);
+    void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
+    void onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
+    bool onCollision(CEntity* target, CollisionSides* collisionSides);
     
-    virtual void serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc) {  }
-    virtual void deserialize(rapidjson::Value* value) {  }
+    void serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc);
+    void deserialize(rapidjson::Value* value);
+    
+    void callSimpleFunction(std::string function);
     
     CEntity* parent;
+    LuaObject object;
     
-    std::string type;
-    
-protected:
-    
+private:
     std::vector<CGuiText*>* guiTextVector();
     
 };

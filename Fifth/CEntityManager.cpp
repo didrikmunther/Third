@@ -17,7 +17,6 @@
 #include "CSprite.h"
 #include "CGuiText.h"
 #include "CBackground.h"
-#include "EParticle.h"
 #include "CInstance.h"
 
 
@@ -127,19 +126,19 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
     if(renderFlags & RenderFlags::COLLISION_AREA) {
         for(auto &i: _entities) {
             auto target = i.second;
-            int targetX = target->body.getX() + target->body.velX;
-            int targetY = target->body.getY() + target->body.velY;
-            int targetW = target->body.getW() + target->body.velX;
-            int targetH = target->body.getH() + target->body.velY;
+            int targetX = target->body->getX() + target->body->velX;
+            int targetY = target->body->getY() + target->body->velY;
+            int targetW = target->body->getW() + target->body->velX;
+            int targetH = target->body->getH() + target->body->velY;
             NSurface::renderRect(targetX - camera->offsetX(), targetY - camera->offsetY(), targetW, targetH, window, 100, 200, 100, 100);
         }
         
         for(auto &i: _particles) {
             auto target = i;
-            int targetX = target->body.getX() + target->body.velX;
-            int targetY = target->body.getY() + target->body.velY;
-            int targetW = target->body.getW() + target->body.velX;
-            int targetH = target->body.getH() + target->body.velY;
+            int targetX = target->body->getX() + target->body->velX;
+            int targetY = target->body->getY() + target->body->velY;
+            int targetW = target->body->getW() + target->body->velX;
+            int targetH = target->body->getH() + target->body->velY;
             NSurface::renderRect(targetX - camera->offsetX(), targetY - camera->offsetY(), targetW, targetH, window, 100, 200, 100, 100);
         }
     }
@@ -212,51 +211,51 @@ void CEntityManager::splitEntityToParticles(CEntity* target) {
     int tempForRand = 5;
     int livingTime = 2;
     
-    CEntity* tempParticle1 = new CEntity(Box{
-        target->body.getX(),
-        target->body.getY(),
-        target->body.getW() / 2,
-        target->body.getH() / 2},
-        spriteContainer1);
-    tempParticle1->addComponent<EParticle>(livingTime + rand() % 3 - 1);
-    tempParticle1->body.velX = rand() % explosionForce - tempForRand;
-    tempParticle1->body.velY = rand() % explosionForce - tempForRand;
-    if(target->hasProperty(EntityProperty::FLIP)) tempParticle1->addProperty(EntityProperty::FLIP);
-    CEntity* tempParticle2 = new CEntity(Box{
-        target->body.getX() + target->body.getW() / 2,
-        target->body.getY(),
-        target->body.getW() / 2,
-        target->body.getH() / 2},
-        spriteContainer2);
-    tempParticle2->addComponent<EParticle>(livingTime + rand() % 3 - 1);
-    tempParticle2->body.velX = rand() % explosionForce - tempForRand;
-    tempParticle2->body.velY = rand() % explosionForce - tempForRand;
-    if(target->hasProperty(EntityProperty::FLIP)) tempParticle2->addProperty(EntityProperty::FLIP);
-    CEntity* tempParticle3 = new CEntity(Box{
-        target->body.getX(),
-        target->body.getY() + target->body.getH() / 2,
-        target->body.getW() / 2,
-        target->body.getH() / 2},
-        spriteContainer3);
-    tempParticle3->addComponent<EParticle>(livingTime + rand() % 3 - 1);
-    tempParticle3->body.velX = rand() % explosionForce - tempForRand;
-    tempParticle3->body.velY = rand() % explosionForce - tempForRand;
-    if(target->hasProperty(EntityProperty::FLIP)) tempParticle3->addProperty(EntityProperty::FLIP);
-    CEntity* tempParticle4 = new CEntity(Box{
-        target->body.getX() + target->body.getW() / 2,
-        target->body.getY() + target->body.getH() / 2,
-        target->body.getW() / 2,
-        target->body.getH() / 2},
-        spriteContainer4);
-    tempParticle4->addComponent<EParticle>(livingTime + rand() % 3 - 1);
-    tempParticle4->body.velX = rand() % explosionForce - tempForRand;
-    tempParticle4->body.velY = rand() % explosionForce - tempForRand;
-    if(target->hasProperty(EntityProperty::FLIP)) tempParticle4->addProperty(EntityProperty::FLIP);
-    
-    addParticle(tempParticle1);
-    addParticle(tempParticle2);
-    addParticle(tempParticle3);
-    addParticle(tempParticle4);
+//    CEntity* tempParticle1 = new CEntity(Box{
+//        target->body->getX(),
+//        target->body->getY(),
+//        target->body->getW() / 2,
+//        target->body->getH() / 2},
+//        spriteContainer1);
+//    tempParticle1->addComponent<EParticle>(livingTime + rand() % 3 - 1);
+//    tempParticle1->body->velX = rand() % explosionForce - tempForRand;
+//    tempParticle1->body->velY = rand() % explosionForce - tempForRand;
+//    if(target->hasProperty(EntityProperty::FLIP)) tempParticle1->addProperty(EntityProperty::FLIP);
+//    CEntity* tempParticle2 = new CEntity(Box{
+//        target->body->getX() + target->body->getW() / 2,
+//        target->body->getY(),
+//        target->body->getW() / 2,
+//        target->body->getH() / 2},
+//        spriteContainer2);
+//    tempParticle2->addComponent<EParticle>(livingTime + rand() % 3 - 1);
+//    tempParticle2->body->velX = rand() % explosionForce - tempForRand;
+//    tempParticle2->body->velY = rand() % explosionForce - tempForRand;
+//    if(target->hasProperty(EntityProperty::FLIP)) tempParticle2->addProperty(EntityProperty::FLIP);
+//    CEntity* tempParticle3 = new CEntity(Box{
+//        target->body->getX(),
+//        target->body->getY() + target->body->getH() / 2,
+//        target->body->getW() / 2,
+//        target->body->getH() / 2},
+//        spriteContainer3);
+//    tempParticle3->addComponent<EParticle>(livingTime + rand() % 3 - 1);
+//    tempParticle3->body->velX = rand() % explosionForce - tempForRand;
+//    tempParticle3->body->velY = rand() % explosionForce - tempForRand;
+//    if(target->hasProperty(EntityProperty::FLIP)) tempParticle3->addProperty(EntityProperty::FLIP);
+//    CEntity* tempParticle4 = new CEntity(Box{
+//        target->body->getX() + target->body->getW() / 2,
+//        target->body->getY() + target->body->getH() / 2,
+//        target->body->getW() / 2,
+//        target->body->getH() / 2},
+//        spriteContainer4);
+//    tempParticle4->addComponent<EParticle>(livingTime + rand() % 3 - 1);
+//    tempParticle4->body->velX = rand() % explosionForce - tempForRand;
+//    tempParticle4->body->velY = rand() % explosionForce - tempForRand;
+//    if(target->hasProperty(EntityProperty::FLIP)) tempParticle4->addProperty(EntityProperty::FLIP);
+//    
+//    addParticle(tempParticle1);
+//    addParticle(tempParticle2);
+//    addParticle(tempParticle3);
+//    addParticle(tempParticle4);
 }
 
 void loopX(int x1, int x2, int y, std::vector<GridCoordinates>* toManipulate) {
@@ -289,13 +288,13 @@ int getSmallest(std::vector<int> intVector) {
 
 std::vector<GridCoordinates> getGrid(CEntity* target, int gridSize) {
     
-    int x = target->body.getX();
-    int y = target->body.getY();
-    int w = target->body.getW();
-    int h = target->body.getH();
+    int x = target->body->getX();
+    int y = target->body->getY();
+    int w = target->body->getW();
+    int h = target->body->getH();
     
-    int x2 = target->body.getX() + target->body.velX;
-    int y2 = target->body.getY() + target->body.velY;
+    int x2 = target->body->getX() + target->body->velX;
+    int y2 = target->body->getY() + target->body->velY;
     
     int targetX = getSmallest({x, x2});
     int targetY = getSmallest({y, y2});

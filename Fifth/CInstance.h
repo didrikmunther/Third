@@ -15,6 +15,14 @@
 #include "CWindow.h"
 #include "CCamera.h"
 
+extern "C" {
+# include "lua/lua.h"
+# include "lua/lauxlib.h"
+# include "lua/lualib.h"
+}
+
+#include "LuaBridge/LuaBridge.h"
+
 
 class CInstance {
     
@@ -26,6 +34,8 @@ public:
     
     CEntityManager entityManager;
     CEntity* player;
+    
+    lua_State* L;
     
     void closeInstance();
     

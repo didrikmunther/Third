@@ -35,8 +35,8 @@ void CCamera::onLoop() {
     float cameraShakeX = floor(sin(_cameraShakeInterval * _cameraShakeInterval / 2) * _cameraShake);
     float cameraShakeY = floor(cos(_cameraShakeInterval * _cameraShakeInterval / 2) * _cameraShake);
     
-    _offset.x += (((_target->body.getX() + _target->body.getW() / 2) - _offset.w / 2) - _offset.x + cameraShakeX) / cameraSway;
-    _offset.y += (((_target->body.getY() + _target->body.getH() / 2) - _offset.h / 2) - _offset.y + cameraShakeY) / cameraSway;
+    _offset.x += (((_target->body->getX() + _target->body->getW() / 2) - _offset.w / 2) - _offset.x + cameraShakeX) / cameraSway;
+    _offset.y += (((_target->body->getY() + _target->body->getH() / 2) - _offset.h / 2) - _offset.y + cameraShakeY) / cameraSway;
     
     if(_cameraShake > 0)
         _cameraShake -= ceil(1.0 * (_cameraShake / 70));
@@ -60,13 +60,13 @@ void CCamera::setTarget(CEntity* target) {
 }
 
 bool CCamera::collision(CEntity* entity) {
-    if(offsetX() > entity->body.getX() + entity->body.getW())
+    if(offsetX() > entity->body->getX() + entity->body->getW())
         return false;
-    if(offsetX() + _offset.w < entity->body.getX())
+    if(offsetX() + _offset.w < entity->body->getX())
         return false;
-    if(offsetY() > entity->body.getY() + entity->body.getH())
+    if(offsetY() > entity->body->getY() + entity->body->getH())
         return false;
-    if(offsetY() + _offset.h < entity->body.getY())
+    if(offsetY() + _offset.h < entity->body->getY())
         return false;
     else
         return true;

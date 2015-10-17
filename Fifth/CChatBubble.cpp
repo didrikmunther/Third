@@ -102,12 +102,12 @@ void CChatBubble::onRender(CWindow* window, CCamera* camera, RenderFlags renderF
     
     int floatOverHead = 20;
     
-    if(camera->collision(_target->body.getX() + _target->body.getW() / 2 - _widestLine / 2,
-                          _target->body.getY() - _totalHeight - floatOverHead,
+    if(camera->collision(_target->body->getX() + _target->body->getW() / 2 - _widestLine / 2,
+                          _target->body->getY() - _totalHeight - floatOverHead,
                           _widestLine,
                           _totalHeight)) {
-        NSurface::renderRect(_target->body.getX() + _target->body.getW() / 2 - _widestLine / 2 - camera->offsetX(),
-                             _target->body.getY() - _totalHeight - floatOverHead - camera->offsetY(),
+        NSurface::renderRect(_target->body->getX() + _target->body->getW() / 2 - _widestLine / 2 - camera->offsetX(),
+                             _target->body->getY() - _totalHeight - floatOverHead - camera->offsetY(),
                              _widestLine,
                              _totalHeight,
                              window, _rB, _gB, _bB);
@@ -117,8 +117,8 @@ void CChatBubble::onRender(CWindow* window, CCamera* camera, RenderFlags renderF
         while(i != _TextVector.end()) {
             int width, height;
             TTF_SizeText(i->getFont(), i->getText()->c_str(), &width, &height);
-            int posX = _target->body.getX() + _target->body.getW() / 2 - width / 2 + marginX;
-            int posY = _target->body.getY() - _totalHeight + height * currentLine - floatOverHead + marginY * 2;
+            int posX = _target->body->getX() + _target->body->getW() / 2 - width / 2 + marginX;
+            int posY = _target->body->getY() - _totalHeight + height * currentLine - floatOverHead + marginY * 2;
             if(!camera->collision(posX, posY, width + marginX, height + marginY * 2)) {
                 currentLine++;
                 i++;

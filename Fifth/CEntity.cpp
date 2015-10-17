@@ -17,34 +17,32 @@
 #include "CGuiText.h"
 #include "CGlobalSettings.h"
 #include "CInstance.h"
-#include "EParticle.h"
-#include "EUtility.h"
 #include "CChatBubble.h"
 
 #include <iostream>
 
 
 CEntity::CEntity(Box rect, SDL_Color color) :
-spriteContainerKey(""), body(rect), color(color) {
+spriteContainerKey(""), body(new CBody(rect)), color(color) {
     init();
 }
 
 CEntity::CEntity(Box rect, std::string spriteContainerKey) :
-spriteContainerKey(spriteContainerKey), body(rect), color(SDL_Color{255,0,255,255}) /* sprite not found color */ {
+spriteContainerKey(spriteContainerKey), body(new CBody(rect)), color(SDL_Color{255,0,255,255}) /* sprite not found color */ {
     init();
     std::fill(spriteStateTypes, spriteStateTypes+SpriteStateTypes::TOTAL_SPRITESTATETYPES, spriteContainerKey);
-    
 }
 
 CEntity::~CEntity() {
     _cleanUpTextVector();
     _cleanUpComponents();
+    delete body;
 }
 
 void CEntity::init() {
-    isDead             = false;
-    toRemove           = false;
-    properties          = EntityProperty::COLLIDABLE;
+    isDead         = false;
+    toRemove       = false;
+    properties     = EntityProperty::COLLIDABLE;
     collisionSides = false;
     collisionLayer = CollisionLayers::LAYER0;
 }
@@ -72,19 +70,19 @@ void CEntity::onLoop(CInstance* instance) {
     }
     
     if(!hasProperty(EntityProperty::FLYING))
-        body.velY += CGlobalSettings::GRAVITY;
+        body->velY += CGlobalSettings::GRAVITY;
     
     {
         if(!hasProperty(EntityProperty::FLIP_FREEZED)) {
-            if(body.velX > 0)
+            if(body->velX > 0)
                 removeProperty(EntityProperty::FLIP);
-            else if(body.velX < 0)
+            else if(body->velX < 0)
                 addProperty(EntityProperty::FLIP);
         }
         
         setSpriteContainer(spriteStateTypes[SpriteStateTypes::IDLE]);
         
-        if(body.velY < 0)
+        if(body->velY < 0)
             setSpriteContainer(spriteStateTypes[SpriteStateTypes::ASCENDING]);
         else if(!collisionSides.bottom)
             setSpriteContainer(spriteStateTypes[SpriteStateTypes::DESCENDING]);
@@ -107,8 +105,8 @@ void CEntity::onLoop(CInstance* instance) {
     rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
     d.Accept(writer);
     
-    if(!isDead && !getComponent<EParticle>())
-        say(sb.GetString(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
+//    if(!isDead && !getComponent<EParticle>())
+//        say(sb.GetString(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
 }
 
 void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
@@ -116,10 +114,10 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
     if(toRemove || isDead)
         return;
     
-    int x = body.getX() - camera->offsetX();
-    int y = body.getY() - camera->offsetY();
-    int w = body.getW();
-    int h = body.getH();
+    int x = body->getX() - camera->offsetX();
+    int y = body->getY() - camera->offsetY();
+    int w = body->getW();
+    int h = body->getH();
     
     if(camera->collision(this) && !(hasProperty(EntityProperty::HIDDEN))) {
         if(!hasSprite())
@@ -128,8 +126,8 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
         else {
             int spriteWidth, spriteHeight = 0;
             if(spriteFollowsCollisionBox) {
-                spriteWidth = body.getW();
-                spriteHeight = body.getH();
+                spriteWidth = body->getW();
+                spriteHeight = body->getH();
             } else {
                 spriteWidth = getSpriteContainer()->spriteArea.w;
                 spriteHeight = getSpriteContainer()->spriteArea.h;
@@ -152,14 +150,14 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
 
 void CEntity::serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc) {
     
-    rapidjson::Value componentValues(rapidjson::kObjectType);
-    for(auto& i: components) {
-        rapidjson::Value component(rapidjson::kObjectType);
-        i.second->serialize(&component, alloc);
-        componentValues.AddMember(rapidjson::Value(i.second->type.c_str(), *alloc), component, *alloc);
-    }
-    
-    value->AddMember("components", componentValues, *alloc);
+//    rapidjson::Value componentValues(rapidjson::kObjectType);
+//    for(auto& i: components) {
+//        rapidjson::Value component(rapidjson::kObjectType);
+//        i.second->serialize(&component, alloc);
+//        componentValues.AddMember(rapidjson::Value(i.second->type.c_str(), *alloc), component, *alloc);
+//    }
+//    
+//    value->AddMember("components", componentValues, *alloc);
     
 }
 
@@ -216,22 +214,22 @@ bool CEntity::hasSprite() {
 
 void CEntity::shoot(float angle, BasicUtilities basicUtility) {
     
-    int precision = 20;
-    int spread = 200;
+//    int precision = 20;
+//    int spread = 200;
+//    
+//    angle += (rand() % precision - precision / 2) / (float)spread;
+//    
+//    float velocity = 20;
+//    float velX = cos(angle) * (velocity);
+//    float velY = sin(angle) * (velocity);
     
-    angle += (rand() % precision - precision / 2) / (float)spread;
-    
-    float velocity = 20;
-    float velX = cos(angle) * (velocity);
-    float velY = sin(angle) * (velocity);
-    
-    CEntity* tempParticle = new CEntity(Box{body.getX(), body.getY() - 100, 8, 8}, SDL_Color{(Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0});
-    tempParticle->addComponent<EParticle>(10);
-    EUtility* utilityComponent = new EUtility(tempParticle, this, basicUtility);
-    tempParticle->addComponent<EUtility>(utilityComponent);
-    tempParticle->body.velX = velX + body.velX;
-    tempParticle->body.velY = velY + body.velY;
-    particlesToAdd.push_back(tempParticle);
+//    CEntity* tempParticle = new CEntity(Box{body->getX(), body->getY() - 100, 8, 8}, SDL_Color{(Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0});
+//    tempParticle->addComponent<EParticle>(10);
+//    EUtility* utilityComponent = new EUtility(tempParticle, this, basicUtility);
+//    tempParticle->addComponent<EUtility>(utilityComponent);
+//    tempParticle->body->velX = velX + body->velX;
+//    tempParticle->body->velY = velY + body->velY;
+//    particlesToAdd.push_back(tempParticle);
 }
 
 void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags renderFlags) {
@@ -241,10 +239,10 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags ren
         if(hasProperty(EntityProperty::COLLIDABLE)) {r = 255; g = 0; b = 0;  }
         else                                        {r = 0; g = 255; b = 255;}
         
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), 1, body.getH() - 1,window, r, g, b);    // Left line
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() - camera->offsetY(), body.getW() - 1, 1, window, r, g, b);      // Top line
-        NSurface::renderRect(body.getX() + body.getW() - camera->offsetX() - 1, body.getY() - camera->offsetY(), 1, body.getH(), window, r, g, b);  // Right line
-        NSurface::renderRect(body.getX() - camera->offsetX(), body.getY() + body.getH() - camera->offsetY() - 1, body.getW(), 1, window, r, g, b);  // Bosttom line
+        NSurface::renderRect(body->getX() - camera->offsetX(), body->getY() - camera->offsetY(), 1, body->getH() - 1,window, r, g, b);    // Left line
+        NSurface::renderRect(body->getX() - camera->offsetX(), body->getY() - camera->offsetY(), body->getW() - 1, 1, window, r, g, b);      // Top line
+        NSurface::renderRect(body->getX() + body->getW() - camera->offsetX() - 1, body->getY() - camera->offsetY(), 1, body->getH(), window, r, g, b);  // Right line
+        NSurface::renderRect(body->getX() - camera->offsetX(), body->getY() + body->getH() - camera->offsetY() - 1, body->getW(), 1, window, r, g, b);  // Bosttom line
     }
         
     for(auto &i: components) {
@@ -271,7 +269,7 @@ bool CEntity::coordinateCollision(int x, int y, int w, int h, int x2, int y2, in
 }
 
 bool CEntity::coordinateCollision(int x, int y, int w, int h) {
-    return coordinateCollision(x, y, w, h, body.getX(), body.getY(), body.getW(), body.getH());
+    return coordinateCollision(x, y, w, h, body->getX(), body->getY(), body->getW(), body->getH());
 }
 
 bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities) {
@@ -287,19 +285,19 @@ bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities) {
         if (target->isDead) continue;
         if (!target->isOnCollisionLayer(collisionLayer)) continue;
     
-        if(!coordinateCollision(x, y, body.getW(), body.getH(),
-                                target->body.getX(), target->body.getY(), target->body.getW(), target->body.getH()))
+        if(!coordinateCollision(x, y, body->getW(), body->getH(),
+                                target->body->getX(), target->body->getY(), target->body->getW(), target->body->getH()))
             continue;
         
         CollisionSides tmpCollisionSides;
         
-        if(y - 1 + body.getH() <= target->body.getY())
+        if(y - 1 + body->getH() <= target->body->getY())
             tmpCollisionSides.bottom = true;
-        if(y + 1 == target->body.getY() + target->body.getH())
+        if(y + 1 == target->body->getY() + target->body->getH())
             tmpCollisionSides.top = true;
-        if(x + 1 >= target->body.getX() + target->body.getW())
+        if(x + 1 >= target->body->getX() + target->body->getW())
             tmpCollisionSides.left = true;
-        if(x + body.getW() - 1 <= target->body.getX())
+        if(x + body->getW() - 1 <= target->body->getX())
             tmpCollisionSides.right = true;
         
         colliding = _onCollision(target, &tmpCollisionSides);
@@ -325,25 +323,25 @@ bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities) {
 void CEntity::move(std::vector<CEntity*>* entities) {
     
     if(hasProperty(EntityProperty::STATIC) || isDead) {
-        body.velY = body.velX = 0;
+        body->velY = body->velX = 0;
         return;
     }
     
     int MoveX, MoveY;
     
     if(CGlobalSettings::GRAVITY < 0.5) {         // Check if gravity can be rounded up, otherwise wonkyness happens
-        MoveX = ceil(body.velX);
-        MoveY = ceil(body.velY);
+        MoveX = ceil(body->velX);
+        MoveY = ceil(body->velY);
     } else if(CGlobalSettings::GRAVITY != 0) {
-        MoveX = round(body.velX);
-        MoveY = round(body.velY);
+        MoveX = round(body->velX);
+        MoveY = round(body->velY);
     } else {
         MoveX =
         MoveY = 0;
     }
     
-    int StopX = body.getX();
-    int StopY = body.getY();
+    int StopX = body->getX();
+    int StopY = body->getY();
     
     int NewX = 0;
     int NewY = 0;
@@ -363,16 +361,16 @@ void CEntity::move(std::vector<CEntity*>* entities) {
     while(true) {
         if(!_collision(StopX + NewX, StopY, entities)) {
             StopX += NewX;
-            body._rect.x += NewX;
+            body->_rect.x += NewX;
         } else {
-            body.velX = 0;
+            body->velX = 0;
         }
         
         if(!_collision(StopX, StopY + NewY, entities)) {
             StopY += NewY;
-            body._rect.y += NewY;
+            body->_rect.y += NewY;
         } else {
-            body.velY = 0;
+            body->velY = 0;
         }
         
         MoveX += -NewX;
@@ -388,8 +386,8 @@ void CEntity::move(std::vector<CEntity*>* entities) {
         if(NewX == 0 && NewY == 0) 		break;
     }
     
-    _hasMoved = !(body._rect == body._previousRect);
-    body.onLoop();
+    _hasMoved = !(body->_rect == body->_previousRect);
+    body->onLoop();
 }
 
 bool CEntity::_onCollision(CEntity *target, CollisionSides* collisionSides) {

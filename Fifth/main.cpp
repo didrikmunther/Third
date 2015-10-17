@@ -8,17 +8,11 @@
 
 #include "CGame.h"
 
-#include "rapidjson/writer.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/document.h"
-#include <iostream>
-
-using namespace rapidjson;
-
 
 int main(int argc, const char * argv[]){
-    
+
     CGame game;
     
     return game.onExecute();
+    
 }

@@ -21,10 +21,6 @@
 #include "CBackground.h"
 #include "CGlobalSettings.h"
 
-#include "EMovable.h"
-#include "EUtility.h"
-#include "ELiving.h"
-
 #include "NMouse.h"
 #include "NSurface.h"
 #include "NFile.h"
@@ -73,7 +69,9 @@ int CGame::onExecute() {
             _updates++;
             _delta--;
             
-            instance.entityManager.getEntity("n:bush")->say(_title.str() + " Gravity: " + std::to_string(CGlobalSettings::GRAVITY), "TESTFONT", ChatBubbleType::INSTANT_TALK);
+            auto sayer = instance.entityManager.getEntity("n:bush");
+            if(sayer)
+                sayer->say(_title.str() + " Gravity: " + std::to_string(CGlobalSettings::GRAVITY), "TESTFONT", ChatBubbleType::INSTANT_TALK);
         }
         
         _onRender();
@@ -125,28 +123,28 @@ int CGame::_onInit() {
     }
     instance.camera.onInit(&instance.window);
     
+    _initLua();
+    
     NFile::loadMap("resources/map/testMap1.map", &instance);
     
     CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
     instance.entityManager.addBackground("main", background);
     
+    movableScript = new LuaScript(instance.L, "resources/scripts/Movable.lua");
     
-    
-    auto temp = new CEntity(Box{100, -1000, 30 * 5, 28 * 5}, "bush");
-    temp->collisionLayer = CollisionLayers::LAYER4; // all layers
-    instance.entityManager.addEntity(temp, "n:bush");
-    
-    temp = new CEntity(Box{50, -100, 80, 140}, "playerPink");
+    auto temp = new CEntity(Box{50, -500, 80, 140}, "playerPink");
     temp->spriteFollowsCollisionBox = false;
     temp->spriteStateTypes[SpriteStateTypes::ASCENDING] =
     temp->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
-    temp->addComponent<EMovable>();
-    temp->addComponent<ELiving>();
-    temp->getComponent<EMovable>()->jumpPower = 15.0f;
+    temp->addComponent(movableScript);
     instance.entityManager.addEntity(temp);
     instance.player = temp;
     instance.camera.setTarget(temp);
-    
+//
+    temp = new CEntity(Box{100, -1000, 30 * 5, 28 * 5}, "bush");
+    temp->collisionLayer = CollisionLayers::LAYER4;
+    instance.entityManager.addEntity(temp, "n:bush");
+//
     temp = new CEntity(Box{0, 50, 5000, 20}, SDL_Color{255, 0, 0, 255});
     temp->collisionLayer = -129; // all layers
     temp->addProperty(EntityProperty::STATIC);
@@ -205,6 +203,34 @@ void CGame::_initRelativePaths() {
         NFile::log(LogType::ALERT, "Current Path: ", path);
     #endif
     // ----------------------------------------------------------------------------
+}
+
+void CGame::_initLua() {
+    luaL_openlibs(instance.L);
+    luaL_dofile(instance.L, "resources/scripts/class.lua");
+    
+    luabridge::getGlobalNamespace(instance.L)
+    
+        .beginClass<CEntity>("Entity")      // Entity
+            .addConstructor<void(*) (Box, SDL_Color)>()
+            .addConstructor<void(*) (Box, std::string)>()
+            .addData("body", &CEntity::body)
+            .addData("collisionSides", &CEntity::collisionSides)
+        .endClass()
+    
+        .beginClass<CBody>("Body")          // Body
+            .addConstructor<void(*) (Box)>()
+            .addData("velX", &CBody::velX)
+            .addData("velY", &CBody::velY)
+        .endClass()
+    
+        .beginClass<CollisionSides>("CollisionSides")
+            .addConstructor<void(*) (void)>()
+            .addData("top", &CollisionSides::top)
+            .addData("bottom", &CollisionSides::bottom)
+            .addData("right", &CollisionSides::right)
+            .addData("left", &CollisionSides::left)
+        .endClass();
 }
 
 void CGame::_onLoop() {

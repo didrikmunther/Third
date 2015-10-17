@@ -10,68 +10,70 @@
 #include "CGlobalSettings.h"
 #include "CBackground.h"
 
-#include "EEnemy.h"
-#include "ELiving.h"
-#include "EMovable.h"
-#include "EMovable.h"
-#include "EUtility.h"
-
 #include "NFile.h"
 #include "NMouse.h"
+
+#include "CEntity.h"
 
 
 void CGame::_handleKeyStates() {
     
     if(!isFocused)
         return;
-    
+
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
+//
+//    // Movement
+//    
+//    EMovable* movable = nullptr;
+//    if(instance.player)
+//        movable = instance.player->getComponent<EMovable>();
+//    else
+//        return;
+
+    auto movable = instance.player->getComponent("Movable");
     
-    // Movement
-    
-    EMovable* movable = instance.player->getComponent<EMovable>();
-    
-    if(movable) {
-        if(keystate[SDL_SCANCODE_D]) {
-            movable->goRight();
-        }
-        if(keystate[SDL_SCANCODE_A]) {
-            movable->goLeft();
-        }
-        
-        if(keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_SPACE]) {
-            movable->goUp();
-        }
-        
-        if(keystate[SDL_SCANCODE_S]) {
-            movable->goDown();
-        }
+    if(keystate[SDL_SCANCODE_D]) {
+        movable->callSimpleFunction("goRight");
+    }
+    if(keystate[SDL_SCANCODE_A]) {
+        movable->callSimpleFunction("goLeft");
     }
     
-    // Other
-    
-    if(NMouse::leftMouseButtonPressed()) { // damage particle
-        int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body.getX();
-        int mousePosY = NMouse::relativeMouseY(&instance.camera) - (instance.player->body.getY() - 100);
-        float angle = atan2(mousePosY, mousePosX);
-        
-        instance.player->shoot(angle, BasicUtilities::DAMAGE);
+    if(keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_SPACE]) {
+        movable->callSimpleFunction("goUp");
     }
     
-    if(NMouse::rightMouseButtonPressed()) {   // heal particle
-        int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body.getX();
-        int mousePosY = NMouse::relativeMouseY(&instance.camera) - (instance.player->body.getY() - 100);
-        float angle = atan2(mousePosY, mousePosX);
-        
-        instance.player->shoot(angle, BasicUtilities::HEAL);
+    if(keystate[SDL_SCANCODE_S]) {
+        movable->callSimpleFunction("goDown");
     }
+//
+//    // Other
+//    
+//    if(NMouse::leftMouseButtonPressed()) { // damage particle
+//        int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body->getX();
+//        int mousePosY = NMouse::relativeMouseY(&instance.camera) - (instance.player->body->getY() - 100);
+//        float angle = atan2(mousePosY, mousePosX);
+//        
+//        instance.player->shoot(angle, BasicUtilities::DAMAGE);
+//    }
+//    
+//    if(NMouse::rightMouseButtonPressed()) {   // heal particle
+//        int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body->getX();
+//        int mousePosY = NMouse::relativeMouseY(&instance.camera) - (instance.player->body->getY() - 100);
+//        float angle = atan2(mousePosY, mousePosX);
+//        
+//        instance.player->shoot(angle, BasicUtilities::HEAL);
+//    }
 }
 
 void CGame::_onEvent(SDL_Event* event) {
     
     //if(event->key.repeat != 0) return;
     
-    EMovable* movable = instance.player->getComponent<EMovable>();
+//    EMovable* movable = nullptr;
+//    if(instance.player)
+//        movable = instance.player->getComponent<EMovable>();
     
     switch(event->type) {
         case SDL_QUIT:
@@ -105,7 +107,7 @@ void CGame::_onEvent(SDL_Event* event) {
                     for(int i = 0; i < particles; i++) {
                         angle += (360.0f / particles) / (360 / (2 * M_PI)); // convert raidans to degrees
                         
-                        instance.player->shoot(angle, BasicUtilities::DAMAGE);
+//                        instance.player->shoot(angle, BasicUtilities::DAMAGE);
                     }
                 }
                     break;
@@ -152,13 +154,13 @@ void CGame::_onEvent(SDL_Event* event) {
                     break;
                     
                 case SDLK_LSHIFT:
-                    if(movable)
-                        movable->setMovementState(MovementState::SNEAKING_MOVEMENT);
+//                    if(movable)
+//                        movable->setMovementState(MovementState::SNEAKING_MOVEMENT);
                     break;
                     
                 case SDLK_LCTRL:
-                    if(movable)
-                        movable->setMovementState(MovementState::RUNNING_MOVEMENT);
+//                    if(movable)
+//                        movable->setMovementState(MovementState::RUNNING_MOVEMENT);
                     break;
                     
                 case SDLK_l:
@@ -172,19 +174,19 @@ void CGame::_onEvent(SDL_Event* event) {
                     
                 case SDLK_j:
                 {
-                    auto tempEnemy = new CEntity(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 60, 164}, "player");
-                    tempEnemy->addComponent<EEnemy>();
-                    tempEnemy->getComponent<EEnemy>()->setTarget(instance.player);
-                    tempEnemy->addComponent<ELiving>();
-                    tempEnemy->addComponent<EMovable>();
-                    tempEnemy->getComponent<EMovable>()->setMovementState(MovementState::SNEAKING_MOVEMENT);
-                    instance.entityManager.addEntity(tempEnemy);
+//                    auto tempEnemy = new CEntity(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 60, 164}, "player");
+//                    tempEnemy->addComponent<EEnemy>();
+//                    tempEnemy->getComponent<EEnemy>()->setTarget(instance.player);
+//                    tempEnemy->addComponent<ELiving>();
+//                    tempEnemy->addComponent<EMovable>();
+//                    tempEnemy->getComponent<EMovable>()->setMovementState(MovementState::SNEAKING_MOVEMENT);
+//                    instance.entityManager.addEntity(tempEnemy);
                 }
                     break;
                     
                 case SDLK_1:
-                    if(movable)
-                        movable->toggleNoclip();
+//                    if(movable)
+//                        movable->toggleNoclip();
                     break;
                 case SDLK_5:
                 {
@@ -259,8 +261,8 @@ void CGame::_onEvent(SDL_Event* event) {
             switch(event->key.keysym.sym) {
                 case SDLK_LSHIFT:
                 case SDLK_LCTRL:
-                    if(movable)
-                        movable->setMovementState(MovementState::WALKING_MOVEMENT);
+//                    if(movable)
+//                        movable->setMovementState(MovementState::WALKING_MOVEMENT);
                     break;
                     
                 default:
