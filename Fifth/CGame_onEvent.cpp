@@ -165,7 +165,7 @@ void CGame::_onEvent(SDL_Event* event) {
                     
                 case SDLK_l:
                 {
-                    CEntity* temp = new CEntity(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 40, 40}, SDL_Color{0, 0, 255, 0});
+                    CEntity* temp = new CEntity(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 40, 40}, Color{0, 0, 255, 0});
                     temp->addProperty(EntityProperty::STATIC);
                     temp->addCollisionLayer(-129);
                     instance.entityManager.addEntity(temp);

@@ -41,7 +41,7 @@ void LuaObject::selectReference(std::string reference) {
 }
 
 bool LuaObject::hasReference(std::string reference) {
-    return (bool)_object[reference.c_str()];
+    return !_object[reference.c_str()].isNil();
 }
 
 void LuaObject::pushObject() {

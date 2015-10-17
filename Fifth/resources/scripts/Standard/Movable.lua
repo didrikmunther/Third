@@ -1,8 +1,9 @@
 -- Movable.lua
 
-Movable = class (
+local Movable = class (
     function(self, parent)
         self.parent = parent
+        self.body = parent.body
 
         self.jumpPower = 15.0
         self.accelerationX = 1.5
@@ -30,7 +31,8 @@ Movable = class (
 )
 
 function Movable:onLoop()
-    body = self.parent.body
+
+    local body = self.body
 
 	if(not self.hasWalkedX) then
         if(body.velX < 0) then
@@ -140,10 +142,13 @@ end
 
 function Movable:toggleNoClip()
 
-    movable = self.parent:getComponent("Standard/Movable")  -- Test getting components
-    if(movable == self) then
-        print("hello")
-    end
+    --movable = self.parent:getComponent("Standard/Movable")  -- Test getting components
+    --if(movable == self) then
+    --    print("hello")
+    --end
+
+    tempEntity = self.parent.entityManager:createColoredEntity(Box(100, 100, 200, 200), Color(255, 0, 255, 255))
+    self.parent.entityManager:addEntity(tempEntity, "")
 
     if(self.isFlying) then
         self.isFlying = false

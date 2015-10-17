@@ -37,6 +37,8 @@ std::string CEntityManager::addEntity(CEntity* entity, std::string name /* = "" 
         _entities[name] = entity;
     }
     
+    entity->entityManager = this;
+    
     //entity->say(name, "TESTFONT", ChatBubbleType::SAY);
     return name;
 }
@@ -48,6 +50,14 @@ CEntity* CEntityManager::getEntity(std::string name) {
     } else {
         return _entities[name];
     }
+}
+
+CEntity* CEntityManager::createEntity(Box box, Color color) {
+    return new CEntity(box, color);
+}
+
+CEntity* CEntityManager::createEntity(Box box, std::string spriteKey) {
+    return new CEntity(box, spriteKey);
 }
 
 CEntity* CEntityManager::getEntityAtCoordinate(int x, int y) {

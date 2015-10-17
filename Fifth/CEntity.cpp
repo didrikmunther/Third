@@ -22,7 +22,7 @@
 #include <iostream>
 
 
-CEntity::CEntity(Box rect, SDL_Color color) :
+CEntity::CEntity(Box rect, Color color) :
 spriteContainerKey(""), body(new CBody(rect)), color(color) {
     init();
 }

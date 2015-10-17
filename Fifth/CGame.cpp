@@ -140,17 +140,24 @@ int CGame::_onInit() {
     instance.entityManager.addEntity(temp);
     instance.player = temp;
     instance.camera.setTarget(temp);
-//
+    
+    for(int i = 0; i < 500; i++) {
+        temp = new CEntity(Box{i * 32, -600, 5, 5}, Color{255, 255, 0});
+        temp->addComponent(movableScript);
+        temp->addProperty(EntityProperty::STATIC);
+        instance.entityManager.addEntity(temp);
+    }
+        
     temp = new CEntity(Box{100, -1000, 30 * 5, 28 * 5}, "bush");
     temp->collisionLayer = CollisionLayers::LAYER4;
     instance.entityManager.addEntity(temp, "n:bush");
-//
-    temp = new CEntity(Box{0, 50, 5000, 20}, SDL_Color{255, 0, 0, 255});
+
+    temp = new CEntity(Box{0, 50, 5000, 20}, Color{255, 0, 0, 255});
     temp->collisionLayer = -129; // all layers
     temp->addProperty(EntityProperty::STATIC);
     instance.entityManager.addEntity(temp);
     
-    temp = new CEntity(Box{0, -4950, 20, 5000}, SDL_Color{255, 0, 0, 255});
+    temp = new CEntity(Box{0, -4950, 20, 5000}, Color{255, 0, 0, 255});
     temp->collisionLayer = -129;
     temp->addProperty(EntityProperty::STATIC);
     instance.entityManager.addEntity(temp);    
@@ -213,13 +220,20 @@ void CGame::_initLua() {
     
     luabridge::getGlobalNamespace(instance.L)
     
-        .beginClass<CEntity>("Entity")      // Entity
-            .addConstructor<void(*) (Box, SDL_Color)>()
-            .addConstructor<void(*) (Box, std::string)>()
+        .beginClass<CEntity>("Entity")      // Entity doesn't need a constructor, because you should use the entityManager.create.. functions
             .addCFunction("getComponent", &CEntity::getComponent)
+            .addData("entityManager", &CEntity::entityManager)
             .addData("body", &CEntity::body)
             .addData("collisionSides", &CEntity::collisionSides)
             .addData("properties", &CEntity::properties)
+        .endClass()
+    
+        .beginClass<Box>("Box")             // Box
+            .addConstructor<void(*) (int, int, int, int)>()
+        .endClass()
+    
+        .beginClass<Color>("Color")         // Color
+            .addConstructor<void(*) (int, int, int, int)>()
         .endClass()
     
         .beginClass<CBody>("Body")          // Body
@@ -228,7 +242,13 @@ void CGame::_initLua() {
             .addData("velY", &CBody::velY)
         .endClass()
     
-        .beginClass<CollisionSides>("CollisionSides")
+        .beginClass<CEntityManager>("EntityManager")    // EntityManager
+            .addFunction("addEntity", &CEntityManager::addEntity)
+            .addFunction("createColoredEntity", (CEntity* (CEntityManager::*)(Box, Color)) &CEntityManager::createEntity)
+            .addFunction("createSpriteEntity", (CEntity* (CEntityManager::*)(Box, std::string)) &CEntityManager::createEntity)
+        .endClass()
+    
+        .beginClass<CollisionSides>("CollisionSides")   // CollisionSides
             .addConstructor<void(*) (void)>()
             .addData("top", &CollisionSides::top)
             .addData("bottom", &CollisionSides::bottom)
@@ -243,8 +263,7 @@ void CGame::_onLoop() {
 }
 
 void CGame::_onRender() {
-    
-    SDL_SetRenderDrawColor(instance.window.getRenderer(), 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(instance.window.getRenderer(), 250, 250, 250, 255);
     SDL_RenderClear(instance.window.getRenderer());
     
     instance.entityManager.onRender(&instance.window, &instance.camera);
@@ -256,6 +275,8 @@ int CGame::_onCleanup() {
     instance.entityManager.onCleanup();
     CAssetManager::onCleanup();
     instance.window.onCleanup();
+    
+    delete movableScript;
     
     NFile::log(LogType::ALERT, "Exiting game.");
     

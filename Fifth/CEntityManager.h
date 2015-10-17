@@ -16,6 +16,7 @@
 #include <string>
 
 #include "Define.h"
+#include "NSurface.h"
 
 
 class CEntity;
@@ -42,6 +43,9 @@ public:
     void onRender(CWindow* window, CCamera* camera);
     void onLoop(CInstance* instance);
     void onCleanup();
+    
+    CEntity* createEntity(Box box, Color color);
+    CEntity* createEntity(Box box, std::string spriteKey);
     
     // Temp
     void splitEntityToParticles(CEntity* target);

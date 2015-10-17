@@ -9,9 +9,11 @@
 #include "CBody.h"
 
 
-CBody::CBody(Box rect) :
-    velX(0), velY(0) {
-    _rect = rect;
+CBody::CBody(Box rect)
+    : velX(0), velY(0)
+    , _rect(rect), _previousRect(rect)
+{
+    
 }
 
 void CBody::onLoop() {

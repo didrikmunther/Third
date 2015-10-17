@@ -19,8 +19,8 @@
 #include "CChatBubble.h"
 #include "CBody.h"
 #include "NFile.h"
-
 #include "EComponent.h"
+#include "NSurface.h"
 
 
 class CParticle;
@@ -104,7 +104,7 @@ friend class EComponent;
     friend class CEntityManager;
     
 public:
-    CEntity(Box rect, SDL_Color color);
+    CEntity(Box rect, Color color);
     CEntity(Box rect, std::string spriteContainerKey);
     ~CEntity();
     
@@ -158,6 +158,8 @@ public:
     
     bool isDead;
     bool toRemove;
+    
+    CEntityManager* entityManager;
     
 protected:
     std::vector<CGuiText*> _GuiTextVector;

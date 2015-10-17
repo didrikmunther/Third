@@ -25,6 +25,9 @@ struct Box {
     int x, y;
     int w, h;
     
+    Box(int x, int y, int w, int h)
+    : x(x), y(y), w(w), h(h) {  }
+    
     bool operator==(const Box& a) {
         return  x == a.x &&
                 y == a.y &&
