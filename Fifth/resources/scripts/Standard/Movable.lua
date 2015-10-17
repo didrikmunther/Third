@@ -139,12 +139,18 @@ function Movable:setMovementState(movementState)
 end
 
 function Movable:toggleNoClip()
+
+    movable = self.parent:getComponent("Standard/Movable")  -- Test getting components
+    if(movable == self) then
+        print("hello")
+    end
+
     if(self.isFlying) then
         self.isFlying = false
-        self.parent.properties = BitOR(EntityProperty.COLLIDABLE, self.parent.properties)
+        self.parent.properties = BitOR(EntityProperty.COLLIDABLE, self.parent.properties) -- toggle flag on
     else
         self.isFlying = true
-        self.parent.properties = BitAND(BitNOT(EntityProperty.COLLIDABLE), self.parent.properties)
+        self.parent.properties = BitAND(BitNOT(EntityProperty.COLLIDABLE), self.parent.properties) -- toggle flag off
     end
 end
 

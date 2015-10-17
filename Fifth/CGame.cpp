@@ -216,6 +216,7 @@ void CGame::_initLua() {
         .beginClass<CEntity>("Entity")      // Entity
             .addConstructor<void(*) (Box, SDL_Color)>()
             .addConstructor<void(*) (Box, std::string)>()
+            .addCFunction("getComponent", &CEntity::getComponent)
             .addData("body", &CEntity::body)
             .addData("collisionSides", &CEntity::collisionSides)
             .addData("properties", &CEntity::properties)

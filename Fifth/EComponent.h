@@ -46,6 +46,8 @@ public:
     
     void callSimpleFunction(std::string function);
     
+    void pushThis();
+    
     CEntity* parent;
     LuaObject object;
     

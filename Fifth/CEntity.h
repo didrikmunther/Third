@@ -154,6 +154,7 @@ public:
     
     void addComponent(LuaScript* script);
     EComponent* getComponent(std::string key);
+    int getComponent(lua_State* L);
     
     bool isDead;
     bool toRemove;

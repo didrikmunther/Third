@@ -241,12 +241,22 @@ void CEntity::addComponent(LuaScript* script) {
 }
 
 EComponent* CEntity::getComponent(std::string key) {
-    if(!components.count(key)) {
-        NFile::log(LogType::ERROR, "No such component: ", key, ".");
+    if(!components.count(key))
         return nullptr;
-    }
     
     return components[key];
+}
+
+int CEntity::getComponent(lua_State* L) {
+    std::string key = lua_tostring(L, 2);
+    
+    auto component = getComponent(key);
+    if(!component)
+        lua_pushnil(L);
+    else
+        component->pushThis();
+    
+    return 1;
 }
 
 void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags renderFlags) {

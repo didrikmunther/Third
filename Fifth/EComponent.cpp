@@ -64,6 +64,10 @@ void EComponent::callSimpleFunction(std::string function) {
     object.endCall(1, 0);
 }
 
+void EComponent::pushThis() {
+    object.pushObject();
+}
+
 std::vector<CGuiText*>* EComponent::guiTextVector() {
     return &parent->_GuiTextVector;
 }

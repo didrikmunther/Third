@@ -47,7 +47,6 @@ bool LuaObject::hasReference(std::string reference) {
 void LuaObject::pushObject() {
     selectScript();
     lua_pushvalue(_script->getState(), -1);
-    lua_pop(_script->getState(), 1);
 }
 
 LuaScript* LuaObject::getScript() {
