@@ -18,6 +18,8 @@
 
 
 class CSpriteContainer;
+class LuaScript;
+class lua_State;
 
 class CAssetManager {
     
@@ -30,21 +32,24 @@ public:
     static std::string addSpriteContainer(CSpriteContainer* spriteContainer, std::string name = "");
     static CSpriteSheet* addSpriteSheet(std::string name, SDL_Renderer* renderer, std::string fileName);
     static TTF_Font* addFont(std::string name, std::string fileName, int size);
+    static LuaScript* addLuaScript(lua_State* L, std::string path);
     
     static CSprite* getSprite(std::string key);
     static CSpriteContainer* getSpriteContainer(std::string key);
     static CSpriteSheet* getSpriteSheet(std::string key);
     static TTF_Font* getFont(std::string key);
+    static LuaScript* getLuaScript(std::string key);
     
     static void removeSpriteContainer(std::string key);
     
     static void onCleanup();
     
 private:
-    static std::map<std::string, CSprite*> _SpriteVector;
-    static std::map<std::string, CSpriteContainer*> _SpriteContainerVector;
-    static std::map<std::string, CSpriteSheet*> _SpriteSheetVector;
-    static std::map<std::string, TTF_Font*> _FontVector;
+    static std::map<std::string, CSprite*> _Sprites;
+    static std::map<std::string, CSpriteContainer*> _SpriteContainers;
+    static std::map<std::string, CSpriteSheet*> _SpriteSheets;
+    static std::map<std::string, TTF_Font*> _Fonts;
+    static std::map<std::string, LuaScript*> _LuaScripts;
     static int _assetId;
     
 };

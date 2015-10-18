@@ -71,9 +71,9 @@ void CGame::_onEvent(SDL_Event* event) {
     
     //if(event->key.repeat != 0) return;
     
-//    EMovable* movable = nullptr;
-//    if(instance.player)
-//        movable = instance.player->getComponent<EMovable>();
+    EComponent* movable = nullptr;
+    if(instance.player)
+        movable = instance.player->getComponent("Standard/Movable");
     
     switch(event->type) {
         case SDL_QUIT:
@@ -154,13 +154,19 @@ void CGame::_onEvent(SDL_Event* event) {
                     break;
                     
                 case SDLK_LSHIFT:
-//                    if(movable)
-//                        movable->setMovementState(MovementState::SNEAKING_MOVEMENT);
+                    if(movable) {
+                        movable->object.beginCall("setMovementState");
+                        lua_pushinteger(instance.L, 1); // Sneaking state
+                        movable->object.endCall(1, 0);
+                    }
                     break;
                     
-                case SDLK_LCTRL:
-//                    if(movable)
-//                        movable->setMovementState(MovementState::RUNNING_MOVEMENT);
+                case SDLK_LALT:
+                    if(movable) {
+                        movable->object.beginCall("setMovementState");
+                        lua_pushinteger(instance.L, 2); // Running state
+                        movable->object.endCall(1, 0);
+                    }
                     break;
                     
                 case SDLK_l:
@@ -185,17 +191,14 @@ void CGame::_onEvent(SDL_Event* event) {
                     break;
                     
                 case SDLK_1:
-                {
-                    auto movable = instance.player->getComponent("Standard/Movable");
-                    
                     movable->callSimpleFunction("toggleNoClip");
-                }
                     break;
+                    
                 case SDLK_5:
                 {
                     //NFile::loadMap("resources/map/testMap1.map", &instance);
-                    CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
-                    instance.entityManager.addBackground("main", background);
+//                    CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
+//                    instance.entityManager.addBackground("main", background);
                 }
                     break;
                 case SDLK_2:
@@ -263,9 +266,12 @@ void CGame::_onEvent(SDL_Event* event) {
         case SDL_KEYUP:
             switch(event->key.keysym.sym) {
                 case SDLK_LSHIFT:
-                case SDLK_LCTRL:
-//                    if(movable)
-//                        movable->setMovementState(MovementState::WALKING_MOVEMENT);
+                case SDLK_LALT:
+                    if(movable) {
+                        movable->object.beginCall("setMovementState");
+                        lua_pushinteger(instance.L, 0); // Walking state
+                        movable->object.endCall(1, 0);
+                    }
                     break;
                     
                 default:

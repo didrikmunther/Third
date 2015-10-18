@@ -42,9 +42,11 @@ CEntity::~CEntity() {
 void CEntity::init() {
     isDead         = false;
     toRemove       = false;
-    properties     = EntityProperty::COLLIDABLE;
+    properties     = EntityProperty::COLLIDABLE | EntityProperty::GRAVITY_AFFECT;
     collisionSides = false;
     collisionLayer = CollisionLayers::LAYER0;
+    spriteFollowsCollisionBox = true;
+    _transparency = 255;
 }
 
 void CEntity::_cleanUpTextVector() {
@@ -69,7 +71,8 @@ void CEntity::onLoop(CInstance* instance) {
             ++i;
     }
     
-    body->velY += CGlobalSettings::GRAVITY;
+    if(hasProperty(EntityProperty::GRAVITY_AFFECT))
+        body->velY += CGlobalSettings::GRAVITY;
     
     if(!hasProperty(EntityProperty::FLIP_FREEZED)) {
         if(body->velX > 0)
@@ -85,23 +88,25 @@ void CEntity::onLoop(CInstance* instance) {
     else if(!collisionSides.bottom)
         setSpriteContainer(spriteStateTypes[SpriteStateTypes::DESCENDING]);
     
+    isDead |= body->getY() > 50000 || body->getY() < -50000; // Kill entity if too far down or up
+    
     
     for(auto& i: components)
         i.second->onLoop(instance);
     
     // --
     
-    rapidjson::Document d;
-    d.Parse("{}");
-    
-    rapidjson::Value entityValue(rapidjson::kObjectType);
-    serialize(&entityValue, &d.GetAllocator());
-    
-    d.AddMember("this", entityValue, d.GetAllocator());
-    
-    rapidjson::StringBuffer sb;
-    rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
-    d.Accept(writer);
+//    rapidjson::Document d;
+//    d.Parse("{}");
+//    
+//    rapidjson::Value entityValue(rapidjson::kObjectType);
+//    serialize(&entityValue, &d.GetAllocator());
+//    
+//    d.AddMember("this", entityValue, d.GetAllocator());
+//    
+//    rapidjson::StringBuffer sb;
+//    rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
+//    d.Accept(writer);
     
 //    if(!isDead && !getComponent<EParticle>())
 //        say(sb.GetString(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
@@ -188,7 +193,7 @@ void CEntity::addProperty(int property) {
 }
 
 void CEntity::removeProperty(int property) {
-    if(hasProperty(property)) toggleProperty(property);
+    properties &= ~(property);
 }
 
 void CEntity::setSpriteContainer(std::string spriteContainerKey) {

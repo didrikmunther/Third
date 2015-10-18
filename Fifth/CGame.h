@@ -60,8 +60,6 @@ private:
     std::string _intro;
     bool isFocused;
     
-    LuaScript* movableScript;
-    
 };
 
 #endif /* defined(__Third__CGame__) */

@@ -16,11 +16,12 @@
 
 
 class CEntity;
+class EComponent;
 
 class LuaObject {
     
 public:
-    LuaObject(CEntity* parent, LuaScript* script);
+    LuaObject(CEntity* parent, EComponent* component, LuaScript* script);
     
     void beginCall(std::string function);
     void endCall(int argc, int results);

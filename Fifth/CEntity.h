@@ -15,7 +15,6 @@
 #include <vector>
 #include <sstream>
 
-#include "CRenderable.h"
 #include "CChatBubble.h"
 #include "CBody.h"
 #include "NFile.h"
@@ -50,10 +49,11 @@ namespace CollisionLayers {
 namespace EntityProperty {
     enum EntityProperty {
         COLLIDABLE  = 1 << 0,
-        HIDDEN      = 1 << 1,
-        STATIC      = 1 << 2,
-        FLIP        = 1 << 3,
-        FLIP_FREEZED= 1 << 4
+        GRAVITY_AFFECT = 1 << 1,
+        HIDDEN      = 1 << 2,
+        STATIC      = 1 << 3,
+        FLIP        = 1 << 4,
+        FLIP_FREEZED= 1 << 5
     };
 }
     
@@ -98,7 +98,7 @@ struct CollisionSides {
     }
 };
 
-class CEntity : public CRenderable {
+class CEntity {
     
 friend class EComponent;
     friend class CEntityManager;
@@ -156,6 +156,10 @@ public:
     EComponent* getComponent(std::string key);
     int getComponent(lua_State* L);
     
+    void setTransparency(int value) { _transparency = value; }
+    int getTransparency() { return _transparency; }
+    bool spriteFollowsCollisionBox;
+    
     bool isDead;
     bool toRemove;
     
@@ -174,12 +178,7 @@ private:
     bool _collision(int x, int y, std::vector<CEntity*>* entities);
     bool _hasMoved;
     
-    template<typename T>
-    std::string _getType() {
-        std::stringstream type;
-        type << typeid(T).name();
-        return type.str();
-    }
+    int _transparency;
     
 };
 

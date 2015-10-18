@@ -10,76 +10,77 @@
 #include "NFile.h"
 #include "CSpriteContainer.h"
 #include "CSpriteSheet.h"
+#include "LuaScript.h"
 
 
-std::map<std::string, CSprite*> CAssetManager::_SpriteVector;
-std::map<std::string, CSpriteContainer*> CAssetManager::_SpriteContainerVector;
-std::map<std::string, CSpriteSheet*> CAssetManager::_SpriteSheetVector;
-std::map<std::string, TTF_Font*> CAssetManager::_FontVector;
+std::map<std::string, CSprite*> CAssetManager::_Sprites;
+std::map<std::string, CSpriteContainer*> CAssetManager::_SpriteContainers;
+std::map<std::string, CSpriteSheet*> CAssetManager::_SpriteSheets;
+std::map<std::string, TTF_Font*> CAssetManager::_Fonts;
+std::map<std::string, LuaScript*> CAssetManager::_LuaScripts;
 int CAssetManager::_assetId = 0;
 
 CAssetManager::CAssetManager() { }
 
 
 CSprite* CAssetManager::addSprite(std::string name, std::string spriteSheetKey, Box source) {
-    if(_SpriteVector.find(name) != _SpriteVector.end()) {
+    if(_Sprites.find(name) != _Sprites.end()) {
         NFile::log(LogType::WARNING, "Couldn't add sprite: \"", name, "\", because it already exists.");
-        return _SpriteVector[name];
-    } else if(_SpriteSheetVector.find(spriteSheetKey) == _SpriteSheetVector.end()) {
+        return _Sprites[name];
+    } else if(_SpriteSheets.find(spriteSheetKey) == _SpriteSheets.end()) {
         NFile::log(LogType::WARNING, "Couldn't add sprite: \"", name, "\", because the spritesheet \"", spriteSheetKey, "\" didn't exist.");
         return nullptr;
     } else {
-        _SpriteVector[name] = new CSprite(_SpriteSheetVector[spriteSheetKey], source);
-        return _SpriteVector[name];
+        _Sprites[name] = new CSprite(_SpriteSheets[spriteSheetKey], source);
+        return _Sprites[name];
     }
 }
 
 std::string CAssetManager::addSprite(CSprite* sprite, std::string name /* = "" */) {
     if(name == "")
         name = "reserved:" + std::to_string(_assetId++);
-    if(_SpriteVector.find(name) != _SpriteVector.end()) {
+    if(_Sprites.find(name) != _Sprites.end()) {
         NFile::log(LogType::WARNING, "Couldn't add sprite: \"", name, "\", because it already exists.");
         return name;
     } else {
-        _SpriteVector[name] = sprite;
+        _Sprites[name] = sprite;
         return name;
     }
 }
 
 CSpriteContainer* CAssetManager::addSpriteContainer(std::string name, std::string spriteKey, Area area /* = {-1, -1} */) {
-    if(_SpriteContainerVector.find(name) != _SpriteContainerVector.end()) {
+    if(_SpriteContainers.find(name) != _SpriteContainers.end()) {
         NFile::log(LogType::WARNING, "Couldn't add sprite container \"", name, "\", becuase it already exists.");
-        return _SpriteContainerVector[name];
-    } else if(_SpriteVector.find(spriteKey) == _SpriteVector.end()) {
+        return _SpriteContainers[name];
+    } else if(_Sprites.find(spriteKey) == _Sprites.end()) {
         NFile::log(LogType::WARNING, "Couldn't add sprite container \"", name, "\", becuase the sprite \"", spriteKey, "\" didn't exist.");
         return nullptr;
     } else {
         if(area.w > 0 || area.h > 0)
-            _SpriteContainerVector[name] = new CSpriteContainer(spriteKey, area);
+            _SpriteContainers[name] = new CSpriteContainer(spriteKey, area);
         else
-            _SpriteContainerVector[name] = new CSpriteContainer(spriteKey);
+            _SpriteContainers[name] = new CSpriteContainer(spriteKey);
             
-        return _SpriteContainerVector[name];
+        return _SpriteContainers[name];
     }
 }
 
 std::string CAssetManager::addSpriteContainer(CSpriteContainer* spriteContainer, std::string name /* = "" */) {
     if(name == "")
         name = "reserved:" + std::to_string(_assetId++);
-    if(_SpriteContainerVector.find(name) != _SpriteContainerVector.end()) {
+    if(_SpriteContainers.find(name) != _SpriteContainers.end()) {
         NFile::log(LogType::WARNING, "Couldn't add sprite container: \"", name, "\", because it already exists.");
         return name;
     } else {
-        _SpriteContainerVector[name] = spriteContainer;
+        _SpriteContainers[name] = spriteContainer;
         return name;
     }
 }
 
 CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, SDL_Renderer* renderer, std::string fileName) {
-    //fileName = resourcePath() + fileName;
-    if(_SpriteSheetVector.find(name) != _SpriteSheetVector.end()) {
+    if(_SpriteSheets.find(name) != _SpriteSheets.end()) {
         NFile::log(LogType::WARNING, "Couldn't add spritesheet: \"", name, "\", because it already exists.");
-        return _SpriteSheetVector[name];
+        return _SpriteSheets[name];
     } else {
         CSpriteSheet* temp = new CSpriteSheet();
         if(!temp->openFile(renderer, fileName)) {
@@ -87,66 +88,89 @@ CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, SDL_Renderer* rend
             return nullptr;
         } else {
             NFile::log(LogType::SUCCESS, "Loaded asset: \"", fileName, "\" as \"", name, "\"");
-            _SpriteSheetVector[name] = temp;
-            return _SpriteSheetVector[name];
+            _SpriteSheets[name] = temp;
+            return _SpriteSheets[name];
         }
     }
 }
 
 TTF_Font* CAssetManager::addFont(std::string name, std::string fileName, int size) {
-    if(_FontVector.find(name) != _FontVector.end()) {
+    if(_Fonts.find(name) != _Fonts.end()) {
         NFile::log(LogType::WARNING, "Couldn't add font: \"", name, "\", because it already exists.");
-        return _FontVector[name];
+        return _Fonts[name];
     } else {
         TTF_Font *temp = TTF_OpenFont(fileName.c_str(), size);
         if(temp == nullptr) {
             NFile::log(LogType::WARNING, "Couldn't add font: \"", name, "\", could not open file \"", fileName, "\".");
             return nullptr;
         } else {
-            NFile::log(LogType::SUCCESS, "Loaded font: \"", fileName, "\" as \"", name, "\"");
-            _FontVector[name] = temp;
-            return _FontVector[name];
+            NFile::log(LogType::SUCCESS, "Loaded font: \"", fileName, "\" as \"", name, "\".");
+            _Fonts[name] = temp;
+            return temp;
         }
     }
 }
 
+LuaScript* CAssetManager::addLuaScript(lua_State* L, std::string path) {
+    LuaScript* script = new LuaScript(L, path);
+    auto name = script->getName();
+    
+    if(_LuaScripts.find(name) != _LuaScripts.end()) {
+        NFile::log(LogType::WARNING, "Couldn't add script: \"", name, "\", because it already exists");
+        delete script;
+        return _LuaScripts[name];
+    } else {
+        _LuaScripts[name] = script;
+        NFile::log(LogType::SUCCESS, "Loaded script: \"", path, "\" as \"", name, "\".");
+        return script;
+    }
+}
+
 CSprite* CAssetManager::getSprite(std::string key) {
-    auto it = _SpriteVector.find(key);
-    if(it == _SpriteVector.end())
+    auto it = _Sprites.find(key);
+    if(it == _Sprites.end())
         return nullptr;
     else
         return it->second;
 }
 
 CSpriteContainer* CAssetManager::getSpriteContainer(std::string key) {
-    auto it = _SpriteContainerVector.find(key);
-    if(it == _SpriteContainerVector.end())
+    auto it = _SpriteContainers.find(key);
+    if(it == _SpriteContainers.end())
         return nullptr;
     else
         return it->second;
 }
 
 CSpriteSheet* CAssetManager::getSpriteSheet(std::string key) {
-    auto it = _SpriteSheetVector.find(key);
-    if(it == _SpriteSheetVector.end())
+    auto it = _SpriteSheets.find(key);
+    if(it == _SpriteSheets.end())
         return nullptr;
     else
         return it->second;
 }
 
 TTF_Font* CAssetManager::getFont(std::string key) {
-    auto it = _FontVector.find(key);
-    if(it == _FontVector.end())
+    auto it = _Fonts.find(key);
+    if(it == _Fonts.end())
+        return nullptr;
+    else
+        return it->second;
+}
+
+LuaScript* CAssetManager::getLuaScript(std::string key) {
+    auto it = _LuaScripts.find(key);
+    if(it == _LuaScripts.end())
         return nullptr;
     else
         return it->second;
 }
 
 void CAssetManager::removeSpriteContainer(std::string key) {
-    auto it = _SpriteContainerVector.find(key);
-    if(it != _SpriteContainerVector.end()) {
+    auto it = _SpriteContainers.find(key);
+    if(it != _SpriteContainers.end()) {
         delete it->second;
-        _SpriteContainerVector.erase(it->first);
+        _SpriteContainers.erase(it->first);
     }
 }
 
@@ -155,64 +179,65 @@ void CAssetManager::onCleanup() {
     NFile::log(LogType::ALERT, "Unloading assets!");
     
     {
-        auto i = _SpriteVector.begin();
-        while(i != _SpriteVector.end()) {
+        auto i = _Sprites.begin();
+        while(i != _Sprites.end()) {
             delete i->second;
             i->second = nullptr;
-            _SpriteVector.erase(i++->first);
+            _Sprites.erase(i++->first);
         }
-        _SpriteVector.clear();
+        _Sprites.clear();
     }
     
     {
-        auto i = _SpriteContainerVector.begin();
-        while(i != _SpriteContainerVector.end()) {
+        auto i = _SpriteContainers.begin();
+        while(i != _SpriteContainers.end()) {
             delete i->second;
             i->second = nullptr;
-            _SpriteContainerVector.erase(i++->first);
+            _SpriteContainers.erase(i++->first);
         }
-        _SpriteContainerVector.clear();
+        _SpriteContainers.clear();
     }
     
     {
         std::string toWrite = "";
-        auto i = _SpriteSheetVector.begin();
-        while(i != _SpriteSheetVector.end()) {
+        auto i = _SpriteSheets.begin();
+        while(i != _SpriteSheets.end()) {
             i->second->onCleanup();
             delete i->second;
             i->second = nullptr;
             toWrite += "\"" + i->first + "\", ";
-            _SpriteSheetVector.erase(i++->first);
+            _SpriteSheets.erase(i++->first);
         }
-        _SpriteSheetVector.clear();
+        _SpriteSheets.clear();
         
         if(toWrite != "")
-            NFile::log(LogType::SUCCESS, "Unloaded asset: ", toWrite);
+            NFile::log(LogType::SUCCESS, "Unloaded assets: ", toWrite);
     }
     
     {
         std::string toWrite = "";
-        auto i = _FontVector.begin();
-        while(i != _FontVector.end()) {
+        auto i = _Fonts.begin();
+        while(i != _Fonts.end()) {
             toWrite += "\"" + i->first + "\", ";
-            _FontVector.erase(i++->first);
+            TTF_CloseFont(i->second);
+            _Fonts.erase(i++->first);
         }
-        _FontVector.clear();
+        _Fonts.clear();
         if(toWrite != "")
-            NFile::log(LogType::SUCCESS, "Unloaded asset: ", toWrite);
+            NFile::log(LogType::SUCCESS, "Unloaded assets: ", toWrite);
     }
     
-//    {
-//        std::string toWrite = "";
-//        auto i = _ShaderVector.begin();
-//        while(i != _ShaderVector.end()) {
-//            toWrite += " \"" + i->first + "\",";
-//            delete i->second;
-//            _ShaderVector.erase(i++->first);
-//        }
-//        _ShaderVector.clear();
-//        if(toWrite != "")
-//            NFile::log(LogType::SUCCESS, "Unloaded asset: ", toWrite);
-//    }
+    {
+        std::string toWrite = "";
+        auto i = _LuaScripts.begin();
+        while(i != _LuaScripts.end()) {
+            toWrite += "\"" + i->first + "\", ";
+            delete i->second;
+            _LuaScripts.erase(i++->first);
+        }
+        _LuaScripts.clear();
+        if(toWrite != "")
+            NFile::log(LogType::SUCCESS, "Unloaded scripts: ", toWrite);
+    }
     
 }

@@ -44,7 +44,8 @@ std::string LuaScript::getPath() {
 }
 
 std::string LuaScript::getName() {
-    std::string dir = _path.substr(_path.find("/") + 1, _path.size() - _path.find("/"));
+    //std::string dir = _path.substr(_path.find("/") + 1, _path.size() - _path.find("/"));
+    std::string dir = _path.substr(_path.find("scripts/") + 1, _path.size() - _path.find("scripts/"));
     dir = dir.substr(dir.find("/") + 1, dir.size() - dir.find("/"));
     return dir.substr(0, dir.find("."));;
 }

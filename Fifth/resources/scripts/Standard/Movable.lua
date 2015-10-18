@@ -1,8 +1,9 @@
 -- Movable.lua
 
 local Movable = class (
-    function(self, parent)
+    function(self, parent, ccomponent)
         self.parent = parent
+        self.ccomponent = ccomponent
         self.body = parent.body
 
         self.jumpPower = 15.0
@@ -150,15 +151,17 @@ function Movable:toggleNoClip()
     tempEntity = self.parent.entityManager:createColoredEntity(Box(100, 100, 200, 200), Color(255, 0, 255, 255))
     self.parent.entityManager:addEntity(tempEntity, "")
 
+    flagsToToggle = BitOR(EntityProperty.COLLIDABLE, EntityProperty.GRAVITY_AFFECT)
+
     if(self.isFlying) then
         self.isFlying = false
-        self.parent.properties = BitOR(EntityProperty.COLLIDABLE, self.parent.properties) -- toggle flag on
+        self.parent.properties = BitOR(flagsToToggle, self.parent.properties) -- toggle flag on
     else
         self.isFlying = true
-        self.parent.properties = BitAND(BitNOT(EntityProperty.COLLIDABLE), self.parent.properties) -- toggle flag off
+        self.parent.properties = BitAND(BitNOT(flagsToToggle), self.parent.properties) -- toggle flag off
     end
 end
 
-function create(parent)
-    return Movable(parent)
+function create(parent, ccomponent)
+    return Movable(parent, ccomponent)
 end

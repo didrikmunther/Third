@@ -15,13 +15,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2_ttf/SDL_ttf.h>
 
-#include "CRenderable.h"
-
 
 class CCamera;
 class CWindow;
 
-class CText : public CRenderable {
+class CText {
     
 public:
     CText(std::string text, int size, std::string fontKey, SDL_Color color);

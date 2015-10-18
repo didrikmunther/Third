@@ -13,10 +13,11 @@ CollisionLayers = {
 
 EntityProperty = {
     COLLIDABLE   = 1,
-    HIDDEN       = 2,
-    STATIC       = 4,
-    FLIP         = 8,
-    FLIP_FREEZED = 16
+    GRAVITY_AFFECT = 2,
+    HIDDEN       = 4,
+    STATIC       = 8,
+    FLIP         = 16,
+    FLIP_FREEZED = 32
 }
 
 SpriteStateTypes = {

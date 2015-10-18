@@ -130,21 +130,21 @@ int CGame::_onInit() {
     CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
     instance.entityManager.addBackground("main", background);
     
-    movableScript = new LuaScript(instance.L, "resources/scripts/Standard/Movable.lua");
+    auto movable = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Movable.lua");
     
     auto temp = new CEntity(Box{50, -500, 80, 140}, "playerPink");
     temp->spriteFollowsCollisionBox = false;
     temp->spriteStateTypes[SpriteStateTypes::ASCENDING] =
     temp->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
-    temp->addComponent(movableScript);
+    temp->addComponent(movable);
     instance.entityManager.addEntity(temp);
     instance.player = temp;
     instance.camera.setTarget(temp);
     
-    for(int i = 0; i < 500; i++) {
+    for(int i = 0; i < 5000 / 32; i++) {
         temp = new CEntity(Box{i * 32, -600, 5, 5}, Color{255, 255, 0});
-        temp->addComponent(movableScript);
-        temp->addProperty(EntityProperty::STATIC);
+        temp->addComponent(movable);
+        //temp->addProperty(EntityProperty::STATIC);
         instance.entityManager.addEntity(temp);
     }
         
@@ -160,7 +160,7 @@ int CGame::_onInit() {
     temp = new CEntity(Box{0, -4950, 20, 5000}, Color{255, 0, 0, 255});
     temp->collisionLayer = -129;
     temp->addProperty(EntityProperty::STATIC);
-    instance.entityManager.addEntity(temp);    
+    instance.entityManager.addEntity(temp);
     
     /*
     
@@ -228,6 +228,9 @@ void CGame::_initLua() {
             .addData("properties", &CEntity::properties)
         .endClass()
     
+        .beginClass<EComponent>("Component")
+        .endClass()
+    
         .beginClass<Box>("Box")             // Box
             .addConstructor<void(*) (int, int, int, int)>()
         .endClass()
@@ -275,8 +278,6 @@ int CGame::_onCleanup() {
     instance.entityManager.onCleanup();
     CAssetManager::onCleanup();
     instance.window.onCleanup();
-    
-    delete movableScript;
     
     NFile::log(LogType::ALERT, "Exiting game.");
     

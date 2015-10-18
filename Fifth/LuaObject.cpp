@@ -10,10 +10,10 @@
 #include "CEntity.h"
 
 
-LuaObject::LuaObject(CEntity* parent, LuaScript* script)
+LuaObject::LuaObject(CEntity* parent, EComponent* component, LuaScript* script)
     : _script(script)
     , _parent(parent)
-    , _object((*script->getObjectCreation())(parent))
+    , _object((*script->getObjectCreation())(parent, component))
 {
     
 }

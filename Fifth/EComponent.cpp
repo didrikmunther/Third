@@ -12,7 +12,7 @@
 
 EComponent::EComponent(CEntity* parent, LuaScript* script)
     : parent(parent)
-    , object(parent, script)
+    , object(parent, this, script)
 {
     
 }

@@ -400,10 +400,11 @@ void CEntityManager::onLoop(CInstance* instance) {
             
             target->move(&collisionMap);
             
-            if(target->isDead && target->hasSprite()) {
-                splitEntityToParticles(target);
+            if(target->isDead) {
                 _deadEntities[(*i).first] = (*i).second;
                 _entities.erase(i++);
+                if(target->hasSprite())
+                    splitEntityToParticles(target);
             } else if(target->toRemove) {
                 delete target;
                 _entities.erase(i++->first);
