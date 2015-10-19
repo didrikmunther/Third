@@ -71,7 +71,7 @@ void CGame::_onEvent(SDL_Event* event) {
     
     //if(event->key.repeat != 0) return;
     
-    EComponent* movable = nullptr;
+    CComponent* movable = nullptr;
     if(instance.player)
         movable = instance.player->getComponent("Standard/Movable");
     

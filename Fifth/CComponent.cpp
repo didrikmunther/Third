@@ -1,27 +1,27 @@
 //
-//  EComponent.cpp
+//  CComponent.cpp
 //  Fifth
 //
 //  Created by Didrik Munther on 21/09/15.
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#include "EComponent.h"
+#include "CComponent.h"
 #include "CEntity.h"
 
 
-EComponent::EComponent(CEntity* parent, LuaScript* script)
+CComponent::CComponent(CEntity* parent, CLuaScript* script)
     : parent(parent)
     , object(parent, this, script)
 {
     
 }
 
-EComponent::~EComponent() {
+CComponent::~CComponent() {
     
 }
 
-void EComponent::onLoop(CInstance* instance) {
+void CComponent::onLoop(CInstance* instance) {
     if(!object.hasReference("onLoop"))
         return;
     
@@ -30,7 +30,7 @@ void EComponent::onLoop(CInstance* instance) {
     object.endCall(1, 0);
 }
 
-void EComponent::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
+void CComponent::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     if(!object.hasReference("onRender"))
         return;
     
@@ -39,23 +39,23 @@ void EComponent::onRender(CWindow* window, CCamera* camera, RenderFlags renderFl
     object.endCall(1, 0);
 }
 
-void EComponent::onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
+void CComponent::onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     
 }
 
-bool EComponent::onCollision(CEntity* target, CollisionSides* collisionSides) {
+bool CComponent::onCollision(CEntity* target, CollisionSides* collisionSides) {
     return true;
 }
 
-void EComponent::serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc) {
+void CComponent::serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc) {
     
 }
 
-void EComponent::deserialize(rapidjson::Value* value) {
+void CComponent::deserialize(rapidjson::Value* value) {
     
 }
 
-void EComponent::callSimpleFunction(std::string function) {
+void CComponent::callSimpleFunction(std::string function) {
     if(!object.hasReference(function.c_str()))
         return;
     
@@ -64,10 +64,10 @@ void EComponent::callSimpleFunction(std::string function) {
     object.endCall(1, 0);
 }
 
-void EComponent::pushThis() {
+void CComponent::pushThis() {
     object.pushObject();
 }
 
-std::vector<CGuiText*>* EComponent::guiTextVector() {
+std::vector<CGuiText*>* CComponent::guiTextVector() {
     return &parent->_GuiTextVector;
 }

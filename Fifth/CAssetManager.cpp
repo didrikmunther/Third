@@ -10,14 +10,14 @@
 #include "NFile.h"
 #include "CSpriteContainer.h"
 #include "CSpriteSheet.h"
-#include "LuaScript.h"
+#include "CLuaScript.h"
 
 
 std::map<std::string, CSprite*> CAssetManager::_Sprites;
 std::map<std::string, CSpriteContainer*> CAssetManager::_SpriteContainers;
 std::map<std::string, CSpriteSheet*> CAssetManager::_SpriteSheets;
 std::map<std::string, TTF_Font*> CAssetManager::_Fonts;
-std::map<std::string, LuaScript*> CAssetManager::_LuaScripts;
+std::map<std::string, CLuaScript*> CAssetManager::_CLuaScripts;
 int CAssetManager::_assetId = 0;
 
 CAssetManager::CAssetManager() { }
@@ -111,16 +111,16 @@ TTF_Font* CAssetManager::addFont(std::string name, std::string fileName, int siz
     }
 }
 
-LuaScript* CAssetManager::addLuaScript(lua_State* L, std::string path) {
-    LuaScript* script = new LuaScript(L, path);
+CLuaScript* CAssetManager::addCLuaScript(lua_State* L, std::string path) {
+    CLuaScript* script = new CLuaScript(L, path);
     auto name = script->getName();
     
-    if(_LuaScripts.find(name) != _LuaScripts.end()) {
+    if(_CLuaScripts.find(name) != _CLuaScripts.end()) {
         NFile::log(LogType::WARNING, "Couldn't add script: \"", name, "\", because it already exists");
         delete script;
-        return _LuaScripts[name];
+        return _CLuaScripts[name];
     } else {
-        _LuaScripts[name] = script;
+        _CLuaScripts[name] = script;
         NFile::log(LogType::SUCCESS, "Loaded script: \"", path, "\" as \"", name, "\".");
         return script;
     }
@@ -158,9 +158,9 @@ TTF_Font* CAssetManager::getFont(std::string key) {
         return it->second;
 }
 
-LuaScript* CAssetManager::getLuaScript(std::string key) {
-    auto it = _LuaScripts.find(key);
-    if(it == _LuaScripts.end())
+CLuaScript* CAssetManager::getCLuaScript(std::string key) {
+    auto it = _CLuaScripts.find(key);
+    if(it == _CLuaScripts.end())
         return nullptr;
     else
         return it->second;
@@ -229,13 +229,13 @@ void CAssetManager::onCleanup() {
     
     {
         std::string toWrite = "";
-        auto i = _LuaScripts.begin();
-        while(i != _LuaScripts.end()) {
+        auto i = _CLuaScripts.begin();
+        while(i != _CLuaScripts.end()) {
             toWrite += "\"" + i->first + "\", ";
             delete i->second;
-            _LuaScripts.erase(i++->first);
+            _CLuaScripts.erase(i++->first);
         }
-        _LuaScripts.clear();
+        _CLuaScripts.clear();
         if(toWrite != "")
             NFile::log(LogType::SUCCESS, "Unloaded scripts: ", toWrite);
     }

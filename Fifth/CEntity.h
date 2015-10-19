@@ -18,7 +18,7 @@
 #include "CChatBubble.h"
 #include "CBody.h"
 #include "NFile.h"
-#include "EComponent.h"
+#include "CComponent.h"
 #include "NSurface.h"
 
 
@@ -100,7 +100,7 @@ struct CollisionSides {
 
 class CEntity {
     
-friend class EComponent;
+friend class CComponent;
     friend class CEntityManager;
     
 public:
@@ -152,8 +152,8 @@ public:
     void shoot(float angle, BasicUtilities basicUtility);
     std::vector<CEntity*> particlesToAdd;
     
-    void addComponent(LuaScript* script);
-    EComponent* getComponent(std::string key);
+    void addComponent(CLuaScript* script);
+    CComponent* getComponent(std::string key);
     int getComponent(lua_State* L);
     
     void setTransparency(int value) { _transparency = value; }
@@ -172,7 +172,7 @@ protected:
     
     bool _onCollision(CEntity* target, CollisionSides* collisionSides);
     
-    std::map<std::string, EComponent*> components;
+    std::map<std::string, CComponent*> components;
     
 private:
     bool _collision(int x, int y, std::vector<CEntity*>* entities);

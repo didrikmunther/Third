@@ -1,13 +1,13 @@
 //
-//  EComponent.h
+//  CComponent.h
 //  Fifth
 //
 //  Created by Didrik Munther on 21/09/15.
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#ifndef __Fifth__EComponent__
-#define __Fifth__EComponent__
+#ifndef __Fifth__CComponent__
+#define __Fifth__CComponent__
 
 #include <stdio.h>
 #include <vector>
@@ -19,7 +19,7 @@
 #include "rapidjson/stringbuffer.h"
 
 #include "Define.h"
-#include "LuaObject.h"
+#include "CLuaObject.h"
 
 
 class CInstance;
@@ -30,11 +30,11 @@ class CGuiText;
 
 struct CollisionSides;
 
-class EComponent {
+class CComponent {
     
 public:
-    EComponent(CEntity* parent, LuaScript* script);
-    ~EComponent();
+    CComponent(CEntity* parent, CLuaScript* script);
+    ~CComponent();
     
     void onLoop(CInstance* instance);
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
@@ -49,11 +49,11 @@ public:
     void pushThis();
     
     CEntity* parent;
-    LuaObject object;
+    CLuaObject object;
     
 private:
     std::vector<CGuiText*>* guiTextVector();
     
 };
 
-#endif /* defined(__Fifth__EComponent__) */
+#endif /* defined(__Fifth__CComponent__) */

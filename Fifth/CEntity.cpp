@@ -235,17 +235,17 @@ void CEntity::shoot(float angle, BasicUtilities basicUtility) {
 //    particlesToAdd.push_back(tempParticle);
 }
 
-void CEntity::addComponent(LuaScript* script) {
+void CEntity::addComponent(CLuaScript* script) {
     if(getComponent(script->getName())) {
         NFile::log(LogType::WARNING, "Component already exists: ", script->getName(), ".");
         delete components[script->getName()];
     }
     
-    EComponent* component = new EComponent(this, script);
+    CComponent* component = new CComponent(this, script);
     components[script->getName()] = component;
 }
 
-EComponent* CEntity::getComponent(std::string key) {
+CComponent* CEntity::getComponent(std::string key) {
     if(!components.count(key))
         return nullptr;
     

@@ -1,13 +1,13 @@
 //
-//  LuaScript.h
+//  CLuaScript.h
 //  LuaTest4
 //
 //  Created by Didrik Munther on 16/10/15.
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#ifndef __LuaTest4__LuaScript__
-#define __LuaTest4__LuaScript__
+#ifndef __LuaTest4__CLuaScript__
+#define __LuaTest4__CLuaScript__
 
 #include <stdio.h>
 #include <string>
@@ -24,10 +24,10 @@ extern "C" {
 
 class Entity;
 
-class LuaScript {
+class CLuaScript {
     
 public:
-    LuaScript(lua_State* L, std::string path);
+    CLuaScript(lua_State* L, std::string path);
     
     luabridge::LuaRef init(lua_State* L, std::string path);
     
@@ -46,4 +46,4 @@ private:
     
 };
 
-#endif /* defined(__LuaTest4__LuaScript__) */
+#endif /* defined(__LuaTest4__CLuaScript__) */

@@ -130,7 +130,7 @@ int CGame::_onInit() {
     CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
     instance.entityManager.addBackground("main", background);
     
-    auto movable = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Movable.lua");
+    auto movable = CAssetManager::addCLuaScript(instance.L, "resources/scripts/Standard/Movable.lua");
     
     auto temp = new CEntity(Box{50, -500, 80, 140}, "playerPink");
     temp->spriteFollowsCollisionBox = false;
@@ -228,7 +228,7 @@ void CGame::_initLua() {
             .addData("properties", &CEntity::properties)
         .endClass()
     
-        .beginClass<EComponent>("Component")
+        .beginClass<CComponent>("Component")
         .endClass()
     
         .beginClass<Box>("Box")             // Box

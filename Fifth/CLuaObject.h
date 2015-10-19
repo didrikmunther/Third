@@ -1,27 +1,27 @@
 //
-//  LuaObject.h
+//  CLuaObject.h
 //  LuaTest4
 //
 //  Created by Didrik Munther on 16/10/15.
 //  Copyright (c) 2015 Didrik Munther. All rights reserved.
 //
 
-#ifndef __LuaTest4__LuaObject__
-#define __LuaTest4__LuaObject__
+#ifndef __LuaTest4__CLuaObject__
+#define __LuaTest4__CLuaObject__
 
 #include <stdio.h>
 #include <iostream>
 
-#include "LuaScript.h"
+#include "CLuaScript.h"
 
 
 class CEntity;
-class EComponent;
+class CComponent;
 
-class LuaObject {
+class CLuaObject {
     
 public:
-    LuaObject(CEntity* parent, EComponent* component, LuaScript* script);
+    CLuaObject(CEntity* parent, CComponent* component, CLuaScript* script);
     
     void beginCall(std::string function);
     void endCall(int argc, int results);
@@ -33,7 +33,7 @@ public:
     
     void pushObject();
     
-    LuaScript* getScript();
+    CLuaScript* getScript();
     
     luabridge::LuaRef operator[] (std::string key) {
         return _object[key.c_str()];
@@ -41,10 +41,10 @@ public:
     
     
 private:
-    LuaScript* _script;
+    CLuaScript* _script;
     CEntity* _parent;
     luabridge::LuaRef _object;
     
 };
 
-#endif /* defined(__LuaTest4__LuaObject__) */
+#endif /* defined(__LuaTest4__CLuaObject__) */

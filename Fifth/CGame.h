@@ -19,7 +19,7 @@
 #include "CNetwork.h"
 
 
-class LuaScript;
+class CLuaScript;
 
 class CGame {
     friend class CNetwork;
