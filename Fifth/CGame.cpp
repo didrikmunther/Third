@@ -130,7 +130,7 @@ int CGame::_onInit() {
     CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
     instance.entityManager.addBackground("main", background);
     
-    auto movable = CAssetManager::addCLuaScript(instance.L, "resources/scripts/Standard/Movable.lua");
+    auto movable = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Movable.lua");
     
     auto temp = new CEntity(Box{50, -500, 80, 140}, "playerPink");
     temp->spriteFollowsCollisionBox = false;
@@ -220,12 +220,24 @@ void CGame::_initLua() {
     
     luabridge::getGlobalNamespace(instance.L)
     
+        .beginNamespace("game")
+            .addFunction("getScript", &CAssetManager::getLuaScript)
+        .endNamespace()
+    
+        .beginClass<CLuaScript>("LuaScript")
+            .addFunction("getName", &CLuaScript::getName)
+        .endClass()
+    
         .beginClass<CEntity>("Entity")      // Entity doesn't need a constructor, because you should use the entityManager.create.. functions
             .addCFunction("getComponent", &CEntity::getComponent)
+            .addFunction("addComponent", &CEntity::addComponent)
             .addData("entityManager", &CEntity::entityManager)
             .addData("body", &CEntity::body)
+            .addData("isDead", &CEntity::isDead)
+            .addData("toRemove", &CEntity::toRemove)
             .addData("collisionSides", &CEntity::collisionSides)
             .addData("properties", &CEntity::properties)
+            .addData("transparency", &CEntity::transparency)
         .endClass()
     
         .beginClass<CComponent>("Component")

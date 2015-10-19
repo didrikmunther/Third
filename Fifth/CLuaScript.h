@@ -42,6 +42,7 @@ public:
 private:
     lua_State* _L;
     std::string _path;
+    std::string _name;
     luabridge::LuaRef _objectCreationFunction;
     
 };

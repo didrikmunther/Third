@@ -156,8 +156,7 @@ public:
     CComponent* getComponent(std::string key);
     int getComponent(lua_State* L);
     
-    void setTransparency(int value) { _transparency = value; }
-    int getTransparency() { return _transparency; }
+    int transparency;
     bool spriteFollowsCollisionBox;
     
     bool isDead;
@@ -177,8 +176,6 @@ protected:
 private:
     bool _collision(int x, int y, std::vector<CEntity*>* entities);
     bool _hasMoved;
-    
-    int _transparency;
     
 };
 

@@ -10,7 +10,6 @@
 #define __LuaTest4__CLuaObject__
 
 #include <stdio.h>
-#include <iostream>
 
 #include "CLuaScript.h"
 

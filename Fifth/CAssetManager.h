@@ -32,13 +32,13 @@ public:
     static std::string addSpriteContainer(CSpriteContainer* spriteContainer, std::string name = "");
     static CSpriteSheet* addSpriteSheet(std::string name, SDL_Renderer* renderer, std::string fileName);
     static TTF_Font* addFont(std::string name, std::string fileName, int size);
-    static CLuaScript* addCLuaScript(lua_State* L, std::string path);
+    static CLuaScript* addLuaScript(lua_State* L, std::string path);
     
     static CSprite* getSprite(std::string key);
     static CSpriteContainer* getSpriteContainer(std::string key);
     static CSpriteSheet* getSpriteSheet(std::string key);
     static TTF_Font* getFont(std::string key);
-    static CLuaScript* getCLuaScript(std::string key);
+    static CLuaScript* getLuaScript(std::string key);
     
     static void removeSpriteContainer(std::string key);
     
@@ -49,7 +49,7 @@ private:
     static std::map<std::string, CSpriteContainer*> _SpriteContainers;
     static std::map<std::string, CSpriteSheet*> _SpriteSheets;
     static std::map<std::string, TTF_Font*> _Fonts;
-    static std::map<std::string, CLuaScript*> _CLuaScripts;
+    static std::map<std::string, CLuaScript*> _LuaScripts;
     static int _assetId;
     
 };

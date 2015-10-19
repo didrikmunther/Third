@@ -46,7 +46,7 @@ void CEntity::init() {
     collisionSides = false;
     collisionLayer = CollisionLayers::LAYER0;
     spriteFollowsCollisionBox = true;
-    _transparency = 255;
+    transparency = 255;
 }
 
 void CEntity::_cleanUpTextVector() {
@@ -142,7 +142,7 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
             else
                 flip = SDL_RendererFlip::SDL_FLIP_NONE;
             
-            NSurface::renderSprite(x, y, spriteWidth, spriteHeight, getSpriteContainer()->getSprite(), window, flip, getTransparency());
+            NSurface::renderSprite(x, y, spriteWidth, spriteHeight, getSpriteContainer()->getSprite(), window, flip, transparency);
         }
     }
     

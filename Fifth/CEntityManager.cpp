@@ -431,7 +431,10 @@ void CEntityManager::onLoop(CInstance* instance) {
             
             target->move(&collisionMap);
             
-            if((*i).second->toRemove) {
+            if(!target->isDead) {
+                _entities[(*i).first] = (*i).second;
+                _deadEntities.erase(i++);
+            } else if((*i).second->toRemove) {
                 delete (*i).second;
                 _deadEntities.erase(i++);
             } else

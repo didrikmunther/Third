@@ -17,7 +17,7 @@ std::map<std::string, CSprite*> CAssetManager::_Sprites;
 std::map<std::string, CSpriteContainer*> CAssetManager::_SpriteContainers;
 std::map<std::string, CSpriteSheet*> CAssetManager::_SpriteSheets;
 std::map<std::string, TTF_Font*> CAssetManager::_Fonts;
-std::map<std::string, CLuaScript*> CAssetManager::_CLuaScripts;
+std::map<std::string, CLuaScript*> CAssetManager::_LuaScripts;
 int CAssetManager::_assetId = 0;
 
 CAssetManager::CAssetManager() { }
@@ -111,16 +111,16 @@ TTF_Font* CAssetManager::addFont(std::string name, std::string fileName, int siz
     }
 }
 
-CLuaScript* CAssetManager::addCLuaScript(lua_State* L, std::string path) {
+CLuaScript* CAssetManager::addLuaScript(lua_State* L, std::string path) {
     CLuaScript* script = new CLuaScript(L, path);
     auto name = script->getName();
     
-    if(_CLuaScripts.find(name) != _CLuaScripts.end()) {
+    if(_LuaScripts.find(name) != _LuaScripts.end()) {
         NFile::log(LogType::WARNING, "Couldn't add script: \"", name, "\", because it already exists");
         delete script;
-        return _CLuaScripts[name];
+        return _LuaScripts[name];
     } else {
-        _CLuaScripts[name] = script;
+        _LuaScripts[name] = script;
         NFile::log(LogType::SUCCESS, "Loaded script: \"", path, "\" as \"", name, "\".");
         return script;
     }
@@ -158,9 +158,9 @@ TTF_Font* CAssetManager::getFont(std::string key) {
         return it->second;
 }
 
-CLuaScript* CAssetManager::getCLuaScript(std::string key) {
-    auto it = _CLuaScripts.find(key);
-    if(it == _CLuaScripts.end())
+CLuaScript* CAssetManager::getLuaScript(std::string key) {
+    auto it = _LuaScripts.find(key);
+    if(it == _LuaScripts.end())
         return nullptr;
     else
         return it->second;
@@ -229,13 +229,13 @@ void CAssetManager::onCleanup() {
     
     {
         std::string toWrite = "";
-        auto i = _CLuaScripts.begin();
-        while(i != _CLuaScripts.end()) {
+        auto i = _LuaScripts.begin();
+        while(i != _LuaScripts.end()) {
             toWrite += "\"" + i->first + "\", ";
             delete i->second;
-            _CLuaScripts.erase(i++->first);
+            _LuaScripts.erase(i++->first);
         }
-        _CLuaScripts.clear();
+        _LuaScripts.clear();
         if(toWrite != "")
             NFile::log(LogType::SUCCESS, "Unloaded scripts: ", toWrite);
     }

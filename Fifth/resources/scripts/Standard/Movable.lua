@@ -149,16 +149,22 @@ function Movable:toggleNoClip()
     --end
 
     tempEntity = self.parent.entityManager:createColoredEntity(Box(100, 100, 200, 200), Color(255, 0, 255, 255))
+    script = game.getScript("Standard/Movable")
+    tempEntity:addComponent(script)
     self.parent.entityManager:addEntity(tempEntity, "")
 
     flagsToToggle = BitOR(EntityProperty.COLLIDABLE, EntityProperty.GRAVITY_AFFECT)
 
     if(self.isFlying) then
         self.isFlying = false
+        self.parent.transparency = 255
         self.parent.properties = BitOR(flagsToToggle, self.parent.properties) -- toggle flag on
+        self.parent.isDead = true;
     else
         self.isFlying = true
+        self.parent.transparency = 128
         self.parent.properties = BitAND(BitNOT(flagsToToggle), self.parent.properties) -- toggle flag off
+        self.parent.isDead = false;
     end
 end
 
