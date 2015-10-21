@@ -131,6 +131,7 @@ int CGame::_onInit() {
     instance.entityManager.addBackground("main", background);
     
     auto movable = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Movable.lua");
+    auto npc = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Npc.lua");
     
     auto temp = new CEntity(Box{50, -500, 80, 140}, "playerPink");
     temp->spriteFollowsCollisionBox = false;
@@ -141,13 +142,17 @@ int CGame::_onInit() {
     instance.player = temp;
     instance.camera.setTarget(temp);
     
-    for(int i = 0; i < 5000 / 32; i++) {
-        temp = new CEntity(Box{i * 32, -600, 5, 5}, Color{255, 255, 0});
+    for(int i = 0; i < 200; i++) {
+        temp = new CEntity(Box{i * 6 + 32, -600, 5, 5}, Color{255, 255, 0});
         temp->addComponent(movable);
-        //temp->addProperty(EntityProperty::STATIC);
+        temp->addComponent(npc);
+        temp->getComponent("Standard/Npc")->object.beginCall("setTarget");
+        luabridge::Stack<CEntity*>::push(instance.L, instance.player);
+        temp->getComponent("Standard/Npc")->object.endCall(1, 0);
+        temp->collisionLayer = CollisionLayers::LAYER6;
         instance.entityManager.addEntity(temp);
     }
-        
+    
     temp = new CEntity(Box{100, -1000, 30 * 5, 28 * 5}, "bush");
     temp->collisionLayer = CollisionLayers::LAYER4;
     instance.entityManager.addEntity(temp, "n:bush");
@@ -163,8 +168,6 @@ int CGame::_onInit() {
     instance.entityManager.addEntity(temp);
     
     /*
-    
-     
      
      "entities": [
      {"name":"m:player2", "type":6, "rect":[300, 0, 80, 140], "spriteContainerKey":"playerPink", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
@@ -177,17 +180,6 @@ int CGame::_onInit() {
      {								"rect":[0, -20, 30, 500], 			"colors":[255, 0, 0, 0],				"collisionLayers":15}
      ]
      
-    */
-    
-    /*
-     LAYER0 // 1
-     LAYER1 // 2
-     LAYER2 // 4
-     LAYER3 // 8
-     LAYER4 // 16
-     LAYER5 // 32
-     LAYER6 // 64
-     LAYER7 // 128
     */
     
     return 0;
@@ -222,6 +214,7 @@ void CGame::_initLua() {
     
         .beginNamespace("game")
             .addFunction("getScript", &CAssetManager::getLuaScript)
+            .addFunction("getTime", &CGame::getTime)
         .endNamespace()
     
         .beginClass<CLuaScript>("LuaScript")
@@ -237,6 +230,7 @@ void CGame::_initLua() {
             .addData("toRemove", &CEntity::toRemove)
             .addData("collisionSides", &CEntity::collisionSides)
             .addData("properties", &CEntity::properties)
+            .addFunction("hasProperty", &CEntity::hasProperty)
             .addData("transparency", &CEntity::transparency)
         .endClass()
     
@@ -245,6 +239,10 @@ void CGame::_initLua() {
     
         .beginClass<Box>("Box")             // Box
             .addConstructor<void(*) (int, int, int, int)>()
+            .addData("x", &Box::x)
+            .addData("y", &Box::y)
+            .addData("w", &Box::w)
+            .addData("h", &Box::h)
         .endClass()
     
         .beginClass<Color>("Color")         // Color
@@ -255,6 +253,7 @@ void CGame::_initLua() {
             .addConstructor<void(*) (Box)>()
             .addData("velX", &CBody::velX)
             .addData("velY", &CBody::velY)
+            .addData("box", &CBody::_rect)
         .endClass()
     
         .beginClass<CEntityManager>("EntityManager")    // EntityManager
@@ -270,6 +269,10 @@ void CGame::_initLua() {
             .addData("right", &CollisionSides::right)
             .addData("left", &CollisionSides::left)
         .endClass();
+}
+
+int CGame::getTime() {
+    return SDL_GetTicks();
 }
 
 void CGame::_onLoop() {

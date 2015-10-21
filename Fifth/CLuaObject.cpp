@@ -8,6 +8,7 @@
 
 #include "CLuaObject.h"
 #include "CEntity.h"
+#include "NFile.h"
 
 
 CLuaObject::CLuaObject(CEntity* parent, CComponent* component, CLuaScript* script)
@@ -24,7 +25,11 @@ void CLuaObject::beginCall(std::string function) {
 }
 
 void CLuaObject::endCall(int argc, int results) {
-    lua_call(_script->getState(), argc + 1, results);
+    int error = lua_pcall(_script->getState(), argc + 1, results, 0);
+
+    if(error && lua_gettop(_script->getState())) {
+        NFile::log(LogType::ERROR, "LuaScript \"", _script->getName(), "\": \"", lua_tostring(_script->getState(), -1), "\"");
+    }
 }
 
 void CLuaObject::endCall() {

@@ -26,8 +26,8 @@ void CComponent::onLoop(CInstance* instance) {
         return;
     
     object.beginCall("onLoop");
-    luabridge::Stack<CEntity*>::push(object.getScript()->getState(), parent);
-    object.endCall(1, 0);
+    //luabridge::Stack<CEntity*>::push(object.getScript()->getState(), parent);
+    object.endCall(0, 0);
 }
 
 void CComponent::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
@@ -35,8 +35,8 @@ void CComponent::onRender(CWindow* window, CCamera* camera, RenderFlags renderFl
         return;
     
     object.beginCall("onRender");
-    luabridge::Stack<CEntity*>::push(object.getScript()->getState(), parent);
-    object.endCall(1, 0);
+    //luabridge::Stack<CEntity*>::push(object.getScript()->getState(), parent);
+    object.endCall(0, 0);
 }
 
 void CComponent::onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {

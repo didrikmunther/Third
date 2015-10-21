@@ -140,7 +140,7 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
             int targetY = target->body->getY() + target->body->velY;
             int targetW = target->body->getW() + target->body->velX;
             int targetH = target->body->getH() + target->body->velY;
-            NSurface::renderRect(targetX - camera->offsetX(), targetY - camera->offsetY(), targetW, targetH, window, 100, 200, 100, 100);
+            NSurface::renderRect(targetX - camera->offsetX(), targetY - camera->offsetY(), targetW, targetH, window, 100, 200, 100, 50);
         }
         
         for(auto &i: _particles) {
@@ -149,7 +149,7 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
             int targetY = target->body->getY() + target->body->velY;
             int targetW = target->body->getW() + target->body->velX;
             int targetH = target->body->getH() + target->body->velY;
-            NSurface::renderRect(targetX - camera->offsetX(), targetY - camera->offsetY(), targetW, targetH, window, 100, 200, 100, 100);
+            NSurface::renderRect(targetX - camera->offsetX(), targetY - camera->offsetY(), targetW, targetH, window, 100, 200, 100, 50);
         }
     }
     
@@ -160,13 +160,13 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
     if(renderFlags & RenderFlags::ENTITY_GRID) {
         for(auto &i: _entities) {
             for(auto &grid: i.second->gridCoordinates) {
-                NSurface::renderRect(grid.x * _gridSize - camera->offsetX(), grid.y * _gridSize - camera->offsetY(), _gridSize, _gridSize, window, 0, 100, 100, 100);
+                NSurface::renderRect(grid.x * _gridSize - camera->offsetX(), grid.y * _gridSize - camera->offsetY(), _gridSize, _gridSize, window, 0, 100, 100, 20);
             }
         }
         
         for(auto &i: _particles) {
             for(auto &grid: i->gridCoordinates) {
-                NSurface::renderRect(grid.x * _gridSize - camera->offsetX(), grid.y * _gridSize - camera->offsetY(), _gridSize, _gridSize, window, 0, 100, 100, 100);
+                NSurface::renderRect(grid.x * _gridSize - camera->offsetX(), grid.y * _gridSize - camera->offsetY(), _gridSize, _gridSize, window, 0, 100, 100, 20);
             }
         }
     }

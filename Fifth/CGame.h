@@ -60,6 +60,8 @@ private:
     std::string _intro;
     bool isFocused;
     
+    static int getTime();
+    
 };
 
 #endif /* defined(__Third__CGame__) */
