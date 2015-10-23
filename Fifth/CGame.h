@@ -61,6 +61,7 @@ private:
     bool isFocused;
     
     static int getTime();
+    void restart();
     
 };
 

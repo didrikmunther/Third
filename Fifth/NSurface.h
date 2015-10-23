@@ -34,17 +34,20 @@ struct Line {
     int x2, y2;
     Color color;
     
-    Line(int x, int y, int x2, int y2, Color color = Color{255, 0, 0, 255}) :
-    x(x), y(y), x2(x2), y2(y2), color(color) {  }
+    Line(int x, int y, int x2, int y2, Color color = Color{255, 0, 0, 255})
+    : x(x), y(y), x2(x2), y2(y2), color(color) {  }
     
-    Line(Position pos1, Position pos2, Color color = Color{255, 0, 0, 255}) :
-    x(pos1.x), y(pos1.y), x2(pos2.x), y2(pos2.y), color(color) {  }
+    Line(Position pos1, Position pos2, Color color = Color{255, 0, 0, 255})
+    : x(pos1.x), y(pos1.y), x2(pos2.x), y2(pos2.y), color(color) {  }
     
     Line normalizeWithCamera(CCamera* camera);
 };
 
 struct Triangle {
     Line a, b, c;
+    
+    Triangle(Line a, Line b, Line c)
+    : a(a), b(b), c(c) {  }
     
     Triangle normalizeWithCamera(CCamera* camera);
 };

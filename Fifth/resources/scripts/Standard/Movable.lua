@@ -159,10 +159,12 @@ function Movable:toggleNoClip()
         self.isFlying = false
         self.parent.transparency = 255
         self.parent.properties = BitOR(flagsToToggle, self.parent.properties) -- toggle flag on
+        self.parent:say("Deinitiated flying", "TESTFONT", ChatBubbleType.SAY)
     else
         self.isFlying = true
         self.parent.transparency = 128
         self.parent.properties = BitAND(BitNOT(flagsToToggle), self.parent.properties) -- toggle flag off
+        self.parent:say("Initiated flying", "TESTFONT", ChatBubbleType.SAY)
     end
 end
 

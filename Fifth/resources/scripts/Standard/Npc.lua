@@ -57,6 +57,29 @@ function Npc:onLoop()
     end
 end
 
+function Npc:onRender()
+    box = self.parent.body.box
+    thisX = box.x
+    thisY = box.y
+    thisW = box.w
+    thisH = box.h
+
+    component = self.ccomponent
+    lineWidth = 2
+
+    component:renderRect(thisX, thisY, thisW, lineWidth, 255, 100, 255, 255)
+    component:renderRect(thisX, thisY, lineWidth, thisH, 255, 100, 255, 255)
+    component:renderRect(thisX + thisW, thisY, lineWidth, thisH, 255, 100, 255, 255)
+    component:renderRect(thisX, thisY + thisH, thisW, lineWidth, 255, 100, 255, 255)
+
+
+    --tBox = self.target.body.box
+    --tX = tBox.x
+    --tY = tBox.y
+
+    --component:renderLine(thisX, thisY, tX, tY, 255, 100, 100, 255)
+end
+
 function Npc:setTarget(target)
     self.target = target
 end

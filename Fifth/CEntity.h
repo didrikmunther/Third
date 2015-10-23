@@ -136,6 +136,7 @@ public:
     CBody* body;
     CollisionSides collisionSides;
     
+    void say(std::string text, std::string fontKey, int type);
     void say(std::string text, std::string fontKey, ChatBubbleType type);
     
     std::string spriteStateTypes[SpriteStateTypes::TOTAL_SPRITESTATETYPES];

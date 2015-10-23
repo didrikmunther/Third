@@ -13,6 +13,9 @@
 CComponent::CComponent(CEntity* parent, CLuaScript* script)
     : parent(parent)
     , object(parent, this, script)
+    , tempWindow(nullptr)
+    , tempCamera(nullptr)
+    , tempRenderflags(nullptr)
 {
     
 }
@@ -34,9 +37,24 @@ void CComponent::onRender(CWindow* window, CCamera* camera, RenderFlags renderFl
     if(!object.hasReference("onRender"))
         return;
     
+    tempWindow = window;
+    tempCamera = camera;
+    tempRenderflags = &renderFlags;
+    
     object.beginCall("onRender");
-    //luabridge::Stack<CEntity*>::push(object.getScript()->getState(), parent);
     object.endCall(0, 0);
+    
+    tempWindow = nullptr;
+    tempCamera = nullptr;
+    tempRenderflags = nullptr;
+}
+
+void CComponent::renderRect(int x, int y, int w, int h, int r, int g, int b, int a) {
+    NSurface::renderRect(x - tempCamera->offsetX(), y - tempCamera->offsetY(), w, h, tempWindow, r, g, b, a);
+}
+
+void CComponent::renderLine(int x, int y, int x2, int y2, int r, int g, int b, int a) {
+    NSurface::renderLine(Line(x, y, x2, y2, Color(r, g, b, a)), tempWindow->getRenderer(), tempCamera);
 }
 
 void CComponent::onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
@@ -60,8 +78,8 @@ void CComponent::callSimpleFunction(std::string function) {
         return;
     
     object.beginCall(function.c_str());
-    luabridge::Stack<CEntity*>::push(object.getScript()->getState(), parent);
-    object.endCall(1, 0);
+    //luabridge::Stack<CEntity*>::push(object.getScript()->getState(), parent);
+    object.endCall(0, 0);
 }
 
 void CComponent::pushThis() {

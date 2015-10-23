@@ -175,8 +175,12 @@ bool CEntity::isOnCollisionLayer(int collisionLayer) {
     return this->collisionLayer & collisionLayer;
 }
 
+void CEntity::say(std::string text, std::string fontKey, int type) {
+    say(text, fontKey, (ChatBubbleType)type);
+}
+
 void CEntity::say(std::string text, std::string fontKey, ChatBubbleType type) {
-    CChatBubble* temp = new CChatBubble(text, this, fontKey, type);
+    CChatBubble* temp = new CChatBubble(text, this, fontKey, (ChatBubbleType)type);
     _GuiTextVector.push_back(temp);
 }
 

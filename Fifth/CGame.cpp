@@ -127,6 +127,30 @@ int CGame::_onInit() {
     
     NFile::loadMap("resources/map/testMap1.map", &instance);
     
+    restart();
+    
+    /*
+     
+     "entities": [
+     {"name":"m:player2", "type":6, "rect":[300, 0, 80, 140], "spriteContainerKey":"playerPink", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
+     {"name":"m:seeker1", "type":7, "rect":[150,	0, 80, 140], "spriteContainerKey":"playerPink", "target":"m:player2", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
+     {"name":"m:player3", "type":7, "rect":[450, 0, 80, 140], "spriteContainerKey":"playerPink", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
+     {"name":"m:player4", "type":7, "rect":[600, 0, 80, 140], "spriteContainerKey":"playerPink", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
+     {"name":"l:tree",				"rect":[276, -1000, 92, 236], 			"spriteContainerKey":"tree", 			"collisionLayers":4},
+     {"name":"n:bush",				"rect":[200, -1000, 120, 108], 			"spriteContainerKey":"bush", 			"collisionLayers":8},
+     {								"rect":[0, 465, 5000, 30], 			"colors":[255, 0, 0, 0],				"collisionLayers":-129},
+     {								"rect":[0, -20, 30, 500], 			"colors":[255, 0, 0, 0],				"collisionLayers":15}
+     ]
+     
+    */
+    
+    return 0;
+}
+
+void CGame::restart() {
+    instance.entityManager.onCleanup();
+    
+    
     CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
     instance.entityManager.addBackground("main", background);
     
@@ -156,7 +180,7 @@ int CGame::_onInit() {
     temp = new CEntity(Box{100, -1000, 30 * 5, 28 * 5}, "bush");
     temp->collisionLayer = CollisionLayers::LAYER4;
     instance.entityManager.addEntity(temp, "n:bush");
-
+    
     temp = new CEntity(Box{0, 50, 5000, 20}, Color{255, 0, 0, 255});
     temp->collisionLayer = -129; // all layers
     temp->addProperty(EntityProperty::STATIC);
@@ -166,23 +190,6 @@ int CGame::_onInit() {
     temp->collisionLayer = -129;
     temp->addProperty(EntityProperty::STATIC);
     instance.entityManager.addEntity(temp);
-    
-    /*
-     
-     "entities": [
-     {"name":"m:player2", "type":6, "rect":[300, 0, 80, 140], "spriteContainerKey":"playerPink", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
-     {"name":"m:seeker1", "type":7, "rect":[150,	0, 80, 140], "spriteContainerKey":"playerPink", "target":"m:player2", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
-     {"name":"m:player3", "type":7, "rect":[450, 0, 80, 140], "spriteContainerKey":"playerPink", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
-     {"name":"m:player4", "type":7, "rect":[600, 0, 80, 140], "spriteContainerKey":"playerPink", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
-     {"name":"l:tree",				"rect":[276, -1000, 92, 236], 			"spriteContainerKey":"tree", 			"collisionLayers":4},
-     {"name":"n:bush",				"rect":[200, -1000, 120, 108], 			"spriteContainerKey":"bush", 			"collisionLayers":8},
-     {								"rect":[0, 465, 5000, 30], 			"colors":[255, 0, 0, 0],				"collisionLayers":-129},
-     {								"rect":[0, -20, 30, 500], 			"colors":[255, 0, 0, 0],				"collisionLayers":15}
-     ]
-     
-    */
-    
-    return 0;
 }
 
 void CGame::_initRelativePaths() {
@@ -232,9 +239,12 @@ void CGame::_initLua() {
             .addData("properties", &CEntity::properties)
             .addFunction("hasProperty", &CEntity::hasProperty)
             .addData("transparency", &CEntity::transparency)
+            .addFunction("say", (void (CEntity::*)(std::string, std::string, int)) &CEntity::say)
         .endClass()
     
         .beginClass<CComponent>("Component")
+            .addFunction("renderRect", &CComponent::renderRect)
+            .addFunction("renderLine", &CComponent::renderLine)
         .endClass()
     
         .beginClass<Box>("Box")             // Box
@@ -254,6 +264,14 @@ void CGame::_initLua() {
             .addData("velX", &CBody::velX)
             .addData("velY", &CBody::velY)
             .addData("box", &CBody::_rect)
+        .endClass()
+    
+        .beginClass<Line>("Line")
+            .addConstructor<void(*) (int, int, int, int, Color)>()
+        .endClass()
+    
+        .beginClass<Triangle>("Triangle")
+            .addConstructor<void(*) (Line, Line, Line)>()
         .endClass()
     
         .beginClass<CEntityManager>("EntityManager")    // EntityManager

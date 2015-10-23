@@ -22,15 +22,11 @@ void CGame::_handleKeyStates() {
         return;
 
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
-//
-//    // Movement
-//    
-//    EMovable* movable = nullptr;
-//    if(instance.player)
-//        movable = instance.player->getComponent<EMovable>();
-//    else
-//        return;
-
+    
+    if(!instance.player) {
+        return;
+    }
+    
     auto movable = instance.player->getComponent("Standard/Movable");
     
     if(keystate[SDL_SCANCODE_D]) {
@@ -196,9 +192,7 @@ void CGame::_onEvent(SDL_Event* event) {
                     
                 case SDLK_5:
                 {
-                    //NFile::loadMap("resources/map/testMap1.map", &instance);
-//                    CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
-//                    instance.entityManager.addBackground("main", background);
+                    restart();
                 }
                     break;
                 case SDLK_2:
@@ -214,7 +208,8 @@ void CGame::_onEvent(SDL_Event* event) {
                         NFile::log(LogType::ERROR, "Window.onInit failed: ", SDL_GetError());
                     }
                     instance.camera.onInit(&instance.window);
-                    //NFile::loadMap("resources/map/testMap1.map", &instance);
+                    NFile::loadMap("resources/map/testMap1.map", &instance);
+                    restart();
                 }
                     break;
                     

@@ -31,3 +31,10 @@ SpriteStateTypes = {
     DUCKING     = 7,
     TOTAL_SPRITESTATETYPES = 8
 }
+
+ChatBubbleType = {
+    SAY = 0,
+    YELL = 1,
+    WHISPER = 2,
+    INSTANT_TALK = 3
+}
