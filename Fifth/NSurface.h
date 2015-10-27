@@ -26,7 +26,7 @@ struct Color {
     Color(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255)
     : r(r), g(g), b(b), a(a) {  }
     
-    explicit operator SDL_Color() const { return SDL_Color{r, g, b, a}; }
+    operator SDL_Color() const { return SDL_Color{r, g, b, a}; }
 };
 
 struct Line {

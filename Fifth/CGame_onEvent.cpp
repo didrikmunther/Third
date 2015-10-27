@@ -9,6 +9,7 @@
 #include "CGame.h"
 #include "CGlobalSettings.h"
 #include "CBackground.h"
+#include "CAssetManager.h"
 
 #include "NFile.h"
 #include "NMouse.h"
@@ -23,11 +24,11 @@ void CGame::_handleKeyStates() {
 
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
     
-    if(!instance.player) {
+    if(!instance.player)
         return;
-    }
-    
     auto movable = instance.player->getComponent("Standard/Movable");
+    if(!movable)
+        return;
     
     if(keystate[SDL_SCANCODE_D]) {
         movable->callSimpleFunction("goRight");
@@ -43,17 +44,35 @@ void CGame::_handleKeyStates() {
     if(keystate[SDL_SCANCODE_S]) {
         movable->callSimpleFunction("goDown");
     }
+    
+    auto bullet = CAssetManager::getLuaScript("Standard/Bullet");
+
+    if(NMouse::leftMouseButtonPressed()) { // damage particle
+        int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body->getX();
+        int mousePosY = NMouse::relativeMouseY(&instance.camera) - (instance.player->body->getY() - 100);
+        float angle = atan2(mousePosY, mousePosX);
+        
+        int precision = 20;
+        int spread = 200;
+        angle += (rand() % precision - precision / 2) / (float)spread;
+        
+        float velocity = 20;
+        float velX = cos(angle) * (velocity);
+        float velY = sin(angle) * (velocity);
+  
+        CEntity* temp = new CEntity(Box(instance.player->body->getX(), instance.player->body->getY() - 100, 5, 5), Color(200, 50, 50, 255));
+        temp->body->velX = velX + instance.player->body->velX;
+        temp->body->velY = velY + instance.player->body->velY;
+        temp->collisionLayer = -129;
+        temp->addComponent(bullet);
+        auto bulletObj = &temp->getComponent("Standard/Bullet")->object;
+        bulletObj->beginCall("setOwner");
+        bulletObj->pushObject(instance.player);
+        bulletObj->endCall(1, 0);
+        
+        instance.entityManager.addParticle(temp);
+    }
 //
-//    // Other
-//    
-//    if(NMouse::leftMouseButtonPressed()) { // damage particle
-//        int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body->getX();
-//        int mousePosY = NMouse::relativeMouseY(&instance.camera) - (instance.player->body->getY() - 100);
-//        float angle = atan2(mousePosY, mousePosX);
-//        
-//        instance.player->shoot(angle, BasicUtilities::DAMAGE);
-//    }
-//    
 //    if(NMouse::rightMouseButtonPressed()) {   // heal particle
 //        int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body->getX();
 //        int mousePosY = NMouse::relativeMouseY(&instance.camera) - (instance.player->body->getY() - 100);

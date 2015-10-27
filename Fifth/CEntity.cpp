@@ -50,23 +50,23 @@ void CEntity::init() {
 }
 
 void CEntity::_cleanUpTextVector() {
-    auto i = _GuiTextVector.begin();
-    while(i != _GuiTextVector.end()) {
+    auto i = guiTextVector.begin();
+    while(i != guiTextVector.end()) {
         delete *i;
-        i = _GuiTextVector.erase(i);
+        i = guiTextVector.erase(i);
     }
-    _GuiTextVector.clear();
+    guiTextVector.clear();
 }
 
 void CEntity::onLoop(CInstance* instance) {
     _hasMoved = false;
     
-    auto i = _GuiTextVector.begin();
-    while(i != _GuiTextVector.end()) {
+    auto i = guiTextVector.begin();
+    while(i != guiTextVector.end()) {
         (*i)->onLoop();
         if((*i)->toRemove()) {
             delete *i;
-            _GuiTextVector.erase(std::remove(_GuiTextVector.begin(), _GuiTextVector.end(), (*i)), _GuiTextVector.end());
+            guiTextVector.erase(std::remove(guiTextVector.begin(), guiTextVector.end(), (*i)), guiTextVector.end());
         } else
             ++i;
     }
@@ -151,7 +151,7 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
     }
 }
 
-void CEntity::serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc) {
+void CEntity::onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc) {
     
 //    rapidjson::Value componentValues(rapidjson::kObjectType);
 //    for(auto& i: components) {
@@ -164,10 +164,10 @@ void CEntity::serialize(rapidjson::Value* value, rapidjson::Document::AllocatorT
     
 }
 
-void CEntity::deserialize(rapidjson::Value* value) {
+void CEntity::onDeserialize(rapidjson::Value* value) {
     
     for(auto& i: components) {
-        i.second->deserialize(value);
+        i.second->onDeserialize(value);
     }
 }
 
@@ -181,7 +181,7 @@ void CEntity::say(std::string text, std::string fontKey, int type) {
 
 void CEntity::say(std::string text, std::string fontKey, ChatBubbleType type) {
     CChatBubble* temp = new CChatBubble(text, this, fontKey, (ChatBubbleType)type);
-    _GuiTextVector.push_back(temp);
+    guiTextVector.push_back(temp);
 }
 
 bool CEntity::hasProperty(int property) {
@@ -240,7 +240,13 @@ void CEntity::shoot(float angle, BasicUtilities basicUtility) {
 }
 
 void CEntity::addComponent(CLuaScript* script) {
-    if(getComponent(script->getName())) {
+    if(script == nullptr) {
+        NFile::log(LogType::WARNING, "Luascript unknown is null, and could not be added to entity as a component.");
+        return;
+    } else if(script->isInvalid()) {
+        NFile::log(LogType::WARNING, "Luascript ", script->getName(), " is invalid, and could not be added to entity as a component.");
+        return;
+    } else if(getComponent(script->getName())) {
         NFile::log(LogType::WARNING, "Component already exists: ", script->getName(), ".");
         delete components[script->getName()];
     }
@@ -286,7 +292,7 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags ren
     }
     
     if(!hasProperty(EntityProperty::HIDDEN))
-        for (auto &i: _GuiTextVector)                                                // Render chatbubbles
+        for (auto &i: guiTextVector)                                                // Render chatbubbles
             i->onRender(window, camera, renderFlags);
     
 }

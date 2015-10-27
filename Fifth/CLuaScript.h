@@ -30,6 +30,7 @@ public:
     CLuaScript(lua_State* L, std::string path);
     
     luabridge::LuaRef init(lua_State* L, std::string path);
+    void funcError();
     
     void doFile();
     
@@ -39,11 +40,15 @@ public:
     std::string getPath();
     std::string getName();
     
+    bool isInvalid() { return _isInvalid; }
+    
 private:
     lua_State* _L;
     std::string _path;
     std::string _name;
     luabridge::LuaRef _objectCreationFunction;
+    
+    bool _isInvalid;
     
 };
 

@@ -22,17 +22,30 @@ CLuaScript::CLuaScript(lua_State* L, std::string path)
 }
 
 luabridge::LuaRef CLuaScript::init(lua_State* L, std::string path) {
+    _isInvalid = false;
     luaL_dofile(L, path.c_str());
-    return luabridge::getGlobal(L, "create");
+    luabridge::LuaRef createFunc = luabridge::getGlobal(L, "create");
+    if(createFunc.isNil()) {
+        _isInvalid = true;
+        funcError();
+    }
+    
+    return createFunc;
 }
 
 void CLuaScript::doFile() {
     luaL_dofile(_L, _path.c_str());
 }
 
+void CLuaScript::funcError() {
+    NFile::log(LogType::ERROR, "No creation function for script \"", _path, "\"");
+}
+
 luabridge::LuaRef* CLuaScript::getObjectCreation() {
-    if(_objectCreationFunction.isNil())  
-        NFile::log(LogType::ERROR, "No creation function for script \"", _path, "\"");
+    if(_isInvalid) {
+        funcError();
+        return nullptr;
+    }
     
     return &_objectCreationFunction;
 }

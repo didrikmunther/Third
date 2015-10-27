@@ -20,6 +20,7 @@
 #include "CSpriteContainer.h"
 #include "CBackground.h"
 #include "CGlobalSettings.h"
+#include "CCombatText.h"
 
 #include "NMouse.h"
 #include "NSurface.h"
@@ -129,21 +130,6 @@ int CGame::_onInit() {
     
     restart();
     
-    /*
-     
-     "entities": [
-     {"name":"m:player2", "type":6, "rect":[300, 0, 80, 140], "spriteContainerKey":"playerPink", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
-     {"name":"m:seeker1", "type":7, "rect":[150,	0, 80, 140], "spriteContainerKey":"playerPink", "target":"m:player2", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
-     {"name":"m:player3", "type":7, "rect":[450, 0, 80, 140], "spriteContainerKey":"playerPink", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
-     {"name":"m:player4", "type":7, "rect":[600, 0, 80, 140], "spriteContainerKey":"playerPink", "spriteStateTypes":{"1":"playerPinkRunning", "2":"playerPinkRunning"}, "spriteFollowsCollisionBox":false},
-     {"name":"l:tree",				"rect":[276, -1000, 92, 236], 			"spriteContainerKey":"tree", 			"collisionLayers":4},
-     {"name":"n:bush",				"rect":[200, -1000, 120, 108], 			"spriteContainerKey":"bush", 			"collisionLayers":8},
-     {								"rect":[0, 465, 5000, 30], 			"colors":[255, 0, 0, 0],				"collisionLayers":-129},
-     {								"rect":[0, -20, 30, 500], 			"colors":[255, 0, 0, 0],				"collisionLayers":15}
-     ]
-     
-    */
-    
     return 0;
 }
 
@@ -153,20 +139,23 @@ void CGame::restart() {
     
     CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
     instance.entityManager.addBackground("main", background);
-    
+
     auto movable = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Movable.lua");
     auto npc = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Npc.lua");
+    auto living = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Living.lua");
+    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Bullet.lua");
     
     auto temp = new CEntity(Box{50, -500, 80, 140}, "playerPink");
     temp->spriteFollowsCollisionBox = false;
     temp->spriteStateTypes[SpriteStateTypes::ASCENDING] =
     temp->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
     temp->addComponent(movable);
+    temp->addComponent(living);
     instance.entityManager.addEntity(temp);
     instance.player = temp;
     instance.camera.setTarget(temp);
     
-    for(int i = 0; i < 200; i++) {
+    for(int i = 0; i < 50; i++) {
         temp = new CEntity(Box{i * 6 + 32, -600, 5, 5}, Color{255, 255, 0});
         temp->addComponent(movable);
         temp->addComponent(npc);
@@ -240,6 +229,9 @@ void CGame::_initLua() {
             .addFunction("hasProperty", &CEntity::hasProperty)
             .addData("transparency", &CEntity::transparency)
             .addFunction("say", (void (CEntity::*)(std::string, std::string, int)) &CEntity::say)
+            .addFunction("addTextObject", &CEntity::addTextObject)
+            .addFunction("addCombatText", &CEntity::addCombatText)
+            .addFunction("compare", &CEntity::compare)
         .endClass()
     
         .beginClass<CComponent>("Component")
@@ -247,7 +239,7 @@ void CGame::_initLua() {
             .addFunction("renderLine", &CComponent::renderLine)
         .endClass()
     
-        .beginClass<Box>("Box")             // Box
+        .beginClass<Box>("Box")
             .addConstructor<void(*) (int, int, int, int)>()
             .addData("x", &Box::x)
             .addData("y", &Box::y)
@@ -255,11 +247,19 @@ void CGame::_initLua() {
             .addData("h", &Box::h)
         .endClass()
     
-        .beginClass<Color>("Color")         // Color
+        .beginClass<Color>("Color")
             .addConstructor<void(*) (int, int, int, int)>()
         .endClass()
     
-        .beginClass<CBody>("Body")          // Body
+        .beginClass<CGuiText>("GuiText")
+            .addConstructor<void(*) (int, int, std::string, std::string)>()
+        .endClass()
+    
+        .beginClass<CCombatText>("CombatText")
+            .addConstructor<void(*) (int, int, Color, int, std::string, std::string)>()
+        .endClass()
+    
+        .beginClass<CBody>("Body")
             .addConstructor<void(*) (Box)>()
             .addData("velX", &CBody::velX)
             .addData("velY", &CBody::velY)
@@ -274,13 +274,13 @@ void CGame::_initLua() {
             .addConstructor<void(*) (Line, Line, Line)>()
         .endClass()
     
-        .beginClass<CEntityManager>("EntityManager")    // EntityManager
+        .beginClass<CEntityManager>("EntityManager")
             .addFunction("addEntity", &CEntityManager::addEntity)
             .addFunction("createColoredEntity", (CEntity* (CEntityManager::*)(Box, Color)) &CEntityManager::createEntity)
             .addFunction("createSpriteEntity", (CEntity* (CEntityManager::*)(Box, std::string)) &CEntityManager::createEntity)
         .endClass()
     
-        .beginClass<CollisionSides>("CollisionSides")   // CollisionSides
+        .beginClass<CollisionSides>("CollisionSides")
             .addConstructor<void(*) (void)>()
             .addData("top", &CollisionSides::top)
             .addData("bottom", &CollisionSides::bottom)

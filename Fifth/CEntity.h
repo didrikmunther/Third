@@ -20,6 +20,7 @@
 #include "NFile.h"
 #include "CComponent.h"
 #include "NSurface.h"
+#include "CCombatText.h"
 
 
 class CParticle;
@@ -113,8 +114,8 @@ public:
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
-    void serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc);
-    void deserialize(rapidjson::Value* value);
+    void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc);
+    void onDeserialize(rapidjson::Value* value);
     
     int collisionLayer;
     bool isOnCollisionLayer(int collisionLayer);
@@ -164,9 +165,22 @@ public:
     bool toRemove;
     
     CEntityManager* entityManager;
+
+    std::vector<CGuiText*> guiTextVector;
+    void addTextObject(CGuiText* text) {
+        CGuiText* temp = new CGuiText(*text);
+        guiTextVector.push_back(temp);
+    }
+    void addCombatText(CCombatText* text) {
+        CCombatText* temp = new CCombatText(*text);
+        guiTextVector.push_back(temp);
+    }
+    
+    bool compare(CEntity* other) {
+        return other == this;
+    }
     
 protected:
-    std::vector<CGuiText*> _GuiTextVector;
     void _cleanUpTextVector();
     void _cleanUpComponents();
     

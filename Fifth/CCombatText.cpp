@@ -11,7 +11,7 @@
 #include "CText.h"
 
 
-CCombatText::CCombatText(int x, int y, SDL_Color color, int size, std::string text, std::string fontKey) : CGuiText(x, y, text, fontKey) {
+CCombatText::CCombatText(int x, int y, Color color, int size, std::string text, std::string fontKey) : CGuiText(x, y, text, fontKey) {
     
     _livingTime = 2;
     
@@ -31,7 +31,7 @@ void CCombatText::onLoop() {
     _x += floor(cos(_y * 25) * 2); // Use _y as an incrementor here
 }
 
-void CCombatText::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
+void CCombatText::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {    
     if(renderFlags & RenderFlags::RENDER_COMBAT_TEXT)
         _textObj->onRender(_x, _y, window, camera);
 }

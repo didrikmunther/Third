@@ -46,10 +46,19 @@ void CLuaObject::selectReference(std::string reference) {
 }
 
 bool CLuaObject::hasReference(std::string reference) {
-    return !_object[reference.c_str()].isNil();
+    bool toReturn;
+    
+    if(hasReferences.count(reference))
+        toReturn = hasReferences[reference];
+    else {
+        toReturn = !_object[reference.c_str()].isNil();
+        hasReferences[reference] = toReturn;
+    }
+    
+    return toReturn;
 }
 
-void CLuaObject::pushObject() {
+void CLuaObject::pushThisObject() {
     selectScript();
     lua_pushvalue(_script->getState(), -1);
 }

@@ -15,6 +15,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2_ttf/SDL_ttf.h>
 
+#include "NFile.h"
+
 
 class CCamera;
 class CWindow;
@@ -22,7 +24,7 @@ class CWindow;
 class CText {
     
 public:
-    CText(std::string text, int size, std::string fontKey, SDL_Color color);
+    CText(std::string text, int size, std::string fontKey, Color color);
     
     void onRender(int x, int y, CWindow* window, CCamera* camera);
     void onRender(int x, int y, CWindow* window);
@@ -30,13 +32,13 @@ public:
     TTF_Font* getFont();
     int getSize();
     std::string* getText();
-    SDL_Color* getColor();
+    Color* getColor();
     
 private:
     std::string _text;
     int _size;
     std::string _fontKey;
-    SDL_Color _color;
+    Color _color;
     
 };
 

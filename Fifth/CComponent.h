@@ -42,8 +42,8 @@ public:
     void onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     bool onCollision(CEntity* target, CollisionSides* collisionSides);
     
-    void serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc);
-    void deserialize(rapidjson::Value* value);
+    void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc);
+    void onDeserialize(rapidjson::Value* value);
     
     void callSimpleFunction(std::string function);
     
@@ -58,16 +58,6 @@ public:
     
     void renderRect(int x, int y, int w, int h, int r, int g, int b, int a); // These are only supposed to be called during an rendering process
     void renderLine(int x, int y, int x2, int y2, int r, int g, int b, int a);
-    
-//    void renderRect(int x, int y, int w, int h, CWindow* window, int r, int g, int b, int a = 255); // NSurface functions
-//    void renderSprite(int x, int y, int w, int h, CSprite* sprite, CWindow* window, SDL_RendererFlip flip, int a = 255);
-//    void renderText(int x, int y, CText* text, CWindow* window);
-//    void renderTexture(int x, int y, int w, int h, SDL_Renderer* renderer, SDL_Texture *texture);
-//    void renderLine(Line line, SDL_Renderer* renderer, CCamera* camera = nullptr);
-//    void renderTriangle(Triangle triangle, SDL_Renderer* renderer, CCamera* camera = nullptr);
-    
-private:
-    std::vector<CGuiText*>* guiTextVector();
     
 };
 

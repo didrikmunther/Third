@@ -10,6 +10,7 @@
 #define __LuaTest4__CLuaObject__
 
 #include <stdio.h>
+#include <map>
 
 #include "CLuaScript.h"
 
@@ -30,7 +31,12 @@ public:
     void selectReference(std::string reference);
     bool hasReference(std::string reference);
     
-    void pushObject();
+    void pushThisObject();
+    
+    template<class T>
+    void pushObject(T t) {
+        luabridge::Stack<T>::push(getScript()->getState(), t);
+    }
     
     CLuaScript* getScript();
     
@@ -43,6 +49,8 @@ private:
     CLuaScript* _script;
     CEntity* _parent;
     luabridge::LuaRef _object;
+    
+    std::map<std::string, bool> hasReferences;
     
 };
 

@@ -13,6 +13,7 @@
 #include <SDL2/SDL.h>
 
 #include "CGuiText.h"
+#include "NFile.h"
 
 
 class CText;
@@ -20,7 +21,7 @@ class CText;
 class CCombatText : public CGuiText {
     
 public:
-    CCombatText(int x, int y, SDL_Color color, int size, std::string text, std::string fontKey);
+    CCombatText(int x, int y, Color color, int size, std::string text, std::string fontKey);
     
     virtual void onLoop();
     virtual void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);

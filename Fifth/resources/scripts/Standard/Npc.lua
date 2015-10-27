@@ -1,9 +1,9 @@
 -- Npc.lua
 
 local Npc = class (
-    function(self, parent, ccomponent)
+    function(self, parent, component)
         self.parent = parent
-        self.ccomponent = ccomponent
+        self.component = component
 
         self.target = nil
 
@@ -64,7 +64,7 @@ function Npc:onRender()
     thisW = box.w
     thisH = box.h
 
-    component = self.ccomponent
+    component = self.component
     lineWidth = 2
 
     component:renderRect(thisX, thisY, thisW, lineWidth, 255, 100, 255, 255)
@@ -84,6 +84,6 @@ function Npc:setTarget(target)
     self.target = target
 end
 
-function create(parent, ccomponent)
-    return Npc(parent, ccomponent)
+function create(parent, component)
+    return Npc(parent, component)
 end

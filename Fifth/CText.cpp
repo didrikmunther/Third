@@ -14,7 +14,7 @@
 #include <iostream>
 
 
-CText::CText(std::string text, int size, std::string fontKey, SDL_Color color) :
+CText::CText(std::string text, int size, std::string fontKey, Color color) :
 _text(text), _size(size), _fontKey(fontKey), _color(color) {
 }
 
@@ -43,6 +43,6 @@ std::string* CText::getText() {
     return &_text;
 }
 
-SDL_Color* CText::getColor() {
+Color* CText::getColor() {
     return &_color;
 }

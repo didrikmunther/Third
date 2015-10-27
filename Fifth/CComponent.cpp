@@ -29,7 +29,6 @@ void CComponent::onLoop(CInstance* instance) {
         return;
     
     object.beginCall("onLoop");
-    //luabridge::Stack<CEntity*>::push(object.getScript()->getState(), parent);
     object.endCall(0, 0);
 }
 
@@ -49,28 +48,47 @@ void CComponent::onRender(CWindow* window, CCamera* camera, RenderFlags renderFl
     tempRenderflags = nullptr;
 }
 
-void CComponent::renderRect(int x, int y, int w, int h, int r, int g, int b, int a) {
-    NSurface::renderRect(x - tempCamera->offsetX(), y - tempCamera->offsetY(), w, h, tempWindow, r, g, b, a);
-}
-
-void CComponent::renderLine(int x, int y, int x2, int y2, int r, int g, int b, int a) {
-    NSurface::renderLine(Line(x, y, x2, y2, Color(r, g, b, a)), tempWindow->getRenderer(), tempCamera);
-}
-
 void CComponent::onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
+    if(!object.hasReference("onRenderAdditional"))
+        return;
+    
+    tempWindow = window;
+    tempCamera = camera;
+    tempRenderflags = &renderFlags;
+    
+    object.beginCall("onRenderAdditional");
+    object.endCall(0, 0);
+    
+    tempWindow = nullptr;
+    tempCamera = nullptr;
+    tempRenderflags = nullptr;
     
 }
 
 bool CComponent::onCollision(CEntity* target, CollisionSides* collisionSides) {
-    return true;
-}
-
-void CComponent::serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc) {
+    if(!object.hasReference("onCollision"))
+        return true;
+    
+    object.beginCall("onCollision");
+    object.pushObject(target);
+    object.pushObject(collisionSides);
+    object.endCall(2, 1);
+    
+    if(!lua_isboolean(object.getScript()->getState(), -1))
+        return true;
+    else
+        return lua_toboolean(object.getScript()->getState(), -1);
     
 }
 
-void CComponent::deserialize(rapidjson::Value* value) {
-    
+void CComponent::onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc) {
+    if(!object.hasReference("onSerialize"))
+        return;
+}
+
+void CComponent::onDeserialize(rapidjson::Value* value) {
+    if(!object.hasReference("onDeserialize"))
+        return;
 }
 
 void CComponent::callSimpleFunction(std::string function) {
@@ -78,14 +96,23 @@ void CComponent::callSimpleFunction(std::string function) {
         return;
     
     object.beginCall(function.c_str());
-    //luabridge::Stack<CEntity*>::push(object.getScript()->getState(), parent);
     object.endCall(0, 0);
 }
 
 void CComponent::pushThis() {
-    object.pushObject();
+    object.pushThisObject();
 }
 
-std::vector<CGuiText*>* CComponent::guiTextVector() {
-    return &parent->_GuiTextVector;
+void CComponent::renderRect(int x, int y, int w, int h, int r, int g, int b, int a) {
+    if(tempCamera == nullptr || tempWindow == nullptr)
+        return;
+    
+    NSurface::renderRect(x - tempCamera->offsetX(), y - tempCamera->offsetY(), w, h, tempWindow, r, g, b, a);
+}
+
+void CComponent::renderLine(int x, int y, int x2, int y2, int r, int g, int b, int a) {
+    if(tempCamera == nullptr || tempWindow == nullptr)
+        return;
+    
+    NSurface::renderLine(Line(x, y, x2, y2, Color(r, g, b, a)), tempWindow->getRenderer(), tempCamera);
 }

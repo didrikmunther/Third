@@ -1,9 +1,9 @@
 -- Movable.lua
 
 local Movable = class (
-    function(self, parent, ccomponent)
+    function(self, parent, component)
         self.parent = parent
-        self.ccomponent = ccomponent
+        self.component = component
         self.body = parent.body
 
         self.jumpPower = 15.0
@@ -168,6 +168,6 @@ function Movable:toggleNoClip()
     end
 end
 
-function create(parent, ccomponent)
-    return Movable(parent, ccomponent)
+function create(parent, component)
+    return Movable(parent, component)
 end

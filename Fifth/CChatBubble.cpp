@@ -55,7 +55,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
     std::string currentString = "";
     for(int i = 0; i < splittedText.size(); i++) {
         if(currentSize > 10) {
-            _TextVector.push_back(CText(currentString, textSize, fontKey, SDL_Color{(Uint8)_r, (Uint8)_g, (Uint8)_b, 255}));
+            _TextVector.push_back(CText(currentString, textSize, fontKey, Color{(Uint8)_r, (Uint8)_g, (Uint8)_b, 255}));
             currentString = "";
             currentSize = 0;
         }
@@ -63,7 +63,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
         currentString += splittedText[i] + " ";
     }
     if(currentSize > 0)                 // For when the loop quits but there is still text that should be added
-        _TextVector.push_back(CText(currentString, textSize, fontKey, SDL_Color{(Uint8)_r, (Uint8)_g, (Uint8)_b, 255}));
+        _TextVector.push_back(CText(currentString, textSize, fontKey, Color{(Uint8)_r, (Uint8)_g, (Uint8)_b, 255}));
         
     if(!instantText)
         _livingTime = (int)text.length() / letterPerSecond + 3;
