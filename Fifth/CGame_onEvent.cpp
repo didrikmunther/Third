@@ -70,14 +70,6 @@ void CGame::_handleKeyStates() {
         
         instance.entityManager.addParticle(temp);
     }
-//
-//    if(NMouse::rightMouseButtonPressed()) {   // heal particle
-//        int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body->getX();
-//        int mousePosY = NMouse::relativeMouseY(&instance.camera) - (instance.player->body->getY() - 100);
-//        float angle = atan2(mousePosY, mousePosX);
-//        
-//        instance.player->shoot(angle, BasicUtilities::HEAL);
-//    }
 }
 
 void CGame::_onEvent(SDL_Event* event) {
@@ -114,14 +106,14 @@ void CGame::_onEvent(SDL_Event* event) {
                     
                 case SDLK_8:
                 {
-                    float angle = 0;
-                    int particles = 90;
-                    
-                    for(int i = 0; i < particles; i++) {
-                        angle += (360.0f / particles) / (360 / (2 * M_PI)); // convert raidans to degrees
-                        
-//                        instance.player->shoot(angle, BasicUtilities::DAMAGE);
-                    }
+//                    float angle = 0;
+//                    int particles = 90;
+//                    
+//                    for(int i = 0; i < particles; i++) {
+//                        angle += (360.0f / particles) / (360 / (2 * M_PI)); // convert raidans to degrees
+//                        
+////                        instance.player->shoot(angle, BasicUtilities::DAMAGE);
+//                    }
                 }
                     break;
                     
@@ -167,19 +159,13 @@ void CGame::_onEvent(SDL_Event* event) {
                     break;
                     
                 case SDLK_LSHIFT:
-                    if(movable) {
-                        movable->object.beginCall("setMovementState");
-                        lua_pushinteger(instance.L, 1); // Sneaking state
-                        movable->object.endCall(1, 0);
-                    }
+                    if(movable)
+                        movable->object.callSetFunction("setMovementState", 1);
                     break;
                     
                 case SDLK_LALT:
-                    if(movable) {
-                        movable->object.beginCall("setMovementState");
-                        lua_pushinteger(instance.L, 2); // Running state
-                        movable->object.endCall(1, 0);
-                    }
+                    if(movable)
+                        movable->object.callSetFunction("setMovementState", 2);
                     break;
                     
                 case SDLK_l:
@@ -193,13 +179,16 @@ void CGame::_onEvent(SDL_Event* event) {
                     
                 case SDLK_j:
                 {
-//                    auto tempEnemy = new CEntity(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 60, 164}, "player");
-//                    tempEnemy->addComponent<EEnemy>();
-//                    tempEnemy->getComponent<EEnemy>()->setTarget(instance.player);
-//                    tempEnemy->addComponent<ELiving>();
-//                    tempEnemy->addComponent<EMovable>();
-//                    tempEnemy->getComponent<EMovable>()->setMovementState(MovementState::SNEAKING_MOVEMENT);
-//                    instance.entityManager.addEntity(tempEnemy);
+                    auto temp = new CEntity(Box(NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 80, 140),
+                                            "playerPink");
+                    temp->spriteFollowsCollisionBox = false;
+                    temp->spriteStateTypes[SpriteStateTypes::ASCENDING] =
+                    temp->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
+                    temp->addComponent(CAssetManager::getLuaScript("Standard/Living"));
+                    temp->addComponent(CAssetManager::getLuaScript("Standard/Npc"));
+                    temp->addComponent(CAssetManager::getLuaScript("Standard/Movable"));
+                    temp->getComponent("Standard/Npc")->object.callSetFunction("setTarget", instance.player);
+                    instance.entityManager.addEntity(temp);
                 }
                     break;
                     
@@ -279,11 +268,8 @@ void CGame::_onEvent(SDL_Event* event) {
             switch(event->key.keysym.sym) {
                 case SDLK_LSHIFT:
                 case SDLK_LALT:
-                    if(movable) {
-                        movable->object.beginCall("setMovementState");
-                        lua_pushinteger(instance.L, 0); // Walking state
-                        movable->object.endCall(1, 0);
-                    }
+                    if(movable)
+                        movable->object.callSetFunction("setMovementState", 0);
                     break;
                     
                 default:

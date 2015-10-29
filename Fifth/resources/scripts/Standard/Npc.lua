@@ -6,13 +6,15 @@ local Npc = class (
         self.component = component
 
         self.target = nil
-
-        movable = self.parent:getComponent("Standard/Movable")
-        if(movable ~= nil) then
-            movable.jumpPower = 2
-        end
     end
 )
+
+function Npc:onInit()
+    movable = self.parent:getComponent("Standard/Movable")
+    if(movable ~= nil) then
+        movable.jumpPower = 2
+    end
+end
 
 function Npc:onLoop()
     movable = self.parent:getComponent("Standard/Movable")

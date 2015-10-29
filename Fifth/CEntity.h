@@ -180,6 +180,10 @@ public:
         return other == this;
     }
     
+    CEntity* getThis() {
+        return this;
+    }
+    
 protected:
     void _cleanUpTextVector();
     void _cleanUpComponents();

@@ -98,6 +98,7 @@ int CGame::_onInit() {
     
     _initRelativePaths();
     NFile::clearFile(LOG_FILE);     // Clear log file
+    srand((Uint16)time(nullptr));
     
     NFile::log(LogType::ALERT, "Initializing game...");
     
@@ -115,8 +116,6 @@ int CGame::_onInit() {
         NFile::log(LogType::ERROR, "TTF_Init failed: ", SDL_GetError());
         return -1;
     }
-    
-    srand((Uint16)time(nullptr));
     
     if(instance.window.onInit(_intro, SCREEN_WIDTH, SCREEN_HEIGHT)) {
         NFile::log(LogType::ERROR, "Window initialization failed!");
@@ -151,7 +150,7 @@ void CGame::restart() {
     temp->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
     temp->addComponent(movable);
     temp->addComponent(living);
-    instance.entityManager.addEntity(temp);
+    instance.entityManager.addEntity(temp, "5:Player");
     instance.player = temp;
     instance.camera.setTarget(temp);
     
@@ -221,6 +220,7 @@ void CGame::_initLua() {
             .addCFunction("getComponent", &CEntity::getComponent)
             .addFunction("addComponent", &CEntity::addComponent)
             .addData("entityManager", &CEntity::entityManager)
+            .addFunction("getThis", &CEntity::getThis)
             .addData("body", &CEntity::body)
             .addData("isDead", &CEntity::isDead)
             .addData("toRemove", &CEntity::toRemove)
@@ -276,6 +276,7 @@ void CGame::_initLua() {
     
         .beginClass<CEntityManager>("EntityManager")
             .addFunction("addEntity", &CEntityManager::addEntity)
+            .addFunction("getNameOfEntity", &CEntityManager::getNameOfEntity)
             .addFunction("createColoredEntity", (CEntity* (CEntityManager::*)(Box, Color)) &CEntityManager::createEntity)
             .addFunction("createSpriteEntity", (CEntity* (CEntityManager::*)(Box, std::string)) &CEntityManager::createEntity)
         .endClass()

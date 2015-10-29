@@ -17,7 +17,7 @@ CComponent::CComponent(CEntity* parent, CLuaScript* script)
     , tempCamera(nullptr)
     , tempRenderflags(nullptr)
 {
-    
+    callSimpleFunction("onInit");
 }
 
 CComponent::~CComponent() {
