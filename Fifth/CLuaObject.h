@@ -27,6 +27,13 @@ public:
     void endCall(int argc, int results);
     void endCall();
     
+    template<typename T>
+    void callSetFunction(std::string function, T t) {
+        beginCall(function);
+        pushObject(t);
+        endCall(1, 0);
+    }
+    
     void selectScript();
     void selectReference(std::string reference);
     bool hasReference(std::string reference);

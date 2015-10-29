@@ -66,9 +66,7 @@ void CGame::_handleKeyStates() {
         temp->collisionLayer = -129;
         temp->addComponent(bullet);
         auto bulletObj = &temp->getComponent("Standard/Bullet")->object;
-        bulletObj->beginCall("setOwner");
-        bulletObj->pushObject(instance.player);
-        bulletObj->endCall(1, 0);
+        bulletObj->callSetFunction("setOwner", instance.player);
         
         instance.entityManager.addParticle(temp);
     }
