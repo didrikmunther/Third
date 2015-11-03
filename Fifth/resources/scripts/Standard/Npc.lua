@@ -82,8 +82,12 @@ function Npc:onRender()
     --component:renderLine(thisX, thisY, tX, tY, 255, 100, 100, 255)
 end
 
-function Npc:setTarget(target)
-    self.target = target
+function Npc:onDeserialize(value)
+    decoded = json.decode(value)
+
+    if(decoded.target ~= nil) then
+        self.target = getVal(self.target, self.parent.entityManager:getEntity(decoded.target))
+    end
 end
 
 function create(parent, component)

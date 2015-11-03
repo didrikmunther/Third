@@ -45,6 +45,10 @@ function Living:onRenderAdditional()
     self.component:renderRect(thisX + thisW / 2 - bgWidth / 2, thisY - bgHeight - floatOverHead, healthWidth, bgHeight, 0, 255, 0, 255) -- health
     self.component:renderRect(thisX + thisW / 2 - bgWidth / 2, thisY - bgHeight - floatOverHead, kevlarWidth, bgHeight / 2, 128, 128, 128, 255) -- health
 
+    -- temp
+    mX, mY = self.component:getRelativeMouse()
+    self.component:renderLine(thisX, thisY - 100, mX, mY, 255, 0, 255, 255)
+
 end
 
 function Living:onLoop()
@@ -79,7 +83,7 @@ function Living:damage(amount, damager)
         self.values[self.VALUE_HEALTH] = 0
         self.parent.isDead = true
 
-self.parent:say("Killed by: " .. self.parent.entityManager:getNameOfEntity(damager:getComponent("Standard/Bullet").owner), "TESTFONT", ChatBubbleType.SAY)
+        self.parent:say("Killed by: " .. self.parent.entityManager:getNameOfEntity(damager:getComponent("Standard/Projectile").owner), "TESTFONT", ChatBubbleType.SAY)
     end
 
     damageColor = Color(255, 0, 0, 255)
@@ -90,6 +94,12 @@ end
 
 function Living:heal(amount, healer)
 
+end
+
+function Living:onCollision(target, sides)
+    if(self.parent.body.velX > 10) then
+
+    end
 end
 
 function create(parent, component)

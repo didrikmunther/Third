@@ -135,14 +135,13 @@ int CGame::_onInit() {
 void CGame::restart() {
     instance.entityManager.onCleanup();
     
-    
     CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
     instance.entityManager.addBackground("main", background);
 
     auto movable = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Movable.lua");
     auto npc = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Npc.lua");
     auto living = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Living.lua");
-    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Bullet.lua");
+    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Projectile.lua");
     
     auto temp = new CEntity(Box{50, -500, 80, 140}, "playerPink");
     temp->spriteFollowsCollisionBox = false;
@@ -156,13 +155,11 @@ void CGame::restart() {
     
     for(int i = 0; i < 50; i++) {
         temp = new CEntity(Box{i * 6 + 32, -600, 5, 5}, Color{255, 255, 0});
+        instance.entityManager.addEntity(temp);
         temp->addComponent(movable);
         temp->addComponent(npc);
-        temp->getComponent("Standard/Npc")->object.beginCall("setTarget");
-        luabridge::Stack<CEntity*>::push(instance.L, instance.player);
-        temp->getComponent("Standard/Npc")->object.endCall(1, 0);
+        temp->getComponent("Standard/Npc")->onDeserialize("{\"target\":\"" + instance.entityManager.getNameOfEntity(instance.player) + "\"}");
         temp->collisionLayer = CollisionLayers::LAYER6;
-        instance.entityManager.addEntity(temp);
     }
     
     temp = new CEntity(Box{100, -1000, 30 * 5, 28 * 5}, "bush");
@@ -194,9 +191,23 @@ void CGame::_initRelativePaths() {
         CFRelease(resourcesURL);
         
         chdir(path);
+        _path = path;
         NFile::log(LogType::ALERT, "Current Path: ", path);
     #endif
     // ----------------------------------------------------------------------------
+}
+
+int CGame::setLuaPath(lua_State* L, const char* path) {
+    lua_getglobal( L, "package" );
+    lua_getfield( L, -1, "path" ); // get field "path" from table at top of stack (-1)
+    std::string cur_path = lua_tostring( L, -1 ); // grab path string from top of stack
+    cur_path.append( ";" ); // do your path magic here
+    cur_path.append( path );
+    lua_pop( L, 1 ); // get rid of the string on the stack we just pushed on line 5
+    lua_pushstring( L, cur_path.c_str() ); // push the new one
+    lua_setfield( L, -2, "path" ); // set the field "path" in table at -2 with value at top of stack
+    lua_pop( L, 1 ); // get rid of package table from top of stack
+    return 0; // all done!
 }
 
 void CGame::_initLua() {
@@ -210,6 +221,7 @@ void CGame::_initLua() {
         .beginNamespace("game")
             .addFunction("getScript", &CAssetManager::getLuaScript)
             .addFunction("getTime", &CGame::getTime)
+            .addFunction("setLuaPath", &CGame::setLuaPath)
         .endNamespace()
     
         .beginClass<CLuaScript>("LuaScript")
@@ -237,6 +249,8 @@ void CGame::_initLua() {
         .beginClass<CComponent>("Component")
             .addFunction("renderRect", &CComponent::renderRect)
             .addFunction("renderLine", &CComponent::renderLine)
+            .addCFunction("getRelativeMouse", &CComponent::getRelativeMouse)
+            .addCFunction("getMouse", &CComponent::getMouse)
         .endClass()
     
         .beginClass<Box>("Box")
@@ -276,6 +290,7 @@ void CGame::_initLua() {
     
         .beginClass<CEntityManager>("EntityManager")
             .addFunction("addEntity", &CEntityManager::addEntity)
+            .addFunction("getEntity", &CEntityManager::getEntity)
             .addFunction("getNameOfEntity", &CEntityManager::getNameOfEntity)
             .addFunction("createColoredEntity", (CEntity* (CEntityManager::*)(Box, Color)) &CEntityManager::createEntity)
             .addFunction("createSpriteEntity", (CEntity* (CEntityManager::*)(Box, std::string)) &CEntityManager::createEntity)
@@ -288,6 +303,13 @@ void CGame::_initLua() {
             .addData("right", &CollisionSides::right)
             .addData("left", &CollisionSides::left)
         .endClass();
+    
+    lua_getglobal(instance.L, "init");
+    lua_pushstring(instance.L, (_path + "/resources/scripts/Standard/").c_str());
+    lua_call(instance.L, 1, 0);
+    
+    lua_getglobal(instance.L, "initJson");
+    lua_call(instance.L, 0, 0);
 }
 
 int CGame::getTime() {

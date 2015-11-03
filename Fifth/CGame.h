@@ -35,6 +35,7 @@ private:
     int _onInit();
     void _initRelativePaths();
     void _initLua();
+    static int setLuaPath(lua_State* L, const char* path);
     
     void _onEvent(SDL_Event* event);
     void _handleKeyStates();
@@ -62,6 +63,8 @@ private:
     
     static int getTime();
     void restart();
+    
+    std::string _path;
     
 };
 

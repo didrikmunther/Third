@@ -213,7 +213,7 @@ void NFile::loadMap(std::string fileName, CInstance* instance) {
 //            }
 //        }
         
-        log(LogType::SUCCESS, "Loaded map: \"", d["name"].GetString(), "\" (\"", fileName.c_str(), "\")");
+        log(LogType::SUCCESS, "Loaded map: \"", fileName.c_str(), "\" as \"", d["name"].GetString(), "\"");
     }
     
 //    if(instance->player == nullptr) {       // In case there is no player in the .map

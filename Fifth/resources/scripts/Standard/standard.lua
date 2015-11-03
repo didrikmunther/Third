@@ -38,3 +38,25 @@ ChatBubbleType = {
     WHISPER = 2,
     INSTANT_TALK = 3
 }
+
+json = nil
+
+function init(path)
+    game:setLuaPath(path)
+end
+
+function requireModule(path, mod)
+    oldPath = package.path
+    package.path = package.path .. path
+    toReturn = require(mod)
+    package.path = oldPath
+    return toReturn
+end
+
+function initJson()
+_G.json = requireModule("json.lua", "json")
+end
+
+function getVal(var, val)
+    return (val ~= nil and val or var)
+end

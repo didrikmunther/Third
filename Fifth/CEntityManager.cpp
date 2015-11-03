@@ -39,7 +39,7 @@ std::string CEntityManager::addEntity(CEntity* entity, std::string name /* = "" 
     
     entity->entityManager = this;
     
-    //entity->say(name, "TESTFONT", ChatBubbleType::SAY);
+    //entity->say(std::to_string(entity->entityManager == nullptr), "TESTFONT", ChatBubbleType::SAY);
     return name;
 }
 
@@ -77,6 +77,7 @@ std::string CEntityManager::getNameOfEntity(CEntity *entity) {
 }
 
 void CEntityManager::addParticle(CEntity *particle) {
+    particle->entityManager = this;
     _particles.push_back(particle);
 }
 

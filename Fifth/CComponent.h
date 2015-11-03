@@ -44,6 +44,7 @@ public:
     
     void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc);
     void onDeserialize(rapidjson::Value* value);
+    void onDeserialize(std::string value);
     
     void callSimpleFunction(std::string function);
     
@@ -52,12 +53,23 @@ public:
     CEntity* parent;
     CLuaObject object;
     
+    // ==
+    
     CWindow* tempWindow;
     CCamera* tempCamera;
     RenderFlags* tempRenderflags;
     
     void renderRect(int x, int y, int w, int h, int r, int g, int b, int a); // These are only supposed to be called during an rendering process
     void renderLine(int x, int y, int x2, int y2, int r, int g, int b, int a);
+    
+    // ==
+    
+    CInstance* tempInstance;
+    
+    int getRelativeMouse(lua_State* L);
+    int getMouse(lua_State* L);
+    
+    // ==
     
 };
 

@@ -70,6 +70,15 @@ function Movable:onLoop()
 
 end
 
+function Movable:onDeserialize(value)
+    decoded = json.decode(value)
+
+    self.movementSpeeds[self.WALKING_MOVEMENT] = getVal(self.movementSpeeds[self.WALKING_MOVEMENT], decoded.walking_movement_speed)
+    self.jumpPower = getVal(self.jumpPower, decoded.jumpPower)
+    self.movementState = getVal(self.movementState, decoded.movementState)
+    
+end
+
 function Movable:goRight()
     body = self.parent.body
 
@@ -135,10 +144,6 @@ function Movable:jump()
     if(body.velY < -self.jumpPower) then
         body.velY = -self.jumpPower
     end
-end
-
-function Movable:setMovementState(movementState)
-    self.movementState = movementState
 end
 
 function Movable:toggleNoClip()

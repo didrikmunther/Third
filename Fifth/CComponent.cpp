@@ -8,6 +8,7 @@
 
 #include "CComponent.h"
 #include "CEntity.h"
+#include "NMouse.h"
 
 
 CComponent::CComponent(CEntity* parent, CLuaScript* script)
@@ -27,6 +28,8 @@ CComponent::~CComponent() {
 void CComponent::onLoop(CInstance* instance) {
     if(!object.hasReference("onLoop"))
         return;
+    
+    tempInstance = instance;
     
     object.beginCall("onLoop");
     object.endCall(0, 0);
@@ -87,8 +90,16 @@ void CComponent::onSerialize(rapidjson::Value* value, rapidjson::Document::Alloc
 }
 
 void CComponent::onDeserialize(rapidjson::Value* value) {
+    onDeserialize(value->GetString());
+}
+
+void CComponent::onDeserialize(std::string value) {
     if(!object.hasReference("onDeserialize"))
         return;
+    
+    object.beginCall("onDeserialize");
+    object.pushObject(value);
+    object.endCall(1, 0);
 }
 
 void CComponent::callSimpleFunction(std::string function) {
@@ -115,4 +126,32 @@ void CComponent::renderLine(int x, int y, int x2, int y2, int r, int g, int b, i
         return;
     
     NSurface::renderLine(Line(x, y, x2, y2, Color(r, g, b, a)), tempWindow->getRenderer(), tempCamera);
+}
+
+int CComponent::getRelativeMouse(lua_State* L) {
+    int x, y;
+    if(tempInstance != nullptr) {
+        x = NMouse::relativeMouseX(&tempInstance->camera);
+        y = NMouse::relativeMouseY(&tempInstance->camera);
+    } else if(tempCamera != nullptr) {
+        x = NMouse::relativeMouseX(tempCamera);
+        y = NMouse::relativeMouseY(tempCamera);
+    } else {
+        return 0;
+    }
+    
+    lua_pushinteger(L, x);
+    lua_pushinteger(L, y);
+    
+    return 2;
+}
+
+int CComponent::getMouse(lua_State* L) {
+    int x = NMouse::absoluteMouseX();
+    int y = NMouse::absoluteMouseY();
+    
+    lua_pushinteger(L, x);
+    lua_pushinteger(L, y);
+    
+    return 2;
 }

@@ -45,7 +45,7 @@ void CGame::_handleKeyStates() {
         movable->callSimpleFunction("goDown");
     }
     
-    auto bullet = CAssetManager::getLuaScript("Standard/Bullet");
+    auto bullet = CAssetManager::getLuaScript("Standard/Projectile");
 
     if(NMouse::leftMouseButtonPressed()) { // damage particle
         int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body->getX();
@@ -61,14 +61,12 @@ void CGame::_handleKeyStates() {
         float velY = sin(angle) * (velocity);
   
         CEntity* temp = new CEntity(Box(instance.player->body->getX(), instance.player->body->getY() - 100, 5, 5), Color(200, 50, 50, 255));
+        instance.entityManager.addParticle(temp);
         temp->body->velX = velX + instance.player->body->velX;
         temp->body->velY = velY + instance.player->body->velY;
         temp->collisionLayer = -129;
         temp->addComponent(bullet);
-        auto bulletObj = &temp->getComponent("Standard/Bullet")->object;
-        bulletObj->callSetFunction("setOwner", instance.player);
-        
-        instance.entityManager.addParticle(temp);
+        temp->getComponent("Standard/Projectile")->onDeserialize("{\"owner\":\"" + instance.entityManager.getNameOfEntity(instance.player) + "\"}");
     }
 }
 
@@ -160,12 +158,12 @@ void CGame::_onEvent(SDL_Event* event) {
                     
                 case SDLK_LSHIFT:
                     if(movable)
-                        movable->object.callSetFunction("setMovementState", 1);
+                        movable->onDeserialize("{\"movementState\":1}");
                     break;
                     
                 case SDLK_LALT:
                     if(movable)
-                        movable->object.callSetFunction("setMovementState", 2);
+                        movable->onDeserialize("{\"movementState\":2}");
                     break;
                     
                 case SDLK_l:
@@ -181,14 +179,15 @@ void CGame::_onEvent(SDL_Event* event) {
                 {
                     auto temp = new CEntity(Box(NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 80, 140),
                                             "playerPink");
+                    instance.entityManager.addEntity(temp);
                     temp->spriteFollowsCollisionBox = false;
                     temp->spriteStateTypes[SpriteStateTypes::ASCENDING] =
                     temp->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
                     temp->addComponent(CAssetManager::getLuaScript("Standard/Living"));
                     temp->addComponent(CAssetManager::getLuaScript("Standard/Npc"));
                     temp->addComponent(CAssetManager::getLuaScript("Standard/Movable"));
-                    temp->getComponent("Standard/Npc")->object.callSetFunction("setTarget", instance.player);
-                    instance.entityManager.addEntity(temp);
+                    temp->getComponent("Standard/Npc")->onDeserialize("{\"target\":\"" + instance.entityManager.getNameOfEntity(instance.player) + "\"}");
+                    temp->getComponent("Standard/Movable")->onDeserialize("{\"walking_movement_speed\":3.0, \"jumpPower\":5.0}");
                 }
                     break;
                     
@@ -269,7 +268,7 @@ void CGame::_onEvent(SDL_Event* event) {
                 case SDLK_LSHIFT:
                 case SDLK_LALT:
                     if(movable)
-                        movable->object.callSetFunction("setMovementState", 0);
+                        movable->onDeserialize("{\"movementState\":0}");
                     break;
                     
                 default:
