@@ -13,6 +13,28 @@ local Projectile = class(
     end
 )
 
+function Projectile:onInit()
+    body = self.parent.body
+    thisX = body.box.x
+    thisY = body.box.y
+    mX, mY = self.component:getRelativeMouse()
+    dX = mX - thisX
+    dY = mY - thisY
+
+    angle = math.atan2(dY, dX)
+    precision = 20
+    spread = 200
+    angle = angle + (math.random(precision) - precision / 2) / spread
+
+    velocity = 20
+    velX = math.cos(angle) * velocity
+    velY = math.sin(angle) * velocity
+
+    body.velX = velX
+    body.velY = velY
+
+end
+
 function Projectile:onLoop()
     if(self.startTime + self.livingTime * 1000 < game:getTime()) then
         self.parent.toRemove = true

@@ -31,13 +31,25 @@ class CGuiText;
 
 struct CollisionSides;
 
+struct KeyState {
+    
+    bool hasState(int key) {
+        return keystates[key];
+    }
+    
+    const Uint8* keystates;
+};
+
 class CComponent {
     
 public:
-    CComponent(CEntity* parent, CLuaScript* script);
+    CComponent(CEntity* parent, CInstance* instance, CLuaScript* script);
     ~CComponent();
     
     void onLoop(CInstance* instance);
+    void onInit(CInstance* instance);
+    void onEvent(CInstance* instance, int key, bool keyDown);
+    void onKeyStates(CInstance* instance, const Uint8* keystates);
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     void onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     bool onCollision(CEntity* target, CollisionSides* collisionSides);

@@ -27,15 +27,18 @@ extern "C" {
 class CInstance {
     
 public:
-    CInstance();
+    CInstance(CGame* game);
     
     CCamera camera;
     CWindow window;
     
     CEntityManager entityManager;
     CEntity* player;
+    CEntity* controller;
     
     lua_State* L;
+    
+    CGame* game;
     
     void closeInstance();
     

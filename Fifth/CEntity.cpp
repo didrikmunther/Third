@@ -112,6 +112,22 @@ void CEntity::onLoop(CInstance* instance) {
 //        say(sb.GetString(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
 }
 
+void CEntity::onEvent(CInstance* instance, int key, bool keyDown) {
+    if(instance->player != this && instance->controller != this)
+        return;
+    
+    for(auto& i: components)
+        i.second->onEvent(instance, key, keyDown);
+}
+
+void CEntity::onKeyStates(CInstance* instance, const Uint8* keystates) {
+    if(instance->player != this && instance->controller != this)
+        return;
+    
+    for(auto& i: components)
+        i.second->onKeyStates(instance, keystates);
+}
+
 void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     
     if(toRemove || isDead)
@@ -219,7 +235,7 @@ bool CEntity::hasSprite() {
     return true;
 }
 
-void CEntity::addComponent(CLuaScript* script) {
+void CEntity::addComponent(CInstance* instance, CLuaScript* script) {
     if(script == nullptr) {
         NFile::log(LogType::WARNING, "Luascript unknown is null, and could not be added to entity as a component.");
         return;
@@ -231,7 +247,7 @@ void CEntity::addComponent(CLuaScript* script) {
         delete components[script->getName()];
     }
     
-    CComponent* component = new CComponent(this, script);
+    CComponent* component = new CComponent(this, instance, script);
     components[script->getName()] = component;
 }
 

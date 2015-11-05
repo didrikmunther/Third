@@ -11,18 +11,59 @@
 #include "NMouse.h"
 
 
-CComponent::CComponent(CEntity* parent, CLuaScript* script)
+CComponent::CComponent(CEntity* parent, CInstance* instance, CLuaScript* script)
     : parent(parent)
     , object(parent, this, script)
     , tempWindow(nullptr)
     , tempCamera(nullptr)
     , tempRenderflags(nullptr)
+    , tempInstance(nullptr)
 {
-    callSimpleFunction("onInit");
+    onInit(instance);
 }
 
 CComponent::~CComponent() {
     
+}
+
+void CComponent::onInit(CInstance* instance) {
+    if(!object.hasReference("onInit"))
+        return;
+    
+    tempInstance = instance;
+    
+    callSimpleFunction("onInit");
+    
+    tempInstance = nullptr;
+}
+
+void CComponent::onEvent(CInstance* instance, int key, bool keyDown) {
+    if(!object.hasReference("onEvent"))
+        return;
+    
+    tempInstance = instance;
+    
+    object.beginCall("onEvent");
+    object.pushObject(key);
+    object.pushObject((bool)keyDown);
+    object.endCall(2, 0);
+    
+    tempInstance = nullptr;
+}
+
+void CComponent::onKeyStates(CInstance* instance, const Uint8* keystates) {
+    if(!object.hasReference("onKeyStates"))
+        return;
+    
+    KeyState state{keystates};
+    
+    tempInstance = instance;
+    
+    object.beginCall("onKeyStates");
+    object.pushObject(state);
+    object.endCall(1, 0);
+    
+    tempInstance = nullptr;
 }
 
 void CComponent::onLoop(CInstance* instance) {
@@ -30,9 +71,15 @@ void CComponent::onLoop(CInstance* instance) {
         return;
     
     tempInstance = instance;
+    tempCamera = &instance->camera;
+    tempWindow = &instance->window;
     
-    object.beginCall("onLoop");
-    object.endCall(0, 0);
+    
+    callSimpleFunction("onLoop");
+    
+    tempInstance = nullptr;
+    tempCamera = nullptr;
+    tempWindow = nullptr;
 }
 
 void CComponent::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
@@ -43,8 +90,7 @@ void CComponent::onRender(CWindow* window, CCamera* camera, RenderFlags renderFl
     tempCamera = camera;
     tempRenderflags = &renderFlags;
     
-    object.beginCall("onRender");
-    object.endCall(0, 0);
+    callSimpleFunction("onRender");
     
     tempWindow = nullptr;
     tempCamera = nullptr;
@@ -59,8 +105,7 @@ void CComponent::onRenderAdditional(CWindow* window, CCamera* camera, RenderFlag
     tempCamera = camera;
     tempRenderflags = &renderFlags;
     
-    object.beginCall("onRenderAdditional");
-    object.endCall(0, 0);
+    callSimpleFunction("onRenderAdditional");
     
     tempWindow = nullptr;
     tempCamera = nullptr;

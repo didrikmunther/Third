@@ -70,6 +70,71 @@ function Movable:onLoop()
 
 end
 
+function Movable:onEvent(key, keyDown)
+    if(keyDown) then
+        if(key == KeyCode._SLASH) then
+            living = self.parent:getComponent("Standard/Living")
+            if(living ~= nil) then
+                living:heal(10, self.parent)
+            end
+        end
+
+        if(key == KeyCode._1) then
+            self:toggleNoClip()
+        end
+
+        if(key == KeyCode._2) then
+            self.parent:toggleProperty(EntityProperty.HIDDEN)
+        end
+
+        if(key == toKeyCode(ScanCode._LSHIFT)) then
+            self.movementState = self.SNEAKING_MOVEMENT
+        end
+
+        if(key == toKeyCode(ScanCode._LALT)) then
+            self.movementState = self.RUNNING_MOVEMENT
+        end
+
+    else
+        if(key == toKeyCode(ScanCode._LALT) or key == toKeyCode(ScanCode._LSHIFT)) then
+            self.movementState = self.WALKING_MOVEMENT
+        end
+    end
+end
+
+function Movable:onKeyStates(state)
+    if(state:hasState(ScanCode._D)) then
+        self:goRight()
+    end
+    if(state:hasState(ScanCode._A)) then
+        self:goLeft()
+    end
+    if(state:hasState(ScanCode._W)) then
+        self:goUp()
+    end
+    if(state:hasState(ScanCode._S)) then
+        self:goDown()
+    end
+
+    if(game:leftMousePressed()) then
+        box = self.parent.body.box
+        thisX = box.x
+        thisY = box.y
+
+        bullet = self.parent.entityManager:createColoredEntity(Box(thisX, thisY - 100, 5, 5), Color(200, 50, 50, 255))
+        self.parent.entityManager:addParticle(bullet)
+        script = game.getScript("Standard/Projectile")
+        bullet:addComponent(self.component.instance, script)
+        bullet:getComponent("Standard/Projectile"):onDeserialize('{"owner":"' .. self.parent.entityManager:getNameOfEntity(self.parent) .. '"}')
+
+        tBody = self.parent.body
+        bBody = bullet:getComponent("Standard/Projectile").parent.body
+        bBody.velX = bBody.velX + tBody.velX
+        bBody.velY = bBody.velY + tBody.velY
+
+    end
+end
+
 function Movable:onDeserialize(value)
     decoded = json.decode(value)
 
@@ -148,27 +213,17 @@ end
 
 function Movable:toggleNoClip()
 
-    --movable = self.parent:getComponent("Standard/Movable")  -- Test getting components
-    --if(movable == self) then
-    --    print("hello")
-    --end
-
-    --tempEntity = self.parent.entityManager:createColoredEntity(Box(100, 100, 200, 200), Color(255, 0, 255, 255))
-    --script = game.getScript("Standard/Movable")
-    --tempEntity:addComponent(script)
-    --self.parent.entityManager:addEntity(tempEntity, "")
-
     flagsToToggle = BitOR(EntityProperty.COLLIDABLE, EntityProperty.GRAVITY_AFFECT)
 
     if(self.isFlying) then
         self.isFlying = false
         self.parent.transparency = 255
-        self.parent.properties = BitOR(flagsToToggle, self.parent.properties) -- toggle flag on
+        self.parent:toggleProperty(flagsToToggle)
         self.parent:say("Deinitiated flying", "TESTFONT", ChatBubbleType.SAY)
     else
         self.isFlying = true
         self.parent.transparency = 128
-        self.parent.properties = BitAND(BitNOT(flagsToToggle), self.parent.properties) -- toggle flag off
+        self.parent:toggleProperty(flagsToToggle)
         self.parent:say("Initiated flying", "TESTFONT", ChatBubbleType.SAY)
     end
 end

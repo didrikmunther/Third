@@ -23,51 +23,7 @@ void CGame::_handleKeyStates() {
         return;
 
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
-    
-    if(!instance.player)
-        return;
-    auto movable = instance.player->getComponent("Standard/Movable");
-    if(!movable)
-        return;
-    
-    if(keystate[SDL_SCANCODE_D]) {
-        movable->callSimpleFunction("goRight");
-    }
-    if(keystate[SDL_SCANCODE_A]) {
-        movable->callSimpleFunction("goLeft");
-    }
-    
-    if(keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_SPACE]) {
-        movable->callSimpleFunction("goUp");
-    }
-    
-    if(keystate[SDL_SCANCODE_S]) {
-        movable->callSimpleFunction("goDown");
-    }
-    
-    auto bullet = CAssetManager::getLuaScript("Standard/Projectile");
-
-    if(NMouse::leftMouseButtonPressed()) { // damage particle
-        int mousePosX = NMouse::relativeMouseX(&instance.camera) - instance.player->body->getX();
-        int mousePosY = NMouse::relativeMouseY(&instance.camera) - (instance.player->body->getY() - 100);
-        float angle = atan2(mousePosY, mousePosX);
-        
-        int precision = 20;
-        int spread = 200;
-        angle += (rand() % precision - precision / 2) / (float)spread;
-        
-        float velocity = 20;
-        float velX = cos(angle) * (velocity);
-        float velY = sin(angle) * (velocity);
-  
-        CEntity* temp = new CEntity(Box(instance.player->body->getX(), instance.player->body->getY() - 100, 5, 5), Color(200, 50, 50, 255));
-        instance.entityManager.addParticle(temp);
-        temp->body->velX = velX + instance.player->body->velX;
-        temp->body->velY = velY + instance.player->body->velY;
-        temp->collisionLayer = -129;
-        temp->addComponent(bullet);
-        temp->getComponent("Standard/Projectile")->onDeserialize("{\"owner\":\"" + instance.entityManager.getNameOfEntity(instance.player) + "\"}");
-    }
+    instance.entityManager.onKeyStates(&instance, keystate);
 }
 
 void CGame::_onEvent(SDL_Event* event) {
@@ -96,23 +52,12 @@ void CGame::_onEvent(SDL_Event* event) {
             break;
             
         case SDL_KEYDOWN:
+            instance.entityManager.onEvent(&instance, event->key.keysym.sym, true);
+            
             switch(event->key.keysym.sym) {
                     
                 case SDLK_ESCAPE:
                     _isRunning = false;
-                    break;
-                    
-                case SDLK_8:
-                {
-//                    float angle = 0;
-//                    int particles = 90;
-//                    
-//                    for(int i = 0; i < particles; i++) {
-//                        angle += (360.0f / particles) / (360 / (2 * M_PI)); // convert raidans to degrees
-//                        
-////                        instance.player->shoot(angle, BasicUtilities::DAMAGE);
-//                    }
-                }
                     break;
                     
                 case SDLK_7:
@@ -156,16 +101,6 @@ void CGame::_onEvent(SDL_Event* event) {
                         CGlobalSettings::GRAVITY = 0.0f;
                     break;
                     
-                case SDLK_LSHIFT:
-                    if(movable)
-                        movable->onDeserialize("{\"movementState\":1}");
-                    break;
-                    
-                case SDLK_LALT:
-                    if(movable)
-                        movable->onDeserialize("{\"movementState\":2}");
-                    break;
-                    
                 case SDLK_l:
                 {
                     CEntity* temp = new CEntity(Box{NMouse::relativeMouseX(&instance.camera), NMouse::relativeMouseY(&instance.camera), 40, 40}, Color{0, 0, 255, 0});
@@ -183,30 +118,14 @@ void CGame::_onEvent(SDL_Event* event) {
                     temp->spriteFollowsCollisionBox = false;
                     temp->spriteStateTypes[SpriteStateTypes::ASCENDING] =
                     temp->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
-                    temp->addComponent(CAssetManager::getLuaScript("Standard/Living"));
-                    temp->addComponent(CAssetManager::getLuaScript("Standard/Npc"));
-                    temp->addComponent(CAssetManager::getLuaScript("Standard/Movable"));
+                    temp->addComponent(&instance, CAssetManager::getLuaScript("Standard/Living"));
+                    temp->addComponent(&instance, CAssetManager::getLuaScript("Standard/Npc"));
+                    temp->addComponent(&instance, CAssetManager::getLuaScript("Standard/Movable"));
                     temp->getComponent("Standard/Npc")->onDeserialize("{\"target\":\"" + instance.entityManager.getNameOfEntity(instance.player) + "\"}");
                     temp->getComponent("Standard/Movable")->onDeserialize("{\"walking_movement_speed\":3.0, \"jumpPower\":5.0}");
                 }
                     break;
                     
-                case SDLK_1:
-                    movable->callSimpleFunction("toggleNoClip");
-                    break;
-                    
-                case SDLK_5:
-                {
-                    restart();
-                }
-                    break;
-                case SDLK_2:
-                    instance.player->toggleProperty(EntityProperty::HIDDEN);
-                    break;
-                case SDLK_3:
-                    //player->toggleProperty(EntityProperty::FLYING);
-                    instance.entityManager.toggleRenderFlag(RenderFlags::COLLISION_BORDERS);
-                    break;
                 case SDLK_4:
                 {
                     if(instance.window.newWindow(_intro, 640, 480)) {
@@ -215,28 +134,6 @@ void CGame::_onEvent(SDL_Event* event) {
                     instance.camera.onInit(&instance.window);
                     NFile::loadMap("resources/map/testMap1.map", &instance);
                     restart();
-                }
-                    break;
-                    
-                case SDLK_6:
-                {
-                    const char alphanum[] =                     // Randomize a string
-                    "0123456789"
-                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                    "abcdefghijklmnopqrstuvwxyz"
-                    "          ";
-                    
-                    std::string text = "";
-                    for(int i = 0; i < 100; i++) {
-                        text += alphanum[rand() % (sizeof(alphanum) - 1)];
-                    }
-                    instance.player->say(text, "TESTFONT", ChatBubbleType::SAY);
-                    
-                    text = "";
-                    for(int i = 0; i < 50; i++) {
-                        text += alphanum[rand() % (sizeof(alphanum) - 1)];
-                    }
-                    //instance.entityManager.getEntity("n:bush")->say(text, "TESTFONT", ChatBubbleType::YELL);
                 }
                     break;
                     
@@ -264,17 +161,9 @@ void CGame::_onEvent(SDL_Event* event) {
             break;
             
         case SDL_KEYUP:
-            switch(event->key.keysym.sym) {
-                case SDLK_LSHIFT:
-                case SDLK_LALT:
-                    if(movable)
-                        movable->onDeserialize("{\"movementState\":0}");
-                    break;
-                    
-                default:
-                    break;
-            }
+            instance.entityManager.onEvent(&instance, event->key.keysym.sym, false);
             break;
+            
         default:
             break;
             

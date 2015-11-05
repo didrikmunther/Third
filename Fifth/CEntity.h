@@ -111,6 +111,8 @@ public:
     
     void init();
     void onLoop(CInstance* instance);
+    void onEvent(CInstance* instance, int key, bool keyDown);
+    void onKeyStates(CInstance* instance, const Uint8* keystates);
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
@@ -151,7 +153,7 @@ public:
     
     bool hasMoved() { return _hasMoved; }
     
-    void addComponent(CLuaScript* script);
+    void addComponent(CInstance* instance, CLuaScript* script);
     CComponent* getComponent(std::string key);
     int getComponent(lua_State* L);
     

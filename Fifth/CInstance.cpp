@@ -9,8 +9,9 @@
 #include "CInstance.h"
 
 
-CInstance::CInstance()
-    : L(luaL_newstate())
+CInstance::CInstance(CGame* game)
+    : game(game)
+    , L(luaL_newstate())
 {
     
 }

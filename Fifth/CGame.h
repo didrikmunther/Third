@@ -28,6 +28,7 @@ public:
     CGame();
     
     int onExecute();
+    void restart();
     
 private:
     
@@ -60,9 +61,11 @@ private:
     std::stringstream _title;
     std::string _intro;
     bool isFocused;
+
+    void _restart();
+    bool toRestart;
     
     static int getTime();
-    void restart();
     
     std::string _path;
     

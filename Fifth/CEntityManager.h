@@ -27,6 +27,7 @@ class CCamera;
 class CWindow;
 class CInstance;
 class lua_State;
+class CGame;
 
 class CEntityManager {
     
@@ -41,8 +42,10 @@ public:
     void addGuiText(CGuiText* guiText);
     void addBackground(std::string name, CBackground* background);
     
-    void onRender(CWindow* window, CCamera* camera);
     void onLoop(CInstance* instance);
+    void onEvent(CInstance* instance, int key, bool keyDown);
+    void onKeyStates(CInstance* instance, const Uint8* keystates);
+    void onRender(CWindow* window, CCamera* camera);
     void onCleanup();
     
     CEntity* createEntity(Box box, Color color);
@@ -64,6 +67,10 @@ public:
     void addRenderFlag(RenderFlags renderFlag);
     void removeRenderFlag(RenderFlags renderFlag);
     void toggleRenderFlag(RenderFlags renderFlag);
+    
+    void addRenderFlag(int renderFlag) { addRenderFlag((RenderFlags)renderFlag); }
+    void removeRenderFlag(int renderFlag) { removeRenderFlag((RenderFlags)renderFlag); }
+    void toggleRenderFlag(int renderFlag) { toggleRenderFlag((RenderFlags)renderFlag); }
     
 private:
     std::map<std::string, CEntity*> _entities;

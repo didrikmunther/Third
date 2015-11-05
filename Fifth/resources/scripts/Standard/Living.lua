@@ -90,10 +90,30 @@ function Living:damage(amount, damager)
     textObject = CombatText(thisX, thisY, damageColor, 20, "-" .. damageDone, "TESTFONT")
     self.parent:addCombatText(textObject)
 
+    return damageDone
+
 end
 
 function Living:heal(amount, healer)
 
+    box = self.parent.body.box
+    thisX = box.x
+    thisY = box.y
+
+    self.values[self.VALUE_HEALTH] = self.values[self.VALUE_HEALTH] + amount
+
+    overHeal = 0
+    if(self.values[self.VALUE_HEALTH] >= self.maxValues[self.VALUE_HEALTH]) then
+        overHeal = self.values[self.VALUE_HEALTH] - self.maxValues[self.VALUE_HEALTH]
+        self.values[self.VALUE_HEALTH] = self.maxValues[self.VALUE_HEALTH]
+    end
+    healed = amount - overHeal
+
+    healingColor = Color(0, 255, 0, 255)
+    textObject = CombatText(thisX, thisY - 100, healingColor, 20, "+" .. healed, "TESTFONT")
+    self.parent:addCombatText(textObject)
+
+    return healed
 end
 
 function Living:onCollision(target, sides)

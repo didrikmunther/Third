@@ -499,6 +499,16 @@ void CEntityManager::onLoop(CInstance* instance) {
     }
 }
 
+void CEntityManager::onEvent(CInstance *instance, int key, bool keyDown) {
+    for(auto& i: _entities)
+        i.second->onEvent(instance, key, keyDown);
+}
+
+void CEntityManager::onKeyStates(CInstance* instance, const Uint8* keystates) {
+    for(auto& i: _entities)
+        i.second->onKeyStates(instance, keystates);
+}
+
 void CEntityManager::onCleanup() {
     
     NFile::log(LogType::ALERT, "Unloading entities!");
