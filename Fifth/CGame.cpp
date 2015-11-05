@@ -123,17 +123,18 @@ int CGame::_onInit() {
     }
     instance.camera.onInit(&instance.window);
     
-    _initLua();
-    
-    NFile::loadMap("resources/map/testMap1.map", &instance);
-    
     restart();
     
     return 0;
 }
 
 void CGame::restart() {
-    instance.entityManager.onCleanup();
+    CAssetManager::onCleanup();
+    instance.closeInstance();
+    
+    instance.L = luaL_newstate();
+    _initLua();
+    NFile::loadMap("resources/map/testMap1.map", &instance);
     
     CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
     instance.entityManager.addBackground("main", background);
@@ -292,6 +293,7 @@ void CGame::_initLua() {
             .addFunction("addEntity", &CEntityManager::addEntity)
             .addFunction("getEntity", &CEntityManager::getEntity)
             .addFunction("getNameOfEntity", &CEntityManager::getNameOfEntity)
+            .addCFunction("getEntities", &CEntityManager::pushEntities)
             .addFunction("createColoredEntity", (CEntity* (CEntityManager::*)(Box, Color)) &CEntityManager::createEntity)
             .addFunction("createSpriteEntity", (CEntity* (CEntityManager::*)(Box, std::string)) &CEntityManager::createEntity)
         .endClass()
@@ -331,9 +333,9 @@ void CGame::_onRender() {
 }
 
 int CGame::_onCleanup() {
-    instance.entityManager.onCleanup();
     CAssetManager::onCleanup();
     instance.window.onCleanup();
+    instance.closeInstance();
     
     NFile::log(LogType::ALERT, "Exiting game.");
     

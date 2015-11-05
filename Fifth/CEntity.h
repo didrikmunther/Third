@@ -151,9 +151,6 @@ public:
     
     bool hasMoved() { return _hasMoved; }
     
-    void shoot(float angle, BasicUtilities basicUtility);
-    std::vector<CEntity*> particlesToAdd;
-    
     void addComponent(CLuaScript* script);
     CComponent* getComponent(std::string key);
     int getComponent(lua_State* L);

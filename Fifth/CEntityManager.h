@@ -26,6 +26,7 @@ class CBackground;
 class CCamera;
 class CWindow;
 class CInstance;
+class lua_State;
 
 class CEntityManager {
     
@@ -46,6 +47,8 @@ public:
     
     CEntity* createEntity(Box box, Color color);
     CEntity* createEntity(Box box, std::string spriteKey);
+    
+    int pushEntities(lua_State* L);
     
     // Temp
     void splitEntityToParticles(CEntity* target);

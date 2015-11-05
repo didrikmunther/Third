@@ -17,4 +17,5 @@ CInstance::CInstance()
 
 void CInstance::closeInstance() {
     entityManager.onCleanup();
+    lua_close(L);
 }

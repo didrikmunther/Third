@@ -219,26 +219,6 @@ bool CEntity::hasSprite() {
     return true;
 }
 
-void CEntity::shoot(float angle, BasicUtilities basicUtility) {
-    
-//    int precision = 20;
-//    int spread = 200;
-//    
-//    angle += (rand() % precision - precision / 2) / (float)spread;
-//    
-//    float velocity = 20;
-//    float velX = cos(angle) * (velocity);
-//    float velY = sin(angle) * (velocity);
-    
-//    CEntity* tempParticle = new CEntity(Box{body->getX(), body->getY() - 100, 8, 8}, SDL_Color{(Uint8)(rand() % 255), (Uint8)(rand() % 255), (Uint8)(rand() % 255), 0});
-//    tempParticle->addComponent<EParticle>(10);
-//    EUtility* utilityComponent = new EUtility(tempParticle, this, basicUtility);
-//    tempParticle->addComponent<EUtility>(utilityComponent);
-//    tempParticle->body->velX = velX + body->velX;
-//    tempParticle->body->velY = velY + body->velY;
-//    particlesToAdd.push_back(tempParticle);
-}
-
 void CEntity::addComponent(CLuaScript* script) {
     if(script == nullptr) {
         NFile::log(LogType::WARNING, "Luascript unknown is null, and could not be added to entity as a component.");

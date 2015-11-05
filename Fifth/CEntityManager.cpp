@@ -60,6 +60,22 @@ CEntity* CEntityManager::createEntity(Box box, std::string spriteKey) {
     return new CEntity(box, spriteKey);
 }
 
+int CEntityManager::pushEntities(lua_State* L) {
+    lua_newtable(L);
+    int top = lua_gettop(L);
+    
+    for(auto& i: _entities) {
+        auto key = i.first;
+        auto value = i.second;
+        
+        luabridge::Stack<std::string>::push(L, key);
+        luabridge::Stack<CEntity*>::push(L, value);
+        lua_settable(L, top);
+    }
+    
+    return 1;
+}
+
 CEntity* CEntityManager::getEntityAtCoordinate(int x, int y) {
     for (auto &i: _entities) {
         if(i.second->coordinateCollision(x, y, 1, 1))
@@ -480,13 +496,6 @@ void CEntityManager::onLoop(CInstance* instance) {
             } else
                 ++i;
         }
-    }
-    
-    for(auto &i: _entities) { // Add delayed particles of all entities, like bullets
-        for(auto &particle: i.second->particlesToAdd) {
-            addParticle(particle);
-        }
-        i.second->particlesToAdd.clear();
     }
 }
 
