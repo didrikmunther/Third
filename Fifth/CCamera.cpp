@@ -21,6 +21,7 @@ void CCamera::onInit(CWindow* window) {
     _offset = {0, 0, window->getWidth(), window->getHeight()};
     _cameraShakeInterval = 0.0f;
     _cameraShake = 0.0f;
+    _cameraZoom = 1.0f;
 }
 
 void CCamera::onLoop() {
@@ -35,8 +36,8 @@ void CCamera::onLoop() {
     float cameraShakeX = floor(sin(_cameraShakeInterval * _cameraShakeInterval / 2) * _cameraShake);
     float cameraShakeY = floor(cos(_cameraShakeInterval * _cameraShakeInterval / 2) * _cameraShake);
     
-    _offset.x += (((_target->body->getX() + _target->body->getW() / 2) - _offset.w / 2) - _offset.x + cameraShakeX) / cameraSway;
-    _offset.y += (((_target->body->getY() + _target->body->getH() / 2) - _offset.h / 2) - _offset.y + cameraShakeY) / cameraSway;
+    _offset.x += ((((_target->body->getX() + _target->body->getW() / 2) - _offset.w / 2) - _offset.x + cameraShakeX) / cameraSway);
+    _offset.y += ((((_target->body->getY() + _target->body->getH() / 2) - _offset.h / 2) - _offset.y + cameraShakeY) / cameraSway);
     
     if(_cameraShake > 0)
         _cameraShake -= ceil(1.0 * (_cameraShake / 70));
@@ -53,6 +54,8 @@ int CCamera::offsetY() {
 
 void CCamera::addCameraShake(int interval) {
     _cameraShake += interval;
+    
+    std::cout << _cameraShake << "\n";
 }
 
 void CCamera::setTarget(CEntity* target) {

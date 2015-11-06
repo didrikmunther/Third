@@ -415,7 +415,7 @@ void CEntityManager::onLoop(CInstance* instance) {
                 }
             }
             
-            target->move(&collisionMap);
+            target->move(&collisionMap, instance);
             
             if(target->isDead) {
                 _deadEntities[(*i).first] = (*i).second;
@@ -446,7 +446,7 @@ void CEntityManager::onLoop(CInstance* instance) {
                 }
             }
             
-            target->move(&collisionMap);
+            target->move(&collisionMap, instance);
             
             if(!target->isDead) {
                 _entities[(*i).first] = (*i).second;
@@ -476,7 +476,7 @@ void CEntityManager::onLoop(CInstance* instance) {
                 }
             }
             
-            target->move(&collisionMap);
+            target->move(&collisionMap, instance);
             
             if(target->toRemove) {
                 delete *i;

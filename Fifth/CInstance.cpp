@@ -12,8 +12,14 @@
 CInstance::CInstance(CGame* game)
     : game(game)
     , L(luaL_newstate())
+    , camera(new CCamera())
+    , gravity(3.0f)
 {
     
+}
+
+CInstance::~CInstance() {
+    delete camera;
 }
 
 void CInstance::closeInstance() {

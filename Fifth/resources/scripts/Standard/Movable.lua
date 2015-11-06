@@ -219,12 +219,12 @@ function Movable:toggleNoClip()
         self.isFlying = false
         self.parent.transparency = 255
         self.parent:toggleProperty(flagsToToggle)
-        self.parent:say("Deinitiated flying", "TESTFONT", ChatBubbleType.SAY)
+        -- self.parent:say("Deinitiated flying", "TESTFONT", ChatBubbleType.SAY)
     else
         self.isFlying = true
         self.parent.transparency = 128
         self.parent:toggleProperty(flagsToToggle)
-        self.parent:say("Initiated flying", "TESTFONT", ChatBubbleType.SAY)
+        -- self.parent:say("Initiated flying", "TESTFONT", ChatBubbleType.SAY)
     end
 end
 

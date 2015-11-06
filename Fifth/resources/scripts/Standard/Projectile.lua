@@ -10,6 +10,9 @@ local Projectile = class(
 
         self.owner = nil
 
+        self.positions = {}
+        self.positionsSize = 0
+
     end
 )
 
@@ -38,7 +41,18 @@ end
 function Projectile:onLoop()
     if(self.startTime + self.livingTime * 1000 < game:getTime()) then
         self.parent.toRemove = true
+        do return end
     end
+
+    box = self.parent.body.box
+    table.insert(self.positions, {box.x, box.y})
+    self.positionsSize = self.positionsSize + 1
+
+    if(self.positionsSize > 100) then
+        self.positionsSize = self.positionsSize - 1
+        table.remove(self.positions, 1)
+    end
+
 end
 
 function Projectile:onCollision(target, collisionSides)
@@ -62,6 +76,18 @@ function Projectile:onDeserialize(value)
 
     if(decoded.owner ~= nil) then
         self.owner = getVal(self.owner, self.parent.entityManager:getEntity(decoded.owner))
+    end
+end
+
+function Projectile:onRenderAdditional()
+    box = self.parent.body.box
+    oldVal = self.positions[1]
+
+    for k, v in pairs(self.positions) do
+        if(oldVal[1] ~= v[1] or oldVal[2] ~= v[2]) then -- don't render if they are exactly the same positions
+            self.component:renderLine(v[1], v[2], oldVal[1], oldVal[2], 255, 0, 0, 255)
+        end
+        oldVal = v
     end
 end
 

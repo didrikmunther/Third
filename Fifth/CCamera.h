@@ -42,12 +42,16 @@ public:
     
     int cameraSway;
     
+    float getZoom() { return _cameraZoom; }
+    
 private:
     CameraOffset _offset;
     float _cameraShakeInterval;
     float _cameraShake;
     
     CEntity* _target;
+    
+    float _cameraZoom;
 };
 
 #endif /* defined(__Third__CCamera__) */

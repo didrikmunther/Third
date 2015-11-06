@@ -19,7 +19,6 @@
 #include "CText.h"
 #include "CSpriteContainer.h"
 #include "CBackground.h"
-#include "CGlobalSettings.h"
 #include "CCombatText.h"
 
 #include "NMouse.h"
@@ -75,7 +74,7 @@ int CGame::onExecute() {
             
             auto sayer = instance.entityManager.getEntity("n:bush");
             if(sayer)
-                sayer->say(_title.str() + " Gravity: " + std::to_string(CGlobalSettings::GRAVITY), "TESTFONT", ChatBubbleType::INSTANT_TALK);
+                sayer->say(_title.str() + " Gravity: " + std::to_string(instance.gravity), "TESTFONT", ChatBubbleType::INSTANT_TALK);
         }
         
         _onRender();
@@ -124,7 +123,7 @@ int CGame::_onInit() {
         NFile::log(LogType::ERROR, "Window initialization failed!");
         return -1;
     }
-    instance.camera.onInit(&instance.window);
+    instance.camera->onInit(&instance.window);
     
     _restart();
     
@@ -165,7 +164,7 @@ void CGame::_restart() {
     temp->addComponent(&instance, movable);
     temp->addComponent(&instance, living);
     instance.player = temp;
-    instance.camera.setTarget(temp);
+    instance.camera->setTarget(temp);
     
     for(int i = 0; i < 50; i++) {
         temp = new CEntity(Box{i * 6 + 32, -600, 5, 5}, Color{255, 255, 0});
@@ -265,6 +264,8 @@ void CGame::_initLua() {
             .addFunction("addTextObject", &CEntity::addTextObject)
             .addFunction("addCombatText", &CEntity::addCombatText)
             .addFunction("compare", &CEntity::compare)
+            .addData("spriteFollowsCollisionBox", &CEntity::spriteFollowsCollisionBox)
+            .addFunction("setSpriteStateType", &CEntity::setSpriteStateType)
         .endClass()
     
         .beginClass<CComponent>("Component")
@@ -298,6 +299,12 @@ void CGame::_initLua() {
         .beginClass<CInstance>("Instance")
             .addData("player", &CInstance::player)
             .addData("game", &CInstance::game)
+            .addData("camera", &CInstance::camera)
+            .addData("gravity", &CInstance::gravity)
+        .endClass()
+    
+        .beginClass<CCamera>("Camera")
+            .addFunction("addCameraShake", &CCamera::addCameraShake)
         .endClass()
     
         .beginClass<CGame>("Game")
@@ -358,14 +365,14 @@ int CGame::getTime() {
 
 void CGame::_onLoop() {
     instance.entityManager.onLoop(&instance);
-    instance.camera.onLoop();
+    instance.camera->onLoop();
 }
 
 void CGame::_onRender() {
     SDL_SetRenderDrawColor(instance.window.getRenderer(), 250, 250, 250, 255);
     SDL_RenderClear(instance.window.getRenderer());
     
-    instance.entityManager.onRender(&instance.window, &instance.camera);
+    instance.entityManager.onRender(&instance.window, instance.camera);
     
     SDL_RenderPresent(instance.window.getRenderer());
 }

@@ -48,8 +48,8 @@ RenderFlags = {
     COLLISION_GRID      = 4,
     COLLISION_FULL_AREA = 8,
     ENTITY_GRID         = 16,
-    ENEMY_TRIANGLE      = 32,
-    TRACE_BULLETS       = 64,
+    RESERVED_FLAG       = 32,
+    RESERVED_FLAG_2     = 64,
     RENDER_COMBAT_TEXT  = 128
 }
 

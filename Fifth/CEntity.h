@@ -131,7 +131,7 @@ public:
     void addProperty(int property);
     void removeProperty(int property);
     
-    void move(std::vector<CEntity*>* entities);
+    void move(std::vector<CEntity*>* entities, CInstance* instance);
     bool coordinateCollision(int x, int y, int w, int h, int x2, int y2, int w2, int h2);
     bool coordinateCollision(int x, int y, int w, int h);
     std::vector<GridCoordinates> gridCoordinates;
@@ -142,6 +142,7 @@ public:
     void say(std::string text, std::string fontKey, int type);
     void say(std::string text, std::string fontKey, ChatBubbleType type);
     
+    void setSpriteStateType(int type, std::string sprite);
     std::string spriteStateTypes[SpriteStateTypes::TOTAL_SPRITESTATETYPES];
     
     void setSpriteContainer(std::string spriteContainerKey);

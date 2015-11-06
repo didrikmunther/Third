@@ -15,7 +15,6 @@
 #include "CEntityManager.h"
 #include "CSpriteContainer.h"
 #include "CGuiText.h"
-#include "CGlobalSettings.h"
 #include "CInstance.h"
 #include "CChatBubble.h"
 
@@ -72,7 +71,7 @@ void CEntity::onLoop(CInstance* instance) {
     }
     
     if(hasProperty(EntityProperty::GRAVITY_AFFECT))
-        body->velY += CGlobalSettings::GRAVITY;
+        body->velY += instance->gravity;
     
     if(!hasProperty(EntityProperty::FLIP_FREEZED)) {
         if(body->velX > 0)
@@ -198,6 +197,10 @@ void CEntity::say(std::string text, std::string fontKey, int type) {
 void CEntity::say(std::string text, std::string fontKey, ChatBubbleType type) {
     CChatBubble* temp = new CChatBubble(text, this, fontKey, (ChatBubbleType)type);
     guiTextVector.push_back(temp);
+}
+
+void CEntity::setSpriteStateType(int type, std::string sprite) {
+    spriteStateTypes[(SpriteStateTypes::SpriteStateTypes)type] = sprite;
 }
 
 bool CEntity::hasProperty(int property) {
@@ -358,7 +361,7 @@ bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities) {
         return false;
 }
 
-void CEntity::move(std::vector<CEntity*>* entities) {
+void CEntity::move(std::vector<CEntity*>* entities, CInstance* instance) {
     
     if(hasProperty(EntityProperty::STATIC) || isDead) {
         body->velY = body->velX = 0;
@@ -367,10 +370,10 @@ void CEntity::move(std::vector<CEntity*>* entities) {
     
     int MoveX, MoveY;
     
-    if(CGlobalSettings::GRAVITY < 0.5) {         // Check if gravity can be rounded up, otherwise wonkyness happens
+    if(instance->gravity < 0.5) {         // Check if gravity can be rounded up, otherwise wonkyness happens
         MoveX = ceil(body->velX);
         MoveY = ceil(body->velY);
-    } else if(CGlobalSettings::GRAVITY != 0) {
+    } else if(instance->gravity != 0) {
         MoveX = round(body->velX);
         MoveY = round(body->velY);
     } else {

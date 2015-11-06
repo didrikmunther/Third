@@ -71,7 +71,7 @@ void CComponent::onLoop(CInstance* instance) {
         return;
     
     tempInstance = instance;
-    tempCamera = &instance->camera;
+    tempCamera = instance->camera;
     tempWindow = &instance->window;
     
     
@@ -176,8 +176,8 @@ void CComponent::renderLine(int x, int y, int x2, int y2, int r, int g, int b, i
 int CComponent::getRelativeMouse(lua_State* L) {
     int x, y;
     if(tempInstance != nullptr) {
-        x = NMouse::relativeMouseX(&tempInstance->camera);
-        y = NMouse::relativeMouseY(&tempInstance->camera);
+        x = NMouse::relativeMouseX(tempInstance->camera);
+        y = NMouse::relativeMouseY(tempInstance->camera);
     } else if(tempCamera != nullptr) {
         x = NMouse::relativeMouseX(tempCamera);
         y = NMouse::relativeMouseY(tempCamera);

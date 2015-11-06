@@ -28,17 +28,19 @@ class CInstance {
     
 public:
     CInstance(CGame* game);
+    ~CInstance();
     
-    CCamera camera;
+    CCamera* camera;
     CWindow window;
-    
     CEntityManager entityManager;
+    
     CEntity* player;
     CEntity* controller;
     
     lua_State* L;
-    
     CGame* game;
+    
+    float gravity;
     
     void closeInstance();
     
