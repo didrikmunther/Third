@@ -30,6 +30,8 @@ public:
     CInstance(CGame* game);
     ~CInstance();
     
+    void onLoop();
+    
     CCamera* camera;
     CWindow window;
     CEntityManager entityManager;
@@ -42,7 +44,13 @@ public:
     
     float gravity;
     
+    void loadMap(std::string path);
+    
     void closeInstance();
+    
+private:
+    std::string _mapToLoad;
+    void _loadMap(std::string path);
     
 };
 

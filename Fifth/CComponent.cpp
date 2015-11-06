@@ -163,7 +163,7 @@ void CComponent::renderRect(int x, int y, int w, int h, int r, int g, int b, int
     if(tempCamera == nullptr || tempWindow == nullptr)
         return;
     
-    NSurface::renderRect(x - tempCamera->offsetX(), y - tempCamera->offsetY(), w, h, tempWindow, r, g, b, a);
+    NSurface::renderRect(x, y, w, h, tempWindow, r, g, b, a);
 }
 
 void CComponent::renderLine(int x, int y, int x2, int y2, int r, int g, int b, int a) {
@@ -171,6 +171,14 @@ void CComponent::renderLine(int x, int y, int x2, int y2, int r, int g, int b, i
         return;
     
     NSurface::renderLine(Line(x, y, x2, y2, Color(r, g, b, a)), tempWindow->getRenderer(), tempCamera);
+}
+
+void CComponent::renderText(int x, int y, int size, std::string text, std::string fontKey, int r, int g, int b) {
+    if(tempCamera == nullptr || tempWindow == nullptr)
+        return;
+    
+    CText textObj(text, size, fontKey, Color(r, b, g));
+    NSurface::renderText(x, y, &textObj, tempWindow);
 }
 
 int CComponent::getRelativeMouse(lua_State* L) {

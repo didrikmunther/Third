@@ -290,9 +290,11 @@ void CEntity::renderAdditional(CWindow *window, CCamera *camera, RenderFlags ren
         i.second->onRenderAdditional(window, camera, renderFlags);
     }
     
-    if(!hasProperty(EntityProperty::HIDDEN))
-        for (auto &i: guiTextVector)                                                // Render chatbubbles
+    if(!hasProperty(EntityProperty::HIDDEN)) {
+        for (auto &i: guiTextVector) {
             i->onRender(window, camera, renderFlags);
+        }
+    }
     
 }
 

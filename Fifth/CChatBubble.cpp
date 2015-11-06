@@ -102,14 +102,19 @@ void CChatBubble::onRender(CWindow* window, CCamera* camera, RenderFlags renderF
     
     int floatOverHead = 20;
     
-    if(camera->collision(_target->body->getX() + _target->body->getW() / 2 - _widestLine / 2,
-                          _target->body->getY() - _totalHeight - floatOverHead,
-                          _widestLine,
-                          _totalHeight)) {
-        NSurface::renderRect(_target->body->getX() + _target->body->getW() / 2 - _widestLine / 2 - camera->offsetX(),
-                             _target->body->getY() - _totalHeight - floatOverHead - camera->offsetY(),
-                             _widestLine,
-                             _totalHeight,
+    int boxX = _target->body->getX() + _target->body->getW() / 2 - _widestLine / 2;
+    int boxY = _target->body->getY() - _totalHeight - floatOverHead;
+    int boxW = _widestLine;
+    int boxH = _totalHeight;
+    
+    if(camera->collision(boxX,
+                         boxY,
+                         boxW,
+                         boxH)) {
+        NSurface::renderRect(boxX - camera->offsetX(),
+                             boxY - camera->offsetY(),
+                             boxW,
+                             boxH,
                              window, _rB, _gB, _bB);
     
         int currentLine = 0;

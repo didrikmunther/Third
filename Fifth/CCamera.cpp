@@ -54,8 +54,6 @@ int CCamera::offsetY() {
 
 void CCamera::addCameraShake(int interval) {
     _cameraShake += interval;
-    
-    std::cout << _cameraShake << "\n";
 }
 
 void CCamera::setTarget(CEntity* target) {

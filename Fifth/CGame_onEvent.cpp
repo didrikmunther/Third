@@ -22,7 +22,10 @@ void CGame::_handleKeyStates() {
         return;
 
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
-    instance.entityManager.onKeyStates(&instance, keystate);
+    
+    instance.controller->onKeyStates(&instance, keystate);
+    if(ignoreEvents) return;
+    instance.player->onKeyStates(&instance, keystate);
 }
 
 void CGame::_onEvent(SDL_Event* event) {
@@ -51,7 +54,9 @@ void CGame::_onEvent(SDL_Event* event) {
             break;
             
         case SDL_KEYDOWN:
-            instance.entityManager.onEvent(&instance, event->key.keysym.sym, true);
+            instance.controller->onEvent(&instance, event->key.keysym.sym, true);
+            if(ignoreEvents) break;
+            instance.player->onEvent(&instance, event->key.keysym.sym, true);
             
             switch(event->key.keysym.sym) {
                     
@@ -59,26 +64,13 @@ void CGame::_onEvent(SDL_Event* event) {
                     _isRunning = false;
                     break;
                     
-//                case SDLK_RIGHTBRACKET:
-//                    instance.gravity += 0.1;
-//                    
-//                    if(-0.1 * 100 < instance.gravity * 100 && instance.gravity * 100 < 0.1 * 100)
-//                        instance.gravity = 0.0f;
-//                    break;
-//                    
-//                case SDLK_LEFTBRACKET:
-//                    instance.gravity -= 0.1;
-//                    if(-0.1 * 100 < instance.gravity * 100 && instance.gravity * 100 < 0.1 * 100)
-//                        instance.gravity = 0.0f;
-//                    break;
-                    
                 case SDLK_4:
                 {
                     if(instance.window.newWindow(_intro, 640, 480)) {
                         NFile::log(LogType::ERROR, "Window.onInit failed: ", SDL_GetError());
                     }
                     instance.camera->onInit(&instance.window);
-                    NFile::loadMap("resources/map/testMap1.map", &instance);
+                    instance.loadMap("resources/map/testMap1.map");
                     restart();
                 }
                     break;
@@ -100,7 +92,9 @@ void CGame::_onEvent(SDL_Event* event) {
             break;
             
         case SDL_KEYUP:
-            instance.entityManager.onEvent(&instance, event->key.keysym.sym, false);
+            instance.controller->onEvent(&instance, event->key.keysym.sym, false);
+            if(ignoreEvents) break;
+            instance.player->onEvent(&instance, event->key.keysym.sym, false);
             break;
             
         default:

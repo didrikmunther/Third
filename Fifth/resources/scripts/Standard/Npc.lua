@@ -60,9 +60,13 @@ function Npc:onLoop()
 end
 
 function Npc:onRender()
+    camera = self.component.camera
+    cameraX = camera:offsetX()
+    cameraY = camera:offsetY()
+
     box = self.parent.body.box
-    thisX = box.x
-    thisY = box.y
+    thisX = box.x - cameraX
+    thisY = box.y - cameraY
     thisW = box.w
     thisH = box.h
 

@@ -60,7 +60,6 @@ namespace NSurface {
     void renderTexture(int x, int y, int w, int h, SDL_Renderer* renderer, SDL_Texture *texture);
     void renderLine(Line line, SDL_Renderer* renderer, CCamera* camera = nullptr);
     void renderTriangle(Triangle triangle, SDL_Renderer* renderer, CCamera* camera = nullptr);
-    
 };
 
 

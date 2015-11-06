@@ -12,9 +12,13 @@ function Controller:onInit()
     self.parent:addProperty(EntityProperty.HIDDEN)
     self.parent:removeProperty(EntityProperty.COLLIDABLE)
     self.component.instance.gravity = 0.3
+
+    self.component.instance:loadMap("resources/map/testMap1.map")
 end
 
 function Controller:onEvent(key, keyDown)
+    if(self.component.instance.game.ignoreEvents) then do return end end
+
     if(keyDown) then
         if(key == KeyCode._3) then -- Collision borders
             self.parent.entityManager:toggleRenderFlag(RenderFlags.COLLISION_BORDERS)

@@ -29,9 +29,13 @@ function Living:onRenderAdditional()
         do return end
     end
 
+    camera = self.component.camera
+    cameraX = camera:offsetX()
+    cameraY = camera:offsetY()
+
     box = self.parent.body.box
-    thisX = box.x
-    thisY = box.y
+    thisX = box.x - cameraX
+    thisY = box.y - cameraY
     thisW = box.w
     thisH = box.h
 
@@ -44,10 +48,6 @@ function Living:onRenderAdditional()
     self.component:renderRect(thisX + thisW / 2 - bgWidth / 2, thisY - bgHeight - floatOverHead, bgWidth, bgHeight, 255, 0, 0, 255) -- background
     self.component:renderRect(thisX + thisW / 2 - bgWidth / 2, thisY - bgHeight - floatOverHead, healthWidth, bgHeight, 0, 255, 0, 255) -- health
     self.component:renderRect(thisX + thisW / 2 - bgWidth / 2, thisY - bgHeight - floatOverHead, kevlarWidth, bgHeight / 2, 128, 128, 128, 255) -- health
-
-    -- temp
-    mX, mY = self.component:getRelativeMouse()
-    self.component:renderLine(thisX, thisY - 100, mX, mY, 255, 0, 255, 255)
 
 end
 

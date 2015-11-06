@@ -40,64 +40,6 @@ rapidjson::Document NFile::loadJsonFile(std::string fileName) {
     
 }
 
-//CEntity* NFile::_createEntity(CInstance* instance, const rapidjson::Value& jsonEntity, EntityParameterHolder entityParameterHolder) {
-//    
-//    int type;
-//    if(!jsonEntity.HasMember("type"))
-//        type = 0;
-//    else
-//        type = jsonEntity["type"].GetInt();
-//    
-//    switch(type) {
-//        case EntityTypes::Player:
-//        {
-//            CPlayer* player;
-//            if(entityParameterHolder.spriteContainerKey == "") {
-//                player = new CPlayer(entityParameterHolder.box, entityParameterHolder.color);
-//            } else {
-//                player = new CPlayer(entityParameterHolder.box, entityParameterHolder.spriteContainerKey);
-//            }
-//            
-//            instance->player = player;
-//            instance->camera.setTarget(player);
-//            return player;
-//        }
-//            break;
-//            
-//        case EntityTypes::Enemy:
-//        {
-//            CEnemy* enemy;
-//            if(entityParameterHolder.spriteContainerKey == "") {
-//                enemy = new CEnemy(entityParameterHolder.box, entityParameterHolder.color);
-//            } else {
-//                enemy = new CEnemy(entityParameterHolder.box, entityParameterHolder.spriteContainerKey);
-//            }
-//            
-//            if(jsonEntity.HasMember("target")) {
-//                CEntity* target = instance->entityManager.getEntity(jsonEntity["target"].GetString());
-//                if(target != nullptr)
-//                    enemy->setTarget(target);
-//            }
-//            
-//            return enemy;
-//        }
-//            break;
-//            
-//        case EntityTypes::Entity:
-//        default:
-//        {
-//            CEntity* entity;
-//            if(entityParameterHolder.spriteContainerKey == "") {
-//                entity = new CEntity(entityParameterHolder.box, entityParameterHolder.color);
-//            } else {
-//                entity = new CEntity(entityParameterHolder.box, entityParameterHolder.spriteContainerKey);
-//            }
-//            return entity;
-//        }
-//            break;
-//    }
-//}
-
 void NFile::loadMap(std::string fileName, CInstance* instance) {
     
     log(LogType::ALERT, "Loading map: \"", fileName.c_str(), "\"");
@@ -108,9 +50,10 @@ void NFile::loadMap(std::string fileName, CInstance* instance) {
         NFile::log(LogType::ERROR, "Could not load map \"", fileName, "\". (Reason: \"", d["JSONParsingError"].GetString(), ")");
     } else {
         
-        instance->entityManager.onCleanup();
-        CAssetManager::onCleanup();
-        instance->player = nullptr;
+        //instance->entityManager.onCleanup();
+        //CAssetManager::onCleanup();
+        //instance->player = nullptr;
+        //instance->controller = nullptr;
 
         const rapidjson::Value& fonts = d["fonts"];                                     // Fonts
         for(rapidjson::SizeType i = 0; i < fonts.Size(); i++) {
@@ -120,17 +63,6 @@ void NFile::loadMap(std::string fileName, CInstance* instance) {
             
             CAssetManager::addFont(font["name"].GetString(), font["path"].GetString(), font["size"].GetInt());
         }
-
-//        const rapidjson::Value& shaders = d["shaders"];                                 // Shaders
-//        for(rapidjson::SizeType i = 0; i < shaders.Size(); i++) {
-//            const rapidjson::Value& shader = shaders[i];
-//            if(!(shader.HasMember("name") && shader.HasMember("path") && shader.HasMember("shaderType")))
-//                continue;
-//            if(!shader["shaderType"].IsInt() || !(0 <= shader["shaderType"].GetInt() >= 1))
-//                continue;
-//            
-//            CAssetManager::addShader(shader["name"].GetString(), shader["path"].GetString(), (sf::Shader::Type)shader["shaderType"].GetInt());
-//        }
 
         const rapidjson::Value& spriteSheets = d["spriteSheets"];                       // Sprite sheets
         for(rapidjson::SizeType i = 0; i < spriteSheets.Size(); i++) {

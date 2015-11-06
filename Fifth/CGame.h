@@ -66,6 +66,10 @@ private:
     bool toRestart;
     
     static int getTime();
+    static int getWidth() { return SCREEN_WIDTH; }
+    static int getHeight() { return SCREEN_HEIGHT; }
+    
+    bool ignoreEvents;
     
     std::string _path;
     

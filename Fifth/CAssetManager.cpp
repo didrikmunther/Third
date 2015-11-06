@@ -174,7 +174,7 @@ void CAssetManager::removeSpriteContainer(std::string key) {
     }
 }
 
-void CAssetManager::onCleanup() {
+void CAssetManager::onCleanup(CLEAN_FLAGS flags /* = CLEAN_FLAGS::EVERYTHING */) {
     
     NFile::log(LogType::ALERT, "Unloading assets!");
     
@@ -227,7 +227,7 @@ void CAssetManager::onCleanup() {
             NFile::log(LogType::SUCCESS, "Unloaded assets: ", toWrite);
     }
     
-    {
+    if(!(flags & CLEAN_FLAGS::NOT_LUA_SCRIPTS)) {
         std::string toWrite = "";
         auto i = _LuaScripts.begin();
         while(i != _LuaScripts.end()) {

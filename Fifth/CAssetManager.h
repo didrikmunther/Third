@@ -21,6 +21,11 @@ class CSpriteContainer;
 class CLuaScript;
 class lua_State;
 
+enum CLEAN_FLAGS {
+    EVERYTHING      = 0,
+    NOT_LUA_SCRIPTS = 1 << 0
+};
+
 class CAssetManager {
     
 public:
@@ -42,7 +47,7 @@ public:
     
     static void removeSpriteContainer(std::string key);
     
-    static void onCleanup();
+    static void onCleanup(CLEAN_FLAGS flags = CLEAN_FLAGS::EVERYTHING);
     
 private:
     static std::map<std::string, CSprite*> _Sprites;

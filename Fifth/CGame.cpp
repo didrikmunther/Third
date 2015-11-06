@@ -32,7 +32,7 @@
 
 
 CGame::CGame()
-    : _intro("Third"), instance(this), toRestart(false)
+    : _intro("Third"), instance(this), toRestart(false), ignoreEvents(false)
     , _lastTime(SDL_GetTicks()), _timer(SDL_GetTicks()), _isRunning(true)
     , _ns(1000.0f / GAME_INTERVAL), _delta(0), _frames(0), _updates(0), isFocused(true) {
 }
@@ -140,7 +140,7 @@ void CGame::_restart() {
     
     instance.L = luaL_newstate();
     _initLua();
-    NFile::loadMap("resources/map/testMap1.map", &instance);
+    //instance.loadMap("resources/map/testMap1.map");
     
     CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
     instance.entityManager.addBackground("main", background);
@@ -149,11 +149,13 @@ void CGame::_restart() {
     auto npc = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Npc.lua");
     auto living = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Living.lua");
     auto controller = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Controller.lua");
+    auto chatController = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/ChatController.lua");
     CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Projectile.lua");
     
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
     instance.entityManager.addEntity(temp);
     temp->addComponent(&instance, controller);
+    temp->addComponent(&instance, chatController);
     instance.controller = temp;
     
     temp = new CEntity(Box{50, -500, 80, 140}, "playerPink");
@@ -239,6 +241,8 @@ void CGame::_initLua() {
             .addFunction("setLuaPath", &CGame::setLuaPath)
             .addFunction("leftMousePressed", &NMouse::leftMouseButtonPressed)
             .addFunction("rightMousePressed", &NMouse::rightMouseButtonPressed)
+            .addFunction("getScreenWidth", &CGame::getWidth)
+            .addFunction("getScreenHeight", &CGame::getHeight)
         .endNamespace()
     
         .beginClass<CLuaScript>("LuaScript")
@@ -271,9 +275,11 @@ void CGame::_initLua() {
         .beginClass<CComponent>("Component")
             .addFunction("renderRect", &CComponent::renderRect)
             .addFunction("renderLine", &CComponent::renderLine)
+            .addFunction("renderText", &CComponent::renderText)
             .addCFunction("getRelativeMouse", &CComponent::getRelativeMouse)
             .addCFunction("getMouse", &CComponent::getMouse)
             .addData("instance", &CComponent::tempInstance)
+            .addData("camera", &CComponent::tempCamera)
         .endClass()
     
         .beginClass<Box>("Box")
@@ -301,14 +307,19 @@ void CGame::_initLua() {
             .addData("game", &CInstance::game)
             .addData("camera", &CInstance::camera)
             .addData("gravity", &CInstance::gravity)
+            .addFunction("loadMap", &CInstance::loadMap)
         .endClass()
     
         .beginClass<CCamera>("Camera")
             .addFunction("addCameraShake", &CCamera::addCameraShake)
+            .addFunction("offsetX", &CCamera::offsetX)
+            .addFunction("offsetY", &CCamera::offsetY)
         .endClass()
     
         .beginClass<CGame>("Game")
             .addFunction("restart", &CGame::restart)
+            .addData("ignoreEvents", &CGame::ignoreEvents)
+            .addData("isRunning", &CGame::_isRunning)
         .endClass()
     
         .beginClass<CBody>("Body")
@@ -364,6 +375,7 @@ int CGame::getTime() {
 }
 
 void CGame::_onLoop() {
+    instance.onLoop();
     instance.entityManager.onLoop(&instance);
     instance.camera->onLoop();
 }
@@ -378,7 +390,7 @@ void CGame::_onRender() {
 }
 
 int CGame::_onCleanup() {
-    CAssetManager::onCleanup();
+    CAssetManager::onCleanup(EVERYTHING);
     instance.window.onCleanup();
     instance.closeInstance();
     

@@ -53,7 +53,7 @@ public:
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     void onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     bool onCollision(CEntity* target, CollisionSides* collisionSides);
-    
+
     void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc);
     void onDeserialize(rapidjson::Value* value);
     void onDeserialize(std::string value);
@@ -73,6 +73,7 @@ public:
     
     void renderRect(int x, int y, int w, int h, int r, int g, int b, int a); // These are only supposed to be called during an rendering process
     void renderLine(int x, int y, int x2, int y2, int r, int g, int b, int a);
+    void renderText(int x, int y, int size, std::string text, std::string fontKey, int r, int g, int b);
     
     // ==
     
