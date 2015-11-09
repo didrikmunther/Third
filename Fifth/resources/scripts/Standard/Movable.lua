@@ -109,7 +109,7 @@ function Movable:onKeyStates(state)
     if(state:hasState(ScanCode._A)) then
         self:goLeft()
     end
-    if(state:hasState(ScanCode._W)) then
+    if(state:hasState(ScanCode._W) or state:hasState(ScanCode._SPACE)) then
         self:goUp()
     end
     if(state:hasState(ScanCode._S)) then

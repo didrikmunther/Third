@@ -20,12 +20,25 @@ function Controller:onEvent(key, keyDown)
     if(self.component.instance.game.ignoreEvents) then do return end end
 
     if(keyDown) then
+        if(key == KeyCode._0) then -- Camera sway
+            self.component.instance.camera.cameraSway = self.component.instance.camera.cameraSway + 10
+        end
+
+        if(key == KeyCode._9) then
+            camera = self.component.instance.camera
+            if(camera.cameraSway <= 10) then
+                camera.cameraSway = 1
+            else
+                camera.cameraSway = camera.cameraSway - 10
+            end
+        end
+
         if(key == KeyCode._3) then -- Collision borders
             self.parent.entityManager:toggleRenderFlag(RenderFlags.COLLISION_BORDERS)
         end
 
         if(key == KeyCode._5) then -- Restart game
-            self.component.instance.game:restart()
+            self:restart()
         end
 
         if(key == KeyCode._6) then -- Random string for player to say
@@ -89,6 +102,10 @@ function Controller:onEvent(key, keyDown)
             temp:addProperty(EntityProperty.STATIC)
         end
     end
+end
+
+function Controller:restart()
+    self.component.instance.game:restart()
 end
 
 function create(parent, component)

@@ -23,6 +23,21 @@ function ChatController:isKeyCode(key)
     return false
 end
 
+function ChatController:parse(input)
+    if(string.sub(input, 1, 1) == "/") then
+        input = string.sub(input, 2, string.len(input))
+
+        commands = {}
+        for w in input:gmatch("%S+") do table.insert(commands, w) end
+
+        if(commands[1] == "restart") then self.component.instance.game:restart() end
+
+        return ""
+    end
+
+    return input
+end
+
 function ChatController:onEvent(key, keyDown)
     if(not keyDown) then do return end end
 
@@ -30,10 +45,11 @@ function ChatController:onEvent(key, keyDown)
         self.isTyping = not self.isTyping
 
         if(not self.isTyping) then -- player has typed something
-            if(self.buffer ~= "") then
-                self.component.instance.player:say(self.buffer, "TESTFONT", ChatBubbleType.SAY)
-                self.buffer = ""
+            toSay = self:parse(self.buffer)
+            if(toSay ~= "") then
+                self.component.instance.player:say(toSay, "TESTFONT", ChatBubbleType.SAY)
             end
+            self.buffer = ""
             self.component.instance.game.ignoreEvents = false
             do return end
         else
@@ -45,7 +61,7 @@ function ChatController:onEvent(key, keyDown)
 
         self.buffer = string.sub(self.buffer, 1, -2)
 
-    elseif(self.isTyping and self:isKeyCode(key) and key ~= KeyCode._ESCAPE) then
+    elseif(self.isTyping and key ~= KeyCode._ESCAPE) then
         self.buffer = self.buffer .. string.char(key)
 
     end
@@ -72,9 +88,9 @@ function ChatController:onRenderAdditional()
         self.component:renderRect(x,        y + h - r,  w,      r, 255, 0, 0, 225)
 
         x = x + 5
-        y = y + 5
+        y = y + 6
 
-        self.component:renderText(x, y, 1, self.buffer, "TESTFONT", 255, 255, 255)
+        self.component:renderText(x, y, 0, self.buffer, "TESTFONT", 255, 255, 255)
 
     end
 end

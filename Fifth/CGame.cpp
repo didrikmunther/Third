@@ -304,6 +304,7 @@ void CGame::_initLua() {
     
         .beginClass<CInstance>("Instance")
             .addData("player", &CInstance::player)
+            .addData("controller", &CInstance::controller)
             .addData("game", &CInstance::game)
             .addData("camera", &CInstance::camera)
             .addData("gravity", &CInstance::gravity)
@@ -312,6 +313,7 @@ void CGame::_initLua() {
     
         .beginClass<CCamera>("Camera")
             .addFunction("addCameraShake", &CCamera::addCameraShake)
+            .addData("cameraSway", &CCamera::cameraSway)
             .addFunction("offsetX", &CCamera::offsetX)
             .addFunction("offsetY", &CCamera::offsetY)
         .endClass()

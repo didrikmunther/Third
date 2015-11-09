@@ -7,10 +7,6 @@
 		{"name":"TESTFONT", "path":"resources/ttf/font.ttf", "size":20}
 	],
 
-	"shaders": [
-		{"name":"SHADER1", "path":"resources/shader/light.frag", "shaderType":1}
-	],
-
 	"spriteSheets": [
 		{"name":"MAIN", 				"path":"resources/gfx/gfx.png"},
 		{"name":"YRLSPRITESHEET", 		"path":"resources/gfx/yrl.png"},

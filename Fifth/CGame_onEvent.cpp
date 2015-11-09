@@ -75,16 +75,6 @@ void CGame::_onEvent(SDL_Event* event) {
                 }
                     break;
                     
-                case SDLK_0:
-                    instance.camera->cameraSway += 10;
-                    break;
-                case SDLK_9:
-                    if(instance.camera->cameraSway <= 10)
-                        instance.camera->cameraSway = 1;
-                    else
-                        instance.camera->cameraSway -= 10;
-                    break;
-                    
                 default:
                     break;
                     
