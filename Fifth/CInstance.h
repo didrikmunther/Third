@@ -44,13 +44,9 @@ public:
     
     float gravity;
     
-    void loadMap(std::string path);
+    void loadAssets(std::string path);
     
     void closeInstance();
-    
-private:
-    std::string _mapToLoad;
-    void _loadMap(std::string path);
     
 };
 

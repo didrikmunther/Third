@@ -16,7 +16,7 @@
 struct BackgroundOffset {
     int x, y;
     float scale;
-    BackgroundOffset(int x, int y, float scale = 1)
+    BackgroundOffset(int x, int y, float scale = 1.75f)
     : x(x), y(y), scale(scale) {  }
 };
 
@@ -27,19 +27,16 @@ class CCamera;
 class CBackground {
     
 public:
-    CBackground(std::string spriteContainerKey, float parallax, BackgroundOffset backgroundOffset = {0, 0});
+    CBackground(std::string spriteKey, float parallax, BackgroundOffset backgroundOffset = {0, 0});
     
     void onRender(CWindow* window, CCamera* camera);
     
     float getParallax();
     void setParallax(float parallax);
     
-    std::string getSpriteContainerKey();
-    void setSpriteContainerKey(std::string spriteContainerKey);
-    
 private:
     float _parallax;
-    std::string _spriteContainerKey;
+    std::string _spriteKey;
     BackgroundOffset _backgroundOffset;
     
 };

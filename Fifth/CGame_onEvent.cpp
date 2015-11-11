@@ -70,7 +70,7 @@ void CGame::_onEvent(SDL_Event* event) {
                         NFile::log(LogType::ERROR, "Window.onInit failed: ", SDL_GetError());
                     }
                     instance.camera->onInit(&instance.window);
-                    instance.loadMap("resources/map/testMap1.map");
+                    instance.loadAssets("resources/map/testMap1.assets");
                     restart();
                 }
                     break;

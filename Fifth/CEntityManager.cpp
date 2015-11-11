@@ -10,7 +10,6 @@
 
 #include "CEntityManager.h"
 #include "CCamera.h"
-#include "CSpriteContainer.h"
 #include "NFile.h"
 #include "NSurface.h"
 #include "CEntity.h"
@@ -194,45 +193,45 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
 
 // Temp
 void CEntityManager::splitEntityToParticles(CEntity* target) {
-    auto offset = target->getSpriteContainer()->getSprite()->getSource();
-    CSprite* tempSprite1 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
-                                       Box{
-                                           offset->x,
-                                           offset->y,
-                                           offset->w / 2,
-                                           offset->h / 2});
-    CSprite* tempSprite2 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
-                                       Box{
-                                           offset->x + offset->w / 2,
-                                           offset->y,
-                                           offset->w / 2,
-                                           offset->h / 2});
-    CSprite* tempSprite3 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
-                                       Box{
-                                           offset->x,
-                                           offset->y + offset->h / 2,
-                                           offset->w / 2,
-                                           offset->h / 2});
-    CSprite* tempSprite4 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
-                                       Box{
-                                           offset->x + offset->w / 2,
-                                           offset->y + offset->h / 2,
-                                           offset->w / 2,
-                                           offset->h / 2});
-    std::string sprite1 = CAssetManager::addSprite(tempSprite1);
-    std::string sprite2 = CAssetManager::addSprite(tempSprite2);
-    std::string sprite3 = CAssetManager::addSprite(tempSprite3);
-    std::string sprite4 = CAssetManager::addSprite(tempSprite4);
-    
-    CSpriteContainer* tempSpriteContainer1 = new CSpriteContainer(sprite1);
-    CSpriteContainer* tempSpriteContainer2 = new CSpriteContainer(sprite2);
-    CSpriteContainer* tempSpriteContainer3 = new CSpriteContainer(sprite3);
-    CSpriteContainer* tempSpriteContainer4 = new CSpriteContainer(sprite4);
-    
-    std::string spriteContainer1 = CAssetManager::addSpriteContainer(tempSpriteContainer1);
-    std::string spriteContainer2 = CAssetManager::addSpriteContainer(tempSpriteContainer2);
-    std::string spriteContainer3 = CAssetManager::addSpriteContainer(tempSpriteContainer3);
-    std::string spriteContainer4 = CAssetManager::addSpriteContainer(tempSpriteContainer4);
+//    auto offset = target->getSpriteContainer()->getSprite()->getSource();
+//    CSprite* tempSprite1 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
+//                                       Box{
+//                                           offset->x,
+//                                           offset->y,
+//                                           offset->w / 2,
+//                                           offset->h / 2});
+//    CSprite* tempSprite2 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
+//                                       Box{
+//                                           offset->x + offset->w / 2,
+//                                           offset->y,
+//                                           offset->w / 2,
+//                                           offset->h / 2});
+//    CSprite* tempSprite3 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
+//                                       Box{
+//                                           offset->x,
+//                                           offset->y + offset->h / 2,
+//                                           offset->w / 2,
+//                                           offset->h / 2});
+//    CSprite* tempSprite4 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
+//                                       Box{
+//                                           offset->x + offset->w / 2,
+//                                           offset->y + offset->h / 2,
+//                                           offset->w / 2,
+//                                           offset->h / 2});
+//    std::string sprite1 = CAssetManager::addSprite(tempSprite1);
+//    std::string sprite2 = CAssetManager::addSprite(tempSprite2);
+//    std::string sprite3 = CAssetManager::addSprite(tempSprite3);
+//    std::string sprite4 = CAssetManager::addSprite(tempSprite4);
+//    
+//    CSpriteContainer* tempSpriteContainer1 = new CSpriteContainer(sprite1);
+//    CSpriteContainer* tempSpriteContainer2 = new CSpriteContainer(sprite2);
+//    CSpriteContainer* tempSpriteContainer3 = new CSpriteContainer(sprite3);
+//    CSpriteContainer* tempSpriteContainer4 = new CSpriteContainer(sprite4);
+//    
+//    std::string spriteContainer1 = CAssetManager::addSpriteContainer(tempSpriteContainer1);
+//    std::string spriteContainer2 = CAssetManager::addSpriteContainer(tempSpriteContainer2);
+//    std::string spriteContainer3 = CAssetManager::addSpriteContainer(tempSpriteContainer3);
+//    std::string spriteContainer4 = CAssetManager::addSpriteContainer(tempSpriteContainer4);
     
 //    int explosionForce = 10;
 //    int tempForRand = 5;
@@ -402,11 +401,14 @@ void CEntityManager::onLoop(CInstance* instance) {
     }
     
     {
+        std::vector<CEntity*> collisionMap;
+        
         auto i = _entities.begin();
         while(i != _entities.end()) {
             auto target = (*i).second;
             
-            std::vector<CEntity*> collisionMap;
+            collisionMap.clear();
+            
             for (auto &coord: target->gridCoordinates) {
                 for(auto &entity: _CollisionVector[coord.y][coord.x]){
                     if(std::find(collisionMap.begin(), collisionMap.end(), entity) != collisionMap.end())
@@ -432,12 +434,14 @@ void CEntityManager::onLoop(CInstance* instance) {
     }
     
     {
+        std::vector<CEntity*> collisionMap;
+        
         auto i = _deadEntities.begin();
         while(i != _deadEntities.end()) {
             auto target = i->second;
             
-            std::vector<CEntity*> collisionMap;
-            std::vector<CEntity*> alreadyAdded;
+            collisionMap.clear();
+            
             for (auto &coord: target->gridCoordinates) {
                 for(auto &entity: _CollisionVector[coord.y][coord.x]){
                     if(std::find(collisionMap.begin(), collisionMap.end(), entity) != collisionMap.end())
@@ -460,19 +464,19 @@ void CEntityManager::onLoop(CInstance* instance) {
     }
     
     {
+        std::vector<CEntity*> collisionMap;
+        
         auto i = _particles.begin();
         while(i != _particles.end()) {
             auto target = (*i);
             
-            std::stringstream toSay;
+            collisionMap.clear();
             
-            std::vector<CEntity*> collisionMap;
             for (auto &coord: target->gridCoordinates) {
                 for(auto &entity: _CollisionVector[coord.y][coord.x]){
                     if(std::find(collisionMap.begin(), collisionMap.end(), entity) != collisionMap.end())
                         continue;
                     collisionMap.push_back(entity);
-                    toSay << getNameOfEntity(entity) << ", ";
                 }
             }
             

@@ -3,15 +3,11 @@
     "version":"0.1",
     "author":"Malaxiz Wayne",
     
-    "fonts": [
-        {"name":"TESTFONT", "path":"resources/ttf/font.ttf", "size":20}
-    ],
-    
     "spriteSheets": [
         {"name":"MAIN", 				"path":"resources/gfx/sheet.png"}
     ],
     
     "sprites": [
-        {"name":"player", 				"spriteSheetKey":"MAIN", 				"offsets":[160, 91, 30, 28]},
+        {"name":"player", 				"spriteSheetKey":"MAIN", 				"offsets":[32, 0, 16, 32]}
     ]
 }

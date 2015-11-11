@@ -145,10 +145,10 @@ public:
     void setSpriteStateType(int type, std::string sprite);
     std::string spriteStateTypes[SpriteStateTypes::TOTAL_SPRITESTATETYPES];
     
-    void setSpriteContainer(std::string spriteContainerKey);
-    CSpriteContainer* getSpriteContainer();
-    std::string getSpriteContainerKey();
-    std::string spriteContainerKey;
+    void setSprite(std::string spriteKey);
+    CSprite* getSprite();
+    std::string getSpriteKey();
+    std::string spriteKey;
     bool hasSprite();
     SDL_Color color;
     
@@ -159,7 +159,6 @@ public:
     int getComponent(lua_State* L);
     
     int transparency;
-    bool spriteFollowsCollisionBox;
     
     bool isDead;
     bool toRemove;

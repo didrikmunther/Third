@@ -13,23 +13,23 @@
 #include "CCamera.h"
 #include "Define.h"
 #include "CEntityManager.h"
-#include "CSpriteContainer.h"
 #include "CGuiText.h"
 #include "CInstance.h"
 #include "CChatBubble.h"
+#include "CAssetManager.h"
 
 #include <iostream>
 
 
 CEntity::CEntity(Box rect, Color color) :
-spriteContainerKey(""), body(new CBody(rect)), color(color) {
+spriteKey(""), body(new CBody(rect)), color(color) {
     init();
 }
 
-CEntity::CEntity(Box rect, std::string spriteContainerKey) :
-spriteContainerKey(spriteContainerKey), body(new CBody(rect)), color(SDL_Color{255,0,255,255}) /* sprite not found color */ {
+CEntity::CEntity(Box rect, std::string spriteKey) :
+spriteKey(spriteKey), body(new CBody(rect)), color(SDL_Color{255,0,255,255}) /* sprite not found color */ {
     init();
-    std::fill(spriteStateTypes, spriteStateTypes+SpriteStateTypes::TOTAL_SPRITESTATETYPES, spriteContainerKey);
+    std::fill(spriteStateTypes, spriteStateTypes+SpriteStateTypes::TOTAL_SPRITESTATETYPES, spriteKey);
 }
 
 CEntity::~CEntity() {
@@ -44,7 +44,6 @@ void CEntity::init() {
     properties     = EntityProperty::COLLIDABLE | EntityProperty::GRAVITY_AFFECT;
     collisionSides = false;
     collisionLayer = CollisionLayers::LAYER0;
-    spriteFollowsCollisionBox = true;
     transparency = 255;
 }
 
@@ -80,12 +79,12 @@ void CEntity::onLoop(CInstance* instance) {
             addProperty(EntityProperty::FLIP);
     }
     
-    setSpriteContainer(spriteStateTypes[SpriteStateTypes::IDLE]);
+    setSprite(spriteStateTypes[SpriteStateTypes::IDLE]);
     
     if(body->velY < 0)
-        setSpriteContainer(spriteStateTypes[SpriteStateTypes::ASCENDING]);
+        setSprite(spriteStateTypes[SpriteStateTypes::ASCENDING]);
     else if(!collisionSides.bottom)
-        setSpriteContainer(spriteStateTypes[SpriteStateTypes::DESCENDING]);
+        setSprite(spriteStateTypes[SpriteStateTypes::DESCENDING]);
     
     isDead |= body->getY() > 50000 || body->getY() < -50000; // Kill entity if too far down or up
     
@@ -142,14 +141,8 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
                 NSurface::renderRect(x, y, w, h,
                                      window, color.r, color.g, color.b);
         else {
-            int spriteWidth, spriteHeight = 0;
-            if(spriteFollowsCollisionBox) {
-                spriteWidth = body->getW();
-                spriteHeight = body->getH();
-            } else {
-                spriteWidth = getSpriteContainer()->spriteArea.w;
-                spriteHeight = getSpriteContainer()->spriteArea.h;
-            }
+            int spriteWidth = body->getW();
+            int spriteHeight = body->getH();
             
             SDL_RendererFlip flip;
             if(hasProperty(EntityProperty::FLIP))
@@ -157,7 +150,7 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
             else
                 flip = SDL_RendererFlip::SDL_FLIP_NONE;
             
-            NSurface::renderSprite(x, y, spriteWidth, spriteHeight, getSpriteContainer()->getSprite(), window, flip, transparency);
+            NSurface::renderSprite(x, y, spriteWidth, spriteHeight, getSprite(), window, flip, transparency);
         }
     }
     
@@ -219,20 +212,20 @@ void CEntity::removeProperty(int property) {
     properties &= ~(property);
 }
 
-void CEntity::setSpriteContainer(std::string spriteContainerKey) {
-    this->spriteContainerKey = spriteContainerKey;
+void CEntity::setSprite(std::string spriteKey) {
+    this->spriteKey = spriteKey;
 }
 
-CSpriteContainer* CEntity::getSpriteContainer() {
-    return CAssetManager::getSpriteContainer(spriteContainerKey);
+CSprite* CEntity::getSprite() {
+    return CAssetManager::getSprite(spriteKey);
 }
 
-std::string CEntity::getSpriteContainerKey() {
-    return spriteContainerKey;
+std::string CEntity::getSpriteKey() {
+    return spriteKey;
 }
 
 bool CEntity::hasSprite() {
-    if(getSpriteContainer() == nullptr || getSpriteContainer()->getSprite() == nullptr) {
+    if(getSprite() == nullptr) {
         return false;
     }
     return true;

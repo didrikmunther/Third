@@ -7,26 +7,26 @@
 //
 
 #include "CBackground.h"
+#include "CAssetManager.h"
 #include "CCamera.h"
-#include "CSpriteContainer.h"
 #include "NSurface.h"
 
+#include <iostream>
 
-CBackground::CBackground(std::string spriteContainerKey, float parallax, BackgroundOffset backgroundOffset) :
-    _spriteContainerKey(spriteContainerKey), _parallax(parallax), _backgroundOffset(backgroundOffset) {  }
+
+CBackground::CBackground(std::string spriteKey, float parallax, BackgroundOffset backgroundOffset) :
+    _spriteKey(spriteKey), _parallax(parallax), _backgroundOffset(backgroundOffset) {  }
 
 void CBackground::onRender(CWindow* window, CCamera* camera) {
-    CSpriteContainer* spriteContainer = CAssetManager::getSpriteContainer(_spriteContainerKey);
+    CSprite* sprite = CAssetManager::getSprite(_spriteKey);
     
-    if(!spriteContainer) return;
+    if(!sprite) return;
     
-    int amountX = ceil(spriteContainer->spriteArea.w / camera->getWidth()) + 1;
+    int amountX = ceil((sprite->getSource()->w * _backgroundOffset.scale) / camera->getWidth()) + 1;
     
     for(int i = -1; i < amountX; i++) {
-        NSurface::renderSprite(i * _backgroundOffset.scale * spriteContainer->spriteArea.w + -camera->offsetX() * _parallax, -camera->offsetY() * _parallax + _backgroundOffset.y, spriteContainer->spriteArea.w * _backgroundOffset.scale, spriteContainer->spriteArea.h * _backgroundOffset.scale, spriteContainer->getSprite(), window, SDL_RendererFlip::SDL_FLIP_NONE);
+        NSurface::renderSprite(i * _backgroundOffset.scale * sprite->getSource()->w + -camera->offsetX() * _parallax, -camera->offsetY() * _parallax + _backgroundOffset.y, sprite->getSource()->w * _backgroundOffset.scale, sprite->getSource()->h * _backgroundOffset.scale, sprite, window, SDL_RendererFlip::SDL_FLIP_NONE);
     }
-    
-//    NSurface::renderSprite(-camera->offsetX() * _parallax + _backgroundOffset.x, -camera->offsetY() * _parallax + _backgroundOffset.y, spriteContainer->spriteArea.w * scale, spriteContainer->spriteArea.h * scale, spriteContainer->getSprite(), window, SDL_RendererFlip::SDL_FLIP_NONE);
 }
 
 float CBackground::getParallax() {
@@ -35,12 +35,4 @@ float CBackground::getParallax() {
 
 void CBackground::setParallax(float parallax) {
     _parallax = parallax;
-}
-
-std::string CBackground::getSpriteContainerKey() {
-    return _spriteContainerKey;
-}
-
-void CBackground::setSpriteContainerKey(std::string spriteContainerKey) {
-    _spriteContainerKey = spriteContainerKey;
 }

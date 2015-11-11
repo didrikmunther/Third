@@ -8,13 +8,11 @@
 
 #include "CAssetManager.h"
 #include "NFile.h"
-#include "CSpriteContainer.h"
 #include "CSpriteSheet.h"
 #include "CLuaScript.h"
 
 
 std::map<std::string, CSprite*> CAssetManager::_Sprites;
-std::map<std::string, CSpriteContainer*> CAssetManager::_SpriteContainers;
 std::map<std::string, CSpriteSheet*> CAssetManager::_SpriteSheets;
 std::map<std::string, TTF_Font*> CAssetManager::_Fonts;
 std::map<std::string, CLuaScript*> CAssetManager::_LuaScripts;
@@ -48,33 +46,11 @@ std::string CAssetManager::addSprite(CSprite* sprite, std::string name /* = "" *
     }
 }
 
-CSpriteContainer* CAssetManager::addSpriteContainer(std::string name, std::string spriteKey, Area area /* = {-1, -1} */) {
-    if(_SpriteContainers.find(name) != _SpriteContainers.end()) {
-        NFile::log(LogType::WARNING, "Couldn't add sprite container \"", name, "\", becuase it already exists.");
-        return _SpriteContainers[name];
-    } else if(_Sprites.find(spriteKey) == _Sprites.end()) {
-        NFile::log(LogType::WARNING, "Couldn't add sprite container \"", name, "\", becuase the sprite \"", spriteKey, "\" didn't exist.");
+CSprite* CAssetManager::createSprite(CSpriteSheet* spriteSheet, Box source) {
+    if(spriteSheet == nullptr)
         return nullptr;
-    } else {
-        if(area.w > 0 || area.h > 0)
-            _SpriteContainers[name] = new CSpriteContainer(spriteKey, area);
-        else
-            _SpriteContainers[name] = new CSpriteContainer(spriteKey);
-            
-        return _SpriteContainers[name];
-    }
-}
-
-std::string CAssetManager::addSpriteContainer(CSpriteContainer* spriteContainer, std::string name /* = "" */) {
-    if(name == "")
-        name = "reserved:" + std::to_string(_assetId++);
-    if(_SpriteContainers.find(name) != _SpriteContainers.end()) {
-        NFile::log(LogType::WARNING, "Couldn't add sprite container: \"", name, "\", because it already exists.");
-        return name;
-    } else {
-        _SpriteContainers[name] = spriteContainer;
-        return name;
-    }
+    
+    return new CSprite(spriteSheet, source);
 }
 
 CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, SDL_Renderer* renderer, std::string fileName) {
@@ -134,14 +110,6 @@ CSprite* CAssetManager::getSprite(std::string key) {
         return it->second;
 }
 
-CSpriteContainer* CAssetManager::getSpriteContainer(std::string key) {
-    auto it = _SpriteContainers.find(key);
-    if(it == _SpriteContainers.end())
-        return nullptr;
-    else
-        return it->second;
-}
-
 CSpriteSheet* CAssetManager::getSpriteSheet(std::string key) {
     auto it = _SpriteSheets.find(key);
     if(it == _SpriteSheets.end())
@@ -166,14 +134,6 @@ CLuaScript* CAssetManager::getLuaScript(std::string key) {
         return it->second;
 }
 
-void CAssetManager::removeSpriteContainer(std::string key) {
-    auto it = _SpriteContainers.find(key);
-    if(it != _SpriteContainers.end()) {
-        delete it->second;
-        _SpriteContainers.erase(it->first);
-    }
-}
-
 void CAssetManager::onCleanup(CLEAN_FLAGS flags /* = CLEAN_FLAGS::EVERYTHING */) {
     
     NFile::log(LogType::ALERT, "Unloading assets!");
@@ -186,16 +146,6 @@ void CAssetManager::onCleanup(CLEAN_FLAGS flags /* = CLEAN_FLAGS::EVERYTHING */)
             _Sprites.erase(i++->first);
         }
         _Sprites.clear();
-    }
-    
-    {
-        auto i = _SpriteContainers.begin();
-        while(i != _SpriteContainers.end()) {
-            delete i->second;
-            i->second = nullptr;
-            _SpriteContainers.erase(i++->first);
-        }
-        _SpriteContainers.clear();
     }
     
     {

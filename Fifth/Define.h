@@ -34,6 +34,8 @@ struct Box {
                 w == a.w &&
                 h == a.h;
     }
+    
+    operator SDL_Rect() const { return SDL_Rect{x, y, w, h}; }
 };
 
 struct Area {

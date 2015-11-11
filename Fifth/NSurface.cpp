@@ -7,7 +7,6 @@
 //
 
 #include "NSurface.h"
-#include "CSpriteContainer.h"
 #include "CSpriteSheet.h"
 #include "CSprite.h"
 #include "CText.h"
@@ -37,10 +36,10 @@ void NSurface::renderRect(int x, int y, int w, int h, CWindow* window, int r, in
 
 void NSurface::renderSprite(int x, int y, int w, int h, CSprite *sprite, CWindow *window, SDL_RendererFlip flip, int a /* = 255 */) {
     if(sprite == nullptr) return;
-    SDL_Rect* src = sprite->getSource();
+    SDL_Rect src = *sprite->getSource();
     SDL_Rect destination = {x, y, w, h};
     SDL_SetTextureAlphaMod(sprite->getSpriteSheet()->getTexture(), a);
-    SDL_RenderCopyEx(window->getRenderer(), sprite->getSpriteSheet()->getTexture(), src, &destination, 0, nullptr, flip);
+    SDL_RenderCopyEx(window->getRenderer(), sprite->getSpriteSheet()->getTexture(), &src, &destination, 0, nullptr, flip);
 }
 
 void NSurface::renderText(int x, int y, CText* text, CWindow* window) {

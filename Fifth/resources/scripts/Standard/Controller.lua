@@ -13,7 +13,8 @@ function Controller:onInit()
     self.parent:removeProperty(EntityProperty.COLLIDABLE)
     self.component.instance.gravity = 0.3
 
-    self.component.instance:loadMap("resources/map/testMap1.map")
+    self.component.instance:loadAssets("resources/map/testMap2.map")
+    self.component.instance:loadAssets("resources/map/testMap1.map")
 end
 
 function Controller:onEvent(key, keyDown)
@@ -82,11 +83,10 @@ function Controller:onEvent(key, keyDown)
 
         if(key == KeyCode._j) then -- Create an npc entity
             mX, mY = self.component:getRelativeMouse()
-            temp = self.parent.entityManager:createSpriteEntity(Box(mX, mY, 80, 140), "playerPink")
+            temp = self.parent.entityManager:createSpriteEntity(Box(mX, mY, 16 * 4, 32 * 4), "player")
             self.parent.entityManager:addEntity(temp, "")
-            temp.spriteFollowsCollisionBox = false
-            temp:setSpriteStateType(SpriteStateTypes.ASCENDING, "playerPinkRunning")
-            temp:setSpriteStateType(SpriteStateTypes.DESCENDING, "playerPinkRunning")
+            -- temp:setSpriteStateType(SpriteStateTypes.ASCENDING, "playerPinkRunning")
+            -- temp:setSpriteStateType(SpriteStateTypes.DESCENDING, "playerPinkRunning")
             temp:addComponent(self.component.instance, game.getScript("Standard/Living"))
             temp:addComponent(self.component.instance, game.getScript("Standard/Npc"))
             temp:addComponent(self.component.instance, game.getScript("Standard/Movable"))

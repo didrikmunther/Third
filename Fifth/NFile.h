@@ -41,7 +41,7 @@ public:
     
     // Load functions
     static rapidjson::Document loadJsonFile(std::string fileName);
-    static void loadMap(std::string fileName, CInstance* instance);
+    static void loadAssets(std::string fileName, CInstance* instance);
     
     static void execCommand(rapidjson::Document command, CInstance* instance);
     static void parseCommands(rapidjson::Document commands, CInstance* instance);
@@ -91,8 +91,6 @@ public:
     }
     
 private:
-//    static CEntity* _createEntity(CInstance* instance, const rapidjson::Value& jsonEntity, EntityParameterHolder entityParameterHolder);
-    
     /* 
         Invalid operands error here means that
         you've sent a non-printable object to
@@ -119,6 +117,10 @@ private:
         file << head;
         _writeToFile(file, std::forward<Tail>(tail)...);
     }
+    
+    static void loadFonts(rapidjson::Document* d);
+    static void loadSpriteSheets(rapidjson::Document* d, CInstance* instance);
+    static void loadSprites(rapidjson::Document* d);
     
 };
 

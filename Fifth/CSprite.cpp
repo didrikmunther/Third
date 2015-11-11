@@ -7,6 +7,7 @@
 //
 
 #include "CSprite.h"
+#include "CSpriteSheet.h"
 
 
 CSprite::CSprite(CSpriteSheet* spriteSheet, Box rect) :

@@ -17,9 +17,9 @@
 #include "CGame.h"
 #include "CEntity.h"
 #include "CText.h"
-#include "CSpriteContainer.h"
 #include "CBackground.h"
 #include "CCombatText.h"
+#include "CAssetManager.h"
 
 #include "NMouse.h"
 #include "NSurface.h"
@@ -140,17 +140,17 @@ void CGame::_restart() {
     
     instance.L = luaL_newstate();
     _initLua();
-    //instance.loadMap("resources/map/testMap1.map");
     
-    CBackground* background = new CBackground("bg2", 0.1, BackgroundOffset{0, -450, 10.0f});
+    CBackground* background = new CBackground("background", 0.1, BackgroundOffset{0, -450, 1.75f});
     instance.entityManager.addBackground("main", background);
 
     auto movable = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Movable.lua");
-    auto npc = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Npc.lua");
     auto living = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Living.lua");
     auto controller = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Controller.lua");
     auto chatController = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/ChatController.lua");
     CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Projectile.lua");
+    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Npc.lua");
+    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Particle.lua");
     
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
     instance.entityManager.addEntity(temp);
@@ -158,24 +158,14 @@ void CGame::_restart() {
     temp->addComponent(&instance, chatController);
     instance.controller = temp;
     
-    temp = new CEntity(Box{50, -500, 80, 140}, "playerPink");
+    temp = new CEntity(Box{50, -500, 16 * 4, 32 * 4}, "player");
     instance.entityManager.addEntity(temp, "5:Player");
-    temp->spriteFollowsCollisionBox = false;
-    temp->spriteStateTypes[SpriteStateTypes::ASCENDING] =
-    temp->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
+//    temp->spriteStateTypes[SpriteStateTypes::ASCENDING] =
+//    temp->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
     temp->addComponent(&instance, movable);
     temp->addComponent(&instance, living);
     instance.player = temp;
     instance.camera->setTarget(temp);
-    
-    for(int i = 0; i < 50; i++) {
-        temp = new CEntity(Box{i * 6 + 32, -600, 5, 5}, Color{255, 255, 0});
-        instance.entityManager.addEntity(temp);
-        temp->addComponent(&instance, movable);
-        temp->addComponent(&instance, npc);
-        temp->getComponent("Standard/Npc")->onDeserialize("{\"target\":\"" + instance.entityManager.getNameOfEntity(instance.player) + "\"}");
-        temp->collisionLayer = CollisionLayers::LAYER6;
-    }
     
     temp = new CEntity(Box{100, -1000, 30 * 5, 28 * 5}, "bush");
     instance.entityManager.addEntity(temp, "n:bush");
@@ -243,6 +233,8 @@ void CGame::_initLua() {
             .addFunction("rightMousePressed", &NMouse::rightMouseButtonPressed)
             .addFunction("getScreenWidth", &CGame::getWidth)
             .addFunction("getScreenHeight", &CGame::getHeight)
+            .addFunction("addSprite", (std::string (*)(CSprite*, std::string)) &CAssetManager::addSprite)
+            .addFunction("createSprite", (CSprite* (*)(CSpriteSheet*, Box)) &CAssetManager::createSprite)
         .endNamespace()
     
         .beginClass<CLuaScript>("LuaScript")
@@ -268,8 +260,9 @@ void CGame::_initLua() {
             .addFunction("addTextObject", &CEntity::addTextObject)
             .addFunction("addCombatText", &CEntity::addCombatText)
             .addFunction("compare", &CEntity::compare)
-            .addData("spriteFollowsCollisionBox", &CEntity::spriteFollowsCollisionBox)
             .addFunction("setSpriteStateType", &CEntity::setSpriteStateType)
+            .addFunction("getSprite", &CEntity::getSprite)
+            .addFunction("hasSprite", &CEntity::hasSprite)
         .endClass()
     
         .beginClass<CComponent>("Component")
@@ -294,6 +287,15 @@ void CGame::_initLua() {
             .addConstructor<void(*) (int, int, int, int)>()
         .endClass()
     
+        .beginClass<CSpriteSheet>("SpriteSheet")
+        .endClass()
+    
+        .beginClass<CSprite>("Sprite")
+            .addConstructor<void(*) (CSpriteSheet*, Box)>()
+            .addFunction("getSpriteSheet", &CSprite::getSpriteSheet)
+            .addFunction("getSource", &CSprite::getSource)
+        .endClass()
+    
         .beginClass<CGuiText>("GuiText")
             .addConstructor<void(*) (int, int, std::string, std::string)>()
         .endClass()
@@ -308,7 +310,7 @@ void CGame::_initLua() {
             .addData("game", &CInstance::game)
             .addData("camera", &CInstance::camera)
             .addData("gravity", &CInstance::gravity)
-            .addFunction("loadMap", &CInstance::loadMap)
+            .addFunction("loadAssets", &CInstance::loadAssets)
         .endClass()
     
         .beginClass<CCamera>("Camera")
@@ -377,7 +379,6 @@ int CGame::getTime() {
 }
 
 void CGame::_onLoop() {
-    instance.onLoop();
     instance.entityManager.onLoop(&instance);
     instance.camera->onLoop();
 }

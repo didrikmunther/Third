@@ -23,11 +23,11 @@ public:
     CSprite(CSpriteSheet* spriteSheet, Box rect);
     
     CSpriteSheet* getSpriteSheet() { return _spriteSheet; }
-    virtual SDL_Rect* getSource() { return &_source; }
+    virtual Box* getSource() { return &_source; }
     
 private:
     CSpriteSheet* _spriteSheet; // Don't modify from here
-    SDL_Rect _source;
+    Box _source;
     
 };
 
