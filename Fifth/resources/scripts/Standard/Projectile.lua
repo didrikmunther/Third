@@ -35,7 +35,7 @@ function Projectile:onInit()
     velX = math.cos(angle) * velocity
     velY = math.sin(angle) * velocity
 
-    body.velX = velX 
+    body.velX = velX
     body.velY = velY
 
 end

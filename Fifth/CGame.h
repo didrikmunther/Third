@@ -72,6 +72,7 @@ private:
     bool ignoreEvents;
     
     std::string _path;
+    std::string quickSave;
     
 };
 

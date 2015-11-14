@@ -33,7 +33,7 @@
 
 CGame::CGame()
     : _intro("Third"), instance(this), toRestart(false), ignoreEvents(false)
-    , _lastTime(SDL_GetTicks()), _timer(SDL_GetTicks()), _isRunning(true)
+    , _lastTime(SDL_GetTicks()), _timer(SDL_GetTicks()), _isRunning(true), quickSave("{\"this\":{\"entities\":{}}}")
     , _ns(1000.0f / GAME_INTERVAL), _delta(0), _frames(0), _updates(0), isFocused(true) {
 }
 
@@ -151,9 +151,10 @@ void CGame::_restart() {
     CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Projectile.lua");
     CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Npc.lua");
     CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Particle.lua");
+    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Serializable.lua");
     
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
-    instance.entityManager.addEntity(temp);
+    instance.entityManager.addEntity(temp, "Controller");
     temp->addComponent(&instance, controller);
     temp->addComponent(&instance, chatController);
     instance.controller = temp;
@@ -269,6 +270,9 @@ void CGame::_initLua() {
             .addFunction("renderRect", &CComponent::renderRect)
             .addFunction("renderLine", &CComponent::renderLine)
             .addFunction("renderText", &CComponent::renderText)
+            .addFunction("addString", &CComponent::addString)
+            .addFunction("addInt", &CComponent::addInt)
+            .addFunction("addFloat", &CComponent::addFloat)
             .addCFunction("getRelativeMouse", &CComponent::getRelativeMouse)
             .addCFunction("getMouse", &CComponent::getMouse)
             .addData("instance", &CComponent::tempInstance)
@@ -331,6 +335,7 @@ void CGame::_initLua() {
             .addData("velX", &CBody::velX)
             .addData("velY", &CBody::velY)
             .addData("box", &CBody::_rect)
+            .addFunction("setPosition", &CBody::setPosition)
         .endClass()
     
         .beginClass<KeyState>("KeyState")

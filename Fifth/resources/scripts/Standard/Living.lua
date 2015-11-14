@@ -80,6 +80,20 @@ function Living:onLoop()
     end
 end
 
+function Living:onSerialize()
+    c = self.component
+
+    c:addInt("health", self.values[self.VALUE_HEALTH])
+    c:addInt("kevlar", self.values[self.VALUE_KEVLAR])
+end
+
+function Living:onDeserialize(value)
+    d = json.decode(value)
+
+    self.values[self.VALUE_HEALTH] = getVal(self.values[self.VALUE_HEALTH], d.health)
+    self.values[self.VALUE_KEVLAR] = getVal(self.values[self.VALUE_KEVLAR], d.kevlar)
+end
+
 function Living:explodeParticle(sx, sy, sw, sh, tx, ty, tw, th, spriteName)
     entityManager = self.parent.entityManager
     sprite = self.parent:getSprite()
@@ -106,7 +120,7 @@ function Living:explodeParticle(sx, sy, sw, sh, tx, ty, tw, th, spriteName)
     particle:addComponent(self.component.instance, game.getScript("Standard/Particle"))
     particle:getComponent("Standard/Particle"):onDeserialize('{"livingTime":5}')
 
-    entityManager:addParticle(particle)
+    entityManager:addParticle(particle, self.component.instance)
 
 end
 

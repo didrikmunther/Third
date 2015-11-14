@@ -18,6 +18,8 @@ CComponent::CComponent(CEntity* parent, CInstance* instance, CLuaScript* script)
     , tempCamera(nullptr)
     , tempRenderflags(nullptr)
     , tempInstance(nullptr)
+    , tempValue(nullptr)
+    , tempAlloc(nullptr)
 {
     onInit(instance);
 }
@@ -129,22 +131,33 @@ bool CComponent::onCollision(CEntity* target, CollisionSides* collisionSides) {
     
 }
 
-void CComponent::onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc) {
+void CComponent::onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance) {
     if(!object.hasReference("onSerialize"))
         return;
+    
+    tempValue = value;
+    tempAlloc = alloc;
+    tempInstance = instance;
+    
+    object.beginCall("onSerialize");
+    object.endCall(0, 0);
+    
+    tempValue = nullptr;
+    tempAlloc = nullptr;
+    tempInstance = nullptr;
 }
 
-void CComponent::onDeserialize(rapidjson::Value* value) {
-    onDeserialize(value->GetString());
-}
-
-void CComponent::onDeserialize(std::string value) {
+void CComponent::onDeserialize(std::string value, CInstance* instance) {
     if(!object.hasReference("onDeserialize"))
         return;
+    
+    tempInstance = instance;
     
     object.beginCall("onDeserialize");
     object.pushObject(value);
     object.endCall(1, 0);
+    
+    tempInstance = nullptr;
 }
 
 void CComponent::callSimpleFunction(std::string function) {
@@ -207,4 +220,29 @@ int CComponent::getMouse(lua_State* L) {
     lua_pushinteger(L, y);
     
     return 2;
+}
+
+bool CComponent::canDeserialize() {
+    return tempValue != nullptr && tempAlloc != nullptr;
+}
+
+void CComponent::addString(std::string key, std::string value) {
+    if(!canDeserialize())
+        return;
+    
+    tempValue->AddMember(rapidjson::Value(key.c_str(), *tempAlloc), rapidjson::Value(value.c_str(), *tempAlloc), *tempAlloc);
+}
+
+void CComponent::addInt(std::string key, int value) {
+    if(!canDeserialize())
+        return;
+    
+    tempValue->AddMember(rapidjson::Value(key.c_str(), *tempAlloc), rapidjson::Value(value), *tempAlloc);
+}
+
+void CComponent::addFloat(std::string key, float value) {
+    if(!canDeserialize())
+        return;
+    
+    tempValue->AddMember(rapidjson::Value(key.c_str(), *tempAlloc), rapidjson::Value(value), *tempAlloc);
 }

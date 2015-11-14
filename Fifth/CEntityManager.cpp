@@ -9,6 +9,7 @@
 #include <sstream>
 
 #include "CEntityManager.h"
+#include "CAssetManager.h"
 #include "CCamera.h"
 #include "NFile.h"
 #include "NSurface.h"
@@ -38,13 +39,12 @@ std::string CEntityManager::addEntity(CEntity* entity, std::string name /* = "" 
     
     entity->entityManager = this;
     
-    //entity->say(std::to_string(entity->entityManager == nullptr), "TESTFONT", ChatBubbleType::SAY);
     return name;
 }
 
 CEntity* CEntityManager::getEntity(std::string name) {
     if(_entities.find(name) == _entities.end()) {
-        NFile::log(LogType::WARNING, "Couldn't get entity: ", name, ", because it doesn't exist.");
+        //NFile::log(LogType::WARNING, "Couldn't get entity: ", name, ", because it doesn't exist.");
         return nullptr;
     } else {
         return _entities[name];
@@ -93,6 +93,7 @@ std::string CEntityManager::getNameOfEntity(CEntity *entity) {
 
 void CEntityManager::addParticle(CEntity *particle) {
     particle->entityManager = this;
+    
     _particles.push_back(particle);
 }
 
@@ -189,99 +190,6 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
     
     for (auto &i: _guiTextElements)
         i->onRender(window, camera, (RenderFlags)renderFlags);
-}
-
-// Temp
-void CEntityManager::splitEntityToParticles(CEntity* target) {
-//    auto offset = target->getSpriteContainer()->getSprite()->getSource();
-//    CSprite* tempSprite1 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
-//                                       Box{
-//                                           offset->x,
-//                                           offset->y,
-//                                           offset->w / 2,
-//                                           offset->h / 2});
-//    CSprite* tempSprite2 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
-//                                       Box{
-//                                           offset->x + offset->w / 2,
-//                                           offset->y,
-//                                           offset->w / 2,
-//                                           offset->h / 2});
-//    CSprite* tempSprite3 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
-//                                       Box{
-//                                           offset->x,
-//                                           offset->y + offset->h / 2,
-//                                           offset->w / 2,
-//                                           offset->h / 2});
-//    CSprite* tempSprite4 = new CSprite(target->getSpriteContainer()->getSprite()->getSpriteSheet(),
-//                                       Box{
-//                                           offset->x + offset->w / 2,
-//                                           offset->y + offset->h / 2,
-//                                           offset->w / 2,
-//                                           offset->h / 2});
-//    std::string sprite1 = CAssetManager::addSprite(tempSprite1);
-//    std::string sprite2 = CAssetManager::addSprite(tempSprite2);
-//    std::string sprite3 = CAssetManager::addSprite(tempSprite3);
-//    std::string sprite4 = CAssetManager::addSprite(tempSprite4);
-//    
-//    CSpriteContainer* tempSpriteContainer1 = new CSpriteContainer(sprite1);
-//    CSpriteContainer* tempSpriteContainer2 = new CSpriteContainer(sprite2);
-//    CSpriteContainer* tempSpriteContainer3 = new CSpriteContainer(sprite3);
-//    CSpriteContainer* tempSpriteContainer4 = new CSpriteContainer(sprite4);
-//    
-//    std::string spriteContainer1 = CAssetManager::addSpriteContainer(tempSpriteContainer1);
-//    std::string spriteContainer2 = CAssetManager::addSpriteContainer(tempSpriteContainer2);
-//    std::string spriteContainer3 = CAssetManager::addSpriteContainer(tempSpriteContainer3);
-//    std::string spriteContainer4 = CAssetManager::addSpriteContainer(tempSpriteContainer4);
-    
-//    int explosionForce = 10;
-//    int tempForRand = 5;
-//    int livingTime = 2;
-    
-//    CEntity* tempParticle1 = new CEntity(Box{
-//        target->body->getX(),
-//        target->body->getY(),
-//        target->body->getW() / 2,
-//        target->body->getH() / 2},
-//        spriteContainer1);
-//    tempParticle1->addComponent<EParticle>(livingTime + rand() % 3 - 1);
-//    tempParticle1->body->velX = rand() % explosionForce - tempForRand;
-//    tempParticle1->body->velY = rand() % explosionForce - tempForRand;
-//    if(target->hasProperty(EntityProperty::FLIP)) tempParticle1->addProperty(EntityProperty::FLIP);
-//    CEntity* tempParticle2 = new CEntity(Box{
-//        target->body->getX() + target->body->getW() / 2,
-//        target->body->getY(),
-//        target->body->getW() / 2,
-//        target->body->getH() / 2},
-//        spriteContainer2);
-//    tempParticle2->addComponent<EParticle>(livingTime + rand() % 3 - 1);
-//    tempParticle2->body->velX = rand() % explosionForce - tempForRand;
-//    tempParticle2->body->velY = rand() % explosionForce - tempForRand;
-//    if(target->hasProperty(EntityProperty::FLIP)) tempParticle2->addProperty(EntityProperty::FLIP);
-//    CEntity* tempParticle3 = new CEntity(Box{
-//        target->body->getX(),
-//        target->body->getY() + target->body->getH() / 2,
-//        target->body->getW() / 2,
-//        target->body->getH() / 2},
-//        spriteContainer3);
-//    tempParticle3->addComponent<EParticle>(livingTime + rand() % 3 - 1);
-//    tempParticle3->body->velX = rand() % explosionForce - tempForRand;
-//    tempParticle3->body->velY = rand() % explosionForce - tempForRand;
-//    if(target->hasProperty(EntityProperty::FLIP)) tempParticle3->addProperty(EntityProperty::FLIP);
-//    CEntity* tempParticle4 = new CEntity(Box{
-//        target->body->getX() + target->body->getW() / 2,
-//        target->body->getY() + target->body->getH() / 2,
-//        target->body->getW() / 2,
-//        target->body->getH() / 2},
-//        spriteContainer4);
-//    tempParticle4->addComponent<EParticle>(livingTime + rand() % 3 - 1);
-//    tempParticle4->body->velX = rand() % explosionForce - tempForRand;
-//    tempParticle4->body->velY = rand() % explosionForce - tempForRand;
-//    if(target->hasProperty(EntityProperty::FLIP)) tempParticle4->addProperty(EntityProperty::FLIP);
-//    
-//    addParticle(tempParticle1);
-//    addParticle(tempParticle2);
-//    addParticle(tempParticle3);
-//    addParticle(tempParticle4);
 }
 
 void loopX(int x1, int x2, int y, std::vector<GridCoordinates>* toManipulate) {
@@ -420,10 +328,11 @@ void CEntityManager::onLoop(CInstance* instance) {
             target->move(&collisionMap, instance);
             
             if(target->isDead) {
-                _deadEntities[(*i).first] = (*i).second;
+                auto name = (*i).first;
+                if(_deadEntities[name])
+                    delete _deadEntities[name];
+                _deadEntities[name] = (*i).second;
                 _entities.erase(i++);
-                if(target->hasSprite())
-                    splitEntityToParticles(target);
             } else if(target->toRemove) {
                 delete target;
                 _entities.erase(i++->first);
@@ -500,6 +409,45 @@ void CEntityManager::onLoop(CInstance* instance) {
             } else
                 ++i;
         }
+    }
+}
+
+void CEntityManager::onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance) {
+    rapidjson::Value entityValues(rapidjson::kObjectType);
+    for(auto& i: _entities) {
+        rapidjson::Value entity(rapidjson::kObjectType);
+        i.second->onSerialize(&entity, alloc, instance);
+        entityValues.AddMember(rapidjson::Value(i.first.c_str(), *alloc), entity, *alloc);
+    }
+    
+    value->AddMember("entities", entityValues, *alloc);
+    value->AddMember("entityID", rapidjson::Value(entityID), *alloc);
+}
+
+void CEntityManager::onDeserialize(rapidjson::Value* value, CInstance* instance) {
+    
+    if(value->HasMember("entityID"))
+        entityID = (*value)["entityID"].GetInt();
+    
+    if(!value->HasMember("entities"))
+        return;
+    
+    const rapidjson::Value& entityValues = (*value)["entities"];
+    
+    for(rapidjson::Value::ConstMemberIterator i = entityValues.MemberBegin(); i != entityValues.MemberEnd(); i++) {
+        const rapidjson::Value* entityValue = &i->value;
+        
+        auto entity = getEntity(i->name.GetString());
+        if(entity == nullptr) {
+            if(entityValue->HasMember("spriteKey"))
+                entity = new CEntity(Box(0, 0, 0, 0), (*entityValue)["spriteKey"].GetString());
+            else
+                entity = new CEntity(Box(0, 0, 0, 0), "");
+            
+            addEntity(entity, i->name.GetString());
+        }
+        
+        entity->onDeserialize(entityValue, instance);
     }
 }
 

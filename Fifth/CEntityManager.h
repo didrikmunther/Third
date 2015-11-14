@@ -18,6 +18,10 @@
 #include "Define.h"
 #include "NSurface.h"
 
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
+
 
 class CEntity;
 class CSprite;
@@ -48,13 +52,13 @@ public:
     void onRender(CWindow* window, CCamera* camera);
     void onCleanup();
     
+    void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance);
+    void onDeserialize(rapidjson::Value* value, CInstance* instance);
+    
     CEntity* createEntity(Box box, Color color);
     CEntity* createEntity(Box box, std::string spriteKey);
     
     int pushEntities(lua_State* L);
-    
-    // Temp
-    void splitEntityToParticles(CEntity* target);
     
     void entityCleanup();
     void particleEmitterCleanup();

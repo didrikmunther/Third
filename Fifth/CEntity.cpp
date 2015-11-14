@@ -27,7 +27,7 @@ spriteKey(""), body(new CBody(rect)), color(color) {
 }
 
 CEntity::CEntity(Box rect, std::string spriteKey) :
-spriteKey(spriteKey), body(new CBody(rect)), color(SDL_Color{255,0,255,255}) /* sprite not found color */ {
+spriteKey(spriteKey.c_str()), body(new CBody(rect)), color(Color{255,0,255,255}) /* sprite not found color */ {
     init();
     std::fill(spriteStateTypes, spriteStateTypes+SpriteStateTypes::TOTAL_SPRITESTATETYPES, spriteKey);
 }
@@ -159,24 +159,102 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
     }
 }
 
-void CEntity::onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc) {
+void CEntity::onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance) {
+    _serialize(value, alloc);
     
-//    rapidjson::Value componentValues(rapidjson::kObjectType);
-//    for(auto& i: components) {
-//        rapidjson::Value component(rapidjson::kObjectType);
-//        i.second->serialize(&component, alloc);
-//        componentValues.AddMember(rapidjson::Value(i.second->type.c_str(), *alloc), component, *alloc);
-//    }
-//    
-//    value->AddMember("components", componentValues, *alloc);
+    rapidjson::Value componentValues(rapidjson::kObjectType);
+    for(auto& i: components) {
+        rapidjson::Value component(rapidjson::kObjectType);
+        i.second->onSerialize(&component, alloc, instance);
+        componentValues.AddMember(rapidjson::Value(i.second->object.getScript()->getName().c_str(), *alloc), component, *alloc);
+    }
+    
+    value->AddMember("components", componentValues, *alloc);
     
 }
 
-void CEntity::onDeserialize(rapidjson::Value* value) {
+void CEntity::onDeserialize(const rapidjson::Value* value, CInstance* instance) {
+    _deserialize(value);
     
-    for(auto& i: components) {
-        i.second->onDeserialize(value);
+    if(!value->HasMember("components"))
+        return;
+    
+    const rapidjson::Value& componentsValues = (*value)["components"];
+    
+    for(rapidjson::Value::ConstMemberIterator i = componentsValues.MemberBegin(); i != componentsValues.MemberEnd(); i++) {
+        const rapidjson::Value* componentValue = &i->value;
+        std::string name = i->name.GetString();
+        
+        auto component = getComponent(name);
+        if(component == nullptr) {
+            component = addComponent(instance, CAssetManager::getLuaScript(name));
+        }
+        
+        rapidjson::StringBuffer sb;
+        rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
+        componentValue->Accept(writer);
+        
+        component->onDeserialize(sb.GetString(), instance);
     }
+}
+
+void CEntity::_serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc) {
+    addNumber(value, alloc, "x", body->_rect.x);
+    addNumber(value, alloc, "y", body->_rect.y);
+    addNumber(value, alloc, "w", body->_rect.w);
+    addNumber(value, alloc, "h", body->_rect.h);
+    
+    addNumber(value, alloc, "velX", body->velX);
+    addNumber(value, alloc, "velY", body->velY);
+    
+    addString(value, alloc, "spriteKey", spriteKey);
+    addNumber(value, alloc, "colorR", color.r);
+    addNumber(value, alloc, "colorG", color.g);
+    addNumber(value, alloc, "colorB", color.b);
+    addNumber(value, alloc, "colorA", color.a);
+    addNumber(value, alloc, "properties", properties);
+    addNumber(value, alloc, "collisionLayers", collisionLayer);
+
+}
+
+void CEntity::_deserialize(const rapidjson::Value* value) {
+    
+    assignInt(value, "x", &body->_rect.x);
+    assignInt(value, "y", &body->_rect.y);
+    assignInt(value, "w", &body->_rect.w);
+    assignInt(value, "h", &body->_rect.h);
+    
+    assignFloat(value, "velX", &body->velX);
+    assignFloat(value, "velY", &body->velY);
+    
+    assignString(value, "spriteKey", &spriteKey);
+    assignInt(value, "properties", &properties);
+    assignInt(value, "collisionLayers", &collisionLayer);
+    
+    
+    assignInt(value, "colorR", &color.r);
+    assignInt(value, "colorG", &color.g);
+    assignInt(value, "colorB", &color.b);
+    assignInt(value, "colorA", &color.a);
+    
+}
+
+void CEntity::assignString(const rapidjson::Value* value, std::string key, std::string* toAssign) {
+    if(!value->HasMember(key.c_str()) && !value->IsString())
+        return;
+    
+    *toAssign = (*value)[key.c_str()].GetString();
+}
+
+void CEntity::assignFloat(const rapidjson::Value* value, std::string key, float* toAssign) {
+    if(!value->HasMember(key.c_str()) && (!value->IsDouble() || !value->IsInt()))
+        return;
+    
+    *toAssign = (*value)[key.c_str()].GetDouble();
+}
+
+void CEntity::addString(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, std::string key, std::string toAdd) {
+    value->AddMember(rapidjson::Value(key.c_str(), *alloc), rapidjson::Value(toAdd.c_str(), *alloc), *alloc);
 }
 
 bool CEntity::isOnCollisionLayer(int collisionLayer) {
@@ -231,20 +309,21 @@ bool CEntity::hasSprite() {
     return true;
 }
 
-void CEntity::addComponent(CInstance* instance, CLuaScript* script) {
+CComponent* CEntity::addComponent(CInstance* instance, CLuaScript* script) {
     if(script == nullptr) {
         NFile::log(LogType::WARNING, "Luascript unknown is null, and could not be added to entity as a component.");
-        return;
+        return nullptr;
     } else if(script->isInvalid()) {
         NFile::log(LogType::WARNING, "Luascript ", script->getName(), " is invalid, and could not be added to entity as a component.");
-        return;
+        return nullptr;
     } else if(getComponent(script->getName())) {
-        NFile::log(LogType::WARNING, "Component already exists: ", script->getName(), ".");
+        //NFile::log(LogType::WARNING, "Component already exists: ", script->getName(), ".");
         delete components[script->getName()];
     }
     
     CComponent* component = new CComponent(this, instance, script);
     components[script->getName()] = component;
+    return component;
 }
 
 CComponent* CEntity::getComponent(std::string key) {

@@ -6,6 +6,7 @@ local Npc = class (
         self.component = component
 
         self.target = nil
+        self.targetName = ""
     end
 )
 
@@ -24,7 +25,11 @@ function Npc:onLoop()
 
     target = self.target
 
-    if(self.target ~= nil) then
+    if(self.target == nil and self.targetName ~= "") then
+        self.target = self.parent.entityManager:getEntity(self.targetName)
+    end
+
+    if(target ~= nil) then
         targetBox = target.body.box
         thisBox = self.parent.body.box
 
@@ -59,12 +64,20 @@ function Npc:onLoop()
     end
 end
 
+function Npc:onSerialize()
+    c = self.component
+
+    c:addString("target", self.parent.entityManager:getNameOfEntity(self.target))
+end
+
 function Npc:onDeserialize(value)
     decoded = json.decode(value)
 
     if(decoded.target ~= nil) then
         self.target = getVal(self.target, self.parent.entityManager:getEntity(decoded.target))
+        self.targetName = decoded.target
     end
+
 end
 
 function create(parent, component)

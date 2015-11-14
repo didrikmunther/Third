@@ -116,8 +116,8 @@ public:
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
-    void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc);
-    void onDeserialize(rapidjson::Value* value);
+    void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance);
+    void onDeserialize(const rapidjson::Value* value, CInstance* instance);
     
     int collisionLayer;
     bool isOnCollisionLayer(int collisionLayer);
@@ -150,11 +150,11 @@ public:
     std::string getSpriteKey();
     std::string spriteKey;
     bool hasSprite();
-    SDL_Color color;
+    Color color;
     
     bool hasMoved() { return _hasMoved; }
     
-    void addComponent(CInstance* instance, CLuaScript* script);
+    CComponent* addComponent(CInstance* instance, CLuaScript* script);
     CComponent* getComponent(std::string key);
     int getComponent(lua_State* L);
     
@@ -194,6 +194,25 @@ protected:
 private:
     bool _collision(int x, int y, std::vector<CEntity*>* entities);
     bool _hasMoved;
+    
+    void assignString(const rapidjson::Value* value, std::string key, std::string* toAssign);
+    void assignFloat(const rapidjson::Value* value, std::string key, float* toAssign);
+    template<typename T>
+    void assignInt(const rapidjson::Value* value, std::string key, T toAssign) {
+        if(!value->HasMember(key.c_str()) && (!value->IsInt() || !value->IsDouble()))
+            return;
+        
+        *toAssign = (*value)[key.c_str()].GetInt();
+    }
+    
+    void addString(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, std::string key, std::string toAdd);
+    template<typename T>
+    void addNumber(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, std::string key, T toAdd) {
+        value->AddMember(rapidjson::Value(key.c_str(), *alloc), rapidjson::Value(toAdd), *alloc);
+    }
+    
+    void _serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc);
+    void _deserialize(const rapidjson::Value* value);
     
 };
 

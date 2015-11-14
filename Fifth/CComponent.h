@@ -54,9 +54,8 @@ public:
     void onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     bool onCollision(CEntity* target, CollisionSides* collisionSides);
 
-    void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc);
-    void onDeserialize(rapidjson::Value* value);
-    void onDeserialize(std::string value);
+    void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance);
+    void onDeserialize(std::string value, CInstance* instance);
     
     void callSimpleFunction(std::string function);
     
@@ -83,6 +82,15 @@ public:
     int getMouse(lua_State* L);
     
     // ==
+    
+    rapidjson::Value* tempValue;
+    rapidjson::Document::AllocatorType* tempAlloc;
+    
+    bool canDeserialize();
+    
+    void addInt(std::string key, int value);
+    void addString(std::string key, std::string value);
+    void addFloat(std::string key, float value);
     
 };
 

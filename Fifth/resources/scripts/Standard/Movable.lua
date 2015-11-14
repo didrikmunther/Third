@@ -135,12 +135,40 @@ function Movable:onKeyStates(state)
     end
 end
 
+function Movable:onSerialize()
+    c = self.component
+
+    c:addFloat("walking_movement_speed", self.movementSpeeds[self.WALKING_MOVEMENT])
+    c:addFloat("running_movement_speed", self.movementSpeeds[self.RUNNING_MOVEMENT])
+    c:addFloat("sneaking_movement_speed", self.movementSpeeds[self.SNEAKING_MOVEMENT])
+
+    isFlying = 0
+    if(self.isFlying) then isFlying = 1 end
+    c:addInt("isFlying", isFlying)
+end
+
 function Movable:onDeserialize(value)
     decoded = json.decode(value)
 
     self.movementSpeeds[self.WALKING_MOVEMENT] = getVal(self.movementSpeeds[self.WALKING_MOVEMENT], decoded.walking_movement_speed)
+    self.movementSpeeds[self.RUNNING_MOVEMENT] = getVal(self.movementSpeeds[self.RUNNING_MOVEMENT], decoded.running_movement_speed)
+    self.movementSpeeds[self.SNEAKING_MOVEMENT] = getVal(self.movementSpeeds[self.SNEAKING_MOVEMENT], decoded.sneaking_movement_speed)
     self.jumpPower = getVal(self.jumpPower, decoded.jumpPower)
     self.movementState = getVal(self.movementState, decoded.movementState)
+
+    if(decoded.isFlying ~= nil) then
+        if(decoded.isFlying == 1) then
+            if(not self.isFlying) then
+                self.isFlying = false
+                self:toggleNoClip()
+            end
+        else
+            if(self.isFlying) then
+                self.isFlying = true
+                self:toggleNoClip()
+            end
+        end
+    end
     
 end
 
@@ -218,12 +246,12 @@ function Movable:toggleNoClip()
     if(self.isFlying) then
         self.isFlying = false
         self.parent.transparency = 255
-        self.parent:toggleProperty(flagsToToggle)
+        self.parent:addProperty(flagsToToggle)
         -- self.parent:say("Deinitiated flying", "TESTFONT", ChatBubbleType.SAY)
     else
         self.isFlying = true
         self.parent.transparency = 128
-        self.parent:toggleProperty(flagsToToggle)
+        self.parent:removeProperty(flagsToToggle)
         -- self.parent:say("Initiated flying", "TESTFONT", ChatBubbleType.SAY)
     end
 end
