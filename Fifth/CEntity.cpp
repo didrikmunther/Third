@@ -22,14 +22,14 @@
 
 
 CEntity::CEntity(Box rect, Color color) :
-spriteKey(""), body(new CBody(rect)), color(color) {
+spriteKey(""), defaultSprite(""), body(new CBody(rect)), color(color) {
     init();
 }
 
 CEntity::CEntity(Box rect, std::string spriteKey) :
-spriteKey(spriteKey.c_str()), body(new CBody(rect)), color(Color{255,0,255,255}) /* sprite not found color */ {
+spriteKey(spriteKey.c_str()), defaultSprite(spriteKey), body(new CBody(rect)), color(Color{255,0,255,255}) /* sprite not found color */ {
     init();
-    std::fill(spriteStateTypes, spriteStateTypes+SpriteStateTypes::TOTAL_SPRITESTATETYPES, spriteKey);
+    //std::fill(spriteStateTypes, spriteStateTypes+SpriteStateTypes::TOTAL_SPRITESTATETYPES, spriteKey);
 }
 
 CEntity::~CEntity() {
@@ -79,35 +79,18 @@ void CEntity::onLoop(CInstance* instance) {
             addProperty(EntityProperty::FLIP);
     }
     
-    setSprite(spriteStateTypes[SpriteStateTypes::IDLE]);
+    setSprite(getSpriteFromState("IDLE"));
     
     if(body->velY < 0)
-        setSprite(spriteStateTypes[SpriteStateTypes::ASCENDING]);
+        setSprite(getSpriteFromState("ASCENDING"));
     else if(!collisionSides.bottom)
-        setSprite(spriteStateTypes[SpriteStateTypes::DESCENDING]);
+        setSprite(getSpriteFromState("DESCENDING"));
     
     isDead |= body->getY() > 50000 || body->getY() < -50000; // Kill entity if too far down or up
     
     
     for(auto& i: components)
         i.second->onLoop(instance);
-    
-    // --
-    
-//    rapidjson::Document d;
-//    d.Parse("{}");
-//    
-//    rapidjson::Value entityValue(rapidjson::kObjectType);
-//    serialize(&entityValue, &d.GetAllocator());
-//    
-//    d.AddMember("this", entityValue, d.GetAllocator());
-//    
-//    rapidjson::StringBuffer sb;
-//    rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
-//    d.Accept(writer);
-    
-//    if(!isDead && !getComponent<EParticle>())
-//        say(sb.GetString(), "TESTFONT", ChatBubbleType::INSTANT_TALK);
 }
 
 void CEntity::onEvent(CInstance* instance, int key, bool keyDown) {
@@ -199,6 +182,7 @@ void CEntity::onDeserialize(const rapidjson::Value* value, CInstance* instance) 
 }
 
 void CEntity::_serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc) {
+    
     addNumber(value, alloc, "x", body->_rect.x);
     addNumber(value, alloc, "y", body->_rect.y);
     addNumber(value, alloc, "w", body->_rect.w);
@@ -206,6 +190,12 @@ void CEntity::_serialize(rapidjson::Value* value, rapidjson::Document::Allocator
     
     addNumber(value, alloc, "velX", body->velX);
     addNumber(value, alloc, "velY", body->velY);
+    
+    rapidjson::Value sprites(rapidjson::kObjectType);
+    for(auto& i: spriteStateTypes) {
+        addString(&sprites, alloc, i.first, i.second);
+    }
+    addValue(value, alloc, "spriteKeys", &sprites);
     
     addString(value, alloc, "spriteKey", spriteKey);
     addNumber(value, alloc, "colorR", color.r);
@@ -231,30 +221,11 @@ void CEntity::_deserialize(const rapidjson::Value* value) {
     assignInt(value, "properties", &properties);
     assignInt(value, "collisionLayers", &collisionLayer);
     
-    
     assignInt(value, "colorR", &color.r);
     assignInt(value, "colorG", &color.g);
     assignInt(value, "colorB", &color.b);
     assignInt(value, "colorA", &color.a);
     
-}
-
-void CEntity::assignString(const rapidjson::Value* value, std::string key, std::string* toAssign) {
-    if(!value->HasMember(key.c_str()) && !value->IsString())
-        return;
-    
-    *toAssign = (*value)[key.c_str()].GetString();
-}
-
-void CEntity::assignFloat(const rapidjson::Value* value, std::string key, float* toAssign) {
-    if(!value->HasMember(key.c_str()) && (!value->IsDouble() || !value->IsInt()))
-        return;
-    
-    *toAssign = (*value)[key.c_str()].GetDouble();
-}
-
-void CEntity::addString(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, std::string key, std::string toAdd) {
-    value->AddMember(rapidjson::Value(key.c_str(), *alloc), rapidjson::Value(toAdd.c_str(), *alloc), *alloc);
 }
 
 bool CEntity::isOnCollisionLayer(int collisionLayer) {
@@ -270,8 +241,15 @@ void CEntity::say(std::string text, std::string fontKey, ChatBubbleType type) {
     guiTextVector.push_back(temp);
 }
 
-void CEntity::setSpriteStateType(int type, std::string sprite) {
-    spriteStateTypes[(SpriteStateTypes::SpriteStateTypes)type] = sprite;
+void CEntity::setSpriteStateType(std::string type, std::string sprite) {
+    spriteStateTypes[type] = sprite;
+}
+
+std::string CEntity::getSpriteFromState(std::string key) {
+    if(!spriteStateTypes.count(key))
+        return defaultSprite;
+    
+    return spriteStateTypes[key];
 }
 
 bool CEntity::hasProperty(int property) {

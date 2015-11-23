@@ -17,6 +17,7 @@
 
 #include "Define.h"
 #include "NSurface.h"
+#include "CSerializable.h"
 
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
@@ -33,7 +34,7 @@ class CInstance;
 class lua_State;
 class CGame;
 
-class CEntityManager {
+class CEntityManager : public CSerializable {
     
 public:
     CEntityManager();
@@ -41,6 +42,7 @@ public:
     CEntity* getEntity(std::string name);
     CEntity* getEntityAtCoordinate(int x, int y);
     std::string getNameOfEntity(CEntity* entity);
+    CBackground* getBackground(std::string name);
     std::string addEntity(CEntity* entity, std::string name = "");
     void addParticle(CEntity* particle);
     void addGuiText(CGuiText* guiText);

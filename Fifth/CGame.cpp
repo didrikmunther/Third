@@ -335,7 +335,6 @@ void CGame::_initLua() {
             .addData("velX", &CBody::velX)
             .addData("velY", &CBody::velY)
             .addData("box", &CBody::_rect)
-            .addFunction("setPosition", &CBody::setPosition)
         .endClass()
     
         .beginClass<KeyState>("KeyState")

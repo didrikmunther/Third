@@ -98,14 +98,14 @@ void CGame::_onEvent(SDL_Event* event) {
                 {
                     rapidjson::Document d;
                     d.Parse(quickSave.c_str());
-                    //instance.entityManager.onCleanup();
+                    instance.entityManager.onCleanup();
                     
                     instance.entityManager.onDeserialize(&d["this"], &instance);
                     
-                    //instance.player = instance.entityManager.getEntity("5:Player");
-                    //instance.controller = instance.entityManager.getEntity("Controller");
+                    instance.player = instance.entityManager.getEntity("5:Player");
+                    instance.controller = instance.entityManager.getEntity("Controller");
                     
-                    //instance.camera->setTarget(instance.player);
+                    instance.camera->setTarget(instance.player);
                 }
                     break;
                     

@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <string>
 
+#include "CSerializable.h"
+
 
 struct BackgroundOffset {
     int x, y;
@@ -23,13 +25,17 @@ struct BackgroundOffset {
 class CWindow;
 class CSpriteContainer;
 class CCamera;
+class CInstance;
 
-class CBackground {
+class CBackground : public CSerializable {
     
 public:
     CBackground(std::string spriteKey, float parallax, BackgroundOffset backgroundOffset = {0, 0});
     
     void onRender(CWindow* window, CCamera* camera);
+    
+    void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance);
+    void onDeserialize(const rapidjson::Value* value, CInstance* instance);
     
     float getParallax();
     void setParallax(float parallax);

@@ -91,6 +91,13 @@ std::string CEntityManager::getNameOfEntity(CEntity *entity) {
     return "";
 }
 
+CBackground* CEntityManager::getBackground(std::string name) {
+    if(_backgrounds.find(name) == _backgrounds.end())
+        return nullptr;
+    else
+        return _backgrounds[name];
+}
+
 void CEntityManager::addParticle(CEntity *particle) {
     particle->entityManager = this;
     
@@ -420,7 +427,15 @@ void CEntityManager::onSerialize(rapidjson::Value* value, rapidjson::Document::A
         entityValues.AddMember(rapidjson::Value(i.first.c_str(), *alloc), entity, *alloc);
     }
     
+    rapidjson::Value backgroundValues(rapidjson::kObjectType);
+    for(auto& i: _backgrounds) {
+        rapidjson::Value background(rapidjson::kObjectType);
+        i.second->onSerialize(&background, alloc, instance);
+        backgroundValues.AddMember(rapidjson::Value(i.first.c_str(), *alloc), background, *alloc);
+    }
+    
     value->AddMember("entities", entityValues, *alloc);
+    value->AddMember("backgrounds", backgroundValues, *alloc);
     value->AddMember("entityID", rapidjson::Value(entityID), *alloc);
 }
 
@@ -429,25 +444,54 @@ void CEntityManager::onDeserialize(rapidjson::Value* value, CInstance* instance)
     if(value->HasMember("entityID"))
         entityID = (*value)["entityID"].GetInt();
     
-    if(!value->HasMember("entities"))
-        return;
-    
-    const rapidjson::Value& entityValues = (*value)["entities"];
-    
-    for(rapidjson::Value::ConstMemberIterator i = entityValues.MemberBegin(); i != entityValues.MemberEnd(); i++) {
-        const rapidjson::Value* entityValue = &i->value;
+    if(value->HasMember("backgrounds")) {
+        const rapidjson::Value& backgroundValues = (*value)["backgrounds"];
         
-        auto entity = getEntity(i->name.GetString());
-        if(entity == nullptr) {
-            if(entityValue->HasMember("spriteKey"))
-                entity = new CEntity(Box(0, 0, 0, 0), (*entityValue)["spriteKey"].GetString());
-            else
-                entity = new CEntity(Box(0, 0, 0, 0), "");
+        for(rapidjson::Value::ConstMemberIterator i = backgroundValues.MemberBegin(); i != backgroundValues.MemberEnd(); i++) {
+            const rapidjson::Value* backgroundValue = &i->value;
             
-            addEntity(entity, i->name.GetString());
+            auto background = getBackground(i->name.GetString());
+            if(background == nullptr) {
+                std::string spriteKey = "";
+                assignString(backgroundValue, "spriteKey", &spriteKey);
+                
+                float parallax = 1;
+                assignFloat(backgroundValue, "parallax", &parallax);
+                
+                float scale = 1;
+                assignFloat(backgroundValue, "scale", &scale);
+                
+                int x = 0;
+                int y = 0;
+                assignInt(backgroundValue, "x", &x);
+                assignInt(backgroundValue, "y", &y);
+                    
+                background = new CBackground(spriteKey, parallax, BackgroundOffset{x, y, scale});
+                addBackground(i->name.GetString(), background);
+            }
+            
+            background->onDeserialize(backgroundValue, instance);
         }
-        
-        entity->onDeserialize(entityValue, instance);
+    }
+    
+    if(value->HasMember("entities")) {
+        const rapidjson::Value& entityValues = (*value)["entities"];
+
+        for(rapidjson::Value::ConstMemberIterator i = entityValues.MemberBegin(); i != entityValues.MemberEnd(); i++) {
+            const rapidjson::Value* entityValue = &i->value;
+            
+            auto entity = getEntity(i->name.GetString());
+            if(entity == nullptr) {
+                if(entityValue->HasMember("spriteKey"))
+                    entity = new CEntity(Box(0, 0, 0, 0), (*entityValue)["spriteKey"].GetString());
+                else
+                    entity = new CEntity(Box(0, 0, 0, 0), "");
+                
+                addEntity(entity, i->name.GetString());
+            }
+            
+            entity->onDeserialize(entityValue, instance);
+        }
     }
 }
 

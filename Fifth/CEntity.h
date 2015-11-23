@@ -21,6 +21,7 @@
 #include "CComponent.h"
 #include "NSurface.h"
 #include "CCombatText.h"
+#include "CSerializable.h"
 
 
 class CParticle;
@@ -57,20 +58,6 @@ namespace EntityProperty {
         FLIP_FREEZED= 1 << 5
     };
 }
-    
-namespace SpriteStateTypes {
-    enum SpriteStateTypes {
-        IDLE = 0,
-        ASCENDING,
-        DESCENDING,
-        FLYING,
-        WALKING,
-        SNEAKING,
-        RUNNING,
-        DUCKING,
-        TOTAL_SPRITESTATETYPES
-    };
-}
 
 struct GridCoordinates {
     int x, y;
@@ -99,7 +86,7 @@ struct CollisionSides {
     }
 };
 
-class CEntity {
+class CEntity : public CSerializable {
     
 friend class CComponent;
     friend class CEntityManager;
@@ -142,8 +129,11 @@ public:
     void say(std::string text, std::string fontKey, int type);
     void say(std::string text, std::string fontKey, ChatBubbleType type);
     
-    void setSpriteStateType(int type, std::string sprite);
-    std::string spriteStateTypes[SpriteStateTypes::TOTAL_SPRITESTATETYPES];
+    void setSpriteStateType(std::string type, std::string sprite);
+    std::map<std::string, std::string> spriteStateTypes;
+    std::string getSpriteFromState(std::string key);
+    std::string defaultSprite;
+    //std::string spriteStateTypes[SpriteStateTypes::TOTAL_SPRITESTATETYPES];
     
     void setSprite(std::string spriteKey);
     CSprite* getSprite();
@@ -194,22 +184,6 @@ protected:
 private:
     bool _collision(int x, int y, std::vector<CEntity*>* entities);
     bool _hasMoved;
-    
-    void assignString(const rapidjson::Value* value, std::string key, std::string* toAssign);
-    void assignFloat(const rapidjson::Value* value, std::string key, float* toAssign);
-    template<typename T>
-    void assignInt(const rapidjson::Value* value, std::string key, T toAssign) {
-        if(!value->HasMember(key.c_str()) && (!value->IsInt() || !value->IsDouble()))
-            return;
-        
-        *toAssign = (*value)[key.c_str()].GetInt();
-    }
-    
-    void addString(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, std::string key, std::string toAdd);
-    template<typename T>
-    void addNumber(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, std::string key, T toAdd) {
-        value->AddMember(rapidjson::Value(key.c_str(), *alloc), rapidjson::Value(toAdd), *alloc);
-    }
     
     void _serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc);
     void _deserialize(const rapidjson::Value* value);

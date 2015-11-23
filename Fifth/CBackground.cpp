@@ -29,6 +29,26 @@ void CBackground::onRender(CWindow* window, CCamera* camera) {
     }
 }
 
+void CBackground::onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance) {
+    std::cout << _backgroundOffset.y << "\n";
+    
+    addNumber(value, alloc, "x", _backgroundOffset.x);
+    addNumber(value, alloc, "y", _backgroundOffset.y);
+    addNumber(value, alloc, "scale", _backgroundOffset.scale);
+    
+    addString(value, alloc, "spriteKey", _spriteKey);
+    addNumber(value, alloc, "parallax", _parallax);
+}
+
+void CBackground::onDeserialize(const rapidjson::Value* value, CInstance* instance) {
+    assignInt(value, "x", &_backgroundOffset.x);
+    assignInt(value, "y", &_backgroundOffset.y);
+    assignFloat(value, "scale", &_backgroundOffset.scale);
+    
+    assignString(value, "spriteKey", &_spriteKey);
+    assignFloat(value, "parallax", &_parallax);
+}
+
 float CBackground::getParallax() {
     return _parallax;
 }
