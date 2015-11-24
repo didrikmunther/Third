@@ -33,7 +33,7 @@
 
 CGame::CGame()
     : _intro("Third"), instance(this), toRestart(false), ignoreEvents(false)
-    , _lastTime(SDL_GetTicks()), _timer(SDL_GetTicks()), _isRunning(true), quickSave("{\"this\":{\"entities\":{}}}")
+    , _lastTime(SDL_GetTicks()), _timer(SDL_GetTicks()), _isRunning(true), quickSave("{}")
     , _ns(1000.0f / GAME_INTERVAL), _delta(0), _frames(0), _updates(0), isFocused(true) {
 }
 

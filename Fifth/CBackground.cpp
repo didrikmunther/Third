@@ -30,8 +30,6 @@ void CBackground::onRender(CWindow* window, CCamera* camera) {
 }
 
 void CBackground::onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance) {
-    std::cout << _backgroundOffset.y << "\n";
-    
     addNumber(value, alloc, "x", _backgroundOffset.x);
     addNumber(value, alloc, "y", _backgroundOffset.y);
     addNumber(value, alloc, "scale", _backgroundOffset.scale);

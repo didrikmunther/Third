@@ -154,6 +154,11 @@ void CEntity::onSerialize(rapidjson::Value* value, rapidjson::Document::Allocato
     
     value->AddMember("components", componentValues, *alloc);
     
+//    if(/* type == SERIALIZE_NEW */ true)
+//        removeDuplicates(value, oldSerialized);
+//    
+//    oldSerialized = value;
+    
 }
 
 void CEntity::onDeserialize(const rapidjson::Value* value, CInstance* instance) {
