@@ -8,6 +8,6 @@
     ],
     
     "sprites": [
-        {"name":"player", 				"spriteSheetKey":"MAIN", 				"offsets":[32, 0, 16, 32]}
+        {"name":"player", 				"spriteSheetKey":"MAIN", 				"offsets":[32, 0, 16, 26]}
     ]
 }
