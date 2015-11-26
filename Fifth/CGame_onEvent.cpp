@@ -89,13 +89,19 @@ void CGame::_onEvent(SDL_Event* event) {
                     rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
                     d.Accept(writer);
                     
-                    std::cout << sb.GetString() << "\n---------------\n";
-                    quickSave = sb.GetString();
+//                    std::cout << sb.GetString() << "\n---------------\n";
+//                    quickSave = sb.GetString();
+                    NFile::clearFile("quicksave.save");
+                    NFile::writeToFile("quicksave.save", sb.GetString());
                 }
                     break;
                     
                 case SDLK_h:
                 {
+                    quickSave = NFile::readFromFile("quicksave.save");
+                    
+                    std::cout << quickSave << "\n--------------------\n";
+                    
                     if(quickSave == "{}")
                         break;
                     

@@ -10,13 +10,24 @@
 #define __Third__CTile__
 
 #include <stdio.h>
+#include <string>
+
+#include "CSprite.h"
+
+
+class CWindow;
+class CCamera;
+enum RenderFlags;
 
 class CTile {
     
 public:
+    CTile(std::string spriteKey); // Tile sets its sprite instantly instead of having a sprite key saved
+    
+    void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
 private:
-    int _type;
+    CSprite* sprite;
     
 };
 

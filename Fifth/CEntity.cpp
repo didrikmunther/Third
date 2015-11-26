@@ -126,14 +126,9 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
         else {
             int spriteWidth = body->getW();
             int spriteHeight = body->getH();
+            int lean = (body->velX / 0.9f) /* + sin(body->getX() * 200) * 2*/;
             
-            SDL_RendererFlip flip;
-            if(hasProperty(EntityProperty::FLIP))
-                flip = SDL_RendererFlip::SDL_FLIP_HORIZONTAL;
-            else
-                flip = SDL_RendererFlip::SDL_FLIP_NONE;
-            
-            NSurface::renderSprite(x, y, spriteWidth, spriteHeight, getSprite(), window, flip, transparency);
+            getSprite()->onRender(Box{x, y, spriteWidth, spriteHeight}, hasProperty(EntityProperty::FLIP), lean, window, camera, renderFlags);
         }
     }
     

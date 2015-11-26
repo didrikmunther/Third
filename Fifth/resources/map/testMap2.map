@@ -8,6 +8,11 @@
     ],
     
     "sprites": [
-        {"name":"player", 				"spriteSheetKey":"MAIN", 				"offsets":[32, 0, 16, 32]}
+        {"name":"player", 				"spriteSheetKey":"MAIN", 				"offsets":[32, 0, 16, 32]},
+        
+        {"name":"test1", 				"spriteSheetKey":"MAIN", 				"offsets":[0, 32, 16, 16]},
+        {"name":"test2", 				"spriteSheetKey":"MAIN", 				"offsets":[16, 32, 16, 16]},
+        {"name":"test3", 				"spriteSheetKey":"MAIN", 				"offsets":[32, 32, 16, 16]},
+        {"name":"test4", 				"spriteSheetKey":"MAIN", 				"offsets":[0, 48, 16, 16]}
     ]
 }

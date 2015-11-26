@@ -7,3 +7,15 @@
 //
 
 #include "CTile.h"
+#include "CAssetManager.h"
+#include "CWindow.h"
+#include "CCamera.h"
+
+
+CTile::CTile(std::string spriteKey)
+    : sprite(CAssetManager::getSprite(spriteKey))
+{  }
+
+void CTile::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
+    
+}

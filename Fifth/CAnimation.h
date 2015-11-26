@@ -18,10 +18,18 @@
 class CAnimation : public CSprite {
 
 public:
-    CAnimation(int imagesPerSecond);
+    CAnimation(std::vector<std::string> sprites, int imagesPerSecond);
+    
+    CSpriteSheet* getSpriteSheet();
+    
+    void onRender(Box destination, bool flip, int angle, CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
 private:
-    float _imagesPerSecond;
+    std::vector<std::string> sprites;
+    
+    int _imagesPerSecond;
+    Uint32 startTime;
+    int currentFrame;
     
 };
 

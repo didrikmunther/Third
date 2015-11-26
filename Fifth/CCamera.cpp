@@ -65,8 +65,8 @@ void CCamera::setTarget(CEntity* target, bool targetInstantly /* = false */) {
     if(!targetInstantly)
         return;
     
-    _offset.x = target->body->getX() + target->body->getW() / 2;
-    _offset.y = target->body->getY() + target->body->getH() / 2;
+    _offset.x = target->body->getX() + target->body->getW() / 2 - _offset.w / 2;
+    _offset.y = target->body->getY() + target->body->getH() / 2 - _offset.h / 2;
 }
 
 bool CCamera::collision(CEntity* entity) {

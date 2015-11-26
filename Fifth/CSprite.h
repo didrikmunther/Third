@@ -11,19 +11,25 @@
 #define __Third__CSprite__
 
 #include <stdio.h>
+#include <iostream>
 
 #include "Define.h"
 
 
+class CWindow;
+class CCamera;
 class CSpriteSheet;
+enum RenderFlags;
 
 class CSprite {
     
 public:
     CSprite(CSpriteSheet* spriteSheet, Box rect);
     
-    CSpriteSheet* getSpriteSheet() { return _spriteSheet; }
-    virtual Box* getSource() { return &_source; }
+    virtual CSpriteSheet* getSpriteSheet() { return _spriteSheet; }
+    Box* getSource() { return &_source; }
+    
+    virtual void onRender(Box destination, bool flip, int angle, CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
 private:
     CSpriteSheet* _spriteSheet; // Don't modify from here

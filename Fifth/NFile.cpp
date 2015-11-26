@@ -40,6 +40,24 @@ rapidjson::Document NFile::loadJsonFile(std::string fileName) {
     
 }
 
+std::string NFile::readFromFile(std::string fileName) {
+    std::ifstream file;
+    std::string toReturn = "";
+    std::string line;
+    
+    file.open(fileName.c_str());
+    
+    if(file.is_open()) {
+        while(std::getline(file, line)) {
+            toReturn += line;
+        }
+    } else {
+        NFile::log(LogType::WARNING, "Could not open file \"", fileName, "\".");
+    }
+    
+    return toReturn;
+}
+
 void NFile::loadAssets(std::string fileName, CInstance* instance) {
     
     log(LogType::ALERT, "Loading map: \"", fileName.c_str(), "\"");
