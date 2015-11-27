@@ -126,9 +126,9 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
         else {
             int spriteWidth = body->getW();
             int spriteHeight = body->getH();
-            int lean = (body->velX / 0.9f) /* + sin(body->getX() * 200) * 2*/;
+            int lean = (body->velX / 2.0f) /* + sin(body->getX() * 200) * 2*/;
             
-            getSprite()->onRender(Box{x, y, spriteWidth, spriteHeight}, hasProperty(EntityProperty::FLIP), lean, window, camera, renderFlags);
+            getSprite()->onRender(Box{x, y, spriteWidth, spriteHeight}, hasProperty(EntityProperty::FLIP), lean, transparency, window, camera, renderFlags);
         }
     }
     
@@ -197,7 +197,7 @@ void CEntity::_serialize(rapidjson::Value* value, rapidjson::Document::Allocator
     }
     addValue(value, alloc, "spriteKeys", &sprites);
     
-    addString(value, alloc, "spriteKey", spriteKey);
+    addString(value, alloc, "defaultSpriteKey", defaultSprite);
     addNumber(value, alloc, "colorR", color.r);
     addNumber(value, alloc, "colorG", color.g);
     addNumber(value, alloc, "colorB", color.b);
@@ -217,7 +217,17 @@ void CEntity::_deserialize(const rapidjson::Value* value) {
     assignFloat(value, "velX", &body->velX);
     assignFloat(value, "velY", &body->velY);
     
-    assignString(value, "spriteKey", &spriteKey);
+    if(value->HasMember("spriteKeys")) {
+        for(rapidjson::Value::ConstMemberIterator i = (*value)["spriteKeys"].MemberBegin(); i != (*value)["spriteKeys"].MemberEnd(); i++) {
+            const rapidjson::Value* val = &i->value;
+            std::string key = val->GetString();
+            std::string name = i->name.GetString();
+            
+            spriteStateTypes[name] = key;
+        }
+    }
+    
+    assignString(value, "defaultSpriteKey", &defaultSprite);
     assignInt(value, "properties", &properties);
     assignInt(value, "collisionLayers", &collisionLayer);
     
@@ -226,6 +236,12 @@ void CEntity::_deserialize(const rapidjson::Value* value) {
     assignInt(value, "colorB", &color.b);
     assignInt(value, "colorA", &color.a);
     
+}
+
+void CEntity::onClick(int x, int y, CInstance* instance) {
+    for(auto& i: components) {
+        i.second->onClick(x, y, instance);
+    }
 }
 
 bool CEntity::isOnCollisionLayer(int collisionLayer) {

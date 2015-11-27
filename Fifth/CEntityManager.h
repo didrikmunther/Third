@@ -41,6 +41,7 @@ public:
     
     CEntity* getEntity(std::string name);
     CEntity* getEntityAtCoordinate(int x, int y);
+    std::vector<CEntity*> getEntitiesAtCoordinate(int x, int y);
     std::string getNameOfEntity(CEntity* entity);
     CBackground* getBackground(std::string name);
     std::string addEntity(CEntity* entity, std::string name = "");

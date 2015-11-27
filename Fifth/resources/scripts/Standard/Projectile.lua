@@ -4,6 +4,8 @@ local Projectile = class(
     function(self, parent, component)
         self.parent = parent
         self.component = component
+        self.body = parent.body
+        self.box = body.box
 
         self.owner = nil
 
@@ -19,6 +21,8 @@ local Projectile = class(
 )
 
 function Projectile:onInit()
+    --[[
+
     body = self.parent.body
     thisX = body.box.x
     thisY = body.box.y
@@ -38,10 +42,12 @@ function Projectile:onInit()
     body.velX = velX
     body.velY = velY
 
+    ]]--
+
 end
 
 function Projectile:onLoop()
-    box = self.parent.body.box
+    box = self.box
     table.insert(self.positions, {box.x, box.y})
     self.positionsSize = self.positionsSize + 1
 
@@ -49,6 +55,9 @@ function Projectile:onLoop()
         self.positionsSize = self.positionsSize - 1
         table.remove(self.positions, 1)
     end
+
+    body = self.body
+    body.velX = body.velX / 1.05
 
 end
 
@@ -61,7 +70,7 @@ function Projectile:onCollision(target, collisionSides)
 
     targetLiving = target:getComponent("Standard/Living")
     if(targetLiving ~= nil) then
-        targetLiving:damage(1000, self.parent)
+        targetLiving:damage(50, self.parent)
     end
 
     self.parent.isDead = true

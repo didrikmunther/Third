@@ -57,6 +57,8 @@ public:
     void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance);
     void onDeserialize(std::string value, CInstance* instance);
     
+    void onClick(int x, int y, CInstance* instance);
+    
     void callSimpleFunction(std::string function);
     
     void pushThis();

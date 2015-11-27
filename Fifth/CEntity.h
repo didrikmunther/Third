@@ -106,6 +106,8 @@ public:
     void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance);
     void onDeserialize(const rapidjson::Value* value, CInstance* instance);
     
+    void onClick(int x, int y, CInstance* instance);
+    
     int collisionLayer;
     bool isOnCollisionLayer(int collisionLayer);
     void toggleCollisionLayer(int collisionLayer) { this->collisionLayer ^= collisionLayer; }

@@ -135,22 +135,35 @@ void CGame::_onEvent(SDL_Event* event) {
             break;
             
         case SDL_MOUSEBUTTONDOWN:
+        {
+            bool type = 0;
             
             if(NMouse::leftMouseButtonPressed()) {
-                auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.camera), NMouse::relativeMouseY(instance.camera));
-                if(tempTarget != nullptr) {
-                    std::string toSay = "Name: \"" + instance.entityManager.getNameOfEntity(tempTarget) +
-                    "\", CollisionLayer: " + std::to_string(tempTarget->collisionLayer);
-                    tempTarget->say(toSay, "TESTFONT", ChatBubbleType::SAY);
-                }
+//                auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.camera), NMouse::relativeMouseY(instance.camera));
+//                if(tempTarget != nullptr) {
+//                    std::string toSay = "Name: \"" + instance.entityManager.getNameOfEntity(tempTarget) +
+//                    "\", CollisionLayer: " + std::to_string(tempTarget->collisionLayer);
+//                    tempTarget->say(toSay, "TESTFONT", ChatBubbleType::SAY);
+//                }
             }
             
             if(NMouse::rightMouseButtonPressed()) {
+                type = 1;
                 auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.camera), NMouse::relativeMouseY(instance.camera));
                 if(tempTarget != nullptr) {
                     tempTarget->isDead = true;
                 }
             }
+            
+            int x = NMouse::relativeMouseX(instance.camera);
+            int y = NMouse::relativeMouseY(instance.camera);
+            auto entities = instance.entityManager.getEntitiesAtCoordinate(x, y);
+            
+            for(auto& i: entities) {
+                i->onClick(x, y, &instance);
+            }
+            
+        }
             break;
     }
     

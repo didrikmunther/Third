@@ -83,6 +83,17 @@ CEntity* CEntityManager::getEntityAtCoordinate(int x, int y) {
     return nullptr;
 }
 
+std::vector<CEntity*> CEntityManager::getEntitiesAtCoordinate(int x, int y) {
+    std::vector<CEntity*> toReturn = {};
+    
+    for (auto &i: _entities) {
+        if(i.second->coordinateCollision(x, y, 1, 1))
+            toReturn.push_back(i.second);
+    }
+    
+    return toReturn;
+}
+
 std::string CEntityManager::getNameOfEntity(CEntity *entity) {
     for (auto &i: _entities) {                              // There must be a better way of doing this
         if(i.second == entity)

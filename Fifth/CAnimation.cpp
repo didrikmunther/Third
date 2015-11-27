@@ -42,9 +42,9 @@ CSpriteSheet* CAnimation::getSpriteSheet() {
     return nullptr;
 }
 
-void CAnimation::onRender(Box destination, bool flip, int angle, CWindow* window, CCamera* camera, RenderFlags renderFlags) {
+void CAnimation::onRender(Box destination, bool flip, int angle, int alpha, CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     int timePassed = SDL_GetTicks() - startTime;
-    if(timePassed > _imagesPerSecond * 1000) {
+    if(timePassed >= (1.0f /_imagesPerSecond) * 1000) {
         startTime = SDL_GetTicks();
         currentFrame++;
         
@@ -53,8 +53,12 @@ void CAnimation::onRender(Box destination, bool flip, int angle, CWindow* window
     }
     
     auto sprite = CAssetManager::getSprite(sprites[currentFrame]);
-    if(!sprite)
+    if(!sprite) {
+        NSurface::renderRect(destination.x, destination.y, destination.w, destination.h, window, 255, 0, 255);
         return;
+    }
     
-    NSurface::renderTexture(destination, *sprite->getSource(), window->getRenderer(), getSpriteSheet()->getTexture(), flip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE, angle);
+    sprite->onRender(destination, flip, angle, alpha, window, camera, renderFlags);
+    
+    //NSurface::renderTexture(destination, *sprite->getSource(), window->getRenderer(), getSpriteSheet()->getTexture(), flip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE, angle);
 }
