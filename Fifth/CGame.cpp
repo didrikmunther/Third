@@ -20,6 +20,7 @@
 #include "CBackground.h"
 #include "CCombatText.h"
 #include "CAssetManager.h"
+#include "CAnimation.h"
 
 #include "NMouse.h"
 #include "NSurface.h"
@@ -33,7 +34,7 @@
 
 CGame::CGame()
     : _intro("Third"), instance(this), toRestart(false), ignoreEvents(false)
-    , _lastTime(SDL_GetTicks()), _timer(SDL_GetTicks()), _isRunning(true), quickSave("{\"this\":{\"entities\":{}}}")
+    , _lastTime(SDL_GetTicks()), _timer(SDL_GetTicks()), _isRunning(true), quickSave("{}")
     , _ns(1000.0f / GAME_INTERVAL), _delta(0), _frames(0), _updates(0), isFocused(true) {
 }
 
@@ -143,6 +144,9 @@ void CGame::_restart() {
     
     CBackground* background = new CBackground("background", 0.1, BackgroundOffset{0, -450, 1.75f});
     instance.entityManager.addBackground("main", background);
+    
+    CAnimation* anim = new CAnimation({"test1", "test2", "test3", "test4"}, 1);
+    CAssetManager::addSprite(anim, "test5");
 
     auto movable = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Movable.lua");
     auto living = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Living.lua");
@@ -159,7 +163,7 @@ void CGame::_restart() {
     temp->addComponent(&instance, chatController);
     instance.controller = temp;
     
-    temp = new CEntity(Box{50, -500, 16 * 4, 32 * 4}, "player");
+    temp = new CEntity(Box{50, -500, 16 * 4, 32 * 4}, "test5");
     instance.entityManager.addEntity(temp, "5:Player");
 //    temp->spriteStateTypes[SpriteStateTypes::ASCENDING] =
 //    temp->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";

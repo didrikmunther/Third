@@ -76,9 +76,10 @@ function Movable:onEvent(key, keyDown)
             living = self.parent:getComponent("Standard/Living")
             if(living ~= nil) then
                 living:heal(10, self.parent)
+                
             end
         end
-
+        
         if(key == KeyCode._1) then
             self:toggleNoClip()
         end

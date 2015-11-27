@@ -89,15 +89,25 @@ void CGame::_onEvent(SDL_Event* event) {
                     rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
                     d.Accept(writer);
                     
-                    std::cout << sb.GetString() << "\n";
-                    quickSave = sb.GetString();
+//                    std::cout << sb.GetString() << "\n---------------\n";
+//                    quickSave = sb.GetString();
+                    NFile::clearFile("quicksave.save");
+                    NFile::writeToFile("quicksave.save", sb.GetString());
                 }
                     break;
                     
                 case SDLK_h:
                 {
+                    quickSave = NFile::readFromFile("quicksave.save");
+                    
+                    std::cout << quickSave << "\n--------------------\n";
+                    
+                    if(quickSave == "{}")
+                        break;
+                    
                     rapidjson::Document d;
                     d.Parse(quickSave.c_str());
+                    
                     instance.entityManager.onCleanup();
                     
                     instance.entityManager.onDeserialize(&d["this"], &instance);
@@ -105,7 +115,7 @@ void CGame::_onEvent(SDL_Event* event) {
                     instance.player = instance.entityManager.getEntity("5:Player");
                     instance.controller = instance.entityManager.getEntity("Controller");
                     
-                    instance.camera->setTarget(instance.player);
+                    instance.camera->setTarget(instance.player, true);
                 }
                     break;
                     

@@ -7,6 +7,8 @@ local Particle = class(
 
         self.startTime = game:getTime()
         self.livingTime = -1
+                       
+        self.prevVelY = self.parent.body.velY
     end
 )
 
@@ -14,6 +16,8 @@ function Particle:onLoop()
     if(self.startTime + self.livingTime * 1000 < game:getTime()) then
         self.parent.toRemove = true
     end
+
+    self.prevVelY = self.parent.body.velY
 end
 
 function Particle:onDeserialize(value)

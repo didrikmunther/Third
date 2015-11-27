@@ -46,6 +46,8 @@ public:
     static void execCommand(rapidjson::Document command, CInstance* instance);
     static void parseCommands(rapidjson::Document commands, CInstance* instance);
     
+    static std::string readFromFile(std::string fileName);
+    
     // Save functions
     template<typename... T>
     static void writeToFile(std::string fileName, T&&... t) {

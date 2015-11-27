@@ -115,7 +115,7 @@ void CChatBubble::onRender(CWindow* window, CCamera* camera, RenderFlags renderF
                              boxY - camera->offsetY(),
                              boxW,
                              boxH,
-                             window, _rB, _gB, _bB);
+                             window, _rB, _gB, _bB, 100);
     
         int currentLine = 0;
         auto i = _TextVector.begin();

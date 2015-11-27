@@ -19,12 +19,21 @@
 
 class CInstance;
 
+enum SerializeType {
+    SERIALIZE_ALL = 0,
+    SERIALIZE_NEW
+};
+
 class CSerializable {
     
 public:
-    virtual void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance) { }
+    CSerializable() {}
+    
+    virtual void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance, SerializeType type = SERIALIZE_ALL) { }
     virtual void onDeserialize(const rapidjson::Value* value, CInstance* instance) { }
     
+    
+    void removeDuplicates(rapidjson::Value* value, const rapidjson::Value* valueBefore);
 
     void assignString(const rapidjson::Value* value, std::string key, std::string* toAssign);
     void assignFloat(const rapidjson::Value* value, std::string key, float* toAssign);
@@ -42,7 +51,6 @@ public:
     void addNumber(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, std::string key, T toAdd) {
         value->AddMember(rapidjson::Value(key.c_str(), *alloc), rapidjson::Value(toAdd), *alloc);
     }
-    
     
 };
 

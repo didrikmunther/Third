@@ -23,7 +23,7 @@ public:
     
     SDL_Texture* getTexture();
     
-private:
+
     SDL_Texture* _texture;
     
 };

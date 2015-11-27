@@ -23,12 +23,7 @@ Line Line::normalizeWithCamera(CCamera* camera) {
 }
 
 void NSurface::renderRect(int x, int y, int w, int h, CWindow* window, int r, int g, int b, int a /* = 255 */) {
-    SDL_Rect rect;
-    
-    rect.x = x;
-    rect.y = y;
-    rect.w = w;
-    rect.h = h;
+    SDL_Rect rect{x, y, w, h};
     
     SDL_SetRenderDrawColor(window->getRenderer(), r, g, b, a);
     SDL_RenderFillRect(window->getRenderer(), &rect);
@@ -55,6 +50,15 @@ void NSurface::renderText(int x, int y, CText* text, CWindow* window) {
 void NSurface::renderTexture(int x, int y, int w, int h, SDL_Renderer* renderer, SDL_Texture *texture) {
     SDL_Rect destination = {x, y, w, h};
     SDL_RenderCopy(renderer, texture, nullptr, &destination);
+}
+
+void NSurface::renderTexture(Box destination, SDL_Rect src, SDL_Renderer* renderer, SDL_Texture* texture, SDL_RendererFlip flip, int angle, int a /* = 255 */) {
+    if(!texture || !renderer)
+        return;
+    
+    SDL_SetTextureAlphaMod(texture, a);
+    SDL_Rect dest = destination;
+    SDL_RenderCopyEx(renderer, texture, &src, &dest, angle, nullptr, flip);
 }
 
 void NSurface::renderLine(Line line, SDL_Renderer* renderer, CCamera* camera /* = nullptr */) {

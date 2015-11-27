@@ -56,8 +56,17 @@ void CCamera::addCameraShake(int interval) {
     _cameraShake += interval;
 }
 
-void CCamera::setTarget(CEntity* target) {
+void CCamera::setTarget(CEntity* target, bool targetInstantly /* = false */) {
     this->_target = target;
+    
+    if(target == nullptr)
+        return;
+
+    if(!targetInstantly)
+        return;
+    
+    _offset.x = target->body->getX() + target->body->getW() / 2 - _offset.w / 2;
+    _offset.y = target->body->getY() + target->body->getH() / 2 - _offset.h / 2;
 }
 
 bool CCamera::collision(CEntity* entity) {

@@ -85,6 +85,8 @@ private:
     std::map<std::string, CEntity*> _deadEntities;
     std::map<std::string, CBackground*> _backgrounds;
     
+    
+    
     int _gridSize;
     
 };

@@ -28,7 +28,7 @@ public:
     void onInit(CWindow* window);
     void onLoop();
     
-    void setTarget(CEntity* target);
+    void setTarget(CEntity* target, bool targetInstantly = false);
     bool collision(CEntity* entity);
     bool collision(int x, int y, int w, int h);
     

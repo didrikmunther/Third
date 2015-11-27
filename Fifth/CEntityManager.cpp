@@ -279,6 +279,7 @@ std::vector<GridCoordinates> getGrid(CEntity* target, int gridSize) {
 void CEntityManager::onLoop(CInstance* instance) {
     
     std::map <int, std::map <int, std::vector<CEntity*>>> _CollisionVector;
+//    std::vector<CEntity*> _CollisionVector[2048][2048];
     
     {
         for(auto &particle: _particles) {
