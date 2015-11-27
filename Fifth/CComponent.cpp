@@ -205,7 +205,7 @@ void CComponent::renderText(int x, int y, int size, std::string text, std::strin
         return;
     
     CText textObj(text, size, fontKey, Color(r, b, g));
-    NSurface::renderText(x, y, &textObj, tempWindow);
+    NSurface::renderText(x, y, &textObj, tempWindow, size);
 }
 
 int CComponent::getRelativeMouse(lua_State* L) {

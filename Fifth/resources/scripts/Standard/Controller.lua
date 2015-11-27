@@ -34,6 +34,10 @@ function Controller:onEvent(key, keyDown)
             end
         end
 
+        if(key == KeyCode._8) then
+            
+        end
+
         if(key == KeyCode._3) then -- Collision borders
             self.parent.entityManager:toggleRenderFlag(RenderFlags.COLLISION_BORDERS)
         end

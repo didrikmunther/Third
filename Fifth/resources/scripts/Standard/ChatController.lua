@@ -32,7 +32,22 @@ function ChatController:parse(input)
         commands = {}
         for w in input:gmatch("%S+") do table.insert(commands, w) end
 
+        -- PARSING
+
         if(commands[1] == "restart") then self.component.instance.game:restart() end
+
+        if(commands[1] == "script" and commands[2] ~= nil) then
+            comp = commands[2]
+            mX, mY = self.component:getRelativeMouse()
+            temp = self.parent.entityManager:createSpriteEntity(Box(mX, mY, 16 * 4, 16 * 4), "lua")
+            self.parent.entityManager:addEntity(temp, "")
+            temp:addComponent(self.component.instance, game.getScript("Standard/GraphicScript"))
+            graphic = temp:getComponent("Standard/GraphicScript")
+            graphic:setScript(game.getScript(comp))
+            if(commands[3] ~= nil) then
+                graphic.deserialize = commands[3]
+            end
+        end
 
         return ""
     end
@@ -106,7 +121,7 @@ function ChatController:onRenderAdditional()
         x = x + 5
         y = y + 6
 
-        self.component:renderText(x, y, 0, self.buffer, "TESTFONT", 255, 255, 255)
+        self.component:renderText(x, y, 1, self.buffer, "TESTFONT", 255, 255, 255)
 
     end
 end

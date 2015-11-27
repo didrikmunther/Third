@@ -6,6 +6,7 @@ local Living = class (
         self.component = component
 
         self.hasDied = false
+        self.invincible = false
 
         self.VALUE_HEALTH = 0
         self.VALUE_KEVLAR = 1
@@ -26,6 +27,8 @@ local Living = class (
 )
 
 function Living:onRenderAdditional()
+
+    if(self.invincible) then do return end end
 
     if(self.parent.isDead) then
         do return end
@@ -81,6 +84,8 @@ function Living:onLoop()
 end
 
 function Living:onSerialize()
+    if(self.invincible) then do return end end
+
     c = self.component
 
     c:addInt("health", self.values[self.VALUE_HEALTH])
@@ -88,6 +93,8 @@ function Living:onSerialize()
 end
 
 function Living:onDeserialize(value)
+    if(self.invincible) then do return end end
+
     d = json.decode(value)
 
     self.values[self.VALUE_HEALTH] = getVal(self.values[self.VALUE_HEALTH], d.health)
@@ -120,11 +127,16 @@ function Living:explodeParticle(sx, sy, sw, sh, tx, ty, tw, th, spriteName)
     particle:addComponent(self.component.instance, game.getScript("Standard/Particle"))
     particle:getComponent("Standard/Particle"):onDeserialize('{"livingTime":5}')
 
+    if(not self.parent:hasProperty(EntityProperty.COLLIDABLE)) then
+        particle:removeProperty(EntityProperty.COLLIDABLE)
+    end
+
     entityManager:addParticle(particle, self.component.instance)
 
 end
 
 function Living:damage(amount, damager)
+    if(self.invincible) then do return end end
 
     box = self.parent.body.box
     thisX = box.x
@@ -164,6 +176,7 @@ function Living:damage(amount, damager)
 end
 
 function Living:heal(amount, healer)
+    if(self.invincible) then do return end end
 
     box = self.parent.body.box
     thisX = box.x
@@ -183,12 +196,6 @@ function Living:heal(amount, healer)
     self.parent:addCombatText(textObject)
 
     return healed
-end
-
-function Living:onCollision(target, sides)
-    if(self.parent.body.velX > 10) then
-
-    end
 end
 
 function create(parent, component)

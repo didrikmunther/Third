@@ -72,6 +72,10 @@ function Movable:onLoop()
         self.parent:setSprite(self.parent:getSpriteFromState("WALKING"))
     end
 
+    if(self.isFlying) then
+        self.parent:setSprite(self.parent:getSpriteFromState("FLYING"))
+    end
+
 end
 
 function Movable:onEvent(key, keyDown)
@@ -107,6 +111,7 @@ function Movable:onEvent(key, keyDown)
 end
 
 function Movable:onKeyStates(state)
+
     if(state:hasState(ScanCode._D)) then
         self:goRight()
     end
@@ -125,31 +130,31 @@ function Movable:onKeyStates(state)
         thisX = box.x
         thisY = box.y
         
-        for i = 1, 3 do
+        for i = 1, 2 do
         
-        spawnX = thisX + 50
-        spawnY = thisY + 75
-        if(self.parent:hasProperty(EntityProperty.FLIP)) then
-            spawnX = thisX + 5
-        end
+            spawnX = thisX + 50
+            spawnY = thisY + 75
+            if(self.parent:hasProperty(EntityProperty.FLIP)) then
+                spawnX = thisX + 5
+            end
 
-        bullet = self.parent.entityManager:createColoredEntity(Box(spawnX, spawnY, 5, 5), Color(200, 50, 50, 255))
-        self.parent.entityManager:addParticle(bullet)
-        script = game.getScript("Standard/Projectile")
-        bullet:addComponent(self.component.instance, script)
-        bullet:getComponent("Standard/Projectile"):onDeserialize('{"owner":"' .. self.parent.entityManager:getNameOfEntity(self.parent) .. '"}')
+            bullet = self.parent.entityManager:createColoredEntity(Box(spawnX, spawnY, 5, 5), Color(200, 50, 50, 255))
+            self.parent.entityManager:addParticle(bullet)
+            script = game.getScript("Standard/Projectile")
+            bullet:addComponent(self.component.instance, script)
+            bullet:getComponent("Standard/Projectile"):onDeserialize('{"owner":"' .. self.parent.entityManager:getNameOfEntity(self.parent) .. '"}')
 
-        tBody = self.parent.body
-        bBody = bullet:getComponent("Standard/Projectile").parent.body -- must do it this way
-        
-        bBody.velX = 25 + (math.random(5) - 2.5)
-        bBody.velY = -5 + (math.random(5) - 2.5)
-        if(self.parent:hasProperty(EntityProperty.FLIP)) then
-            bBody.velX = bBody.velX * -1
-        end
-        
-        bBody.velX = bBody.velX + tBody.velX
-        bBody.velY = bBody.velY + tBody.velY
+            tBody = self.parent.body
+            bBody = bullet:getComponent("Standard/Projectile").parent.body -- must do it this way
+            
+            bBody.velX = 25 + (math.random(5) - 2.5)
+            bBody.velY = -5 + (math.random(5) - 2.5)
+            if(self.parent:hasProperty(EntityProperty.FLIP)) then
+                bBody.velX = bBody.velX * -1
+            end
+            
+            bBody.velX = bBody.velX + tBody.velX
+            bBody.velY = bBody.velY + tBody.velY
         
         end
 

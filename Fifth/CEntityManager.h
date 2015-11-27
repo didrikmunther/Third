@@ -40,7 +40,7 @@ public:
     CEntityManager();
     
     CEntity* getEntity(std::string name);
-    CEntity* getEntityAtCoordinate(int x, int y);
+    CEntity* getEntityAtCoordinate(int x, int y, CEntity* except = nullptr);
     std::vector<CEntity*> getEntitiesAtCoordinate(int x, int y);
     std::string getNameOfEntity(CEntity* entity);
     CBackground* getBackground(std::string name);

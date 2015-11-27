@@ -157,6 +157,7 @@ void CGame::_restart() {
     CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Npc.lua");
     CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Particle.lua");
     CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Serializable.lua");
+    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/GraphicScript.lua");
     
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
     instance.entityManager.addEntity(temp, "Controller");
@@ -244,6 +245,10 @@ void CGame::_initLua() {
             .addFunction("createSprite", (CSprite* (*)(CSpriteSheet*, Box)) &CAssetManager::createSprite)
         .endNamespace()
     
+        .beginClass<CLuaObject>("LuaObject")
+            .addFunction("getScript", &CLuaObject::getScript)
+        .endClass()
+    
         .beginClass<CLuaScript>("LuaScript")
             .addFunction("getName", &CLuaScript::getName)
         .endClass()
@@ -272,6 +277,7 @@ void CGame::_initLua() {
             .addFunction("hasSprite", &CEntity::hasSprite)
             .addFunction("setSprite", &CEntity::setSprite)
             .addFunction("getSpriteFromState", &CEntity::getSpriteFromState)
+            .addData("defaultSprite", &CEntity::defaultSprite)
         .endClass()
     
         .beginClass<CComponent>("Component")
@@ -285,6 +291,7 @@ void CGame::_initLua() {
             .addCFunction("getMouse", &CComponent::getMouse)
             .addData("instance", &CComponent::tempInstance)
             .addData("camera", &CComponent::tempCamera)
+            .addData("object", &CComponent::object)
         .endClass()
     
         .beginClass<Box>("Box")
@@ -343,6 +350,8 @@ void CGame::_initLua() {
             .addData("velX", &CBody::velX)
             .addData("velY", &CBody::velY)
             .addData("box", &CBody::_rect)
+            .addFunction("setBox", &CBody::setBox)
+            .addFunction("setPosition", &CBody::setPosition)
         .endClass()
     
         .beginClass<KeyState>("KeyState")
@@ -362,6 +371,7 @@ void CGame::_initLua() {
             .addFunction("addParticle", &CEntityManager::addParticle)
             .addFunction("getEntity", &CEntityManager::getEntity)
             .addFunction("getNameOfEntity", &CEntityManager::getNameOfEntity)
+            .addFunction("getEntityAtCoordinate", &CEntityManager::getEntityAtCoordinate)
             .addCFunction("getEntities", &CEntityManager::pushEntities)
             .addFunction("createColoredEntity", (CEntity* (CEntityManager::*)(Box, Color)) &CEntityManager::createEntity)
             .addFunction("createSpriteEntity", (CEntity* (CEntityManager::*)(Box, std::string)) &CEntityManager::createEntity)

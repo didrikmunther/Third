@@ -5,7 +5,7 @@ local Projectile = class(
         self.parent = parent
         self.component = component
         self.body = parent.body
-        self.box = body.box
+        self.box = self.body.box
 
         self.owner = nil
 
@@ -46,6 +46,7 @@ function Projectile:onInit()
 
 end
 
+--[[
 function Projectile:onLoop()
     box = self.box
     table.insert(self.positions, {box.x, box.y})
@@ -60,6 +61,7 @@ function Projectile:onLoop()
     body.velX = body.velX / 1.05
 
 end
+]]--
 
 function Projectile:onCollision(target, collisionSides)
     --if(self.owner == nil) then do return end
@@ -85,20 +87,19 @@ function Projectile:onDeserialize(value)
     end
 end
 
+--[[
 function Projectile:onRenderAdditional()
     box = self.parent.body.box
     oldVal = self.positions[1]
 
-    --[[
     for k, v in pairs(self.positions) do
         if(oldVal[1] ~= v[1] or oldVal[2] ~= v[2]) then -- don't render if they are exactly the same positions
             self.component:renderLine(v[1], v[2], oldVal[1], oldVal[2], 255, 0, 0, 255)
         end
         oldVal = v
     end
-
-    ]]--
 end
+]]--
 
 function create(parent, component)
     return Projectile(parent, component)

@@ -23,9 +23,11 @@ void CGame::_handleKeyStates() {
 
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
     
-    instance.controller->onKeyStates(&instance, keystate);
+    if(instance.controller)
+        instance.controller->onKeyStates(&instance, keystate);
     if(ignoreEvents) return;
-    instance.player->onKeyStates(&instance, keystate);
+    if(instance.player)
+        instance.player->onKeyStates(&instance, keystate);
 }
 
 void CGame::_onEvent(SDL_Event* event) {
@@ -126,9 +128,11 @@ void CGame::_onEvent(SDL_Event* event) {
             break;
             
         case SDL_KEYUP:
-            instance.controller->onEvent(&instance, event->key.keysym.sym, false);
+            if(instance.controller)
+                instance.controller->onEvent(&instance, event->key.keysym.sym, false);
             if(ignoreEvents) break;
-            instance.player->onEvent(&instance, event->key.keysym.sym, false);
+            if(instance.player)
+                instance.player->onEvent(&instance, event->key.keysym.sym, false);
             break;
             
         default:

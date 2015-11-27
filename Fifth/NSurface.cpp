@@ -37,12 +37,12 @@ void NSurface::renderSprite(int x, int y, int w, int h, CSprite *sprite, CWindow
     SDL_RenderCopyEx(window->getRenderer(), sprite->getSpriteSheet()->getTexture(), &src, &destination, 0, nullptr, flip);
 }
 
-void NSurface::renderText(int x, int y, CText* text, CWindow* window) {
+void NSurface::renderText(int x, int y, CText* text, CWindow* window, float size /* = 1 */) {    
     SDL_Surface *surface = TTF_RenderText_Blended(text->getFont(), (*text->getText()).c_str(), *text->getColor());
     SDL_Texture *texture = SDL_CreateTextureFromSurface(window->getRenderer(), surface);
     int w, h;
     SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
-    renderTexture(x, y, w, h, window->getRenderer(), texture);
+    renderTexture(x, y, (float)w * size, (float)h * size, window->getRenderer(), texture);
     SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture);
 }
