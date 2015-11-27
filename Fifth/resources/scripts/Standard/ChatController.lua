@@ -8,9 +8,11 @@ local ChatController = class (
         self.isTyping = false
         self.buffer = ""
 
-        self.width = 400
+        self.width = 50
+        self.initWidth = self.width
         self.height = 40
-
+        self.maxBufferSize = 52
+                              
         self.shift = false
     end
 )
@@ -92,7 +94,9 @@ function ChatController:onEvent(key, keyDown)
             if(self.shift) then
                 toAdd = string.upper(toAdd)
             end
-            self.buffer = self.buffer .. toAdd
+            if(string.len(self.buffer) < self.maxBufferSize) then
+                self.buffer = self.buffer .. toAdd
+            end
         end
 
     end
@@ -122,7 +126,11 @@ function ChatController:onRenderAdditional()
         y = y + 6
 
         self.component:renderText(x, y, 1, self.buffer, "TESTFONT", 255, 255, 255)
+        self.width = self.initWidth + (14 * string.len(self.buffer))
+    end
 
+    if (self.isTyping == false) then
+        self.width = self.initWidth
     end
 end
 
