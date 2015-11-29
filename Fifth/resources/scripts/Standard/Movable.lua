@@ -68,7 +68,7 @@ function Movable:onLoop()
     self.hasWalkedX = false
     self.hasWalkedY = false
 
-    if(body.velX ~= 0) then
+    if(body.velX ~= 0 and self.parent.collisionSides.bottom) then
         self.parent:setSprite(self.parent:getSpriteFromState("WALKING"))
     end
 

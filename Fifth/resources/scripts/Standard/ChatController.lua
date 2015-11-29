@@ -65,6 +65,15 @@ function ChatController:onKeyStates(state)
     end
 end
 
+function ChatController:onTextInput(input)
+    if(self.isTyping) then
+        if(string.len(self.buffer) < self.maxBufferSize) then
+            self.buffer = self.buffer .. input
+        end
+    end
+
+end
+
 function ChatController:onEvent(key, keyDown)
     if(not keyDown) then do return end end
 
@@ -88,20 +97,7 @@ function ChatController:onEvent(key, keyDown)
 
         self.buffer = string.sub(self.buffer, 1, -2)
 
-    elseif(self.isTyping and key ~= KeyCode._ESCAPE) then
-        if(key <= 1024) then -- temporary to ignore modifier key
-            toAdd = string.char(key)
-            if(self.shift) then
-                toAdd = string.upper(toAdd)
-            end
-            if(string.len(self.buffer) < self.maxBufferSize) then
-                self.buffer = self.buffer .. toAdd
-            end
-        end
-
-    end
-
-    if(self.isTyping and key == KeyCode._ESCAPE) then
+    elseif(key == KeyCode._ESCAPE) then
         self.component.instance.game.isRunning = false
 
     end

@@ -174,6 +174,19 @@ void CComponent::onClick(int x, int y, CInstance* instance) {
     tempInstance = nullptr;
 }
 
+void CComponent::onTextInput(CInstance* instance, std::string input) {
+    if(!object.hasReference("onTextInput"))
+        return;
+    
+    tempInstance = instance;
+    
+    object.beginCall("onTextInput");
+    object.pushObject(input);
+    object.endCall(1, 0);
+    
+    tempInstance = nullptr;
+}
+
 void CComponent::callSimpleFunction(std::string function) {
     if(!object.hasReference(function.c_str()))
         return;

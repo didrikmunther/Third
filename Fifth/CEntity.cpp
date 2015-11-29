@@ -109,6 +109,14 @@ void CEntity::onKeyStates(CInstance* instance, const Uint8* keystates) {
         i.second->onKeyStates(instance, keystates);
 }
 
+void CEntity::onTextInput(CInstance* instance, std::string input) {
+    if(instance->player != this && instance->controller != this)
+        return;
+    
+    for(auto& i: components)
+        i.second->onTextInput(instance, input);
+}
+
 void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     
     if(toRemove || isDead)
