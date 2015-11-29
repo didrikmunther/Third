@@ -6,12 +6,14 @@ local Movable = class (
         self.component = component
         self.body = parent.body
 
-        self.jumpPower = 15.0
+        self.jumpPower = 13.0
         self.accelerationX = 1.5
         self.accelerationY = 100.0
         self.stoppingAccelerationX = 1.5
         self.stoppingAccelerationY = 100.0
 
+        self.hasJumpedOnWall = false
+                       
         self.hasWalkedX = false
         self.hasWalkedY = false
 
@@ -130,15 +132,15 @@ function Movable:onKeyStates(state)
         thisX = box.x
         thisY = box.y
         
-        for i = 1, 2 do
+        for i = 0, 0 do
         
-            spawnX = thisX + 50
-            spawnY = thisY + 75
+            spawnX = thisX + 20
+            spawnY = thisY + 60
             if(self.parent:hasProperty(EntityProperty.FLIP)) then
                 spawnX = thisX + 5
             end
 
-            bullet = self.parent.entityManager:createColoredEntity(Box(spawnX, spawnY, 5, 5), Color(200, 50, 50, 255))
+            bullet = self.parent.entityManager:createColoredEntity(Box(spawnX, spawnY, 15, 2), Color(255, 5, 0, 255))
             self.parent.entityManager:addParticle(bullet)
             script = game.getScript("Standard/Projectile")
             bullet:addComponent(self.component.instance, script)
@@ -252,17 +254,34 @@ function Movable:goDown()
     self.hasWalkedY = true
 end
 
-function Movable:jump()
+function Movable:doJump()
     body = self.parent.body
 
-	if(not self.parent.collisionSides.bottom) then
-        do return end
-    end
-    
     body.velY = body.velY - self.accelerationY
     if(body.velY < -self.jumpPower) then
         body.velY = -self.jumpPower
     end
+end
+
+function Movable:jump()
+    body = self.parent.body
+
+    if(self.parent.collisionSides.bottom) then
+        self.hasJumpedOnWall = false
+    end
+
+    if(self.hasJumpedOnWall == false and not self.parent.collisionSides.bottom and (self.parent.collisionSides.left or self.parent.collisionSides.right)) then
+        
+        self.hasJumpedOnWall = true
+        
+        self:doJump()
+    end
+	if(not self.parent.collisionSides.bottom) then
+        do return end
+    end
+
+    self:doJump()
+
 end
 
 function Movable:toggleNoClip()
