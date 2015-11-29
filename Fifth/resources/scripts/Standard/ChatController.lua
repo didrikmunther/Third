@@ -77,8 +77,12 @@ end
 function ChatController:onEvent(key, keyDown)
     if(not keyDown) then do return end end
 
-    if(key == KeyCode._RETURN) then
-        self.isTyping = not self.isTyping
+    if(key == KeyCode._RETURN or key == KeyCode._SLASH) then
+        if(key == KeyCode._SLASH) then
+            self.isTyping = true
+        else
+            self.isTyping = not self.isTyping
+        end
 
         if(not self.isTyping) then -- player has typed something
             toSay = self:parse(self.buffer)
