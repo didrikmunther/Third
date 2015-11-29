@@ -54,9 +54,15 @@ void CGame::_onEvent(SDL_Event* event) {
                     break;
             }
             break;
-            
+        case SDL_TEXTINPUT:
+            instance.controller->onEvent(&instance, *(int*)event->text.text, true);
+            break;
         case SDL_KEYDOWN:
-            instance.controller->onEvent(&instance, event->key.keysym.sym, true);
+            {
+                int key = event->key.keysym.sym;
+                if(key == SDLK_RETURN || key == SDLK_BACKSPACE)
+                    instance.controller->onEvent(&instance, key, true);
+            }
             if(ignoreEvents) break;
             instance.player->onEvent(&instance, event->key.keysym.sym, true);
             
