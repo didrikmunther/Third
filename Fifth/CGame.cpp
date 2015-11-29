@@ -158,6 +158,7 @@ void CGame::_restart() {
     CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Particle.lua");
     CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Serializable.lua");
     CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/GraphicScript.lua");
+    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/ExplodeOnDeath.lua");
     
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
     instance.entityManager.addEntity(temp, "Controller");

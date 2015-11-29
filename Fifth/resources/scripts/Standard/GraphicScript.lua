@@ -6,8 +6,7 @@ local GraphicScript = class(
         self.parent = parent
         self.component = component
 
-        parent:addComponent(self.component.instance, game.getScript("Standard/Living"))
-        parent:getComponent("Standard/Living").invincible = true
+        parent:addComponent(self.component.instance, game.getScript("Standard/ExplodeOnDeath"))
         parent:addProperty(EntityProperty.STATIC)
         parent:removeProperty(EntityProperty.COLLIDABLE)
         parent.defaultSprite = "lua"

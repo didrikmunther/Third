@@ -82,13 +82,6 @@ end
 
 function Movable:onEvent(key, keyDown)
     if(keyDown) then
-        if(key == KeyCode._SLASH) then
-            living = self.parent:getComponent("Standard/Living")
-            if(living ~= nil) then
-                living:heal(10, self.parent)
-            end
-        end
-
         if(key == KeyCode._1) then
             self:toggleNoClip()
         end
