@@ -64,6 +64,15 @@ function Npc:onLoop()
     end
 end
 
+function Npc:onCollision(target, sides)
+    if(target:compare(self.target)) then
+        living = target:getComponent("Standard/Living")
+        if(living ~= nil) then
+            living:damage(50, self.parent)
+        end
+    end
+end
+
 function Npc:onSerialize()
     c = self.component
 

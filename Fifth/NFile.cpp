@@ -72,6 +72,7 @@ void NFile::loadAssets(std::string fileName, CInstance* instance) {
     loadFonts(&d);
     loadSpriteSheets(&d, instance);
     loadSprites(&d);
+    loadScripts(&d, instance);
     
     log(LogType::SUCCESS, "Loaded map: \"", fileName.c_str(), "\" as \"", d["name"].GetString(), "\"");
 }
@@ -118,6 +119,21 @@ void NFile::loadSprites(rapidjson::Document* d) {
         CAssetManager::addSprite(sprite["name"].GetString(),
                                  sprite["spriteSheetKey"].GetString(),
                                  Box{offsets[0].GetInt(), offsets[1].GetInt(), offsets[2].GetInt(), offsets[3].GetInt()});
+    }
+}
+
+void NFile::loadScripts(rapidjson::Document* d, CInstance* instance) {
+    if(!d->HasMember("scripts"))
+        return;
+    
+    const rapidjson::Value& scripts = (*d)["scripts"];
+    for(rapidjson::SizeType i = 0; i < scripts.Size(); i++) {
+        const rapidjson::Value& script = scripts[i];
+        if(!script.IsString())
+            return;
+        
+        std::string path = script.GetString();
+        CAssetManager::addLuaScript(instance->L, "resources/scripts/" + path + ".lua");
     }
 }
 

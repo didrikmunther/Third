@@ -120,7 +120,7 @@ function Movable:onKeyStates(state)
         self:goDown()
     end
 
-    if(game:leftMousePressed()) then
+    if(game:leftMousePressed() and not self.parent.isDead) then
         box = self.parent.body.box
         thisX = box.x
         thisY = box.y
@@ -263,17 +263,17 @@ function Movable:jump()
         self.hasJumpedOnWall = false
     end
 
-    if(self.hasJumpedOnWall == false and not self.parent.collisionSides.bottom and (self.parent.collisionSides.left or self.parent.collisionSides.right)) then
-        
+    if(not self.hasJumpedOnWall and not self.parent.collisionSides.bottom and (self.parent.collisionSides.left or self.parent.collisionSides.right)) then
         self.hasJumpedOnWall = true
+
+        -- make wall jumping smoke effects here
         
         self:doJump()
     end
-	if(not self.parent.collisionSides.bottom) then
-        do return end
-    end
 
-    self:doJump()
+	if(self.parent.collisionSides.bottom) then
+        self:doJump()
+    end
 
 end
 

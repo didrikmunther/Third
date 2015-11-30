@@ -42,10 +42,10 @@ function GraphicScript:onClick()
     if(self.isTargeted) then
         entity = self.parent.entityManager:getEntityAtCoordinate(x, y, self.parent)
         if(entity ~= nil) then
-            entity:addComponent(self.component.instance, self.targetedScript)
-            if(targetedScript ~= nil) then
+            if(self.targetedScript ~= nil) then
+                entity:addComponent(self.component.instance, self.targetedScript)
                 component = entity:getComponent(self.targetedScript:getName())
-                if(component ~= nil) then
+                if(component ~= nil and component.onDeserialize ~= nil) then
                     component:onDeserialize(self.deserialize)
                 end
             end

@@ -93,7 +93,7 @@ function Living:damage(amount, damager)
         self.values[self.VALUE_HEALTH] = 0
         self.parent.isDead = true
 
-        self.parent:say("Killed by: " .. self.parent.entityManager:getNameOfEntity(damager:getComponent("Standard/Projectile").owner), "TESTFONT", ChatBubbleType.SAY)
+        --self.parent:say("Killed by: " .. self.parent.entityManager:getNameOfEntity(damager:getComponent("Standard/Projectile").owner), "TESTFONT", ChatBubbleType.SAY)
     end
 
     damageColor = Color(255, 0, 0, 255)

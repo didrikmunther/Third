@@ -149,28 +149,23 @@ void CGame::_restart() {
     CAnimation* anim = new CAnimation({"test1", "test2", "test3", "test4", "test5", "test6"}, 10);
     CAssetManager::addSprite(anim, "test7");
 
-    auto movable = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Movable.lua");
-    auto living = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Living.lua");
     auto controller = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Controller.lua");
-    auto chatController = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/ChatController.lua");
-    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Projectile.lua");
-    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Npc.lua");
-    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Particle.lua");
-    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Serializable.lua");
-    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/GraphicScript.lua");
-    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/ExplodeOnDeath.lua");
     
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
     instance.entityManager.addEntity(temp, "Controller");
     temp->addComponent(&instance, controller);
+    auto chatController = CAssetManager::getLuaScript("Standard/ChatController");
     temp->addComponent(&instance, chatController);
     instance.controller = temp;
     
-    temp = new CEntity(Box{50, -500, 16 * 4, 32 * 4}, "test1");
+    auto movable = CAssetManager::getLuaScript("Standard/Movable");
+    auto living = CAssetManager::getLuaScript("Standard/Living");
+    
+    temp = new CEntity(Box{50, -500, 16 * 4, 32 * 4}, "test2");
     instance.entityManager.addEntity(temp, "5:Player");
     temp->spriteStateTypes["WALKING"] = "test7";
-//    temp->spriteStateTypes[SpriteStateTypes::ASCENDING] =
-//    temp->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
+    temp->spriteStateTypes["ASCENDING"] = "test4";
+    temp->spriteStateTypes["DESCENDING"] = "test1";
     temp->addComponent(&instance, movable);
     temp->addComponent(&instance, living);
     instance.player = temp;

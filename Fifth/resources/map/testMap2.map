@@ -19,5 +19,17 @@
         {"name":"test6", 				"spriteSheetKey":"MAIN3", 				"offsets":[80, 0, 16, 24]},
         
         {"name":"lua",                  "spriteSheetKey":"MAIN",                "offsets":[48, 32, 16, 16]}
+    ],
+    
+    "scripts": [
+        "Standard/Movable",
+        "Standard/Living",
+        "Standard/ChatController",
+        "Standard/Projectile",
+        "Standard/Npc",
+        "Standard/Particle",
+        "Standard/Serializable",
+        "Standard/GraphicScript",
+        "Standard/ExplodeOnDeath"
     ]
 }
