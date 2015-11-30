@@ -56,6 +56,8 @@ RenderFlags = {
 KeyCode = {
     _UNKNOWN = 0,
 
+    _ARROW_UP = 1073741906,
+    _ARROW_DOWN = 1073741905,
     _RETURN = 13,
     _ESCAPE = 27,
     _BACKSPACE = 8,
