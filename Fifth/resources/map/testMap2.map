@@ -18,7 +18,10 @@
         {"name":"test5", 				"spriteSheetKey":"MAIN3", 				"offsets":[64, 0, 16, 24]},
         {"name":"test6", 				"spriteSheetKey":"MAIN3", 				"offsets":[80, 0, 16, 24]},
         
-        {"name":"lua",                  "spriteSheetKey":"MAIN",                "offsets":[48, 32, 16, 16]}
+        {"name":"lua",                  "spriteSheetKey":"MAIN",                "offsets":[48, 32, 16, 16]},
+        
+        {"name":"bunny",                "spriteSheetKey":"MAIN",                "offsets":[48, 16, 16, 16]},
+        {"name":"bunnyJump",            "spriteSheetKey":"MAIN",                "offsets":[64, 16, 16, 16]}
     ],
     
     "scripts": [

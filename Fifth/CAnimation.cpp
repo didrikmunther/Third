@@ -42,7 +42,7 @@ CSpriteSheet* CAnimation::getSpriteSheet() {
     return nullptr;
 }
 
-void CAnimation::onRender(Box destination, bool flip, int angle, int alpha, CWindow* window, CCamera* camera, RenderFlags renderFlags) {
+void CAnimation::onRender(CEntity* entity, Box destination, bool flip, int angle, int alpha, CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     int timePassed = SDL_GetTicks() - startTime;
     if(timePassed >= (1.0f /_imagesPerSecond) * 1000) {
         startTime = SDL_GetTicks();
@@ -58,7 +58,7 @@ void CAnimation::onRender(Box destination, bool flip, int angle, int alpha, CWin
         return;
     }
     
-    sprite->onRender(destination, flip, angle, alpha, window, camera, renderFlags);
+    sprite->onRender(entity, destination, flip, angle, alpha, window, camera, renderFlags);
     
     //NSurface::renderTexture(destination, *sprite->getSource(), window->getRenderer(), getSpriteSheet()->getTexture(), flip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE, angle);
 }

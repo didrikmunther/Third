@@ -22,7 +22,7 @@ public:
     
     CSpriteSheet* getSpriteSheet();
     
-    void onRender(Box destination, bool flip, int angle, int alpha, CWindow* window, CCamera* camera, RenderFlags renderFlags);
+    void onRender(CEntity* entity, Box destination, bool flip, int angle, int alpha, CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
 private:
     std::vector<std::string> sprites;

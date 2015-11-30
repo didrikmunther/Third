@@ -136,7 +136,7 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
             int spriteHeight = body->getH();
             int lean = (body->velX / 2.0f) /* + sin(body->getX() * 200) * 2*/;
             
-            getSprite()->onRender(Box{x, y, spriteWidth, spriteHeight}, hasProperty(EntityProperty::FLIP), lean, transparency, window, camera, renderFlags);
+            getSprite()->onRender(this, Box{x, y, spriteWidth, spriteHeight}, hasProperty(EntityProperty::FLIP), lean, transparency, window, camera, renderFlags);
         }
     }
     

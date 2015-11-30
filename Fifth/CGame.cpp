@@ -326,6 +326,7 @@ void CGame::_initLua() {
             .addData("camera", &CInstance::camera)
             .addData("gravity", &CInstance::gravity)
             .addFunction("loadAssets", &CInstance::loadAssets)
+            .addFunction("doLine", &CInstance::doLine)
         .endClass()
     
         .beginClass<CCamera>("Camera")

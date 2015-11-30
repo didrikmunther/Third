@@ -45,6 +45,7 @@ public:
     float gravity;
     
     void loadAssets(std::string path);
+    void doLine(std::string line);
     
     void closeInstance();
     

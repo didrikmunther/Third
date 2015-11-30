@@ -128,7 +128,8 @@ KeyCode = {
     _z = 122,
     _ou = 246,
     _ao = 228,
-    _uo = 229
+    _uo = 229,
+    _PARA = 167
 }
 
 ScanCode = {

@@ -30,6 +30,10 @@ void CInstance::loadAssets(std::string path) {
 
 }
 
+void CInstance::doLine(std::string line) {
+    luaL_dostring(L, line.c_str());
+}
+
 void CInstance::closeInstance() {
     entityManager.onCleanup();
     lua_close(L);

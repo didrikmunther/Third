@@ -11,7 +11,7 @@ local ChatController = class (
         self.width = 50
         self.initWidth = self.width
         self.height = 40
-        self.maxBufferSize = 52
+        self.maxBufferSize = 100000000
                               
         self.shift = false
     end
@@ -49,6 +49,14 @@ function ChatController:parse(input)
             if(commands[3] ~= nil) then
                 graphic.deserialize = commands[3]
             end
+        end
+
+        if((commands[1] == "exec" or commands[1] == "eval") and commands[2] ~= nil) then
+            line = "return function(self) " .. commands[2] .. " end"
+            if(not pcall(function() func = loadstring(line)() end) or not pcall(function() func(self) end)) then
+                print("Error in executing: " .. commands[2])
+            end
+            -- self.component.instance:doLine(line)
         end
 
         return ""
