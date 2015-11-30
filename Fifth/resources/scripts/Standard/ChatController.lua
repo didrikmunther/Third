@@ -52,11 +52,15 @@ function ChatController:parse(input)
         end
 
         if((commands[1] == "exec" or commands[1] == "eval") and commands[2] ~= nil) then
-            line = "return function(self) " .. commands[2] .. " end"
+            len = table.getn(commands)
+            result = ""
+            for i = 2,len do
+                result = result .. commands[i] .. " "
+                end
+            line = "return function(self) " .. result .. " end"
             if(not pcall(function() func = loadstring(line)() end) or not pcall(function() func(self) end)) then
                 print("Error in executing: " .. commands[2])
             end
-            -- self.component.instance:doLine(line)
         end
 
         return ""
