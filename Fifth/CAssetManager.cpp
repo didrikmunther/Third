@@ -23,7 +23,7 @@ CAssetManager::CAssetManager() { }
 
 CSprite* CAssetManager::addSprite(std::string name, std::string spriteSheetKey, Box source) {
     if(_Sprites.find(name) != _Sprites.end()) {
-        NFile::log(LogType::WARNING, "Couldn't add sprite: \"", name, "\", because it already exists.");
+//        NFile::log(LogType::WARNING, "Couldn't add sprite: \"", name, "\", because it already exists.");
         return _Sprites[name];
     } else if(_SpriteSheets.find(spriteSheetKey) == _SpriteSheets.end()) {
         NFile::log(LogType::WARNING, "Couldn't add sprite: \"", name, "\", because the spritesheet \"", spriteSheetKey, "\" didn't exist.");

@@ -64,6 +64,7 @@ int CGame::onExecute() {
         
         while(_delta >= 1) {    // Todo implement variable time step instead of this laggy thing
             if(_delta > 20) {       // To make sure it doesn't freeze
+                //NFile::log(LogType::WARNING, "Game exeeding delta limit (", 20, "), cleaning up particles.");
                 instance.entityManager.particleCleanup();
             }
             
@@ -145,8 +146,8 @@ void CGame::_restart() {
     CBackground* background = new CBackground("background", 0.1, BackgroundOffset{0, -450, 1.75f});
     instance.entityManager.addBackground("main", background);
     
-    CAnimation* anim = new CAnimation({"test1", "test2", "test3", "test4"}, 1);
-    CAssetManager::addSprite(anim, "test5");
+    CAnimation* anim = new CAnimation({"test1", "test2", "test3", "test4", "test5", "test6"}, 10);
+    CAssetManager::addSprite(anim, "test7");
 
     auto movable = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Movable.lua");
     auto living = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Living.lua");
@@ -156,6 +157,8 @@ void CGame::_restart() {
     CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Npc.lua");
     CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Particle.lua");
     CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Serializable.lua");
+    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/GraphicScript.lua");
+    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/ExplodeOnDeath.lua");
     
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
     instance.entityManager.addEntity(temp, "Controller");
@@ -163,8 +166,9 @@ void CGame::_restart() {
     temp->addComponent(&instance, chatController);
     instance.controller = temp;
     
-    temp = new CEntity(Box{50, -500, 16 * 4, 32 * 4}, "test5");
+    temp = new CEntity(Box{50, -500, 16 * 4, 32 * 4}, "test1");
     instance.entityManager.addEntity(temp, "5:Player");
+    temp->spriteStateTypes["WALKING"] = "test7";
 //    temp->spriteStateTypes[SpriteStateTypes::ASCENDING] =
 //    temp->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
     temp->addComponent(&instance, movable);
@@ -242,6 +246,10 @@ void CGame::_initLua() {
             .addFunction("createSprite", (CSprite* (*)(CSpriteSheet*, Box)) &CAssetManager::createSprite)
         .endNamespace()
     
+        .beginClass<CLuaObject>("LuaObject")
+            .addFunction("getScript", &CLuaObject::getScript)
+        .endClass()
+    
         .beginClass<CLuaScript>("LuaScript")
             .addFunction("getName", &CLuaScript::getName)
         .endClass()
@@ -268,6 +276,9 @@ void CGame::_initLua() {
             .addFunction("setSpriteStateType", &CEntity::setSpriteStateType)
             .addFunction("getSprite", &CEntity::getSprite)
             .addFunction("hasSprite", &CEntity::hasSprite)
+            .addFunction("setSprite", &CEntity::setSprite)
+            .addFunction("getSpriteFromState", &CEntity::getSpriteFromState)
+            .addData("defaultSprite", &CEntity::defaultSprite)
         .endClass()
     
         .beginClass<CComponent>("Component")
@@ -281,6 +292,7 @@ void CGame::_initLua() {
             .addCFunction("getMouse", &CComponent::getMouse)
             .addData("instance", &CComponent::tempInstance)
             .addData("camera", &CComponent::tempCamera)
+            .addData("object", &CComponent::object)
         .endClass()
     
         .beginClass<Box>("Box")
@@ -339,6 +351,8 @@ void CGame::_initLua() {
             .addData("velX", &CBody::velX)
             .addData("velY", &CBody::velY)
             .addData("box", &CBody::_rect)
+            .addFunction("setBox", &CBody::setBox)
+            .addFunction("setPosition", &CBody::setPosition)
         .endClass()
     
         .beginClass<KeyState>("KeyState")
@@ -358,6 +372,7 @@ void CGame::_initLua() {
             .addFunction("addParticle", &CEntityManager::addParticle)
             .addFunction("getEntity", &CEntityManager::getEntity)
             .addFunction("getNameOfEntity", &CEntityManager::getNameOfEntity)
+            .addFunction("getEntityAtCoordinate", &CEntityManager::getEntityAtCoordinate)
             .addCFunction("getEntities", &CEntityManager::pushEntities)
             .addFunction("createColoredEntity", (CEntity* (CEntityManager::*)(Box, Color)) &CEntityManager::createEntity)
             .addFunction("createSpriteEntity", (CEntity* (CEntityManager::*)(Box, std::string)) &CEntityManager::createEntity)

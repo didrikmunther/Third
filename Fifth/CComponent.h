@@ -48,14 +48,17 @@ public:
     
     void onLoop(CInstance* instance);
     void onInit(CInstance* instance);
-    void onEvent(CInstance* instance, int key, bool keyDown);
-    void onKeyStates(CInstance* instance, const Uint8* keystates);
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     void onRenderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     bool onCollision(CEntity* target, CollisionSides* collisionSides);
 
     void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance);
     void onDeserialize(std::string value, CInstance* instance);
+    
+    void onClick(int x, int y, CInstance* instance);
+    void onEvent(CInstance* instance, int key, bool keyDown);
+    void onKeyStates(CInstance* instance, const Uint8* keystates);
+    void onTextInput(CInstance* instance, std::string input);
     
     void callSimpleFunction(std::string function);
     

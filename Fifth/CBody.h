@@ -30,6 +30,17 @@ public:
     int getW();
     int getH();
     
+    void setBox(int x, int y, int w, int h) {
+        _rect.x = x;
+        _rect.y = y;
+        _rect.w = w;
+        _rect.h = h;
+    }
+    
+    void setPosition(int x, int y) {
+        setBox(x, y, _rect.w, _rect.h);
+    }
+    
     Position getCenter() { return Position{getX() + getW() / 2, getY() + getH() / 2}; }
     
     Box _rect;

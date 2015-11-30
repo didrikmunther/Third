@@ -87,8 +87,7 @@ struct CollisionSides {
 };
 
 class CEntity : public CSerializable {
-    
-friend class CComponent;
+    friend class CComponent;
     friend class CEntityManager;
     
 public:
@@ -98,13 +97,16 @@ public:
     
     void init();
     void onLoop(CInstance* instance);
-    void onEvent(CInstance* instance, int key, bool keyDown);
-    void onKeyStates(CInstance* instance, const Uint8* keystates);
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
     void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance);
     void onDeserialize(const rapidjson::Value* value, CInstance* instance);
+    
+    void onEvent(CInstance* instance, int key, bool keyDown);
+    void onKeyStates(CInstance* instance, const Uint8* keystates);
+    void onTextInput(CInstance* instance, std::string input);
+    void onClick(int x, int y, CInstance* instance);
     
     int collisionLayer;
     bool isOnCollisionLayer(int collisionLayer);

@@ -160,6 +160,33 @@ void CComponent::onDeserialize(std::string value, CInstance* instance) {
     tempInstance = nullptr;
 }
 
+void CComponent::onClick(int x, int y, CInstance* instance) {
+    if(!object.hasReference("onClick"))
+        return;
+    
+    tempInstance = instance;
+    
+    object.beginCall("onClick");
+    object.pushObject(x);
+    object.pushObject(y);
+    object.endCall(2, 0);
+    
+    tempInstance = nullptr;
+}
+
+void CComponent::onTextInput(CInstance* instance, std::string input) {
+    if(!object.hasReference("onTextInput"))
+        return;
+    
+    tempInstance = instance;
+    
+    object.beginCall("onTextInput");
+    object.pushObject(input);
+    object.endCall(1, 0);
+    
+    tempInstance = nullptr;
+}
+
 void CComponent::callSimpleFunction(std::string function) {
     if(!object.hasReference(function.c_str()))
         return;
@@ -191,7 +218,7 @@ void CComponent::renderText(int x, int y, int size, std::string text, std::strin
         return;
     
     CText textObj(text, size, fontKey, Color(r, b, g));
-    NSurface::renderText(x, y, &textObj, tempWindow);
+    NSurface::renderText(x, y, &textObj, tempWindow, size);
 }
 
 int CComponent::getRelativeMouse(lua_State* L) {

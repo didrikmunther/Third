@@ -6,12 +6,14 @@ local Movable = class (
         self.component = component
         self.body = parent.body
 
-        self.jumpPower = 15.0
+        self.jumpPower = 13.0
         self.accelerationX = 1.5
         self.accelerationY = 100.0
         self.stoppingAccelerationX = 1.5
         self.stoppingAccelerationY = 100.0
 
+        self.hasJumpedOnWall = false
+                       
         self.hasWalkedX = false
         self.hasWalkedY = false
 
@@ -68,6 +70,14 @@ function Movable:onLoop()
     self.hasWalkedX = false
     self.hasWalkedY = false
 
+    if(body.velX ~= 0) then
+        self.parent:setSprite(self.parent:getSpriteFromState("WALKING"))
+    end
+
+    if(self.isFlying) then
+        self.parent:setSprite(self.parent:getSpriteFromState("FLYING"))
+    end
+
 end
 
 function Movable:onEvent(key, keyDown)
@@ -76,10 +86,9 @@ function Movable:onEvent(key, keyDown)
             living = self.parent:getComponent("Standard/Living")
             if(living ~= nil) then
                 living:heal(10, self.parent)
-                
             end
         end
-        
+
         if(key == KeyCode._1) then
             self:toggleNoClip()
         end
@@ -104,6 +113,7 @@ function Movable:onEvent(key, keyDown)
 end
 
 function Movable:onKeyStates(state)
+
     if(state:hasState(ScanCode._D)) then
         self:goRight()
     end
@@ -121,19 +131,40 @@ function Movable:onKeyStates(state)
         box = self.parent.body.box
         thisX = box.x
         thisY = box.y
+        
+        for i = 0, 0 do
+        
+            spawnX = thisX + 36
+            spawnY = thisY + 58
+            if(self.parent:hasProperty(EntityProperty.FLIP)) then
+                spawnX = thisX + 5
+            end
 
-        bullet = self.parent.entityManager:createColoredEntity(Box(thisX, thisY - 100, 5, 5), Color(200, 50, 50, 255))
-        self.parent.entityManager:addParticle(bullet)
-        script = game.getScript("Standard/Projectile")
-        bullet:addComponent(self.component.instance, script)
-        bullet:getComponent("Standard/Projectile"):onDeserialize('{"owner":"' .. self.parent.entityManager:getNameOfEntity(self.parent) .. '"}')
+            bullet = self.parent.entityManager:createColoredEntity(Box(spawnX, spawnY, 5, 5), Color(0, math.random(255), 0, 0))
+            self.parent.entityManager:addParticle(bullet)
+            script = game.getScript("Standard/Projectile")
+            bullet:addComponent(self.component.instance, script)
+            bullet:getComponent("Standard/Projectile"):onDeserialize('{"owner":"' .. self.parent.entityManager:getNameOfEntity(self.parent) .. '"}')
 
-        tBody = self.parent.body
-        bBody = bullet:getComponent("Standard/Projectile").parent.body
-        bBody.velX = bBody.velX + tBody.velX
-        bBody.velY = bBody.velY + tBody.velY
+            tBody = self.parent.body
+            bBody = bullet:getComponent("Standard/Projectile").parent.body -- must do it this way
+            
+            bBody.velX = 11
+            bBody.velY = -1 * (math.random(5))
+            if(self.parent:hasProperty(EntityProperty.FLIP)) then
+                bBody.velX = bBody.velX * -1
+            end
+            
+            bBody.velX = bBody.velX + tBody.velX
+            bBody.velY = bBody.velY + tBody.velY
+        
+        end
 
     end
+end
+
+function Movable:onClick()
+
 end
 
 function Movable:onSerialize()
@@ -227,17 +258,34 @@ function Movable:goDown()
     self.hasWalkedY = true
 end
 
-function Movable:jump()
+function Movable:doJump()
     body = self.parent.body
 
-	if(not self.parent.collisionSides.bottom) then
-        do return end
-    end
-    
     body.velY = body.velY - self.accelerationY
     if(body.velY < -self.jumpPower) then
         body.velY = -self.jumpPower
     end
+end
+
+function Movable:jump()
+    body = self.parent.body
+
+    if(self.parent.collisionSides.bottom) then
+        self.hasJumpedOnWall = false
+    end
+    
+    if(self.hasJumpedOnWall == false and not self.parent.collisionSides.bottom and (self.parent.collisionSides.left or self.parent.collisionSides.right)) then
+        
+        self.hasJumpedOnWall = true
+        
+        self:doJump()
+    end
+	if(not self.parent.collisionSides.bottom) then
+        do return end
+    end
+
+    self:doJump()
+
 end
 
 function Movable:toggleNoClip()

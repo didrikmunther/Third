@@ -24,7 +24,7 @@ CChatBubble::CChatBubble(std::string text, CEntity* target, std::string fontKey,
     }
         
     int textSize = 20;
-    int letterPerSecond = 5;
+    int letterPerSecond = 100;
     bool instantText = false;
         
     switch(type) {
@@ -97,15 +97,15 @@ void CChatBubble::onRender(CWindow* window, CCamera* camera, RenderFlags renderF
     if(_TextVector[0].getFont() == nullptr)
         return;
     
-    int marginX = 4;
+    int marginX = 2;
     int marginY = 2;
     
-    int floatOverHead = 20;
+    int floatOverHead = 32;
     
     int boxX = _target->body->getX() + _target->body->getW() / 2 - _widestLine / 2;
     int boxY = _target->body->getY() - _totalHeight - floatOverHead;
-    int boxW = _widestLine;
-    int boxH = _totalHeight;
+    int boxW = _widestLine + marginX;
+    int boxH = _totalHeight + marginY;
     
     if(camera->collision(boxX,
                          boxY,
@@ -116,7 +116,7 @@ void CChatBubble::onRender(CWindow* window, CCamera* camera, RenderFlags renderF
                              boxW,
                              boxH,
                              window, _rB, _gB, _bB, 100);
-    
+        
         int currentLine = 0;
         auto i = _TextVector.begin();
         while(i != _TextVector.end()) {

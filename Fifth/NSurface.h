@@ -56,7 +56,7 @@ namespace NSurface {
 
     void renderRect(int x, int y, int w, int h, CWindow* window, int r, int g, int b, int a = 255);
     void renderSprite(int x, int y, int w, int h, CSprite* sprite, CWindow* window, SDL_RendererFlip flip, int a = 255);
-    void renderText(int x, int y, CText* text, CWindow* window);
+    void renderText(int x, int y, CText* text, CWindow* window, float size = 1);
     void renderTexture(int x, int y, int w, int h, SDL_Renderer* renderer, SDL_Texture *texture);
     void renderTexture(Box destination, SDL_Rect src, SDL_Renderer* renderer, SDL_Texture* texture, SDL_RendererFlip flip, int angle, int a = 255);
     void renderLine(Line line, SDL_Renderer* renderer, CCamera* camera = nullptr);

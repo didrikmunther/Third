@@ -11,7 +11,7 @@ function Controller:onInit()
     self.parent:addProperty(EntityProperty.STATIC)
     self.parent:addProperty(EntityProperty.HIDDEN)
     self.parent:removeProperty(EntityProperty.COLLIDABLE)
-    self.component.instance.gravity = 0.3
+    self.component.instance.gravity = 0.435
 
     self.component.instance:loadAssets("resources/map/testMap2.map")
     self.component.instance:loadAssets("resources/map/testMap1.map")
@@ -32,6 +32,10 @@ function Controller:onEvent(key, keyDown)
             else
                 camera.cameraSway = camera.cameraSway - 10
             end
+        end
+
+        if(key == KeyCode._8) then
+            
         end
 
         if(key == KeyCode._3) then -- Collision borders

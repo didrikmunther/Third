@@ -4,15 +4,20 @@
     "author":"Malaxiz Wayne",
     
     "spriteSheets": [
-        {"name":"MAIN", 				"path":"resources/gfx/sheet.png"}
+        {"name":"MAIN", 				"path":"resources/gfx/sheet.png"},
+        {"name":"MAIN3",                "path":"resources/gfx/player_run.png"}
     ],
     
     "sprites": [
-        {"name":"player", 				"spriteSheetKey":"MAIN", 				"offsets":[32, 0, 16, 26]},
+        {"name":"player", 				"spriteSheetKey":"MAIN", 				"offsets":[32, 0, 16, 32]},
         
-        {"name":"test1", 				"spriteSheetKey":"MAIN", 				"offsets":[32, 0, 16, 26]},
-        {"name":"test2", 				"spriteSheetKey":"MAIN", 				"offsets":[32, 0, 16, 26]},
-        {"name":"test3", 				"spriteSheetKey":"MAIN", 				"offsets":[32, 0, 16, 26]},
-        {"name":"test4", 				"spriteSheetKey":"MAIN", 				"offsets":[32, 0, 16, 26]}
+        {"name":"test1", 				"spriteSheetKey":"MAIN3", 				"offsets":[0, 0, 16, 24]},
+        {"name":"test2", 				"spriteSheetKey":"MAIN3", 				"offsets":[16, 0, 16, 24]},
+        {"name":"test3", 				"spriteSheetKey":"MAIN3", 				"offsets":[32, 0, 16, 24]},
+        {"name":"test4", 				"spriteSheetKey":"MAIN3", 				"offsets":[48, 0, 16, 24]},
+        {"name":"test5", 				"spriteSheetKey":"MAIN3", 				"offsets":[64, 0, 16, 24]},
+        {"name":"test6", 				"spriteSheetKey":"MAIN3", 				"offsets":[80, 0, 16, 24]},
+        
+        {"name":"lua",                  "spriteSheetKey":"MAIN",                "offsets":[48, 32, 16, 16]}
     ]
 }

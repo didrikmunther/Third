@@ -23,9 +23,11 @@ void CGame::_handleKeyStates() {
 
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
     
-    instance.controller->onKeyStates(&instance, keystate);
+    if(instance.controller)
+        instance.controller->onKeyStates(&instance, keystate);
     if(ignoreEvents) return;
-    instance.player->onKeyStates(&instance, keystate);
+    if(instance.player)
+        instance.player->onKeyStates(&instance, keystate);
 }
 
 void CGame::_onEvent(SDL_Event* event) {
@@ -51,6 +53,12 @@ void CGame::_onEvent(SDL_Event* event) {
                     isFocused = false;
                     break;
             }
+            break;
+            
+        case SDL_TEXTINPUT:
+            instance.controller->onTextInput(&instance, (std::string)event->text.text);
+            if(ignoreEvents) break;
+                instance.player->onTextInput(&instance, (std::string)event->text.text);
             break;
             
         case SDL_KEYDOWN:
@@ -126,31 +134,46 @@ void CGame::_onEvent(SDL_Event* event) {
             break;
             
         case SDL_KEYUP:
-            instance.controller->onEvent(&instance, event->key.keysym.sym, false);
+            if(instance.controller)
+                instance.controller->onEvent(&instance, event->key.keysym.sym, false);
             if(ignoreEvents) break;
-            instance.player->onEvent(&instance, event->key.keysym.sym, false);
+            if(instance.player)
+                instance.player->onEvent(&instance, event->key.keysym.sym, false);
             break;
             
         default:
             break;
             
         case SDL_MOUSEBUTTONDOWN:
+        {
+            bool type = 0;
             
             if(NMouse::leftMouseButtonPressed()) {
-                auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.camera), NMouse::relativeMouseY(instance.camera));
-                if(tempTarget != nullptr) {
-                    std::string toSay = "Name: \"" + instance.entityManager.getNameOfEntity(tempTarget) +
-                    "\", CollisionLayer: " + std::to_string(tempTarget->collisionLayer);
-                    tempTarget->say(toSay, "TESTFONT", ChatBubbleType::SAY);
-                }
+//                auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.camera), NMouse::relativeMouseY(instance.camera));
+//                if(tempTarget != nullptr) {
+//                    std::string toSay = "Name: \"" + instance.entityManager.getNameOfEntity(tempTarget) +
+//                    "\", CollisionLayer: " + std::to_string(tempTarget->collisionLayer);
+//                    tempTarget->say(toSay, "TESTFONT", ChatBubbleType::SAY);
+//                }
             }
             
             if(NMouse::rightMouseButtonPressed()) {
+                type = 1;
                 auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.camera), NMouse::relativeMouseY(instance.camera));
                 if(tempTarget != nullptr) {
                     tempTarget->isDead = true;
                 }
             }
+            
+            int x = NMouse::relativeMouseX(instance.camera);
+            int y = NMouse::relativeMouseY(instance.camera);
+            auto entities = instance.entityManager.getEntitiesAtCoordinate(x, y);
+            
+            for(auto& i: entities) {
+                i->onClick(x, y, &instance);
+            }
+            
+        }
             break;
     }
     

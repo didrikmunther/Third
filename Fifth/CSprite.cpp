@@ -17,6 +17,6 @@
 CSprite::CSprite(CSpriteSheet* spriteSheet, Box rect) :
 _spriteSheet(spriteSheet), _source({rect.x, rect.y, rect.w, rect.h}) {  }
 
-void CSprite::onRender(Box destination, bool flip, int angle, CWindow* window, CCamera* camera, RenderFlags renderFlags) {
-    NSurface::renderTexture(destination, *getSource(), window->getRenderer(), getSpriteSheet()->getTexture(), flip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE, angle);
+void CSprite::onRender(Box destination, bool flip, int angle, int alpha, CWindow* window, CCamera* camera, RenderFlags renderFlags) {
+    NSurface::renderTexture(destination, *getSource(), window->getRenderer(), getSpriteSheet()->getTexture(), flip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE, angle, alpha);
 }

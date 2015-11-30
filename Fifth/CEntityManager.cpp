@@ -75,12 +75,25 @@ int CEntityManager::pushEntities(lua_State* L) {
     return 1;
 }
 
-CEntity* CEntityManager::getEntityAtCoordinate(int x, int y) {
+CEntity* CEntityManager::getEntityAtCoordinate(int x, int y, CEntity* except /* = nullptr */) {
     for (auto &i: _entities) {
-        if(i.second->coordinateCollision(x, y, 1, 1))
-           return i.second;
+        if(i.second->coordinateCollision(x, y, 1, 1)) {
+            if(i.second != except)
+                return i.second;
+        }
     }
     return nullptr;
+}
+
+std::vector<CEntity*> CEntityManager::getEntitiesAtCoordinate(int x, int y) {
+    std::vector<CEntity*> toReturn = {};
+    
+    for (auto &i: _entities) {
+        if(i.second->coordinateCollision(x, y, 1, 1))
+            toReturn.push_back(i.second);
+    }
+    
+    return toReturn;
 }
 
 std::string CEntityManager::getNameOfEntity(CEntity *entity) {
