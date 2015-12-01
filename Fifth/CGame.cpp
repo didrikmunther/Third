@@ -264,11 +264,12 @@ void CGame::_initLua() {
             .addFunction("removeProperty", &CEntity::removeProperty)
             .addFunction("hasProperty", &CEntity::hasProperty)
             .addData("transparency", &CEntity::transparency)
+            .addData("angle", &CEntity::angle)
             .addFunction("say", (void (CEntity::*)(std::string, std::string, int)) &CEntity::say)
             .addFunction("addTextObject", &CEntity::addTextObject)
             .addFunction("addCombatText", &CEntity::addCombatText)
             .addFunction("compare", &CEntity::compare)
-            .addFunction("setSpriteStateType", &CEntity::setSpriteStateType)
+            .addFunction("setSpriteOnState", &CEntity::setSpriteOnState)
             .addFunction("getSprite", &CEntity::getSprite)
             .addFunction("hasSprite", &CEntity::hasSprite)
             .addFunction("setSprite", &CEntity::setSprite)
@@ -300,6 +301,11 @@ void CGame::_initLua() {
     
         .beginClass<Color>("Color")
             .addConstructor<void(*) (int, int, int, int)>()
+        .endClass()
+    
+        .beginClass<SDL_Point>("SDL_Point")
+            .addData("x", &SDL_Point::x)
+            .addData("y", &SDL_Point::y)
         .endClass()
     
         .beginClass<CSpriteSheet>("SpriteSheet")

@@ -78,6 +78,8 @@ function Movable:onLoop()
         self.parent:setSprite(self.parent:getSpriteFromState("FLYING"))
     end
 
+    self.parent.angle = -(body.velX / 2.0)
+
 end
 
 function Movable:onEvent(key, keyDown)
