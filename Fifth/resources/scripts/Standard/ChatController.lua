@@ -7,11 +7,13 @@ local ChatController = class (
 
         self.isTyping = false
         self.buffer = ""
-
+        self.currentChatIndex = 1
+        self.chatArray = {""}
+                              
         self.width = 50
         self.initWidth = self.width
         self.height = 40
-        self.maxBufferSize = 100000000
+        self.maxBufferSize = 1024
                               
         self.shift = false
         self.currentPos = 0
@@ -84,11 +86,23 @@ function ChatController:onTextInput(input)
             self.buffer = self.buffer .. input
         end
     end
-
 end
 
 function ChatController:onEvent(key, keyDown)
     if(not keyDown) then do return end end
+
+    if(key == KeyCode._ARROW_DOWN) then
+        if(table.getn(self.chatArray) > 1 and self.currentChatIndex > 1 and self.chatArray[self.currentChatIndex] ~= nil) then
+            self.currentChatIndex = self.currentChatIndex - 1
+            self.buffer = self.chatArray[self.currentChatIndex]
+        end
+    end
+    if(key == KeyCode._ARROW_UP) then
+        if(self.currentChatIndex < table.getn(self.chatArray) and self.chatArray[self.currentChatIndex] ~= nil) then
+            self.currentChatIndex = self.currentChatIndex + 1
+            self.buffer = self.chatArray[self.currentChatIndex]
+        end
+    end
 
     if(key == KeyCode._RETURN or key == KeyCode._SLASH) then
         if(key == KeyCode._SLASH) then
@@ -102,6 +116,7 @@ function ChatController:onEvent(key, keyDown)
             if(toSay ~= "") then
                 self.component.instance.player:say(toSay, "TESTFONT", ChatBubbleType.SAY)
             end
+            table.insert(self.chatArray, self.buffer)
             self.buffer = ""
             self.component.instance.game.ignoreEvents = false
             do return end
