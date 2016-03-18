@@ -132,7 +132,14 @@ KeyCode = {
     _ou = 246,
     _ao = 228,
     _uo = 229,
+<<<<<<< HEAD
     _PARA = 167
+=======
+
+    _PARA = 167,
+    _ARROW_UP = 1073741906,
+    _ARROW_DOWN = 1073741905
+>>>>>>> Malaxiz/network
 }
 
 ScanCode = {

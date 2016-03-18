@@ -45,6 +45,7 @@ void CEntity::init() {
     collisionSides = false;
     collisionLayer = CollisionLayers::LAYER0;
     transparency = 255;
+    angle = 0;
 }
 
 void CEntity::_cleanUpTextVector() {
@@ -132,11 +133,15 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
                 NSurface::renderRect(x, y, w, h,
                                      window, color.r, color.g, color.b);
         else {
+<<<<<<< HEAD
             int spriteWidth = body->getW();
             int spriteHeight = body->getH();
             int lean = 0;//(body->velX / 4.0f) /* + sin(body->getX() * 200) * 2*/;
             
             getSprite()->onRender(this, Box{x, y, spriteWidth, spriteHeight}, hasProperty(EntityProperty::FLIP), lean, transparency, window, camera, renderFlags);
+=======
+            getSprite()->onRender(this, Box{x, y, body->getW(), body->getH()}, hasProperty(EntityProperty::FLIP), angle, transparency, window, camera, renderFlags);
+>>>>>>> Malaxiz/network
         }
     }
     
@@ -265,8 +270,8 @@ void CEntity::say(std::string text, std::string fontKey, ChatBubbleType type) {
     guiTextVector.push_back(temp);
 }
 
-void CEntity::setSpriteStateType(std::string type, std::string sprite) {
-    spriteStateTypes[type] = sprite;
+void CEntity::setSpriteOnState(std::string state, std::string sprite) {
+    spriteStateTypes[state] = sprite;
 }
 
 std::string CEntity::getSpriteFromState(std::string key) {

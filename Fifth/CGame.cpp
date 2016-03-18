@@ -145,6 +145,7 @@ void CGame::_restart() {
     CBackground* background = new CBackground("background", 0.1, BackgroundOffset{0, -450, 1.75f});
     instance.entityManager.addBackground("main", background);
     
+<<<<<<< HEAD
     CAnimation* anim = new CAnimation({"test6", "test5", "test4", "test3", "test2", "test1"}, 10);
     //CAnimation* anim = new CAnimation({"test6"}, 10);
     CAssetManager::addSprite(anim, "test7");
@@ -153,6 +154,11 @@ void CGame::_restart() {
     CAnimation* frog_anim = new CAnimation({"frog-0" , "frog-2"}, 10);
     CAssetManager::addSprite(frog_anim, "frog-move");
     
+=======
+    CAnimation* anim = new CAnimation({"test1", "test2", "test3", "test4", "test5", "test6"}, 10);
+    CAssetManager::addSprite(anim, "test7");
+
+>>>>>>> Malaxiz/network
     auto controller = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Controller.lua");
     
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
@@ -165,11 +171,19 @@ void CGame::_restart() {
     auto movable = CAssetManager::getLuaScript("Standard/Movable");
     auto living = CAssetManager::getLuaScript("Standard/Living");
     
+<<<<<<< HEAD
     temp = new CEntity(Box{50, -500, 64, 64}, "frog-0");
     instance.entityManager.addEntity(temp, "5:Player");
     temp->spriteStateTypes["WALKING"] = "frog-move";
     temp->spriteStateTypes["ASCENDING"] = "frog-1";
     temp->spriteStateTypes["DESCENDING"] = "frog-1";
+=======
+    temp = new CEntity(Box{50, -500, 16 * 4, 32 * 4}, "test2");
+    instance.entityManager.addEntity(temp, "5:Player");
+    temp->spriteStateTypes["WALKING"] = "test7";
+    temp->spriteStateTypes["ASCENDING"] = "test4";
+    temp->spriteStateTypes["DESCENDING"] = "test1";
+>>>>>>> Malaxiz/network
     temp->addComponent(&instance, movable);
     temp->addComponent(&instance, living);
     instance.player = temp;
@@ -272,11 +286,12 @@ void CGame::_initLua() {
             .addFunction("removeProperty", &CEntity::removeProperty)
             .addFunction("hasProperty", &CEntity::hasProperty)
             .addData("transparency", &CEntity::transparency)
+            .addData("angle", &CEntity::angle)
             .addFunction("say", (void (CEntity::*)(std::string, std::string, int)) &CEntity::say)
             .addFunction("addTextObject", &CEntity::addTextObject)
             .addFunction("addCombatText", &CEntity::addCombatText)
             .addFunction("compare", &CEntity::compare)
-            .addFunction("setSpriteStateType", &CEntity::setSpriteStateType)
+            .addFunction("setSpriteOnState", &CEntity::setSpriteOnState)
             .addFunction("getSprite", &CEntity::getSprite)
             .addFunction("hasSprite", &CEntity::hasSprite)
             .addFunction("setSprite", &CEntity::setSprite)
@@ -310,6 +325,11 @@ void CGame::_initLua() {
             .addConstructor<void(*) (int, int, int, int)>()
         .endClass()
     
+        .beginClass<SDL_Point>("SDL_Point")
+            .addData("x", &SDL_Point::x)
+            .addData("y", &SDL_Point::y)
+        .endClass()
+    
         .beginClass<CSpriteSheet>("SpriteSheet")
         .endClass()
     
@@ -335,7 +355,10 @@ void CGame::_initLua() {
             .addData("gravity", &CInstance::gravity)
             .addFunction("loadAssets", &CInstance::loadAssets)
             .addFunction("doLine", &CInstance::doLine)
+<<<<<<< HEAD
             .addFunction("sys" , &CInstance::sys)
+=======
+>>>>>>> Malaxiz/network
         .endClass()
     
         .beginClass<CCamera>("Camera")

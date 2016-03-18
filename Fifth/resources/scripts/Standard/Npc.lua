@@ -68,7 +68,11 @@ function Npc:onCollision(target, sides)
     if(target:compare(self.target)) then
         living = target:getComponent("Standard/Living")
         if(living ~= nil) then
+<<<<<<< HEAD
             living:damage(1, self.parent)
+=======
+            living:damage(50, self.parent)
+>>>>>>> Malaxiz/network
         end
     end
 end

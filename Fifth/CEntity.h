@@ -131,11 +131,10 @@ public:
     void say(std::string text, std::string fontKey, int type);
     void say(std::string text, std::string fontKey, ChatBubbleType type);
     
-    void setSpriteStateType(std::string type, std::string sprite);
+    void setSpriteOnState(std::string state, std::string sprite);
     std::map<std::string, std::string> spriteStateTypes;
     std::string getSpriteFromState(std::string key);
     std::string defaultSprite;
-    //std::string spriteStateTypes[SpriteStateTypes::TOTAL_SPRITESTATETYPES];
     
     void setSprite(std::string spriteKey);
     CSprite* getSprite();
@@ -151,6 +150,7 @@ public:
     int getComponent(lua_State* L);
     
     int transparency;
+    int angle;
     
     bool isDead;
     bool toRemove;

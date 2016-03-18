@@ -6,7 +6,7 @@ local Movable = class (
         self.component = component
         self.body = parent.body
 
-        self.jumpPower = 15.0
+        self.jumpPower = 13.0
         self.accelerationX = 1.5
         self.accelerationY = 100.0
         self.stoppingAccelerationX = 1.5
@@ -79,6 +79,11 @@ function Movable:onLoop()
         self.parent:setSprite(self.parent:getSpriteFromState("FLYING"))
     end
 
+<<<<<<< HEAD
+=======
+    self.parent.angle = -(body.velX / 2.0)
+
+>>>>>>> Malaxiz/network
 end
 
 function Movable:onEvent(key, keyDown)
@@ -128,13 +133,22 @@ function Movable:onKeyStates(state)
         
         for i = 0, 0 do
         
+<<<<<<< HEAD
             spawnX = thisX 
             spawnY = thisY + 40
+=======
+            spawnX = thisX + 20
+            spawnY = thisY + 60
+>>>>>>> Malaxiz/network
             if(self.parent:hasProperty(EntityProperty.FLIP)) then
                 spawnX = thisX + 5
             end
 
+<<<<<<< HEAD
             bullet = self.parent.entityManager:createColoredEntity(Box(spawnX, spawnY, 8, 8), Color(math.random(255), 255, 0, 255))
+=======
+            bullet = self.parent.entityManager:createColoredEntity(Box(spawnX, spawnY, 15, 2), Color(255, 5, 0, 255))
+>>>>>>> Malaxiz/network
             self.parent.entityManager:addParticle(bullet)
             script = game.getScript("Standard/Projectile")
             bullet:addComponent(self.component.instance, script)

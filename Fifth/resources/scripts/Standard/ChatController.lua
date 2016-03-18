@@ -16,6 +16,7 @@ local ChatController = class (
         self.maxBufferSize = 1024
                               
         self.shift = false
+        self.currentPos = 0
     end
 )
 
@@ -36,12 +37,15 @@ function ChatController:parse(input)
         commands = {}
         for w in input:gmatch("%S+") do table.insert(commands, w) end
 
+<<<<<<< HEAD
         len = table.getn(commands)
         parameters = ""
         for i = 2,len do
             parameters = parameters .. commands[i] .. " "
         end
 
+=======
+>>>>>>> Malaxiz/network
         -- PARSING
 
         if(commands[1] == "restart") then self.component.instance.game:restart() end
@@ -60,7 +64,16 @@ function ChatController:parse(input)
         end
 
         if((commands[1] == "exec" or commands[1] == "eval") and commands[2] ~= nil) then
+<<<<<<< HEAD
             line = "return function(self) " .. parameters .. " end"
+=======
+            len = table.getn(commands)
+            result = ""
+            for i = 2,len do
+                result = result .. commands[i] .. " "
+                end
+            line = "return function(self) " .. result .. " end"
+>>>>>>> Malaxiz/network
             if(not pcall(function() func = loadstring(line)() end) or not pcall(function() func(self) end)) then
                 print("Error in executing: " .. commands[2])
             end
@@ -91,6 +104,7 @@ end
 function ChatController:onEvent(key, keyDown)
     if(not keyDown) then do return end end
 
+<<<<<<< HEAD
     if(key == KeyCode._ARROW_UP) then
         if(table.getn(self.chatArray) > 1 and self.currentChatIndex > 1 and self.chatArray[self.currentChatIndex] ~= nil) then
             self.buffer = self.chatArray[self.currentChatIndex]
@@ -102,6 +116,18 @@ function ChatController:onEvent(key, keyDown)
         if(self.currentChatIndex < table.getn(self.chatArray) and self.chatArray[self.currentChatIndex] ~= nil) then
             self.buffer = self.chatArray[self.currentChatIndex]
             self.currentChatIndex = self.currentChatIndex + 1
+=======
+    if(key == KeyCode._ARROW_DOWN) then
+        if(table.getn(self.chatArray) > 1 and self.currentChatIndex > 1 and self.chatArray[self.currentChatIndex] ~= nil) then
+            self.currentChatIndex = self.currentChatIndex - 1
+            self.buffer = self.chatArray[self.currentChatIndex]
+        end
+    end
+    if(key == KeyCode._ARROW_UP) then
+        if(self.currentChatIndex < table.getn(self.chatArray) and self.chatArray[self.currentChatIndex] ~= nil) then
+            self.currentChatIndex = self.currentChatIndex + 1
+            self.buffer = self.chatArray[self.currentChatIndex]
+>>>>>>> Malaxiz/network
         end
     end
 

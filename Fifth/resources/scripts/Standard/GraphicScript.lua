@@ -34,6 +34,25 @@ function GraphicScript:onLoop()
     end
 end
 
+<<<<<<< HEAD
+=======
+function GraphicScript:onSerialize()
+    c = self.component
+
+    if(self.targetedScript ~= nil) then
+        c:addString("script", self.targetedScript:getName())
+    end
+end
+
+function GraphicScript:onDeserialize(value)
+    d = json.decode(value)
+
+    if(d.script ~= nil) then
+        self.targetedScript = getVal(self.targetedScript, game.getScript(d.script))
+    end
+end
+
+>>>>>>> Malaxiz/network
 function GraphicScript:onClick()
     x, y = self.component:getRelativeMouse()
     x2, y2 = self.component:getMouse()
