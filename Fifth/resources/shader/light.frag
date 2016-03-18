@@ -7,9 +7,7 @@ uniform float frag_LightAttenuation;	// We could call this its luminosity
 uniform vec2 frag_ScreenResolution; // We need this because SFML reverses the Y axis. Note: we could just be using a single float for the Y resolution.
 
 
-void main()
-
-{
+void main() {
     
     vec2 baseDistance =  gl_FragCoord.xy; // Storing our pixel's position
     

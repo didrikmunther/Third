@@ -9,6 +9,7 @@
 #include <fstream>
 #include <cmath>
 #include <iomanip>
+#include <string>
 
 #include <SDL2_image/SDL_image.h>
 #include <SDL2_ttf/SDL_ttf.h>
@@ -73,10 +74,6 @@ int CGame::onExecute() {
             
             _updates++;
             _delta--;
-            
-            auto sayer = instance.entityManager.getEntity("n:bush");
-            if(sayer)
-                sayer->say(_title.str() + " Gravity: " + std::to_string(instance.gravity), "TESTFONT", ChatBubbleType::INSTANT_TALK);
         }
         
         _onRender();
@@ -89,6 +86,7 @@ int CGame::onExecute() {
             _title << _updates << " ups, " << _frames << " fps";
             _updates = 0;
             _frames = 0;
+            
         }
     }
     
@@ -99,10 +97,11 @@ int CGame::onExecute() {
 }
 
 int CGame::_onInit() {
-    
+#ifdef __APPLE__
     _initRelativePaths();
+#endif
     NFile::clearFile(LOG_FILE);     // Clear log file
-    srand((Uint16)time(nullptr));
+    srand((Uint16)time(0));
     
     NFile::log(LogType::ALERT, "Initializing game...");
     
@@ -146,39 +145,40 @@ void CGame::_restart() {
     CBackground* background = new CBackground("background", 0.1, BackgroundOffset{0, -450, 1.75f});
     instance.entityManager.addBackground("main", background);
     
-    CAnimation* anim = new CAnimation({"test1", "test2", "test3", "test4", "test5", "test6"}, 10);
+    CAnimation* anim = new CAnimation({"test6", "test5", "test4", "test3", "test2", "test1"}, 10);
+    //CAnimation* anim = new CAnimation({"test6"}, 10);
     CAssetManager::addSprite(anim, "test7");
-
-    auto movable = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Movable.lua");
-    auto living = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Living.lua");
+    
+    //frog-move
+    CAnimation* frog_anim = new CAnimation({"frog-0" , "frog-2"}, 10);
+    CAssetManager::addSprite(frog_anim, "frog-move");
+    
     auto controller = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Controller.lua");
-    auto chatController = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/ChatController.lua");
-    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Projectile.lua");
-    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Npc.lua");
-    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Particle.lua");
-    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Serializable.lua");
-    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/GraphicScript.lua");
-    CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/ExplodeOnDeath.lua");
     
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
     instance.entityManager.addEntity(temp, "Controller");
     temp->addComponent(&instance, controller);
+    auto chatController = CAssetManager::getLuaScript("Standard/ChatController");
     temp->addComponent(&instance, chatController);
     instance.controller = temp;
     
-    temp = new CEntity(Box{50, -500, 16 * 4, 32 * 4}, "test1");
+    auto movable = CAssetManager::getLuaScript("Standard/Movable");
+    auto living = CAssetManager::getLuaScript("Standard/Living");
+    
+    temp = new CEntity(Box{50, -500, 64, 64}, "frog-0");
     instance.entityManager.addEntity(temp, "5:Player");
-    temp->spriteStateTypes["WALKING"] = "test7";
-//    temp->spriteStateTypes[SpriteStateTypes::ASCENDING] =
-//    temp->spriteStateTypes[SpriteStateTypes::DESCENDING] = "playerPinkRunning";
+    temp->spriteStateTypes["WALKING"] = "frog-move";
+    temp->spriteStateTypes["ASCENDING"] = "frog-1";
+    temp->spriteStateTypes["DESCENDING"] = "frog-1";
     temp->addComponent(&instance, movable);
     temp->addComponent(&instance, living);
     instance.player = temp;
     instance.camera->setTarget(temp);
     
-    temp = new CEntity(Box{100, -1000, 30 * 5, 28 * 5}, "bush");
-    instance.entityManager.addEntity(temp, "n:bush");
+    temp = new CEntity(Box{100, -334, 32 * 6, 32 * 12}, "tree-2");
+    instance.entityManager.addEntity(temp, "n:tree");
     temp->collisionLayer = CollisionLayers::LAYER4;
+    temp->addProperty(EntityProperty::STATIC);
     
     temp = new CEntity(Box{0, 50, 5000, 20}, Color{255, 0, 0, 255});
     instance.entityManager.addEntity(temp);
@@ -190,13 +190,17 @@ void CGame::_restart() {
     temp->collisionLayer = -129;
     temp->addProperty(EntityProperty::STATIC);
     
+    temp = new CEntity(Box{5000, -4930, 20, 5000}, Color{255, 0, 0, 255});
+    instance.entityManager.addEntity(temp);
+    temp->collisionLayer = -129;
+    temp->addProperty(EntityProperty::STATIC);
+    
     toRestart = false;
 }
 
 void CGame::_initRelativePaths() {
     // ----------------------------------------------------------------------------
     // This makes relative paths work in C++ in Xcode by changing directory to the Resources folder inside the .app bundle
-    #ifdef __APPLE__
         CFBundleRef mainBundle = CFBundleGetMainBundle();
         CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
         char path[PATH_MAX];
@@ -209,7 +213,6 @@ void CGame::_initRelativePaths() {
         chdir(path);
         _path = path;
         NFile::log(LogType::ALERT, "Current Path: ", path);
-    #endif
     // ----------------------------------------------------------------------------
 }
 
@@ -319,7 +322,7 @@ void CGame::_initLua() {
         .beginClass<CGuiText>("GuiText")
             .addConstructor<void(*) (int, int, std::string, std::string)>()
         .endClass()
-    
+
         .beginClass<CCombatText>("CombatText")
             .addConstructor<void(*) (int, int, Color, int, std::string, std::string)>()
         .endClass()
@@ -331,6 +334,8 @@ void CGame::_initLua() {
             .addData("camera", &CInstance::camera)
             .addData("gravity", &CInstance::gravity)
             .addFunction("loadAssets", &CInstance::loadAssets)
+            .addFunction("doLine", &CInstance::doLine)
+            .addFunction("sys" , &CInstance::sys)
         .endClass()
     
         .beginClass<CCamera>("Camera")

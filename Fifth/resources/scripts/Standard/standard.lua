@@ -55,7 +55,10 @@ RenderFlags = {
 
 KeyCode = {
     _UNKNOWN = 0,
-
+    _ARROW_LEFT = 1073741904,
+    _ARROW_RIGHT = 1073741903,
+    _ARROW_UP = 1073741906,
+    _ARROW_DOWN = 1073741905,
     _RETURN = 13,
     _ESCAPE = 27,
     _BACKSPACE = 8,
@@ -128,7 +131,8 @@ KeyCode = {
     _z = 122,
     _ou = 246,
     _ao = 228,
-    _uo = 229
+    _uo = 229,
+    _PARA = 167
 }
 
 ScanCode = {
@@ -392,7 +396,7 @@ ScanCode = {
     _SLEEP = 282,
 
     _APP1 = 283,
-    _APP2 = 284
+    _APP2 = 284,
 }
 
 function toKeyCode(code)

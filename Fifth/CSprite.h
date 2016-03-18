@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <map>
 
 #include "Define.h"
 
@@ -19,6 +20,7 @@
 class CWindow;
 class CCamera;
 class CSpriteSheet;
+class CEntity;
 enum RenderFlags;
 
 class CSprite {
@@ -29,7 +31,7 @@ public:
     virtual CSpriteSheet* getSpriteSheet() { return _spriteSheet; }
     Box* getSource() { return &_source; }
     
-    virtual void onRender(Box destination, bool flip, int angle, int alpha, CWindow* window, CCamera* camera, RenderFlags renderFlags);
+    virtual void onRender(CEntity* entity, Box destination, bool flip, int angle, int alpha, CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
 private:
     CSpriteSheet* _spriteSheet; // Don't modify from here

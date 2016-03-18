@@ -6,7 +6,7 @@ local Movable = class (
         self.component = component
         self.body = parent.body
 
-        self.jumpPower = 13.0
+        self.jumpPower = 15.0
         self.accelerationX = 1.5
         self.accelerationY = 100.0
         self.stoppingAccelerationX = 1.5
@@ -18,7 +18,8 @@ local Movable = class (
         self.hasWalkedY = false
 
         self.isFlying = false
-
+                       
+        
         self.WALKING_MOVEMENT = 0
         self.SNEAKING_MOVEMENT = 1
         self.RUNNING_MOVEMENT = 2
@@ -70,7 +71,7 @@ function Movable:onLoop()
     self.hasWalkedX = false
     self.hasWalkedY = false
 
-    if(body.velX ~= 0) then
+    if(body.velX ~= 0 and self.parent.collisionSides.bottom) then
         self.parent:setSprite(self.parent:getSpriteFromState("WALKING"))
     end
 
@@ -82,13 +83,6 @@ end
 
 function Movable:onEvent(key, keyDown)
     if(keyDown) then
-        if(key == KeyCode._SLASH) then
-            living = self.parent:getComponent("Standard/Living")
-            if(living ~= nil) then
-                living:heal(10, self.parent)
-            end
-        end
-
         if(key == KeyCode._1) then
             self:toggleNoClip()
         end
@@ -127,20 +121,20 @@ function Movable:onKeyStates(state)
         self:goDown()
     end
 
-    if(game:leftMousePressed()) then
+    if(game:leftMousePressed() and not self.parent.isDead) then
         box = self.parent.body.box
         thisX = box.x
         thisY = box.y
         
         for i = 0, 0 do
         
-            spawnX = thisX + 36
-            spawnY = thisY + 58
+            spawnX = thisX 
+            spawnY = thisY + 40
             if(self.parent:hasProperty(EntityProperty.FLIP)) then
                 spawnX = thisX + 5
             end
 
-            bullet = self.parent.entityManager:createColoredEntity(Box(spawnX, spawnY, 5, 5), Color(0, math.random(255), 0, 0))
+            bullet = self.parent.entityManager:createColoredEntity(Box(spawnX, spawnY, 8, 8), Color(math.random(255), 255, 0, 255))
             self.parent.entityManager:addParticle(bullet)
             script = game.getScript("Standard/Projectile")
             bullet:addComponent(self.component.instance, script)
@@ -149,8 +143,8 @@ function Movable:onKeyStates(state)
             tBody = self.parent.body
             bBody = bullet:getComponent("Standard/Projectile").parent.body -- must do it this way
             
-            bBody.velX = 11
-            bBody.velY = -1 * (math.random(5))
+            bBody.velX = 25 + (math.random(5) - 2.5)
+            bBody.velY = -5 + (math.random(5) - 2.5)
             if(self.parent:hasProperty(EntityProperty.FLIP)) then
                 bBody.velX = bBody.velX * -1
             end
@@ -161,10 +155,6 @@ function Movable:onKeyStates(state)
         end
 
     end
-end
-
-function Movable:onClick()
-
 end
 
 function Movable:onSerialize()
@@ -273,18 +263,18 @@ function Movable:jump()
     if(self.parent.collisionSides.bottom) then
         self.hasJumpedOnWall = false
     end
-    
-    if(self.hasJumpedOnWall == false and not self.parent.collisionSides.bottom and (self.parent.collisionSides.left or self.parent.collisionSides.right)) then
-        
+
+    if(not self.hasJumpedOnWall and not self.parent.collisionSides.bottom and (self.parent.collisionSides.left or self.parent.collisionSides.right)) then
         self.hasJumpedOnWall = true
+
+        -- make wall jumping smoke effects here
         
         self:doJump()
     end
-	if(not self.parent.collisionSides.bottom) then
-        do return end
-    end
 
-    self:doJump()
+	if(self.parent.collisionSides.bottom) then
+        self:doJump()
+    end
 
 end
 

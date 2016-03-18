@@ -20,7 +20,7 @@
 #include "CInstance.h"
 
 
-CEntityManager::CEntityManager() : entityID(0), _gridSize(32) {
+CEntityManager::CEntityManager() : entityID(0), _gridSize(128) {
     renderFlags = RenderFlags::CLEAR |
                   RenderFlags::RENDER_COMBAT_TEXT;
 }

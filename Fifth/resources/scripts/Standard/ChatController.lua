@@ -7,12 +7,13 @@ local ChatController = class (
 
         self.isTyping = false
         self.buffer = ""
-
-        
-        self.height = 40
-        self.maxBufferSize = 128
-        self.width = self.maxBufferSize * 8.5
+        self.currentChatIndex = 1
+        self.chatArray = {""}
+                              
+        self.width = 50
         self.initWidth = self.width
+        self.height = 40
+        self.maxBufferSize = 1024
                               
         self.shift = false
     end
@@ -35,6 +36,12 @@ function ChatController:parse(input)
         commands = {}
         for w in input:gmatch("%S+") do table.insert(commands, w) end
 
+        len = table.getn(commands)
+        parameters = ""
+        for i = 2,len do
+            parameters = parameters .. commands[i] .. " "
+        end
+
         -- PARSING
 
         if(commands[1] == "restart") then self.component.instance.game:restart() end
@@ -49,6 +56,13 @@ function ChatController:parse(input)
             graphic:setScript(game.getScript(comp))
             if(commands[3] ~= nil) then
                 graphic.deserialize = commands[3]
+            end
+        end
+
+        if((commands[1] == "exec" or commands[1] == "eval") and commands[2] ~= nil) then
+            line = "return function(self) " .. parameters .. " end"
+            if(not pcall(function() func = loadstring(line)() end) or not pcall(function() func(self) end)) then
+                print("Error in executing: " .. commands[2])
             end
         end
 
@@ -72,11 +86,24 @@ function ChatController:onTextInput(input)
             self.buffer = self.buffer .. input
         end
     end
-
 end
 
 function ChatController:onEvent(key, keyDown)
     if(not keyDown) then do return end end
+
+    if(key == KeyCode._ARROW_UP) then
+        if(table.getn(self.chatArray) > 1 and self.currentChatIndex > 1 and self.chatArray[self.currentChatIndex] ~= nil) then
+            self.buffer = self.chatArray[self.currentChatIndex]
+            self.currentChatIndex = self.currentChatIndex - 1
+        end
+    end
+
+    if(key == KeyCode._ARROW_DOWN) then
+        if(self.currentChatIndex < table.getn(self.chatArray) and self.chatArray[self.currentChatIndex] ~= nil) then
+            self.buffer = self.chatArray[self.currentChatIndex]
+            self.currentChatIndex = self.currentChatIndex + 1
+        end
+    end
 
     if(key == KeyCode._RETURN or key == KeyCode._SLASH) then
         if(key == KeyCode._SLASH) then
@@ -90,7 +117,9 @@ function ChatController:onEvent(key, keyDown)
             if(toSay ~= "") then
                 self.component.instance.player:say(toSay, "TESTFONT", ChatBubbleType.SAY)
             end
+            table.insert(self.chatArray, self.buffer)
             self.buffer = ""
+            self.currentChatIndex = table.getn(self.chatArray)
             self.component.instance.game.ignoreEvents = false
             do return end
         else
@@ -116,7 +145,7 @@ function ChatController:onRenderAdditional()
         h = self.height
         r = 2
 
-        self.component:renderRect(x, y, w, h, 100, 100, 100, 100)
+        self.component:renderRect(x, y, w, h, 100, 100, 100, 225)
 
         self.component:renderRect(x,        y,          r,      h, 255, 0, 0, 225)
         self.component:renderRect(x,        y,          w,      r, 255, 0, 0, 225)
@@ -127,7 +156,7 @@ function ChatController:onRenderAdditional()
         y = y + 6
 
         self.component:renderText(x, y, 1, self.buffer, "TESTFONT", 255, 255, 255)
-        --self.width = self.initWidth + (14 * string.len(self.buffer))
+        self.width = self.initWidth + (14 * string.len(self.buffer))
     end
 
     if (self.isTyping == false) then

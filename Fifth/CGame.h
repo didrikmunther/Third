@@ -10,8 +10,10 @@
 #define __Third__CGame__
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sstream>
 #include <string>
+#include <iostream>
 #include <SDL2/SDL.h>
 
 #include "CInstance.h"
@@ -73,6 +75,7 @@ private:
     
     std::string _path;
     std::string quickSave;
+    void loadQuickSave();
     
 };
 

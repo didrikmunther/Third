@@ -78,7 +78,7 @@ public:
     void addRenderFlag(int renderFlag) { addRenderFlag((RenderFlags)renderFlag); }
     void removeRenderFlag(int renderFlag) { removeRenderFlag((RenderFlags)renderFlag); }
     void toggleRenderFlag(int renderFlag) { toggleRenderFlag((RenderFlags)renderFlag); }
-    
+   
 private:
     std::map<std::string, CEntity*> _entities;
     std::vector<CEntity*> _particles;

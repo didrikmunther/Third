@@ -16,6 +16,27 @@
 #include "CEntity.h"
 
 
+void CGame::loadQuickSave() {
+    quickSave = NFile::readFromFile("quicksave.save");
+    
+    std::cout << quickSave << "\n--------------------\n";
+    
+    if(quickSave == "{}")
+        return;
+    
+    rapidjson::Document d;
+    d.Parse(quickSave.c_str());
+    
+    instance.entityManager.onCleanup();
+    
+    instance.entityManager.onDeserialize(&d["this"], &instance);
+    
+    instance.player = instance.entityManager.getEntity("5:Player");
+    instance.controller = instance.entityManager.getEntity("Controller");
+    
+    instance.camera->setTarget(instance.player, true);
+}
+
 void CGame::_handleKeyStates() {
     
     if(!isFocused)
@@ -58,7 +79,7 @@ void CGame::_onEvent(SDL_Event* event) {
         case SDL_TEXTINPUT:
             instance.controller->onTextInput(&instance, (std::string)event->text.text);
             if(ignoreEvents) break;
-                instance.player->onTextInput(&instance, (std::string)event->text.text);
+            instance.player->onTextInput(&instance, (std::string)event->text.text);
             break;
             
         case SDL_KEYDOWN:
@@ -106,24 +127,7 @@ void CGame::_onEvent(SDL_Event* event) {
                     
                 case SDLK_h:
                 {
-                    quickSave = NFile::readFromFile("quicksave.save");
-                    
-                    std::cout << quickSave << "\n--------------------\n";
-                    
-                    if(quickSave == "{}")
-                        break;
-                    
-                    rapidjson::Document d;
-                    d.Parse(quickSave.c_str());
-                    
-                    instance.entityManager.onCleanup();
-                    
-                    instance.entityManager.onDeserialize(&d["this"], &instance);
-                    
-                    instance.player = instance.entityManager.getEntity("5:Player");
-                    instance.controller = instance.entityManager.getEntity("Controller");
-                    
-                    instance.camera->setTarget(instance.player, true);
+                    loadQuickSave();
                 }
                     break;
                     

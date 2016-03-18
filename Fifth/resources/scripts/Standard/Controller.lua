@@ -11,7 +11,7 @@ function Controller:onInit()
     self.parent:addProperty(EntityProperty.STATIC)
     self.parent:addProperty(EntityProperty.HIDDEN)
     self.parent:removeProperty(EntityProperty.COLLIDABLE)
-    self.component.instance.gravity = 0.435
+    self.component.instance.gravity = 0.6
 
     self.component.instance:loadAssets("resources/map/testMap2.map")
     self.component.instance:loadAssets("resources/map/testMap1.map")
@@ -74,7 +74,7 @@ function Controller:onEvent(key, keyDown)
         end
 
         if(key == KeyCode._7) then
-            self.component.instance.camera:addCameraShake(100)
+            self.component.instance.camera:addCameraShake(50)
         end
 
         if(key == KeyCode._RIGHTBRACKET) then
@@ -87,15 +87,16 @@ function Controller:onEvent(key, keyDown)
 
         if(key == KeyCode._j) then -- Create an npc entity
             mX, mY = self.component:getRelativeMouse()
-            temp = self.parent.entityManager:createSpriteEntity(Box(mX, mY, 16 * 4, 32 * 4), "player")
+            temp = self.parent.entityManager:createSpriteEntity(Box(mX, mY, 64, 64), "frog-move")
             self.parent.entityManager:addEntity(temp, "")
-            -- temp:setSpriteStateType(SpriteStateTypes.ASCENDING, "playerPinkRunning")
-            -- temp:setSpriteStateType(SpriteStateTypes.DESCENDING, "playerPinkRunning")
+            temp:setSpriteStateType("WALKING", "frog-move")
+            temp:setSpriteStateType("ASCENDING", "frog-1")
+            temp:setSpriteStateType("DESCENDING", "frog-1")
             temp:addComponent(self.component.instance, game.getScript("Standard/Living"))
             temp:addComponent(self.component.instance, game.getScript("Standard/Npc"))
             temp:addComponent(self.component.instance, game.getScript("Standard/Movable"))
             temp:getComponent("Standard/Npc").target = self.component.instance.player
-            temp:getComponent("Standard/Movable"):onDeserialize('{"walking_movement_speed":3.0, "jumpPower":5.0}')
+            temp:getComponent("Standard/Movable"):onDeserialize('{"walking_movement_speed":4.0, "jumpPower":10.0}')
 
         end
 
@@ -105,6 +106,15 @@ function Controller:onEvent(key, keyDown)
             self.parent.entityManager:addEntity(temp, "")
             temp:addProperty(EntityProperty.STATIC)
         end
+        if(key == KeyCode._k) then -- Create a red block
+            mX, mY = self.component:getRelativeMouse()
+            temp = self.parent.entityManager:createColoredEntity(Box(mX, mY, 40, 40), Color(255, 0, 0, 255))
+            self.parent.entityManager:addEntity(temp, "")
+        end
+        if(key == KeyCode._q) then
+            self.parent.entityManager:getEntity("5:Player"):getComponent("Standard/Living"):heal(400,self.parent)
+        end
+
     end
 end
 

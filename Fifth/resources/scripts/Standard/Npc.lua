@@ -40,7 +40,7 @@ function Npc:onLoop()
         else
             targetX = targetBox.x + targetBox.w
         end
-        targetX = targetX + (math.sin(game.getTime()) * 100) -- make them act more like bees
+        targetX = targetX + (math.sin(game.getTime()) * 200) -- make them act more like bees
 
         thisX = thisBox.x
         thisY = thisBox.y
@@ -60,6 +60,15 @@ function Npc:onLoop()
             else
                 movable:jump()
             end
+        end
+    end
+end
+
+function Npc:onCollision(target, sides)
+    if(target:compare(self.target)) then
+        living = target:getComponent("Standard/Living")
+        if(living ~= nil) then
+            living:damage(1, self.parent)
         end
     end
 end

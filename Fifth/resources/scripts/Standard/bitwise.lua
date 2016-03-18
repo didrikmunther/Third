@@ -1,5 +1,4 @@
 -- bitwise.lua
-
 function BitXOR(a,b)--Bitwise xor
 local p,c=1,0
 while a>0 and b>0 do
