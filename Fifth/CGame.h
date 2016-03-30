@@ -57,6 +57,9 @@ private:
     int _frames;
     int _updates;
     
+    double _deltaTime = 0;
+    double _timeStart;
+    
     // Misc variables
     std::stringstream _title;
     std::string _intro;
