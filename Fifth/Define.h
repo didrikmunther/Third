@@ -13,6 +13,10 @@
 #ifndef __Third__Define__
 #define __Third__Define__
 
+const int PACKET_SIZE           = 512;
+const char PACKET_START[]       = "{!{STARTPACKET}!}";
+const char PACKET_ENDING[]      = "{!{ENDPACKET}!}\0";
+
 const int SCREEN_WIDTH          = 1280;
 const int SCREEN_HEIGHT         = 720;
 const int SCREEN_BPP            = 32;

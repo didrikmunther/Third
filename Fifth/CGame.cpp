@@ -21,6 +21,7 @@
 #include "CCombatText.h"
 #include "CAssetManager.h"
 #include "CAnimation.h"
+#include "CGameClient.h"
 
 #include "NMouse.h"
 #include "NSurface.h"
@@ -32,29 +33,38 @@
 #endif
 
 
-CGame::CGame()
+bool CGame::globalServerInit = false;
+
+CGame::CGame(GameType gameType /* = GameType::NORMAL */)
     : _intro("Third"), instance(this), toRestart(false), ignoreEvents(false)
     , _lastTime(SDL_GetTicks()), _timer(SDL_GetTicks()), _isRunning(true), quickSave("{}")
-    , _ns(1000.0f / GAME_INTERVAL), _delta(0), _frames(0), _updates(0), isFocused(true) {
+    , _ns(1000.0f / GAME_INTERVAL), _delta(0), _frames(0), _updates(0), isFocused(true)
+    , gameType(gameType)
+{
+    if(gameType & GameType::CLIENT)
+        gameClient = new CGameClient(this);
 }
 
 int CGame::onExecute() {
     
-    switch(_onInit()){
-        case -1:
-            NFile::log(LogType::ERROR, "Initializing failed!");
-            _isRunning = false;
-        case 0:
-            NFile::log(LogType::SUCCESS, "Initializing succesful!");
+    if(gameType & GameType::CLIENT) {
+        switch(_onInit()){
+            case -1:
+                NFile::log(LogType::ERROR, "Initializing failed!");
+                _isRunning = false;
+            case 0:
+                NFile::log(LogType::SUCCESS, "Initializing succesful!");
+        }
     }
     
     NFile::log(LogType::ALERT, "Starting game...");
+    globalServerInit = true;
     
     while(_isRunning) {
         if(toRestart)
             _restart();
         
-        while(SDL_PollEvent(&event)){
+        while((gameType & GameType::CLIENT) && SDL_PollEvent(&event)){
             _onEvent(&event);
         }
         
@@ -62,24 +72,25 @@ int CGame::onExecute() {
         _delta += (now - _lastTime) / _ns;
         _lastTime = now;
         
-        while(_delta >= 1) {    // Todo implement variable time step instead of this laggy thing
-            if(_delta > 20) {       // To make sure it doesn't freeze
-                //NFile::log(LogType::WARNING, "Game exeeding delta limit (", 20, "), cleaning up particles.");
+        auto sayer = instance.entityManager.getEntity("n:bush");
+        while(_delta >= 1) {
+            if(_delta > 20) {
                 instance.entityManager.particleCleanup();
             }
             
-            _handleKeyStates();
+//            if((gameType & GameType::CLIENT))
+//                _handleKeyStates();
+            
+            SDL_LockMutex(mutex);
             _onLoop();
+            SDL_UnlockMutex(mutex);
             
             _updates++;
             _delta--;
-            
-            auto sayer = instance.entityManager.getEntity("n:bush");
-            if(sayer)
-                sayer->say(_title.str() + " Gravity: " + std::to_string(instance.gravity), "TESTFONT", ChatBubbleType::INSTANT_TALK);
         }
         
-        _onRender();
+        if((gameType & GameType::CLIENT))
+            _onRender();
         
         _frames++;
         
@@ -87,8 +98,14 @@ int CGame::onExecute() {
             _timer += 1000;
             _title.str("");
             _title << _updates << " ups, " << _frames << " fps";
+            
             _updates = 0;
             _frames = 0;
+            
+//            if(sayer)
+//                sayer->say(_title.str() + " Gravity: " + std::to_string(instance.gravity), "TESTFONT", ChatBubbleType::INSTANT_TALK);
+            
+            instance.window.setTitle(_title.str());
         }
     }
     
@@ -100,34 +117,50 @@ int CGame::onExecute() {
 
 int CGame::_onInit() {
     
-    _initRelativePaths();
-    NFile::clearFile(LOG_FILE);     // Clear log file
+    _path = NFile::_initRelativePaths();
+    if(!globalServerInit) NFile::clearFile(LOG_FILE);     // Clear log file
     srand((Uint16)time(nullptr));
+    mutex = SDL_CreateMutex();
     
     NFile::log(LogType::ALERT, "Initializing game...");
     
-    if(SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        NFile::log(LogType::ERROR, "SDL_Init failed: ", SDL_GetError());
-        return -1;
+    if(!globalServerInit) {
+        if(SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+            NFile::log(LogType::ERROR, "SDL_Init failed: ", SDL_GetError());
+            return -1;
+        }
+        
+        if(!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+            NFile::log(LogType::ERROR, "IMG_Init failed: ", SDL_GetError());
+            return -1;
+        }
+        
+        if(TTF_Init() != 0) {
+            NFile::log(LogType::ERROR, "TTF_Init failed: ", SDL_GetError());
+            return -1;
+        }
     }
     
-    if(!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
-        NFile::log(LogType::ERROR, "IMG_Init failed: ", SDL_GetError());
-        return -1;
+    if(gameType & GameType::CLIENT) {
+        if(instance.window.onInit(_intro, SCREEN_WIDTH, SCREEN_HEIGHT)) {
+            NFile::log(LogType::ERROR, "Window initialization failed!");
+            return -1;
+        }
+        
+        instance.camera->onInit(&instance.window);
     }
-    
-    if(TTF_Init() != 0) {
-        NFile::log(LogType::ERROR, "TTF_Init failed: ", SDL_GetError());
-        return -1;
-    }
-    
-    if(instance.window.onInit(_intro, SCREEN_WIDTH, SCREEN_HEIGHT)) {
-        NFile::log(LogType::ERROR, "Window initialization failed!");
-        return -1;
-    }
-    instance.camera->onInit(&instance.window);
     
     _restart();
+    
+    if((gameType & GameType::CLIENT)) {
+        instance.entityManager.onCleanup();
+        instance.controller = nullptr;
+        instance.player = nullptr;
+        instance.camera->setTarget(nullptr);
+    }
+    
+    if(gameType & GameType::CLIENT)
+        gameClient->connect("localhost", 2000);
     
     return 0;
 }
@@ -141,7 +174,7 @@ void CGame::_restart() {
     instance.closeInstance();
     
     instance.L = luaL_newstate();
-    _initLua();
+    _initLua(instance.L, _path.c_str());
     
     CBackground* background = new CBackground("background", 0.1, BackgroundOffset{0, -450, 1.75f});
     instance.entityManager.addBackground("main", background);
@@ -188,26 +221,6 @@ void CGame::_restart() {
     toRestart = false;
 }
 
-void CGame::_initRelativePaths() {
-    // ----------------------------------------------------------------------------
-    // This makes relative paths work in C++ in Xcode by changing directory to the Resources folder inside the .app bundle
-    #ifdef __APPLE__
-        CFBundleRef mainBundle = CFBundleGetMainBundle();
-        CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
-        char path[PATH_MAX];
-        if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX))
-        {
-            // error!
-        }
-        CFRelease(resourcesURL);
-        
-        chdir(path);
-        _path = path;
-        NFile::log(LogType::ALERT, "Current Path: ", path);
-    #endif
-    // ----------------------------------------------------------------------------
-}
-
 int CGame::setLuaPath(lua_State* L, const char* path) {
     lua_getglobal( L, "package" );
     lua_getfield( L, -1, "path" ); // get field "path" from table at top of stack (-1)
@@ -221,13 +234,13 @@ int CGame::setLuaPath(lua_State* L, const char* path) {
     return 0; // all done!
 }
 
-void CGame::_initLua() {
-    luaL_openlibs(instance.L);
-    luaL_dofile(instance.L, "resources/scripts/Standard/class.lua");
-    luaL_dofile(instance.L, "resources/scripts/Standard/bitwise.lua");
-    luaL_dofile(instance.L, "resources/scripts/Standard/standard.lua");
+void CGame::_initLua(lua_State* L, const char* path) {
+    luaL_openlibs(L);
+    luaL_dofile(L, "resources/scripts/Standard/class.lua");
+    luaL_dofile(L, "resources/scripts/Standard/bitwise.lua");
+    luaL_dofile(L, "resources/scripts/Standard/standard.lua");
     
-    luabridge::getGlobalNamespace(instance.L)
+    luabridge::getGlobalNamespace(L)
     
         .beginNamespace("game")
             .addFunction("getScript", &CAssetManager::getLuaScript)
@@ -391,12 +404,13 @@ void CGame::_initLua() {
             .addData("left", &CollisionSides::left)
         .endClass();
     
-    lua_getglobal(instance.L, "init");
-    lua_pushstring(instance.L, (_path + "/resources/scripts/Standard/").c_str());
-    lua_call(instance.L, 1, 0);
+    lua_getglobal(L, "init");
+    std::string p = path; p += "/resources/scripts/Standard/";
+    lua_pushstring(L, p.c_str());
+    lua_call(L, 1, 0);
     
-    lua_getglobal(instance.L, "initJson");
-    lua_call(instance.L, 0, 0);
+    lua_getglobal(L, "initJson");
+    lua_call(L, 0, 0);
 }
 
 int CGame::getTime() {
@@ -404,15 +418,22 @@ int CGame::getTime() {
 }
 
 void CGame::_onLoop() {
-    instance.entityManager.onLoop(&instance);
-    instance.camera->onLoop();
+    if((gameType & GameType::SERVER))
+        instance.entityManager.onLoop(&instance);
+    else
+        instance.camera->onLoop();
+    
+//    instance.entityManager.onLoop(&instance);
+//    instance.camera->onLoop();
 }
 
 void CGame::_onRender() {
     SDL_SetRenderDrawColor(instance.window.getRenderer(), 250, 250, 250, 255);
     SDL_RenderClear(instance.window.getRenderer());
     
+    SDL_LockMutex(mutex);
     instance.entityManager.onRender(&instance.window, instance.camera);
+    SDL_UnlockMutex(mutex);
     
     SDL_RenderPresent(instance.window.getRenderer());
 }
