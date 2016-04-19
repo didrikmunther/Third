@@ -500,6 +500,8 @@ void CEntityManager::onDeserialize(rapidjson::Value* value, CInstance* instance)
             if(entity == nullptr) {
                 if(entityValue->HasMember("spriteKey"))
                     entity = new CEntity(Box(0, 0, 0, 0), (*entityValue)["spriteKey"].GetString());
+                else if(entityValue->HasMember("defaultSpriteKey"))
+                    entity = new CEntity(Box(0, 0, 0, 0), (*entityValue)["defaultSpriteKey"].GetString());
                 else
                     entity = new CEntity(Box(0, 0, 0, 0), "");
                 

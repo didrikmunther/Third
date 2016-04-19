@@ -143,7 +143,7 @@ int CServer::onExecute() {
                     auto recieved = result.first;
                     
                     if(recieved != "") {
-                        std::cout << recieved << "\n";
+//                        std::cout << recieved << "\n";
 //                        broadcast(i, &recieved);
                         rapidjson::Document d;
                         d.Parse(recieved.c_str());
@@ -155,8 +155,11 @@ int CServer::onExecute() {
                             for(rapidjson::SizeType i = 0; i < jkeystates.Size(); i++) {
                                 const rapidjson::Value& jkeystate = jkeystates[i];
                                 keystates[jkeystate.GetInt()] = true;
+//                                std::cout << jkeystate.GetInt() << ", ";
                             }
-                            std::cout << "here\n";
+//                            std::cout << "\n";
+                            
+//                            std::cout << recieved << "\n";
                             
                             auto mutex = client->instance->game->mutex;
                             SDL_LockMutex(mutex);
