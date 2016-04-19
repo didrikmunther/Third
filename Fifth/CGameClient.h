@@ -10,6 +10,7 @@
 #define CGameClient_h
 
 #include <stdio.h>
+#include <SDL2/SDL.h>
 #include <SDL2_net/SDL_net.h>
 
 #include "CGame.h"
@@ -32,12 +33,14 @@ public:
     
     SDLNet_SocketSet socketSet;
     
-    void onLoop();
     void onEvent(SDL_Event* event);
+    void handleKeyStates(const Uint8* keystate);
     
     SDL_Thread* recvThread;
     
     CGame* game;
+    
+
     
 };
 

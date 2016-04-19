@@ -13,10 +13,11 @@
 #include <map>
 
 #include "CEntityManager.h"
-#include "CClient.h"
 #include "CInstance.h"
 #include "CGame.h"
 
+
+class CClient;
 
 class CServerInstance {
     
@@ -24,6 +25,9 @@ public:
     CServerInstance(std::string name, CGame* game = new CGame(GameType::SERVER));
     
     std::string name;
+    
+    void addClient(CClient* client);
+    int removeClient(CClient* client);
     std::vector<CClient*> clients;
     
     CGame* game;
