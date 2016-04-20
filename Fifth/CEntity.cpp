@@ -23,14 +23,16 @@
 
 CEntity::CEntity(Box rect, Color color)
     : spriteKey(""), defaultSprite("")
-    , body(new CBody(rect)), color(color)
+    , color(color)
+    , body(new CBody(rect))
 {
     init();
 }
 
 CEntity::CEntity(Box rect, std::string spriteKey)
     : spriteKey(spriteKey), defaultSprite(spriteKey)
-    , body(new CBody(rect)), color(Color{255,0,255,255}) /* sprite not found color */
+    , color(Color{255,0,255,255}) /* sprite not found color */
+    , body(new CBody(rect))
 {
     init();
     //std::fill(spriteStateTypes, spriteStateTypes+SpriteStateTypes::TOTAL_SPRITESTATETYPES, spriteKey);
@@ -166,8 +168,8 @@ void CEntity::onSerialize(rapidjson::Value* value, rapidjson::Document::Allocato
     
 }
 
-void CEntity::onDeserialize(const rapidjson::Value* value, CInstance* instance) {
-    _deserialize(value);
+void CEntity::onDeserialize(const rapidjson::Value* value, CInstance* instance, bool interpolate /* = false */) {
+    _deserialize(value, interpolate);
     
     if(!value->HasMember("components"))
         return;
@@ -218,10 +220,20 @@ void CEntity::_serialize(rapidjson::Value* value, rapidjson::Document::Allocator
 
 }
 
-void CEntity::_deserialize(const rapidjson::Value* value) {
+void CEntity::_deserialize(const rapidjson::Value* value, bool interpolate /* = false */) {
     
-    assignInt(value, "x", &body->_rect.x);
-    assignInt(value, "y", &body->_rect.y);
+    if(interpolate) {
+        int x = (*value)["x"].GetInt();
+        int y = (*value)["y"].GetInt();
+    
+        int dx = body->getX() - x;
+        int dy = body->getY() - y;
+        body->setPosition(x + dx/2, y + dy/2);
+    } else {
+        assignInt(value, "x", &body->_rect.x);
+        assignInt(value, "y", &body->_rect.y);
+    }
+    
     assignInt(value, "w", &body->_rect.w);
     assignInt(value, "h", &body->_rect.h);
     

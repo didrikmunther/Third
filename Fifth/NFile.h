@@ -45,8 +45,11 @@ public:
     static rapidjson::Document loadJsonFile(std::string fileName);
     static void loadAssets(std::string fileName, CInstance* instance);
     
-    static void execCommand(rapidjson::Document command, CInstance* instance);
-    static void parseCommands(rapidjson::Document commands, CInstance* instance);
+    static std::string loadTemplate(std::string path, CInstance* instance);
+    static std::string loadTemplate(rapidjson::Document* d, CInstance* instance);
+    
+//    static void execCommand(rapidjson::Document command, CInstance* instance);
+//    static void parseCommands(rapidjson::Document commands, CInstance* instance);
     
     static std::string readFromFile(std::string fileName);
     
@@ -126,7 +129,6 @@ private:
     static void loadSpriteSheets(rapidjson::Document* d, CInstance* instance);
     static void loadSprites(rapidjson::Document* d);
     static void loadScripts(rapidjson::Document* d, CInstance* instance);
-    
 };
 
 #endif /* defined(__Third__NFile__) */

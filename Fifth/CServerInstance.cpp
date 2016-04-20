@@ -25,11 +25,13 @@ CServerInstance::CServerInstance(std::string name, CGame* game)
     game->_onInit();
     
     auto quickSave = NFile::readFromFile("resources/quicksave.save");
+    
     if(quickSave != "") {
         rapidjson::Document d;
         d.Parse(quickSave.c_str());
         game->instance.entityManager.onCleanup();
         game->instance.entityManager.onDeserialize(&d["this"], &game->instance);
+//        NFile::loadTemplate("player.templ", &game->instance);
     }
     
     loopThread = SDL_CreateThread(gameLoop, (name + "gameLoop").c_str(), (void*)game);
@@ -47,6 +49,8 @@ int CServerInstance::removeClient(CClient* client) {
             clients.erase(it);
             return 0;
         }
+        
+        ++it;
     }
     return -1;
 }

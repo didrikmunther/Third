@@ -12,7 +12,10 @@
 
 #include "NFile.h"
 #include "Define.h"
+
 #include "CAssetManager.h"
+#include "CAnimation.h"
+#include "CEntity.h"
 
 #ifdef __APPLE__
  #include "CoreFoundation/CoreFoundation.h"
@@ -137,13 +140,28 @@ void NFile::loadSprites(rapidjson::Document* d) {
     const rapidjson::Value& sprites = (*d)["sprites"];                                 // Sprites
     for(rapidjson::SizeType i = 0; i < sprites.Size(); i++) {
         const rapidjson::Value& sprite = sprites[i];
-        if(!(sprite.HasMember("name") && sprite.HasMember("spriteSheetKey") && sprite.HasMember("offsets")))
+        if(!(sprite.HasMember("name")))
             continue;
         
-        const rapidjson::Value& offsets = sprite["offsets"];
-        CAssetManager::addSprite(sprite["name"].GetString(),
-                                 sprite["spriteSheetKey"].GetString(),
-                                 Box{offsets[0].GetInt(), offsets[1].GetInt(), offsets[2].GetInt(), offsets[3].GetInt()});
+        const rapidjson::Value& name = sprite["name"];
+        
+        if(sprite.HasMember("animation") && sprite.HasMember("speed")) {
+            const rapidjson::Value& speed = sprite["speed"];
+            
+            std::vector<std::string> animSpritesVector;
+            const rapidjson::Value& animSprites = sprite["animation"];
+            for(rapidjson::SizeType animSprite = 0; animSprite < animSprites.Size(); animSprite++)
+                animSpritesVector.push_back(animSprites[animSprite].GetString());
+            
+            CAnimation* anim = new CAnimation(animSpritesVector, speed.GetDouble());
+            CAssetManager::addSprite(anim, name.GetString());
+            
+        } else if(sprite.HasMember("spriteSheetKey") && sprite.HasMember("offsets")) {
+            const rapidjson::Value& offsets = sprite["offsets"];
+            CAssetManager::addSprite(name.GetString(),
+                                     sprite["spriteSheetKey"].GetString(),
+                                     Box{offsets[0].GetInt(), offsets[1].GetInt(), offsets[2].GetInt(), offsets[3].GetInt()});
+        }
     }
 }
 
@@ -160,6 +178,23 @@ void NFile::loadScripts(rapidjson::Document* d, CInstance* instance) {
         std::string path = script.GetString();
         CAssetManager::addLuaScript(instance->L, "resources/scripts/" + path + ".lua");
     }
+}
+
+std::string NFile::loadTemplate(std::string path, CInstance* instance) {
+    auto d = loadJsonFile("resources/templates/" + path);
+    if(d.HasMember("JSONParsingError")) {
+        NFile::log(LogType::ERROR, "Could not load template \"", path, "\". (Reason: \"", d["JSONParsingError"].GetString(), ")");
+        return "";
+    }
+    if(!d.HasMember("entity"))
+        return "";
+    
+    const rapidjson::Value& jentity = d["entity"];
+    
+    CEntity* entity = new CEntity(Box{0, 0, 0, 0}, "");
+    entity->onDeserialize(&jentity, instance);
+    
+    return instance->entityManager.addEntity(entity);
 }
 
 void NFile::clearFile(std::string fileName) {

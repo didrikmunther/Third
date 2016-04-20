@@ -35,7 +35,11 @@ public:
     CServerInstance* instance;
     
     CEntity* player;
+    std::string playerID;
     CEntity* controller;
+    std::string controllerID;
+    
+    bool sendPlayerID;
     
 };
 
