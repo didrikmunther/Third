@@ -21,17 +21,13 @@
 #include <iostream>
 
 
-CEntity::CEntity(Box rect, Color color)
-    : spriteKey(""), defaultSprite("")
-    , body(new CBody(rect)), color(color)
-{
+CEntity::CEntity(Box rect, Color color) :
+spriteKey(""), defaultSprite(""), body(new CBody(rect)), color(color) {
     init();
 }
 
-CEntity::CEntity(Box rect, std::string spriteKey)
-    : spriteKey(spriteKey), defaultSprite(spriteKey)
-    , body(new CBody(rect)), color(Color{255,0,255,255}) /* sprite not found color */
-{
+CEntity::CEntity(Box rect, std::string spriteKey) :
+spriteKey(spriteKey.c_str()), defaultSprite(spriteKey), body(new CBody(rect)), color(Color{255,0,255,255}) /* sprite not found color */ {
     init();
     //std::fill(spriteStateTypes, spriteStateTypes+SpriteStateTypes::TOTAL_SPRITESTATETYPES, spriteKey);
 }
@@ -43,14 +39,13 @@ CEntity::~CEntity() {
 }
 
 void CEntity::init() {
-    client         = nullptr;
     isDead         = false;
     toRemove       = false;
     properties     = EntityProperty::COLLIDABLE | EntityProperty::GRAVITY_AFFECT;
     collisionSides = false;
     collisionLayer = CollisionLayers::LAYER0;
-    transparency   = 255;
-    angle          = 0;
+    transparency = 255;
+    angle = 0;
 }
 
 void CEntity::_cleanUpTextVector() {
@@ -108,8 +103,8 @@ void CEntity::onEvent(CInstance* instance, int key, bool keyDown) {
 }
 
 void CEntity::onKeyStates(CInstance* instance, const Uint8* keystates) {
-//    if(instance->player != this && instance->controller != this)
-//        return;
+    if(instance->player != this && instance->controller != this)
+        return;
     
     for(auto& i: components)
         i.second->onKeyStates(instance, keystates);
@@ -208,7 +203,6 @@ void CEntity::_serialize(rapidjson::Value* value, rapidjson::Document::Allocator
     addValue(value, alloc, "spriteKeys", &sprites);
     
     addString(value, alloc, "defaultSpriteKey", defaultSprite);
-    addString(value, alloc, "spriteKey", spriteKey);
     addNumber(value, alloc, "colorR", color.r);
     addNumber(value, alloc, "colorG", color.g);
     addNumber(value, alloc, "colorB", color.b);
@@ -239,7 +233,6 @@ void CEntity::_deserialize(const rapidjson::Value* value) {
     }
     
     assignString(value, "defaultSpriteKey", &defaultSprite);
-    assignString(value, "spriteKey", &spriteKey);
     assignInt(value, "properties", &properties);
     assignInt(value, "collisionLayers", &collisionLayer);
     

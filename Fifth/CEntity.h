@@ -31,7 +31,6 @@ class CCamera;
 class CEntityManager;
 class CWindow;
 class CInstance;
-class CClient;
 class EUtility;
 
 enum class BasicUtilities;
@@ -128,8 +127,6 @@ public:
     
     CBody* body;
     CollisionSides collisionSides;
-    
-    CClient* client;
     
     void say(std::string text, std::string fontKey, int type);
     void say(std::string text, std::string fontKey, ChatBubbleType type);

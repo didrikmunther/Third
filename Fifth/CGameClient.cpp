@@ -98,7 +98,7 @@ int CGameClient::connect(std::string host, int port) {
 
 void CGameClient::onEvent(SDL_Event* event) {
     int type = event->type;
-    int toSend = -1;
+    std::string toSend = "";
     std::string forbiddenCharacter = ""; // This is some mysko
     
     switch(type) {
@@ -108,7 +108,7 @@ void CGameClient::onEvent(SDL_Event* event) {
             break;
     }
     
-    std::string complete = "{\"this\":{\"event:\":[" + std::to_string(toSend) + "," + std::to_string(type) + "]}}";
+    std::string complete = "{\"this\":{\"event:\":{\"" + toSend + "\":" + std::to_string(type) + "}}}";
 
     NNetwork::sendPacket(clientSocket, &complete);
 }
