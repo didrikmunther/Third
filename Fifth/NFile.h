@@ -39,8 +39,6 @@ class NFile {
     
 public:
     
-    static std::string _initRelativePaths();
-    
     // Load functions
     static rapidjson::Document loadJsonFile(std::string fileName);
     static void loadAssets(std::string fileName, CInstance* instance);

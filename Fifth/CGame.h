@@ -16,26 +16,26 @@
 
 #include "CInstance.h"
 #include "CChatBubble.h"
+#include "CNetwork.h"
 
-
-enum GameType {
-    CLIENT      = 1 << 0,
-    SERVER      = 1 << 1,
-};
 
 class CLuaScript;
-class CGameClient;
 
 class CGame {
+    friend class CNetwork;
+    
 public:
-    CGame(GameType gameType = GameType::CLIENT);
+    CGame();
     
     int onExecute();
     void restart();
     
+private:
+    
     // Main functions
     int _onInit();
-    static void _initLua(lua_State* L, const char* path);
+    void _initRelativePaths();
+    void _initLua();
     static int setLuaPath(lua_State* L, const char* path);
     
     void _onEvent(SDL_Event* event);
@@ -73,12 +73,6 @@ public:
     
     std::string _path;
     std::string quickSave;
-    
-    GameType gameType;
-    static bool globalServerInit;
-    
-    SDL_mutex* mutex;
-    CGameClient* gameClient;
     
 };
 

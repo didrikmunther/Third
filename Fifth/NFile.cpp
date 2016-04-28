@@ -14,31 +14,6 @@
 #include "Define.h"
 #include "CAssetManager.h"
 
-#ifdef __APPLE__
- #include "CoreFoundation/CoreFoundation.h"
- #include "ResourcePath.hpp"
-#endif
-
-
-std::string NFile::_initRelativePaths() {
-    // ----------------------------------------------------------------------------
-    // This makes relative paths work in C++ in Xcode by changing directory to the Resources folder inside the .app bundle
-#ifdef __APPLE__
-    CFBundleRef mainBundle = CFBundleGetMainBundle();
-    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
-    char path[PATH_MAX];
-    if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX))
-    {
-        // error!
-    }
-    CFRelease(resourcesURL);
-    
-    chdir(path);
-    NFile::log(LogType::ALERT, "Current Path: ", path);
-    return path;
-#endif
-    // ----------------------------------------------------------------------------
-}
 
 rapidjson::Document NFile::loadJsonFile(std::string fileName) {
     

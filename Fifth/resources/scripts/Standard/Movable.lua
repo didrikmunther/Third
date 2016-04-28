@@ -7,7 +7,7 @@ local Movable = class (
         self.body = parent.body
 
         self.jumpPower = 13.0
-        self.accelerationX = 2.5
+        self.accelerationX = 1.5
         self.accelerationY = 100.0
         self.stoppingAccelerationX = 1.5
         self.stoppingAccelerationY = 100.0
@@ -78,7 +78,7 @@ function Movable:onLoop()
         self.parent:setSprite(self.parent:getSpriteFromState("FLYING"))
     end
 
-    self.parent.angle = (body.velX / 1.5)
+    self.parent.angle = -(body.velX / 2.0)
 
 end
 

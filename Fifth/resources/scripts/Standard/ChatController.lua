@@ -14,6 +14,7 @@ local ChatController = class (
         self.maxBufferSize = 100000000
                               
         self.shift = false
+        self.currentPos = 0
     end
 )
 

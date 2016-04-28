@@ -47,7 +47,7 @@ public:
     void loadAssets(std::string path);
     void doLine(std::string line);
     
-    virtual void closeInstance();
+    void closeInstance();
     
 };
 
