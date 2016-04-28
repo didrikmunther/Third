@@ -45,9 +45,7 @@ CGame::CGame(GameType gameType /* = GameType::NORMAL */)
         gameClient = new CGameClient(this);
 }
 
-int CGame::onExecute(std::string host) {
-    
-    this->host = host;
+int CGame::onExecute() {
     
     if(gameType & GameType::CLIENT) {
         switch(_onInit()){
@@ -74,14 +72,14 @@ int CGame::onExecute(std::string host) {
         _delta += (now - _lastTime) / _ns;
         _lastTime = now;
         
-//        auto sayer = instance.entityManager.getEntity("n:bush");
+        auto sayer = instance.entityManager.getEntity("n:bush");
         while(_delta >= 1) {
             if(_delta > 20) {
                 instance.entityManager.particleCleanup();
             }
             
-            if((gameType & GameType::CLIENT))
-                _handleKeyStates();
+//            if((gameType & GameType::CLIENT))
+//                _handleKeyStates();
             
             SDL_LockMutex(mutex);
             _onLoop();
@@ -162,7 +160,7 @@ int CGame::_onInit() {
     }
     
     if(gameType & GameType::CLIENT)
-        gameClient->connect(host, 2000);
+        gameClient->connect("localhost", 2000);
     
     return 0;
 }

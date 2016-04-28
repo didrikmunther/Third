@@ -11,31 +11,23 @@
 
 #include <stdio.h>
 #include <SDL2_net/SDL_net.h>
-#include <string>
 
 
 class CServerInstance;
-class CEntity;
 
 class CClient {
     
 public:
     CClient(SDLNet_SocketSet* socketSet, TCPsocket socket, int clientId);
-    void initEntities();
     void close(SDLNet_SocketSet* socketSet);
     
-    void send(std::string* data);
-    
-    void onEvent(std::string event);
+    void send(const char* buffer, int len = -1);
     
     int clientId;
     TCPsocket socket;
-    std::string rest;
     
     CServerInstance* instance;
     
-    CEntity* player;
-    CEntity* controller;
     
 };
 

@@ -309,8 +309,6 @@ void CEntityManager::onLoop(CInstance* instance) {
             auto target = entity.second;
             target->gridCoordinates.clear();
             
-//            std::cout << getNameOfEntity(target) << "\n";
-            
             target->onLoop(instance);
             
             for(auto &coords: getGrid(target, _gridSize)) {

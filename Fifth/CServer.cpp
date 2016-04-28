@@ -12,8 +12,6 @@
 #include "CServer.h"
 #include "NFile.h"
 #include "NNetwork.h"
-#include "CEntity.h"
-
 
 CServer::CServer(float tickrate, int maxClients /* = 10 */)
     : _isRunning(false)
@@ -67,11 +65,6 @@ int _broadcastLoop(void* data) {
     return 1;
 }
 
-void resetKeyStates(Uint8* keystates) {
-    for(int i = 0; i < SDL_NUM_SCANCODES; i++)
-        keystates[i] = false;
-}
-
 int CServer::onExecute() {
     
     NFile::log(LogType::ALERT, "Starting server...");
@@ -87,13 +80,10 @@ int CServer::onExecute() {
     serverSocket = SDLNet_TCP_Open(&serverIP);
     SDLNet_TCP_AddSocket(socketSet, serverSocket);
     
-    Uint8 keystates[SDL_NUM_SCANCODES];
-    resetKeyStates(keystates);
-    
     CServerInstance* inst = new CServerInstance("start");
     _instances["start"] = inst;
     
-    while(_isRunning) {
+    do {
         
         /*int activeSockets = */SDLNet_CheckSockets(socketSet, 1000);
         int serverSocketActivity = SDLNet_SocketReady(serverSocket);
@@ -106,15 +96,13 @@ int CServer::onExecute() {
                 
                 strcpy(buffer, "OK");
                 NNetwork::sendToSocket(client->socket, buffer);
+                std::cout << "Client connected: " << currClientId << ".\n";
                 
-                NFile::log(LogType::ALERT, "Client connected: ", currClientId, ".");
-                
-                _instances["start"]->addClient(client);
-                client->initEntities();
+                _instances["start"]->clients.push_back(client);
                 currClientId++;
                 
             } else {
-                NFile::log(LogType::ALERT, "Client tried to connect, but server was full.");
+                std::cout << "Client tried to connect, but server was full.\n";
                 TCPsocket tempSock = SDLNet_TCP_Accept(serverSocket);
                 NNetwork::sendToSocket(tempSock, "FULL");
                 SDLNet_TCP_Close(tempSock);
@@ -123,69 +111,36 @@ int CServer::onExecute() {
         
         auto it = clients.begin();
         while(it != clients.end()) {
-            auto client = (*it).second;
+            auto i = (*it).second;
             auto socket = (*it).second->socket;
             
             int clientSocketActivity = SDLNet_SocketReady(socket);
             if(clientSocketActivity != 0) {
-                int recievedByteCount = SDLNet_TCP_Recv(socket, buffer, PACKET_SIZE - 1);
+                int recievedByteCount = SDLNet_TCP_Recv(socket, buffer, PACKET_SIZE);
                 if(recievedByteCount <= 0) {
-                    buffer[recievedByteCount] = 0;
-                    NFile::log(LogType::ALERT, "Client ", (client->clientId), " disconnected.");
-                    client->close(&socketSet);
+                    std::cout << "client " << (i->clientId) << " disconnected.\n";
+                    i->close(&socketSet);
                     clientCount--;
-                    delete client;
                     clients.erase(it++);
                     continue;
                 } else {
-                    auto result = NNetwork::recvPacket(socket, client->rest);
-                    client->rest = result.second;
-                    auto recieved = result.first;
-                    
-                    if(recieved != "") {
-                        std::cout << recieved << "\n";
-//                        broadcast(i, &recieved);
-                        rapidjson::Document d;
-                        d.Parse(recieved.c_str());
-                        auto t = &d["this"];
-                        
-                        if(t->HasMember("keystates")) {
-                            resetKeyStates(keystates);
-                            const rapidjson::Value& jkeystates = (*t)["keystates"];                       // Sprite sheets
-                            for(rapidjson::SizeType i = 0; i < jkeystates.Size(); i++) {
-                                const rapidjson::Value& jkeystate = jkeystates[i];
-                                keystates[jkeystate.GetInt()] = true;
-                            }
-                            std::cout << "here\n";
-                            
-                            auto mutex = client->instance->game->mutex;
-                            SDL_LockMutex(mutex);
-                            client->player->onKeyStates(&client->instance->game->instance, keystates);
-                            SDL_UnlockMutex(mutex);
-                        }
-                    }
+                    std::cout << "Recieved: >>> " << buffer << " <<< from client number: " << i->clientId << "\n";
+                    broadcast(i, buffer);
                 }
             }
             
-            ++it;
+            it++;
         }
         
-    }
+    } while(_isRunning);
     
     SDLNet_FreeSocketSet(socketSet);
     SDLNet_TCP_Close(serverSocket);
     
-    NFile::log(LogType::SUCCESS, "Shutting server down.");
+    NFile::log(LogType::ALERT, "Shutting server down.");
     
     return _onCleanup();
         
-}
-
-void CServer::broadcast(CClient* except, std::string* data) {
-    for(auto& client: clients) {
-        if(client.second != except)
-            client.second->send(data);
-    }
 }
 
 int CServer::_onInit() {
@@ -223,10 +178,12 @@ void CServer::_onLoop() {
             rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
             d.Accept(writer);
             
-            std::string toSend = sb.GetString();
+            std::string toSend = PACKET_START;
+            toSend += sb.GetString();
+            toSend += PACKET_ENDING;
             
             for(auto& client: sinstance->clients) {
-                client->send(&toSend);
+                client->send(toSend.c_str());
             }
             
             ++instances;
@@ -243,7 +200,6 @@ int CServer::_onCleanup() {
     {
         auto i = _instances.begin();
         while(i != _instances.end()) {
-            i->second->closeInstance();
             delete i->second;
             _instances.erase(i++->first);
         }

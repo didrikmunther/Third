@@ -6,6 +6,20 @@
 //  Copyright © 2016 Didrik Munther. All rights reserved.
 //
 
+//        if(inputData.hasTyped) {
+//            inputData.hasTyped = false;
+//            strcpy(buffer, inputData.buffer.c_str());
+//            int inputLength = (int)strlen(buffer) + 1;
+//
+//            std::cout << ">> Sending:  " << buffer << "\n";
+//
+//            if(SDLNet_TCP_Send(clientSocket, (void*)buffer, inputLength) < inputLength) {
+//                std::cout << "Failed to send message: " << SDL_GetError() << "\n";
+//                exit(-1);
+//            }
+//            inputData.nextInput = true;
+//        }
+
 
 #include "CGameClient.h"
 #include "NNetwork.h"
@@ -17,15 +31,15 @@ CGameClient::CGameClient(CGame* game)
     
 }
 
-//unsigned long bufferContains(std::string buffer, const char* contains) {
-//    std::string c = contains;
-//    return buffer.find(contains);
-//}
+unsigned long bufferContains(std::string buffer, const char* contains) {
+    std::string c = contains;
+    return buffer.find(contains);
+}
 
 int recvLoop(void* data) {
     auto self = static_cast<CGameClient*>(data);
     
-    std::string rest = "";
+    std::string recieved = "";
     
     while(self->game->_isRunning) {
         
@@ -33,11 +47,20 @@ int recvLoop(void* data) {
         if(socketActive != 0) {
             int messageFromServer = SDLNet_SocketReady(self->clientSocket);
             if(messageFromServer != 0) {
-                auto result = NNetwork::recvPacket(self->clientSocket, rest);
-                std::string toDeserialize = result.first;
-                rest = result.second;
+                int serverResponseByteCount = SDLNet_TCP_Recv(self->clientSocket, self->buffer, PACKET_SIZE - 1);
                 
-                if(toDeserialize != "") {
+                self->buffer[serverResponseByteCount] = 0;
+                recieved += self->buffer;
+                
+                unsigned long startPos = bufferContains(recieved, PACKET_START);
+                unsigned long endPos   = bufferContains(recieved, PACKET_ENDING);
+                
+                if(startPos != std::string::npos && endPos != std::string::npos) {
+                    std::string toDeserialize = recieved.substr(startPos + strlen(PACKET_START), endPos - strlen(PACKET_ENDING) - 2);
+                    recieved = recieved.substr(startPos, endPos + strlen(PACKET_ENDING));
+                    
+//                    NFile::log(LogType::ALERT, recieved);
+                    
                     rapidjson::Document d;
                     d.Parse(toDeserialize.c_str());
                     
@@ -46,6 +69,7 @@ int recvLoop(void* data) {
                     SDL_UnlockMutex(self->game->mutex);
                     
                     self->game->instance.camera->setTarget(self->game->instance.entityManager.getEntity("5:Player"));
+                    
                 }
             }
         }
@@ -82,6 +106,8 @@ int CGameClient::connect(std::string host, int port) {
             /*int serverResponseByteCount = */SDLNet_TCP_Recv(clientSocket, buffer, PACKET_SIZE);
             NFile::log(LogType::ALERT, "Got response from the server: ", buffer);
             
+//            std::cout << buffer << " == \"OK\" : " << strcmp(buffer, "OK") << "\n";
+            
             if(strcmp(buffer, "OK") == 0) {
                 NFile::log(LogType::SUCCESS, "Succesfully joined server");
             } else {
@@ -97,35 +123,5 @@ int CGameClient::connect(std::string host, int port) {
 }
 
 void CGameClient::onEvent(SDL_Event* event) {
-    int type = event->type;
-    std::string toSend = "";
-    std::string forbiddenCharacter = ""; // This is some mysko
     
-    switch(type) {
-        case SDL_KEYDOWN:
-        case SDL_KEYUP:
-            toSend = event->key.keysym.sym;
-            break;
-    }
-    
-    std::string complete = "{\"this\":{\"event:\":{\"" + toSend + "\":" + std::to_string(type) + "}}}";
-
-    NNetwork::sendPacket(clientSocket, &complete);
-}
-
-void CGameClient::handleKeyStates(const Uint8* keystate) {
-    std::string complete = "{\"this\":{\"keystates\":[";
-    
-    bool isFirst = true;
-    for(int i = 0; i < 512; i++) {
-        if(keystate[i]) {
-            if(!isFirst)
-                complete += ", ";
-            complete += std::to_string(i);
-            isFirst = false;
-        }
-    }
-    complete += "]}}";
-    
-    NNetwork::sendPacket(clientSocket, &complete);
 }

@@ -30,7 +30,7 @@ class CGame {
 public:
     CGame(GameType gameType = GameType::CLIENT);
     
-    int onExecute(std::string host);
+    int onExecute();
     void restart();
     
     // Main functions
@@ -61,7 +61,6 @@ public:
     std::stringstream _title;
     std::string _intro;
     bool isFocused;
-    std::string host;
 
     void _restart();
     bool toRestart;

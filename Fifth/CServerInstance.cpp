@@ -8,12 +8,11 @@
 
 #include "CServerInstance.h"
 #include "CGame.h"
-#include "CClient.h"
 
 
 int gameLoop(void* data) {
     auto game = static_cast<CGame*>(data);
-    game->onExecute("");
+    game->onExecute();
     
     return 1;
 }
@@ -33,22 +32,6 @@ CServerInstance::CServerInstance(std::string name, CGame* game)
     }
     
     loopThread = SDL_CreateThread(gameLoop, (name + "gameLoop").c_str(), (void*)game);
-}
-
-void CServerInstance::addClient(CClient* client) {
-    clients.push_back(client);
-    client->instance = this;
-}
-
-int CServerInstance::removeClient(CClient* client) {
-    auto it = clients.begin();
-    while(it != clients.end()) {
-        if(*it == client) {
-            clients.erase(it);
-            return 0;
-        }
-    }
-    return -1;
 }
 
 void CServerInstance::closeInstance() {

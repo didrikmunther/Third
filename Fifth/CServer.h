@@ -14,7 +14,6 @@
 #include <SDL2_net/SDL_net.h>
 
 #include "CServerInstance.h"
-#include "CClient.h"
 
 
 class CServer {
@@ -60,7 +59,12 @@ public:
     IPaddress serverIP;
     TCPsocket serverSocket;
     
-    void broadcast(CClient* except, std::string* data);
+    void broadcast(CClient* except, const char* data, int len = -1) {
+        for(auto& client: clients) {
+            if(client.second != except)
+                client.second->send(data, len);
+        }
+    }
 };
 
 #endif /* defined(__Fifth_Server__CServer__) */

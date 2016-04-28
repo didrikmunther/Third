@@ -9,32 +9,27 @@
 #include "CGame.h"
 #include "CServer.h"
 
-int client(std::string host) {
-    CGame game;
-    return game.onExecute(host);
-}
-
-int server(int tickrate) {
-    CServer server(tickrate);
-    return server.onExecute();
-}
 
 int main(int argc, const char * argv[]){
     
     int returned = -1;
     
-    if(argc >= 3) {
+    for(int i = 0; i < argc; i++)
+        std::cout << "argnr " << i << ": " << argv[i] << "\n";
+    
+//    CServer server(60);
+//    returned = server.onExecute();
+    
+    if(argc >= 2) {
         std::string argv1 = argv[1];
-        std::string argv2 = argv[2];
         if(argv1 == "+server") {
-            server(stoi(argv2));
-        } else if(argv1 == "+client")
-            client(argv2);
-        else
-//            server(60);
-            client(argv2);
-    } else {
-        client("localhost");
+            std::string tickrate = argv[2];
+            CServer server(stoi(tickrate));
+            returned = server.onExecute();
+        } else {
+            CGame game;
+            returned = game.onExecute();
+        }
     }
     
     printf("Good bye!");
