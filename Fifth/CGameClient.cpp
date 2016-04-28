@@ -13,9 +13,8 @@
 
 CGameClient::CGameClient(CGame* game)
     : game(game)
-    , playerID("")
 {
-    game->instance.camera->setTarget(nullptr);
+    
 }
 
 //unsigned long bufferContains(std::string buffer, const char* contains) {
@@ -42,20 +41,11 @@ int recvLoop(void* data) {
                     rapidjson::Document d;
                     d.Parse(toDeserialize.c_str());
                     
-                    auto t = &d["this"];
-                    
                     SDL_LockMutex(self->game->mutex);
-                    self->game->instance.entityManager.onDeserialize(&d["this"], &self->game->instance, true);
+                    self->game->instance.entityManager.onDeserialize(&d["this"], &self->game->instance);
                     SDL_UnlockMutex(self->game->mutex);
                     
-                    if(t->HasMember("playerID")) {
-                        std::cout << (*t)["playerID"].GetString() << "\n\n\n\n";
-                        self->playerID = (*t)["playerID"].GetString();
-                        
-                    }
-                    if(self->game->instance.camera->getTarget() == nullptr) {
-                        self->game->instance.camera->setTarget(self->game->instance.entityManager.getEntity(self->playerID));
-                    }
+                    self->game->instance.camera->setTarget(self->game->instance.entityManager.getEntity("5:Player"));
                 }
             }
         }
@@ -92,7 +82,7 @@ int CGameClient::connect(std::string host, int port) {
             /*int serverResponseByteCount = */SDLNet_TCP_Recv(clientSocket, buffer, PACKET_SIZE);
             NFile::log(LogType::ALERT, "Got response from the server: ", buffer);
             
-            if(strcmp(buffer, SERVER_NOT_FULL) == 0) {
+            if(strcmp(buffer, "OK") == 0) {
                 NFile::log(LogType::SUCCESS, "Succesfully joined server");
             } else {
                 NFile::log(LogType::ALERT, "Failed to join server, is full.");

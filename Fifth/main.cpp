@@ -9,7 +9,6 @@
 #include "CGame.h"
 #include "CServer.h"
 
-
 int client(std::string host) {
     CGame game;
     return game.onExecute(host);
@@ -21,6 +20,7 @@ int server(int tickrate) {
 }
 
 int main(int argc, const char * argv[]){
+    
     int returned = -1;
     
     if(argc >= 3) {
@@ -31,8 +31,8 @@ int main(int argc, const char * argv[]){
         } else if(argv1 == "+client")
             client(argv2);
         else
-            server(60);
-//            client("localhost");
+//            server(60);
+            client(argv2);
     } else {
         client("localhost");
     }

@@ -17,7 +17,6 @@ CClient::CClient(SDLNet_SocketSet* socketSet, TCPsocket socket, int clientId)
     : socket(socket)
     , clientId(clientId)
     , rest("")
-    , sendPlayerID(true)
 {
     SDLNet_TCP_AddSocket(*socketSet, socket);
 }
@@ -25,12 +24,10 @@ CClient::CClient(SDLNet_SocketSet* socketSet, TCPsocket socket, int clientId)
 void CClient::initEntities() {
     CEntityManager* entityManager = &instance->game->instance.entityManager;
     controller = entityManager->getEntity(entityManager->addEntity(new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0})));
-//    player = entityManager->getEntity("5:Player");
-    playerID = NFile::loadTemplate("player.templ", &instance->game->instance);
-    player = entityManager->getEntity(playerID);
+    player = entityManager->getEntity("5:Player");
 }
 
-void CClient::close(SDLNet_SocketSet* socketSet) {    
+void CClient::close(SDLNet_SocketSet* socketSet) {
     SDLNet_TCP_DelSocket(*socketSet, socket);
     SDLNet_TCP_Close(socket);
     
@@ -41,13 +38,13 @@ void CClient::send(std::string* data) {
     NNetwork::sendPacket(socket, data);
 }
 
-//void CClient::onEvent(std::string event) {
-//    
-//    rapidjson::Document d;
-//    d.Parse(event.c_str());
-//    
-//    
-//    
-////    &d["this"]
-//    
-//}
+void CClient::onEvent(std::string event) {
+    
+    rapidjson::Document d;
+    d.Parse(event.c_str());
+    
+    
+    
+//    &d["this"]
+    
+}

@@ -104,22 +104,19 @@ int CServer::onExecute() {
                 auto client = clients[currClientId];
                 clientCount++;
                 
-                strcpy(buffer, SERVER_NOT_FULL);
+                strcpy(buffer, "OK");
                 NNetwork::sendToSocket(client->socket, buffer);
                 
                 NFile::log(LogType::ALERT, "Client connected: ", currClientId, ".");
                 
                 _instances["start"]->addClient(client);
                 client->initEntities();
-                
-                std::string toSend = "{\"this\":{\"playerID\":\"" + client->playerID + "\"}}";
-                client->send(&toSend);
-                
                 currClientId++;
+                
             } else {
                 NFile::log(LogType::ALERT, "Client tried to connect, but server was full.");
                 TCPsocket tempSock = SDLNet_TCP_Accept(serverSocket);
-                NNetwork::sendToSocket(tempSock, SERVER_FULL);
+                NNetwork::sendToSocket(tempSock, "FULL");
                 SDLNet_TCP_Close(tempSock);
             }
         }
@@ -136,11 +133,9 @@ int CServer::onExecute() {
                     buffer[recievedByteCount] = 0;
                     NFile::log(LogType::ALERT, "Client ", (client->clientId), " disconnected.");
                     client->close(&socketSet);
-                    client->player->isDead = true;
                     clientCount--;
                     delete client;
                     clients.erase(it++);
-                    
                     continue;
                 } else {
                     auto result = NNetwork::recvPacket(socket, client->rest);
@@ -148,6 +143,8 @@ int CServer::onExecute() {
                     auto recieved = result.first;
                     
                     if(recieved != "") {
+//                        std::cout << recieved << "\n";
+//                        broadcast(i, &recieved);
                         rapidjson::Document d;
                         d.Parse(recieved.c_str());
                         auto t = &d["this"];
@@ -158,7 +155,11 @@ int CServer::onExecute() {
                             for(rapidjson::SizeType i = 0; i < jkeystates.Size(); i++) {
                                 const rapidjson::Value& jkeystate = jkeystates[i];
                                 keystates[jkeystate.GetInt()] = true;
+//                                std::cout << jkeystate.GetInt() << ", ";
                             }
+//                            std::cout << "\n";
+                            
+//                            std::cout << recieved << "\n";
                             
                             auto mutex = client->instance->game->mutex;
                             SDL_LockMutex(mutex);

@@ -56,7 +56,7 @@ public:
     void onCleanup();
     
     void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance);
-    void onDeserialize(rapidjson::Value* value, CInstance* instance, bool interpolate = false);
+    void onDeserialize(rapidjson::Value* value, CInstance* instance);
     
     CEntity* createEntity(Box box, Color color);
     CEntity* createEntity(Box box, std::string spriteKey);

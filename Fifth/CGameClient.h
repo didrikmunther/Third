@@ -40,8 +40,6 @@ public:
     
     CGame* game;
     
-    std::string playerID;
-    
 
     
 };

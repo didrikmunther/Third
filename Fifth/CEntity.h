@@ -102,7 +102,7 @@ public:
     virtual void renderAdditional(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
     void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance);
-    void onDeserialize(const rapidjson::Value* value, CInstance* instance, bool interpolate = false);
+    void onDeserialize(const rapidjson::Value* value, CInstance* instance);
     
     void onEvent(CInstance* instance, int key, bool keyDown);
     void onKeyStates(CInstance* instance, const Uint8* keystates);
@@ -191,7 +191,7 @@ private:
     bool _hasMoved;
     
     void _serialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc);
-    void _deserialize(const rapidjson::Value* value, bool interpolate = false);
+    void _deserialize(const rapidjson::Value* value);
     
 };
 

@@ -455,12 +455,10 @@ void CEntityManager::onSerialize(rapidjson::Value* value, rapidjson::Document::A
     value->AddMember("entityID", rapidjson::Value(entityID), *alloc);
 }
 
-void CEntityManager::onDeserialize(rapidjson::Value* value, CInstance* instance, bool interpolate /* = false */) {
+void CEntityManager::onDeserialize(rapidjson::Value* value, CInstance* instance) {
     
-    if(!value->HasMember("entityID"))
-        return;
-    
-    entityID = (*value)["entityID"].GetInt();
+    if(value->HasMember("entityID"))
+        entityID = (*value)["entityID"].GetInt();
     
     if(value->HasMember("backgrounds")) {
         const rapidjson::Value& backgroundValues = (*value)["backgrounds"];
@@ -500,17 +498,17 @@ void CEntityManager::onDeserialize(rapidjson::Value* value, CInstance* instance,
             
             auto entity = getEntity(i->name.GetString());
             if(entity == nullptr) {
-                if(entityValue->HasMember("defaultSpriteKey"))
-                    entity = new CEntity(Box(0, 0, 0, 0), (*entityValue)["defaultSpriteKey"].GetString());
-                else if(entityValue->HasMember("spriteKey"))
+                if(entityValue->HasMember("spriteKey"))
                     entity = new CEntity(Box(0, 0, 0, 0), (*entityValue)["spriteKey"].GetString());
+                else if(entityValue->HasMember("defaultSpriteKey"))
+                    entity = new CEntity(Box(0, 0, 0, 0), (*entityValue)["defaultSpriteKey"].GetString());
                 else
                     entity = new CEntity(Box(0, 0, 0, 0), "");
                 
                 addEntity(entity, i->name.GetString());
             }
             
-            entity->onDeserialize(entityValue, instance, interpolate);
+            entity->onDeserialize(entityValue, instance);
         }
     }
 }

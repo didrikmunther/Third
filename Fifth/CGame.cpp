@@ -96,7 +96,7 @@ int CGame::onExecute(std::string host) {
         
         _frames++;
         
-        if(now - _timer > 1000) {
+        if(SDL_GetTicks() - _timer > 1000) {
             _timer += 1000;
             _title.str("");
             _title << _updates << " ups, " << _frames << " fps";
@@ -177,15 +177,15 @@ void CGame::_restart() {
     
     instance.L = luaL_newstate();
     _initLua(instance.L, _path.c_str());
-//    
-//    CBackground* background = new CBackground("background", 0.1, BackgroundOffset{0, -450, 1.75f});
-//    instance.entityManager.addBackground("main", background);
-//    
-//    CAnimation* anim = new CAnimation({"test1", "test2", "test3", "test4", "test5", "test6"}, 10);
-//    CAssetManager::addSprite(anim, "test7");
-//
-    auto controller = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Controller.lua");
+    
+    CBackground* background = new CBackground("background", 0.1, BackgroundOffset{0, -450, 1.75f});
+    instance.entityManager.addBackground("main", background);
+    
+    CAnimation* anim = new CAnimation({"test1", "test2", "test3", "test4", "test5", "test6"}, 10);
+    CAssetManager::addSprite(anim, "test7");
 
+    auto controller = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Controller.lua");
+    
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
     instance.entityManager.addEntity(temp, "Controller");
     temp->addComponent(&instance, controller);
@@ -193,32 +193,32 @@ void CGame::_restart() {
     temp->addComponent(&instance, chatController);
     instance.controller = temp;
     
-//    auto movable = CAssetManager::getLuaScript("Standard/Movable");
-//    auto living = CAssetManager::getLuaScript("Standard/Living");
-//    
-//    temp = new CEntity(Box{50, -500, 16 * 4, 32 * 4}, "test2");
-//    instance.entityManager.addEntity(temp, "5:Player");
-//    temp->spriteStateTypes["WALKING"] = "test7";
-//    temp->spriteStateTypes["ASCENDING"] = "test4";
-//    temp->spriteStateTypes["DESCENDING"] = "test1";
-//    temp->addComponent(&instance, movable);
-//    temp->addComponent(&instance, living);
-//    instance.player = temp;
-//    instance.camera->setTarget(temp);
-//    
-//    temp = new CEntity(Box{100, -1000, 30 * 5, 28 * 5}, "bush");
-//    instance.entityManager.addEntity(temp, "n:bush");
-//    temp->collisionLayer = CollisionLayers::LAYER4;
-//    
-//    temp = new CEntity(Box{0, 50, 5000, 20}, Color{255, 0, 0, 255});
-//    instance.entityManager.addEntity(temp);
-//    temp->collisionLayer = -129; // all layers
-//    temp->addProperty(EntityProperty::STATIC);
-//    
-//    temp = new CEntity(Box{0, -4950, 20, 5000}, Color{255, 0, 0, 255});
-//    instance.entityManager.addEntity(temp);
-//    temp->collisionLayer = -129;
-//    temp->addProperty(EntityProperty::STATIC);
+    auto movable = CAssetManager::getLuaScript("Standard/Movable");
+    auto living = CAssetManager::getLuaScript("Standard/Living");
+    
+    temp = new CEntity(Box{50, -500, 16 * 4, 32 * 4}, "test2");
+    instance.entityManager.addEntity(temp, "5:Player");
+    temp->spriteStateTypes["WALKING"] = "test7";
+    temp->spriteStateTypes["ASCENDING"] = "test4";
+    temp->spriteStateTypes["DESCENDING"] = "test1";
+    temp->addComponent(&instance, movable);
+    temp->addComponent(&instance, living);
+    instance.player = temp;
+    instance.camera->setTarget(temp);
+    
+    temp = new CEntity(Box{100, -1000, 30 * 5, 28 * 5}, "bush");
+    instance.entityManager.addEntity(temp, "n:bush");
+    temp->collisionLayer = CollisionLayers::LAYER4;
+    
+    temp = new CEntity(Box{0, 50, 5000, 20}, Color{255, 0, 0, 255});
+    instance.entityManager.addEntity(temp);
+    temp->collisionLayer = -129; // all layers
+    temp->addProperty(EntityProperty::STATIC);
+    
+    temp = new CEntity(Box{0, -4950, 20, 5000}, Color{255, 0, 0, 255});
+    instance.entityManager.addEntity(temp);
+    temp->collisionLayer = -129;
+    temp->addProperty(EntityProperty::STATIC);
     
     toRestart = false;
 }
