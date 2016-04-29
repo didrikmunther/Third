@@ -15,6 +15,8 @@ local ChatController = class (
                               
         self.shift = false
         self.currentPos = 0
+                              
+        self.registered = {}
     end
 )
 
@@ -28,6 +30,16 @@ function ChatController:isKeyCode(key)
     return false
 end
 
+-- command: str, component: LuaComponentObj
+function ChatController:registerCommand(command, component)
+
+    if(self.registered[command] ~= nil) then
+        game.log(LogType.ERROR, "Could not register command \"" .. command .. "\" because it already exists")
+    else
+        self.registered[command] = component
+    end
+end
+
 function ChatController:parse(input)
     if(string.sub(input, 1, 1) == "/") then
         input = string.sub(input, 2, string.len(input))
@@ -39,29 +51,40 @@ function ChatController:parse(input)
 
         if(commands[1] == "restart") then self.component.instance.game:restart() end
 
-        if(commands[1] == "script" and commands[2] ~= nil) then
-            comp = commands[2]
-            mX, mY = self.component:getRelativeMouse()
-            temp = self.parent.entityManager:createSpriteEntity(Box(mX, mY, 16 * 4, 16 * 4), "lua")
-            self.parent.entityManager:addEntity(temp, "")
-            temp:addComponent(self.component.instance, game.getScript("Standard/GraphicScript"))
-            graphic = temp:getComponent("Standard/GraphicScript")
-            graphic:setScript(game.getScript(comp))
-            if(commands[3] ~= nil) then
-                graphic.deserialize = commands[3]
+        if(commands[2] ~= nil) then
+            if(commands[1] == "script") then
+                comp = commands[2]
+                mX, mY = self.component:getRelativeMouse()
+                temp = self.parent.entityManager:createSpriteEntity(Box(mX, mY, 16 * 4, 16 * 4), "lua")
+                self.parent.entityManager:addEntity(temp, "")
+                temp:addComponent(self.component.instance, game.getScript("Standard/GraphicScript"))
+                graphic = temp:getComponent("Standard/GraphicScript")
+                graphic:setScript(game.getScript(comp))
+                if(commands[3] ~= nil) then
+                    graphic.deserialize = commands[3]
+                end
+            end
+
+            if(commands[1] == "lua") then
+                len = table.getn(commands)
+                result = ""
+                for i = 2,len do
+                    result = result .. commands[i] .. " "
+                    end
+                line = "return function(self) " .. result .. " end"
+                if(not pcall(function() func = loadstring(line)() end) or not pcall(function() func(self) end)) then
+                    print("Error in executing: " .. commands[2])
+                end
+            end
+
+            if(commands[1] == "load") then
+                self.component.instance:loadLevel(commands[2])
             end
         end
-
-        if((commands[1] == "exec" or commands[1] == "eval") and commands[2] ~= nil) then
-            len = table.getn(commands)
-            result = ""
-            for i = 2,len do
-                result = result .. commands[i] .. " "
-                end
-            line = "return function(self) " .. result .. " end"
-            if(not pcall(function() func = loadstring(line)() end) or not pcall(function() func(self) end)) then
-                print("Error in executing: " .. commands[2])
-            end
+        
+        comp = self.registered[commands[1]]
+        if(comp ~= nil) then
+            comp:onCommand(commands)
         end
 
         return ""

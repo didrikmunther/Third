@@ -42,6 +42,7 @@ public:
     // Load functions
     static rapidjson::Document loadJsonFile(std::string fileName);
     static void loadAssets(std::string fileName, CInstance* instance);
+    static void loadLevel(std::string fileName, CInstance* instance);
     
     static void execCommand(rapidjson::Document command, CInstance* instance);
     static void parseCommands(rapidjson::Document commands, CInstance* instance);
@@ -91,6 +92,8 @@ public:
         writeToFile(LOG_FILE, alert, std::forward<T>(t)..., "\n");
         
     }
+    
+    static void log(int type, std::string msg);
     
 private:
     /* 

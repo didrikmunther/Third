@@ -33,6 +33,7 @@
         "Standard/Particle",
         "Standard/Serializable",
         "Standard/GraphicScript",
-        "Standard/ExplodeOnDeath"
+        "Standard/ExplodeOnDeath",
+        "Standard/BuilderController"
     ]
 }

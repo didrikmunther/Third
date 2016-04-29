@@ -13,6 +13,7 @@
 #include "NFile.h"
 #include "Define.h"
 #include "CAssetManager.h"
+#include "CEntityManager.h"
 
 
 rapidjson::Document NFile::loadJsonFile(std::string fileName) {
@@ -59,7 +60,7 @@ std::string NFile::readFromFile(std::string fileName) {
 }
 
 void NFile::loadAssets(std::string fileName, CInstance* instance) {
-    
+    fileName = "resources/map/" + fileName;
     log(LogType::ALERT, "Loading map: \"", fileName.c_str(), "\"");
     
     rapidjson::Document d = loadJsonFile(fileName);
@@ -75,6 +76,33 @@ void NFile::loadAssets(std::string fileName, CInstance* instance) {
     loadScripts(&d, instance);
     
     log(LogType::SUCCESS, "Loaded map: \"", fileName.c_str(), "\" as \"", d["name"].GetString(), "\"");
+}
+
+void NFile::loadLevel(std::string fileName, CInstance* instance) {
+    fileName = "resources/level/" + fileName;
+    log(LogType::ALERT, "Loading level: \"", fileName.c_str(), "\"");
+    
+    rapidjson::Document d = loadJsonFile(fileName);
+    
+    std::string error = "";
+    if(d.HasMember("JSONParsingError"))
+        error = d["JSONParsingError"].GetString();
+    else if(!d["this"].HasMember("player"))
+        error = "No player";
+    else if(!d["this"].HasMember("controller"))
+        error = "No controller";
+    
+    if(error != "") {
+        NFile::log(LogType::ERROR, "Could not load level \"", fileName, "\". (Reason: \"", error, "\")");
+        return;
+    }
+    
+    instance->entityManager.onDeserialize(&d["this"], instance);
+    instance->player = instance->entityManager.getEntity(d["this"]["player"].GetString());
+    instance->controller = instance->entityManager.getEntity(d["this"]["controller"].GetString());
+    instance->camera->setTarget(instance->player);
+    
+    NFile::log(LogType::SUCCESS, "Loaded level: \"", fileName.c_str(), "\"");
 }
 
 void NFile::loadFonts(rapidjson::Document* d) {
@@ -135,6 +163,31 @@ void NFile::loadScripts(rapidjson::Document* d, CInstance* instance) {
         std::string path = script.GetString();
         CAssetManager::addLuaScript(instance->L, "resources/scripts/" + path + ".lua");
     }
+}
+
+void NFile::log(int type, std::string msg) {
+    std::string prepend = "";
+    
+    LogType logType = (LogType)type;
+    switch(logType) {
+        case SUCCESS:
+            prepend = "[LSUCCESS] ";
+            break;
+        case ALERT:
+            prepend = "[LALERT] ";
+            break;
+        case ERROR:
+            prepend = "[LERROR] ";
+            break;
+        case WARNING:
+            prepend = "[LWARNING] ";
+            break;
+    }
+    
+    msg = prepend + msg + "\n";
+    
+    _print(msg);
+    writeToFile(LOG_FILE, msg);
 }
 
 void NFile::clearFile(std::string fileName) {

@@ -53,6 +53,13 @@ RenderFlags = {
     RENDER_COMBAT_TEXT  = 128
 }
 
+LogType = {
+    SUCCESS = 0,
+    ERROR   = 1,
+    WARNING = 2,
+    ALERT   = 3
+}
+
 KeyCode = {
     _UNKNOWN = 0,
 

@@ -41,6 +41,10 @@ public:
         setBox(x, y, _rect.w, _rect.h);
     }
     
+    void setDimension(int w, int h) {
+        setBox(_rect.x, _rect.y, w, h);
+    }
+    
     Position getCenter() { return Position{getX() + getW() / 2, getY() + getH() / 2}; }
     
     Box _rect;

@@ -13,8 +13,8 @@ function Controller:onInit()
     self.parent:removeProperty(EntityProperty.COLLIDABLE)
     self.component.instance.gravity = 0.3
 
-    self.component.instance:loadAssets("resources/map/testMap2.map")
-    self.component.instance:loadAssets("resources/map/testMap1.map")
+    self.component.instance:loadAssets("testMap2.map")
+    self.component.instance:loadAssets("testMap1.map")
 end
 
 function Controller:onEvent(key, keyDown)

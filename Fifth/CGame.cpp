@@ -154,36 +154,38 @@ void CGame::_restart() {
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
     instance.entityManager.addEntity(temp, "Controller");
     temp->addComponent(&instance, controller);
-    auto chatController = CAssetManager::getLuaScript("Standard/ChatController");
-    temp->addComponent(&instance, chatController);
+//    auto chatController = CAssetManager::getLuaScript("Standard/ChatController");
+//    temp->addComponent(&instance, chatController);
     instance.controller = temp;
     
-    auto movable = CAssetManager::getLuaScript("Standard/Movable");
-    auto living = CAssetManager::getLuaScript("Standard/Living");
+    NFile::loadLevel("testlevel.level", &instance);
     
-    temp = new CEntity(Box{50, -500, 16 * 4, 32 * 4}, "test2");
-    instance.entityManager.addEntity(temp, "5:Player");
-    temp->spriteStateTypes["WALKING"] = "test7";
-    temp->spriteStateTypes["ASCENDING"] = "test4";
-    temp->spriteStateTypes["DESCENDING"] = "test1";
-    temp->addComponent(&instance, movable);
-    temp->addComponent(&instance, living);
-    instance.player = temp;
-    instance.camera->setTarget(temp);
-    
-    temp = new CEntity(Box{100, -1000, 30 * 5, 28 * 5}, "bush");
-    instance.entityManager.addEntity(temp, "n:bush");
-    temp->collisionLayer = CollisionLayers::LAYER4;
-    
-    temp = new CEntity(Box{0, 50, 5000, 20}, Color{255, 0, 0, 255});
-    instance.entityManager.addEntity(temp);
-    temp->collisionLayer = -129; // all layers
-    temp->addProperty(EntityProperty::STATIC);
-    
-    temp = new CEntity(Box{0, -4950, 20, 5000}, Color{255, 0, 0, 255});
-    instance.entityManager.addEntity(temp);
-    temp->collisionLayer = -129;
-    temp->addProperty(EntityProperty::STATIC);
+//    auto movable = CAssetManager::getLuaScript("Standard/Movable");
+//    auto living = CAssetManager::getLuaScript("Standard/Living");
+//    
+//    temp = new CEntity(Box{50, -500, 16 * 4, 32 * 4}, "test2");
+//    instance.entityManager.addEntity(temp, "5:Player");
+//    temp->spriteStateTypes["WALKING"] = "test7";
+//    temp->spriteStateTypes["ASCENDING"] = "test4";r
+//    temp->spriteStateTypes["DESCENDING"] = "test1";
+//    temp->addComponent(&instance, movable);
+//    temp->addComponent(&instance, living);
+//    instance.player = temp;
+//    instance.camera->setTarget(temp);
+//    
+//    temp = new CEntity(Box{100, -1000, 30 * 5, 28 * 5}, "bush");
+//    instance.entityManager.addEntity(temp, "n:bush");
+//    temp->collisionLayer = CollisionLayers::LAYER4;
+//    
+//    temp = new CEntity(Box{0, 50, 5000, 20}, Color{255, 0, 0, 255});
+//    instance.entityManager.addEntity(temp);
+//    temp->collisionLayer = -129; // all layers
+//    temp->addProperty(EntityProperty::STATIC);
+//    
+//    temp = new CEntity(Box{0, -4950, 20, 5000}, Color{255, 0, 0, 255});
+//    instance.entityManager.addEntity(temp);
+//    temp->collisionLayer = -129;
+//    temp->addProperty(EntityProperty::STATIC);
     
     toRestart = false;
 }
@@ -239,6 +241,7 @@ void CGame::_initLua() {
             .addFunction("getScreenHeight", &CGame::getHeight)
             .addFunction("addSprite", (std::string (*)(CSprite*, std::string)) &CAssetManager::addSprite)
             .addFunction("createSprite", (CSprite* (*)(CSpriteSheet*, Box)) &CAssetManager::createSprite)
+            .addFunction("log", (void (*)(int, std::string)) &NFile::log)
         .endNamespace()
     
         .beginClass<CLuaObject>("LuaObject")
@@ -293,7 +296,7 @@ void CGame::_initLua() {
     
         .beginClass<Box>("Box")
             .addConstructor<void(*) (int, int, int, int)>()
-            .addData("x", &Box::x)
+            .addData("x", &Box::x) // Cannot change these values in lua
             .addData("y", &Box::y)
             .addData("w", &Box::w)
             .addData("h", &Box::h)
@@ -333,6 +336,7 @@ void CGame::_initLua() {
             .addData("gravity", &CInstance::gravity)
             .addFunction("loadAssets", &CInstance::loadAssets)
             .addFunction("doLine", &CInstance::doLine)
+            .addFunction("loadLevel", &CInstance::loadLevel)
         .endClass()
     
         .beginClass<CCamera>("Camera")
@@ -355,6 +359,7 @@ void CGame::_initLua() {
             .addData("box", &CBody::_rect)
             .addFunction("setBox", &CBody::setBox)
             .addFunction("setPosition", &CBody::setPosition)
+            .addFunction("setDimension", &CBody::setDimension)
         .endClass()
     
         .beginClass<KeyState>("KeyState")
@@ -404,6 +409,7 @@ int CGame::getTime() {
 }
 
 void CGame::_onLoop() {
+    instance.onLoop();
     instance.entityManager.onLoop(&instance);
     instance.camera->onLoop();
 }

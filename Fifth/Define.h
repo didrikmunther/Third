@@ -13,11 +13,13 @@
 #ifndef __Third__Define__
 #define __Third__Define__
 
+const bool DEBUG                = false;
+
 const int SCREEN_WIDTH          = 1280;
 const int SCREEN_HEIGHT         = 720;
 const int SCREEN_BPP            = 32;
 
-const int GAME_INTERVAL          = 60;
+const int GAME_INTERVAL         = 60;
 
 const char LOG_FILE[]           = "debug.log";
 

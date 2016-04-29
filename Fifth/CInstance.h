@@ -47,6 +47,12 @@ public:
     void loadAssets(std::string path);
     void doLine(std::string line);
     
+    void loadLevel(std::string fileName);
+    std::string levelToLoad = "";
+    bool doLoadLevel;
+    void _loadLevel(std::string fileName);
+    
+    std::string onSerialize();
     void closeInstance();
     
 };

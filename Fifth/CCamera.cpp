@@ -13,8 +13,10 @@
 #include "CEntity.h"
 
 
-CCamera::CCamera() :
-    _offset{0, 0, 0, 0}, cameraSway(10) {
+CCamera::CCamera()
+    : _offset{0, 0, 0, 0}, cameraSway(10)
+    , _target(nullptr)
+{
 }
 
 void CCamera::onInit(CWindow* window) {

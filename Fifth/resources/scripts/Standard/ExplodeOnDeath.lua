@@ -62,8 +62,9 @@ function ExplodeOnDeath:explodeParticle(sx, sy, sw, sh, tx, ty, tw, th, spriteNa
     body.velX = self.parent.body.velX + math.random(force) - force / 2
     body.velY = self.parent.body.velY + -10 + -math.random(force) / 2
 
+
     particle:addComponent(self.component.instance, game.getScript("Standard/Particle"))
-    particle:getComponent("Standard/Particle"):onDeserialize('{"livingTime":5}')
+    particle:getComponent("Standard/Particle"):onDeserialize('{"livingTime":' .. ((math.random(50) + 25) / 10) .. '}')
 
     if(not self.parent:hasProperty(EntityProperty.COLLIDABLE)) then
         particle:removeProperty(EntityProperty.COLLIDABLE)

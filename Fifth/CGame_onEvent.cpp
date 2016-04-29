@@ -34,10 +34,6 @@ void CGame::_onEvent(SDL_Event* event) {
     
     //if(event->key.repeat != 0) return;
     
-    CComponent* movable = nullptr;
-    if(instance.player)
-        movable = instance.player->getComponent("Standard/Movable");
-    
     switch(event->type) {
         case SDL_QUIT:
             _isRunning = false;
@@ -106,24 +102,24 @@ void CGame::_onEvent(SDL_Event* event) {
                     
                 case SDLK_h:
                 {
-                    quickSave = NFile::readFromFile("quicksave.save");
-                    
-                    std::cout << quickSave << "\n--------------------\n";
-                    
-                    if(quickSave == "{}")
-                        break;
-                    
-                    rapidjson::Document d;
-                    d.Parse(quickSave.c_str());
-                    
-                    instance.entityManager.onCleanup();
-                    
-                    instance.entityManager.onDeserialize(&d["this"], &instance);
-                    
-                    instance.player = instance.entityManager.getEntity("5:Player");
-                    instance.controller = instance.entityManager.getEntity("Controller");
-                    
-                    instance.camera->setTarget(instance.player, true);
+//                    quickSave = NFile::readFromFile("quicksave.save");
+//                    
+//                    std::cout << quickSave << "\n--------------------\n";
+//                    
+//                    if(quickSave == "{}")
+//                        break;
+//                    
+//                    rapidjson::Document d;
+//                    d.Parse(quickSave.c_str());
+//                    
+//                    instance.entityManager.onCleanup();
+//                    
+//                    instance.entityManager.onDeserialize(&d["this"], &instance);
+//                    
+//                    instance.player = instance.entityManager.getEntity("5:Player");
+//                    instance.controller = instance.entityManager.getEntity("Controller");
+//                    
+//                    instance.camera->setTarget(instance.player, true);
                 }
                     break;
                     

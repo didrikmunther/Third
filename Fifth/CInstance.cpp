@@ -16,6 +16,8 @@ CInstance::CInstance(CGame* game)
     , L(luaL_newstate())
     , camera(new CCamera())
     , gravity(3.0f)
+    , doLoadLevel(false)
+    , levelToLoad("")
 {
     
 }
@@ -24,14 +26,45 @@ CInstance::~CInstance() {
     delete camera;
 }
 
+void CInstance::onLoop() {
+    if(doLoadLevel)
+        _loadLevel(levelToLoad);
+}
+
 void CInstance::loadAssets(std::string path) {
     //CAssetManager::onCleanup(CLEAN_FLAGS::NOT_LUA_SCRIPTS);
     NFile::loadAssets(path, this);
-
 }
 
 void CInstance::doLine(std::string line) {
     luaL_dostring(L, line.c_str());
+}
+
+void CInstance::loadLevel(std::string fileName) {
+    levelToLoad = fileName;
+    doLoadLevel = true;
+}
+
+void CInstance::_loadLevel(std::string fileName) {
+    entityManager.onCleanup();
+    NFile::loadLevel(fileName, this);
+    doLoadLevel = false;
+}
+
+std::string CInstance::onSerialize() {
+    rapidjson::Document d;
+    d.Parse("{}");
+    
+    rapidjson::Value entityValues(rapidjson::kObjectType);
+    entityManager.onSerialize(&entityValues, &d.GetAllocator(), this);
+    
+    d.AddMember("this", entityValues, d.GetAllocator());
+    
+    rapidjson::StringBuffer sb;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
+    d.Accept(writer);
+    
+    return sb.GetString();
 }
 
 void CInstance::closeInstance() {

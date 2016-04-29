@@ -44,7 +44,8 @@ std::string CEntityManager::addEntity(CEntity* entity, std::string name /* = "" 
 
 CEntity* CEntityManager::getEntity(std::string name) {
     if(_entities.find(name) == _entities.end()) {
-        //NFile::log(LogType::WARNING, "Couldn't get entity: ", name, ", because it doesn't exist.");
+        if(DEBUG)
+            NFile::log(LogType::WARNING, "Couldn't get entity: ", name, ", because it doesn't exist.");
         return nullptr;
     } else {
         return _entities[name];
@@ -259,8 +260,8 @@ std::vector<GridCoordinates> getGrid(CEntity* target, int gridSize) {
         (targetY - (targetY % gridSize)) / gridSize};
     //int upperRightCorner[2] = {(targetX + targetW - ((targetX + targetW) % gridSize)) / gridSize,
     //    (targetY - (targetY % gridSize)) / gridSize};
-    int lowerLeftCorner[2]  = {(targetX - (targetX % gridSize)) / gridSize,
-        (targetY + targetH - ((targetY + targetH) % gridSize)) / gridSize};
+//    int lowerLeftCorner[2]  = {(targetX - (targetX % gridSize)) / gridSize,
+//        (targetY + targetH - ((targetY + targetH) % gridSize)) / gridSize};
     int lowerRightCorner[2] = {(targetX + targetW - ((targetX + targetW) % gridSize)) / gridSize,
         (targetY + targetH - ((targetY + targetH) % gridSize)) / gridSize};
     
@@ -268,7 +269,7 @@ std::vector<GridCoordinates> getGrid(CEntity* target, int gridSize) {
     
     int margin = 1;
     
-    if(upperLeftCorner[1] - margin < lowerLeftCorner[1] + margin) {
+    if(upperLeftCorner[1] - margin < lowerRightCorner[1] + margin) {
         for(int y = upperLeftCorner[1] - margin; y < lowerRightCorner[1] + margin; y++) {
             if(upperLeftCorner[0] - margin < lowerRightCorner[0] + margin) {
                 loopX(upperLeftCorner[0] - margin, lowerRightCorner[0] + margin, y, &toReturn);
