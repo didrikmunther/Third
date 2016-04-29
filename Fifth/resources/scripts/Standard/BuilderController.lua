@@ -31,6 +31,7 @@ function BuilderController:onInit()
     chatController:registerCommand("build", self)
     chatController:registerCommand("place", self)
     chatController:registerCommand("move", self)
+    chatController:registerCommand("remove", self)
     chatController:registerCommand("color", self)
 end
 
@@ -67,6 +68,14 @@ function BuilderController:move(commands)
     self.isMoving = true
 end
 
+function BuilderController:remove(commands)
+    self.activeEntity = self.parent.entityManager:getEntityAtCoordinate(self.mX, self.mY, nil)
+    if(not self.activeEntity) then do return end end
+
+    self.activeEntity.isDead = true
+    self.activeEntity = nil
+end
+
 function BuilderController:color(commands)
     if(commands[3] == nil) then
         self.spriteKey = commands[2]
@@ -83,10 +92,11 @@ function BuilderController:color(commands)
 end
 
 function BuilderController:onCommand(commands)
-    if(commands[1] == "build") then self:build(commands) end
-    if(commands[1] == "place") then self:place(commands) end
-    if(commands[1] == "move") then  self:move(commands) end
-    if(commands[1] == "color") then  self:color(commands) end
+    if(commands[1] == "build") then     self:build(commands) end
+    if(commands[1] == "place") then     self:place(commands) end
+    if(commands[1] == "move") then      self:move(commands) end
+    if(commands[1] == "remove") then    self:remove(commands) end
+    if(commands[1] == "color") then     self:color(commands) end
 end
 
 function BuilderController:onLoop()

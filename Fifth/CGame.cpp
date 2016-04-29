@@ -242,6 +242,8 @@ void CGame::_initLua() {
             .addFunction("addSprite", (std::string (*)(CSprite*, std::string)) &CAssetManager::addSprite)
             .addFunction("createSprite", (CSprite* (*)(CSpriteSheet*, Box)) &CAssetManager::createSprite)
             .addFunction("log", (void (*)(int, std::string)) &NFile::log)
+            .addFunction("writeToFile", (void (*)(std::string, std::string)) &NFile::luaWriteToFile)
+            .addFunction("clearFile", &NFile::clearFile)
         .endNamespace()
     
         .beginClass<CLuaObject>("LuaObject")
@@ -337,10 +339,12 @@ void CGame::_initLua() {
             .addFunction("loadAssets", &CInstance::loadAssets)
             .addFunction("doLine", &CInstance::doLine)
             .addFunction("loadLevel", &CInstance::loadLevel)
+            .addFunction("onSerialize", &CInstance::onSerialize)
         .endClass()
     
         .beginClass<CCamera>("Camera")
             .addFunction("addCameraShake", &CCamera::addCameraShake)
+            .addFunction("setTarget", &CCamera::setTarget)
             .addData("cameraSway", &CCamera::cameraSway)
             .addFunction("offsetX", &CCamera::offsetX)
             .addFunction("offsetY", &CCamera::offsetY)

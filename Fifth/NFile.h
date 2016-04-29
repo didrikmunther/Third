@@ -57,6 +57,10 @@ public:
         file.close();
     }
     
+    static void luaWriteToFile(std::string fileName, std::string msg) {
+        writeToFile(fileName, msg);
+    }
+    
     static void clearFile(std::string fileName);
     
     // Misc functions

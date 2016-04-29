@@ -55,10 +55,13 @@ std::string CInstance::onSerialize() {
     rapidjson::Document d;
     d.Parse("{}");
     
-    rapidjson::Value entityValues(rapidjson::kObjectType);
-    entityManager.onSerialize(&entityValues, &d.GetAllocator(), this);
+    rapidjson::Value values(rapidjson::kObjectType);
+    entityManager.onSerialize(&values, &d.GetAllocator(), this);
     
-    d.AddMember("this", entityValues, d.GetAllocator());
+    values.AddMember("player", rapidjson::Value(entityManager.getNameOfEntity(player).c_str(), d.GetAllocator()), d.GetAllocator());
+    values.AddMember("controller", rapidjson::Value(entityManager.getNameOfEntity(controller).c_str(), d.GetAllocator()), d.GetAllocator());
+    
+    d.AddMember("this", values, d.GetAllocator());
     
     rapidjson::StringBuffer sb;
     rapidjson::Writer<rapidjson::StringBuffer> writer(sb);

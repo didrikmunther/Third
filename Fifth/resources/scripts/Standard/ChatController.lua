@@ -73,12 +73,20 @@ function ChatController:parse(input)
                     end
                 line = "return function(self) " .. result .. " end"
                 if(not pcall(function() func = loadstring(line)() end) or not pcall(function() func(self) end)) then
-                    print("Error in executing: " .. commands[2])
+                    print("Error in executing: " .. result)
                 end
             end
 
             if(commands[1] == "load") then
                 self.component.instance:loadLevel(commands[2])
+            end
+            
+            if(commands[1] == "save") then
+                path = "resources/level/" .. commands[2]
+                serialized = self.component.instance:onSerialize()
+                print(serialized)
+                game.clearFile(path)
+                game.writeToFile(path, serialized)
             end
         end
         
