@@ -6,6 +6,7 @@ local BuilderController = class (
         self.component = component
                                  
         self.mouseDown = false
+        self.rightMouseDown = false
         self.initMX = 0
         self.initMY = 0
         self.mX = 0
@@ -23,16 +24,24 @@ local BuilderController = class (
                                  
         self.isBuilding = false
         self.isMoving = false
+        self.isTiling = false
+                                 
+        self.tileSheet = {}
+        self.tiles = Autotable(2)
+        self.allTilePositions = {}
     end
 )
 
-function BuilderController:onInit()
-    chatController = self.parent:getComponent("Standard/ChatController")
-    chatController:registerCommand("build", self)
-    chatController:registerCommand("place", self)
-    chatController:registerCommand("move", self)
-    chatController:registerCommand("remove", self)
-    chatController:registerCommand("color", self)
+function BuilderController:onComponentAdd(comp)
+    if(comp == "Standard/ChatController") then
+        chatController = self.parent:getComponent("Standard/ChatController")
+        chatController:registerCommand("build", self)
+        chatController:registerCommand("place", self)
+        chatController:registerCommand("move", self)
+        chatController:registerCommand("remove", self)
+        chatController:registerCommand("color", self)
+        chatController:registerCommand("tile", self)
+    end
 end
 
 function BuilderController:createActiveEntity()
@@ -91,12 +100,53 @@ function BuilderController:color(commands)
     end
 end
 
+function BuilderController:tile(commands)
+    if(self.isTiling) then
+        self.isTiling = false
+        do return end
+    end
+
+    stem = commands[2]
+
+    for i = 0, 15 do
+        self.tileSheet[i] = stem .. i
+    end
+    
+    self.isTiling = true
+    
+end
+
+function BuilderController:updateTile(posX, posY)
+    if(not self.tiles[posX][posY]) then
+        do return end
+    end
+
+    sum = 0
+    if(self.tiles[posX][posY-1]) then sum = sum + 1 end
+    if(self.tiles[posX+1][posY]) then sum = sum + 2 end
+    if(self.tiles[posX][posY+1]) then sum = sum + 4 end
+    if(self.tiles[posX-1][posY]) then sum = sum + 8 end
+
+    spriteKey = self.tileSheet[sum]
+
+    self.tiles[posX][posY].defaultSprite = spriteKey
+end
+
+function BuilderController:updateTiles(posX, posY)
+    self:updateTile(posX, posY)
+    self:updateTile(posX, posY-1)
+    self:updateTile(posX+1, posY)
+    self:updateTile(posX, posY+1)
+    self:updateTile(posX-1, posY)
+end
+
 function BuilderController:onCommand(commands)
     if(commands[1] == "build") then     self:build(commands) end
     if(commands[1] == "place") then     self:place(commands) end
     if(commands[1] == "move") then      self:move(commands) end
     if(commands[1] == "remove") then    self:remove(commands) end
     if(commands[1] == "color") then     self:color(commands) end
+    if(commands[1] == "tile") then      self:tile(commands) end
 end
 
 function BuilderController:onLoop()
@@ -152,11 +202,45 @@ function BuilderController:onLoop()
         end
     end
 
+    if(self.isTiling) then
+        if(self.mouseDown) then
+            size = 64
+            posX = math.floor(self.mX / size)
+            posY = math.floor(self.mY / size)
+            
+            if(not self.tiles[posX][posY]) then
+                self.hasSprite = true
+                self.spriteKey = "dirt0"
+                self:createActiveEntity()
+                self.activeEntity.body:setDimension(size, size)
+                self.activeEntity.body:setPosition(posX * 64, posY * 64)
+                self.activeEntity:addProperty(EntityProperty.STATIC)
+                self.tiles[posX][posY] = self.activeEntity
+                
+                self:updateTiles(posX, posY)
+
+                self.activeEntity = nil
+            end
+        end
+        if(self.rightMouseDown) then
+            size = 64
+            posX = math.floor(self.mX / size)
+            posY = math.floor(self.mY / size)
+            
+            if(self.tiles[posX][posY]) then
+                self.tiles[posX][posY].toRemove = true
+            end
+            self.tiles[posX][posY] = nil
+            self:updateTiles(posX, posY)
+        end
+    end
+
 end
 
 function BuilderController:onKeyStates(state)
     self.mX, self.mY = self.component:getRelativeMouse()
     self.mouseDown = game:leftMousePressed()
+    self.rightMouseDown = game:rightMousePressed()
 
 end
 

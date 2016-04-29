@@ -21,7 +21,26 @@
         {"name":"lua",                  "spriteSheetKey":"MAIN",                "offsets":[48, 32, 16, 16]},
         
         {"name":"bunny",                "spriteSheetKey":"MAIN",                "offsets":[48, 16, 16, 16]},
-        {"name":"bunnyJump",            "spriteSheetKey":"MAIN",                "offsets":[64, 16, 16, 16]}
+        {"name":"bunnyJump",            "spriteSheetKey":"MAIN",                "offsets":[64, 16, 16, 16]},
+        
+        {"name": "smoke",               "spriteSheetKey":"MAIN",                "offsets":[48, 64, 16, 16]},
+        
+        {"name": "dirt0",               "spriteSheetKey":"MAIN",                "offsets":[0,  96, 16, 16]},
+        {"name": "dirt1",               "spriteSheetKey":"MAIN",                "offsets":[16, 96, 16, 16]},
+        {"name": "dirt2",               "spriteSheetKey":"MAIN",                "offsets":[32, 96, 16, 16]},
+        {"name": "dirt3",               "spriteSheetKey":"MAIN",                "offsets":[48, 96, 16, 16]},
+        {"name": "dirt4",               "spriteSheetKey":"MAIN",                "offsets":[0,  112, 16, 16]},
+        {"name": "dirt5",               "spriteSheetKey":"MAIN",                "offsets":[16, 112, 16, 16]},
+        {"name": "dirt6",               "spriteSheetKey":"MAIN",                "offsets":[32, 112, 16, 16]},
+        {"name": "dirt7",               "spriteSheetKey":"MAIN",                "offsets":[48, 112, 16, 16]},
+        {"name": "dirt8",               "spriteSheetKey":"MAIN",                "offsets":[0,  128, 16, 16]},
+        {"name": "dirt9",               "spriteSheetKey":"MAIN",                "offsets":[16, 128, 16, 16]},
+        {"name": "dirt10",              "spriteSheetKey":"MAIN",                "offsets":[32, 128, 16, 16]},
+        {"name": "dirt11",              "spriteSheetKey":"MAIN",                "offsets":[48, 128, 16, 16]},
+        {"name": "dirt12",              "spriteSheetKey":"MAIN",                "offsets":[0,  144, 16, 16]},
+        {"name": "dirt13",              "spriteSheetKey":"MAIN",                "offsets":[16, 144, 16, 16]},
+        {"name": "dirt14",              "spriteSheetKey":"MAIN",                "offsets":[32, 144, 16, 16]},
+        {"name": "dirt15",              "spriteSheetKey":"MAIN",                "offsets":[48, 144, 16, 16]}
     ],
     
     "scripts": [

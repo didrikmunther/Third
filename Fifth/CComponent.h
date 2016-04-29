@@ -59,6 +59,7 @@ public:
     void onEvent(CInstance* instance, int key, bool keyDown);
     void onKeyStates(CInstance* instance, const Uint8* keystates);
     void onTextInput(CInstance* instance, std::string input);
+    void onComponentAdd(CInstance* instance, std::string component);
     
     void callSimpleFunction(std::string function);
     

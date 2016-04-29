@@ -187,6 +187,19 @@ void CComponent::onTextInput(CInstance* instance, std::string input) {
     tempInstance = nullptr;
 }
 
+void CComponent::onComponentAdd(CInstance* instance, std::string component) {
+    if(!object.hasReference("onComponentAdd"))
+        return;
+    
+    tempInstance = instance;
+    
+    object.beginCall("onComponentAdd");
+    object.pushObject(component);
+    object.endCall(1, 0);
+    
+    tempInstance = nullptr;
+}
+
 void CComponent::callSimpleFunction(std::string function) {
     if(!object.hasReference(function.c_str()))
         return;

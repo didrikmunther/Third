@@ -316,12 +316,19 @@ CComponent* CEntity::addComponent(CInstance* instance, CLuaScript* script) {
         NFile::log(LogType::WARNING, "Luascript ", script->getName(), " is invalid, and could not be added to entity as a component.");
         return nullptr;
     } else if(getComponent(script->getName())) {
-        //NFile::log(LogType::WARNING, "Component already exists: ", script->getName(), ".");
+        if(DEBUG)
+            NFile::log(LogType::WARNING, "Component already exists: ", script->getName(), ".");
         delete components[script->getName()];
     }
     
     CComponent* component = new CComponent(this, instance, script);
     components[script->getName()] = component;
+    
+    for(auto& i: components) {
+        component->onComponentAdd(instance, i.second->object.getScript()->getName());
+        i.second->onComponentAdd(instance, script->getName());
+    }
+    
     return component;
 }
 

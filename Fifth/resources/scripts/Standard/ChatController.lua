@@ -84,7 +84,6 @@ function ChatController:parse(input)
             if(commands[1] == "save") then
                 path = "resources/level/" .. commands[2]
                 serialized = self.component.instance:onSerialize()
-                print(serialized)
                 game.clearFile(path)
                 game.writeToFile(path, serialized)
             end
