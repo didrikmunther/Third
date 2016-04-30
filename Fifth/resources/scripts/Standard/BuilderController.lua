@@ -26,9 +26,7 @@ local BuilderController = class (
         self.isMoving = false
         self.isTiling = false
                                  
-        self.tileSheet = {}
-        self.tiles = Autotable(2)
-        self.allTilePositions = {}
+        self.tileset = ""
     end
 )
 
@@ -101,43 +99,16 @@ function BuilderController:color(commands)
 end
 
 function BuilderController:tile(commands)
+
     if(self.isTiling) then
         self.isTiling = false
         do return end
     end
 
-    stem = commands[2]
-
-    for i = 0, 15 do
-        self.tileSheet[i] = stem .. i
-    end
+    self.tileset = commands[2]
     
     self.isTiling = true
-    
-end
 
-function BuilderController:updateTile(posX, posY)
-    if(not self.tiles[posX][posY]) then
-        do return end
-    end
-
-    sum = 0
-    if(self.tiles[posX][posY-1]) then sum = sum + 1 end
-    if(self.tiles[posX+1][posY]) then sum = sum + 2 end
-    if(self.tiles[posX][posY+1]) then sum = sum + 4 end
-    if(self.tiles[posX-1][posY]) then sum = sum + 8 end
-
-    spriteKey = self.tileSheet[sum]
-
-    self.tiles[posX][posY].defaultSprite = spriteKey
-end
-
-function BuilderController:updateTiles(posX, posY)
-    self:updateTile(posX, posY)
-    self:updateTile(posX, posY-1)
-    self:updateTile(posX+1, posY)
-    self:updateTile(posX, posY+1)
-    self:updateTile(posX-1, posY)
 end
 
 function BuilderController:onCommand(commands)
@@ -204,34 +175,10 @@ function BuilderController:onLoop()
 
     if(self.isTiling) then
         if(self.mouseDown) then
-            size = 64
-            posX = math.floor(self.mX / size)
-            posY = math.floor(self.mY / size)
-            
-            if(not self.tiles[posX][posY]) then
-                self.hasSprite = true
-                self.spriteKey = "dirt0"
-                self:createActiveEntity()
-                self.activeEntity.body:setDimension(size, size)
-                self.activeEntity.body:setPosition(posX * 64, posY * 64)
-                self.activeEntity:addProperty(EntityProperty.STATIC)
-                self.tiles[posX][posY] = self.activeEntity
-                
-                self:updateTiles(posX, posY)
-
-                self.activeEntity = nil
-            end
+            self.parent.entityManager:addTile(self.mX, self.mY, self.tileset)
         end
         if(self.rightMouseDown) then
-            size = 64
-            posX = math.floor(self.mX / size)
-            posY = math.floor(self.mY / size)
-            
-            if(self.tiles[posX][posY]) then
-                self.tiles[posX][posY].toRemove = true
-            end
-            self.tiles[posX][posY] = nil
-            self:updateTiles(posX, posY)
+            self.parent.entityManager:removeTile(self.mX, self.mY)
         end
     end
 
@@ -241,16 +188,6 @@ function BuilderController:onKeyStates(state)
     self.mX, self.mY = self.component:getRelativeMouse()
     self.mouseDown = game:leftMousePressed()
     self.rightMouseDown = game:rightMousePressed()
-
-end
-
-function BuilderController:onEvent(key, keyDown)
-
-    if(keyDown) then
-        if(self.editValues) then
-            
-        end
-    end
 
 end
 

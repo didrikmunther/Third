@@ -81,22 +81,22 @@ void CGame::_onEvent(SDL_Event* event) {
                     
                 case SDLK_g:
                 {
-                    rapidjson::Document d;
-                    d.Parse("{}");
-                
-                    rapidjson::Value entityValues(rapidjson::kObjectType);
-                    instance.entityManager.onSerialize(&entityValues, &d.GetAllocator(), &instance);
-                
-                    d.AddMember("this", entityValues, d.GetAllocator());
-                
-                    rapidjson::StringBuffer sb;
-                    rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
-                    d.Accept(writer);
-                    
-//                    std::cout << sb.GetString() << "\n---------------\n";
-//                    quickSave = sb.GetString();
-                    NFile::clearFile("quicksave.save");
-                    NFile::writeToFile("quicksave.save", sb.GetString());
+//                    rapidjson::Document d;
+//                    d.Parse("{}");
+//                
+//                    rapidjson::Value entityValues(rapidjson::kObjectType);
+//                    instance.entityManager.onSerialize(&entityValues, &d.GetAllocator(), &instance);
+//                
+//                    d.AddMember("this", entityValues, d.GetAllocator());
+//                
+//                    rapidjson::StringBuffer sb;
+//                    rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
+//                    d.Accept(writer);
+//                    
+////                    std::cout << sb.GetString() << "\n---------------\n";
+////                    quickSave = sb.GetString();
+//                    NFile::clearFile("quicksave.save");
+//                    NFile::writeToFile("quicksave.save", sb.GetString());
                 }
                     break;
                     

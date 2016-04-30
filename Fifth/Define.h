@@ -20,8 +20,17 @@ const int SCREEN_HEIGHT         = 720;
 const int SCREEN_BPP            = 32;
 
 const int GAME_INTERVAL         = 60;
+const int TILE_SIZE             = 64;
 
 const char LOG_FILE[]           = "debug.log";
+
+struct Position {
+    int x, y;
+};
+
+struct Area {
+    int w, h;
+};
 
 struct Box {
     int x, y;
@@ -38,10 +47,6 @@ struct Box {
     }
     
     operator SDL_Rect() const { return SDL_Rect{x, y, w, h}; }
-};
-
-struct Area {
-    int w, h;
 };
 
 enum RenderFlags {

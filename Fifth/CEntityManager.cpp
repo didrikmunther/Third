@@ -18,6 +18,7 @@
 #include "CGuiText.h"
 #include "CBackground.h"
 #include "CInstance.h"
+#include "CTile.h"
 
 
 CEntityManager::CEntityManager() : entityID(0), _gridSize(32) {
@@ -126,6 +127,33 @@ void CEntityManager::addBackground(std::string name, CBackground* background) {
     _backgrounds[name] = background;
 }
 
+void CEntityManager::addTile(int x, int y, std::string tileset) {
+    int posX = floor((float)x / TILE_SIZE);
+    int posY = floor((float)y / TILE_SIZE);
+    
+    if(CTile::tileExist(&_tiles, posX, posY))
+        return;
+    
+    CTile* tile = new CTile(tileset, posX, posY);
+    _tiles[posX][posY] = tile;
+    
+    tile->updateIndex(&_tiles);
+    tile->updateAdjecent(&_tiles);
+}
+
+void CEntityManager::removeTile(int x, int y) {
+    int posX = floor((float)x / TILE_SIZE);
+    int posY = floor((float)y / TILE_SIZE);
+    
+    if(!CTile::tileExist(&_tiles, posX, posY))
+        return;
+    
+    auto tile = _tiles[posX][posY];
+    _tiles[posX].erase(posY);
+    tile->updateAdjecent(&_tiles);
+    delete tile;
+}
+
 void CEntityManager::addRenderFlag(RenderFlags renderFlag) {
     renderFlags |= (int)renderFlag;
 }
@@ -150,6 +178,12 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
                 NSurface::renderRect(x * _gridSize - camera->offsetX() % _gridSize, (y * _gridSize) - (camera->offsetY() % _gridSize), 1, _gridSize, window, 100, 200, 0);
                 NSurface::renderRect(x * _gridSize - camera->offsetX() % _gridSize, (y * _gridSize) - (camera->offsetY() % _gridSize), _gridSize, 1, window, 100, 200, 0);
             }
+        }
+    }
+    
+    for (auto &tileRow: _tiles) {
+        for(auto &tile: tileRow.second) {
+            tile.second->onRender(window, camera, (RenderFlags)renderFlags);
         }
     }
     
@@ -258,10 +292,6 @@ std::vector<GridCoordinates> getGrid(CEntity* target, int gridSize) {
     
     int upperLeftCorner[2]  = {(targetX - (targetX % gridSize)) / gridSize,
         (targetY - (targetY % gridSize)) / gridSize};
-    //int upperRightCorner[2] = {(targetX + targetW - ((targetX + targetW) % gridSize)) / gridSize,
-    //    (targetY - (targetY % gridSize)) / gridSize};
-//    int lowerLeftCorner[2]  = {(targetX - (targetX % gridSize)) / gridSize,
-//        (targetY + targetH - ((targetY + targetH) % gridSize)) / gridSize};
     int lowerRightCorner[2] = {(targetX + targetW - ((targetX + targetW) % gridSize)) / gridSize,
         (targetY + targetH - ((targetY + targetH) % gridSize)) / gridSize};
     
@@ -315,6 +345,16 @@ void CEntityManager::onLoop(CInstance* instance) {
             for(auto &coords: getGrid(target, _gridSize)) {
                 _CollisionVector[coords.y][coords.x].push_back(target);
                 target->gridCoordinates.push_back(GridCoordinates{coords.x, coords.y});
+            }
+        }
+        
+        for(auto &tileRow: _tiles) {
+            for(auto &tile: tileRow.second) {
+                auto target = tile.second;
+                
+                for(auto &coords: getGrid(target, _gridSize)) {
+                    _CollisionVector[coords.y][coords.x].push_back(target);
+                }
             }
         }
         
@@ -449,9 +489,31 @@ void CEntityManager::onSerialize(rapidjson::Value* value, rapidjson::Document::A
         backgroundValues.AddMember(rapidjson::Value(i.first.c_str(), *alloc), background, *alloc);
     }
     
+    rapidjson::Value tileValues(rapidjson::kObjectType);
+    std::map<std::string, std::vector<CTile*>> tiles;
+    for(auto& tileRow: _tiles) {
+        for(auto& tileObj: tileRow.second) {
+            auto tile = tileObj.second;
+            std::string tileset = tile->tilesetKey;
+            tiles[tileset].push_back(tile);
+        }
+    }
+    
+    for(auto& i: tiles) {
+        rapidjson::Value tileOfTilesetValue(rapidjson::kArrayType);
+        
+        for(auto& tile: i.second) {
+            rapidjson::Value positionValues(rapidjson::kArrayType);
+            tile->onSerialize(&positionValues, alloc, instance);
+            tileOfTilesetValue.PushBack(positionValues, *alloc);
+        }
+        tileValues.AddMember(rapidjson::Value(i.first.c_str(), *alloc), tileOfTilesetValue, *alloc);
+    }
+    
     value->AddMember("entities", entityValues, *alloc);
     value->AddMember("backgrounds", backgroundValues, *alloc);
     value->AddMember("entityID", rapidjson::Value(entityID), *alloc);
+    value->AddMember("tiles", tileValues, *alloc);
 }
 
 void CEntityManager::onDeserialize(rapidjson::Value* value, CInstance* instance) {
@@ -556,6 +618,19 @@ void CEntityManager::entityCleanup() {
             _backgrounds.erase(i++->first);
         }
         _backgrounds.clear();
+    }
+    
+    {
+        auto i = _tiles.begin();
+        while(i != _tiles.end()) {
+            auto i2 = i->second.begin();
+            while(i2 != i->second.end()) {
+                delete i2->second;
+                i->second.erase(i2++->first);
+            }
+            _tiles.erase(i++->first);
+        }
+        _tiles.clear();
     }
 }
 

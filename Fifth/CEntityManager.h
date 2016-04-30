@@ -33,6 +33,7 @@ class CWindow;
 class CInstance;
 class lua_State;
 class CGame;
+class CTile;
 
 class CEntityManager : public CSerializable {
     
@@ -45,6 +46,7 @@ public:
     std::string getNameOfEntity(CEntity* entity);
     CBackground* getBackground(std::string name);
     std::string addEntity(CEntity* entity, std::string name = "");
+    void addTile(int x, int y, std::string tileset);
     void addParticle(CEntity* particle);
     void addGuiText(CGuiText* guiText);
     void addBackground(std::string name, CBackground* background);
@@ -54,6 +56,8 @@ public:
     void onKeyStates(CInstance* instance, const Uint8* keystates);
     void onRender(CWindow* window, CCamera* camera);
     void onCleanup();
+    
+    void removeTile(int x, int y);
     
     void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance);
     void onDeserialize(rapidjson::Value* value, CInstance* instance);
@@ -85,6 +89,7 @@ private:
     std::vector<CGuiText*> _guiTextElements;
     std::map<std::string, CEntity*> _deadEntities;
     std::map<std::string, CBackground*> _backgrounds;
+    std::map<int, std::map<int, CTile*>> _tiles;
     
     
     

@@ -43,6 +43,30 @@
         {"name": "dirt15",              "spriteSheetKey":"MAIN",                "offsets":[48, 144, 16, 16]}
     ],
     
+    "tilesets": [
+        {
+            "name": "dirt",
+            "sprites": [
+                "dirt0",
+                "dirt1",
+                "dirt2",
+                "dirt3",
+                "dirt4",
+                "dirt5",
+                "dirt6",
+                "dirt7",
+                "dirt8",
+                "dirt9",
+                "dirt10",
+                "dirt11",
+                "dirt12",
+                "dirt13",
+                "dirt14",
+                "dirt15"
+            ]
+        }
+    ],
+    
     "scripts": [
         "Standard/Movable",
         "Standard/Living",

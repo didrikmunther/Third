@@ -381,6 +381,8 @@ void CGame::_initLua() {
         .beginClass<CEntityManager>("EntityManager")
             .addFunction("addEntity", &CEntityManager::addEntity)
             .addFunction("addParticle", &CEntityManager::addParticle)
+            .addFunction("addTile", &CEntityManager::addTile)
+            .addFunction("removeTile", &CEntityManager::removeTile)
             .addFunction("getEntity", &CEntityManager::getEntity)
             .addFunction("getNameOfEntity", &CEntityManager::getNameOfEntity)
             .addFunction("getEntityAtCoordinate", &CEntityManager::getEntityAtCoordinate)

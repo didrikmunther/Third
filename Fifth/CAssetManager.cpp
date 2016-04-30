@@ -10,12 +10,14 @@
 #include "NFile.h"
 #include "CSpriteSheet.h"
 #include "CLuaScript.h"
+#include "CTile.h"
 
 
 std::map<std::string, CSprite*> CAssetManager::_Sprites;
 std::map<std::string, CSpriteSheet*> CAssetManager::_SpriteSheets;
 std::map<std::string, TTF_Font*> CAssetManager::_Fonts;
 std::map<std::string, CLuaScript*> CAssetManager::_LuaScripts;
+std::map<std::string, Tileset*> CAssetManager::_Tilesets;
 int CAssetManager::_assetId = 0;
 
 CAssetManager::CAssetManager() { }
@@ -102,6 +104,18 @@ CLuaScript* CAssetManager::addLuaScript(lua_State* L, std::string path) {
     }
 }
 
+Tileset* CAssetManager::addTileset(std::string name, Tileset* tileSet) {
+    if(_Tilesets.find(name) != _Tilesets.end()) {
+        NFile::log(LogType::WARNING, "Couldn't add tileset: \"", name, "\", because it already exists");
+        return _Tilesets[name];
+    } else {
+        _Tilesets[name] = tileSet;
+        if(DEBUG)
+            NFile::log(LogType::SUCCESS, "Added tileset: \"", name, "\".");
+        return tileSet;
+    }
+}
+
 CSprite* CAssetManager::getSprite(std::string key) {
     auto it = _Sprites.find(key);
     if(it == _Sprites.end())
@@ -121,6 +135,14 @@ CSpriteSheet* CAssetManager::getSpriteSheet(std::string key) {
 TTF_Font* CAssetManager::getFont(std::string key) {
     auto it = _Fonts.find(key);
     if(it == _Fonts.end())
+        return nullptr;
+    else
+        return it->second;
+}
+
+Tileset* CAssetManager::getTileset(std::string key) {
+    auto it = _Tilesets.find(key);
+    if(it == _Tilesets.end())
         return nullptr;
     else
         return it->second;
@@ -173,6 +195,19 @@ void CAssetManager::onCleanup(CLEAN_FLAGS flags /* = CLEAN_FLAGS::EVERYTHING */)
             _Fonts.erase(i++->first);
         }
         _Fonts.clear();
+        if(toWrite != "")
+            NFile::log(LogType::SUCCESS, "Unloaded assets: ", toWrite);
+    }
+    
+    {
+        std::string toWrite = "";
+        auto i = _Tilesets.begin();
+        while(i != _Tilesets.end()) {
+            toWrite += "\"" + i->first + "\", ";
+            delete i->second;
+            _Tilesets.erase(i++->first);
+        }
+        _Tilesets.clear();
         if(toWrite != "")
             NFile::log(LogType::SUCCESS, "Unloaded assets: ", toWrite);
     }

@@ -130,6 +130,7 @@ private:
     static void loadFonts(rapidjson::Document* d);
     static void loadSpriteSheets(rapidjson::Document* d, CInstance* instance);
     static void loadSprites(rapidjson::Document* d);
+    static void loadTilesets(rapidjson::Document* d);
     static void loadScripts(rapidjson::Document* d, CInstance* instance);
     
 };

@@ -14,6 +14,7 @@
 #include "Define.h"
 #include "CAssetManager.h"
 #include "CEntityManager.h"
+#include "CTile.h"
 
 
 rapidjson::Document NFile::loadJsonFile(std::string fileName) {
@@ -74,6 +75,7 @@ void NFile::loadAssets(std::string fileName, CInstance* instance) {
     loadSpriteSheets(&d, instance);
     loadSprites(&d);
     loadScripts(&d, instance);
+    loadTilesets(&d);
     
     log(LogType::SUCCESS, "Loaded map: \"", fileName.c_str(), "\" as \"", d["name"].GetString(), "\"");
 }
@@ -147,6 +149,30 @@ void NFile::loadSprites(rapidjson::Document* d) {
         CAssetManager::addSprite(sprite["name"].GetString(),
                                  sprite["spriteSheetKey"].GetString(),
                                  Box{offsets[0].GetInt(), offsets[1].GetInt(), offsets[2].GetInt(), offsets[3].GetInt()});
+    }
+}
+
+void NFile::loadTilesets(rapidjson::Document* d) {
+    if(!d->HasMember("tilesets"))
+        return;
+    
+    const rapidjson::Value& tilesets = (*d)["tilesets"];                       // Sprite sheets
+    for(rapidjson::SizeType i = 0; i < tilesets.Size(); i++) {
+        const rapidjson::Value& tileset = tilesets[i];
+        if(!(tileset.HasMember("name") && tileset.HasMember("sprites")))
+            continue;
+        
+        const rapidjson::Value& sprites = tileset["sprites"];
+        if(sprites.Size() < 16)
+            continue;
+        
+        Tileset* set = new Tileset;
+        
+        for(rapidjson::SizeType sprite = 0; sprite < 16; sprite++) {
+            set->spriteKeys[sprite] = sprites[sprite].GetString();
+        }
+        
+        CAssetManager::addTileset(tileset["name"].GetString(), set);
     }
 }
 

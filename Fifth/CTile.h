@@ -11,23 +11,50 @@
 
 #include <stdio.h>
 #include <string>
+#include <map>
 
-#include "CSprite.h"
+#include "Define.h"
+#include "CEntity.h"
 
 
 class CWindow;
 class CCamera;
-enum RenderFlags;
 
-class CTile {
+struct Tileset {
+    std::string spriteKeys[16];
+    
+    std::string operator[](int i) {
+        if(i <= 15 && i >= 0)
+            return spriteKeys[i];
+        else
+            return "";
+    }
+};
+
+class CTile : public CEntity {
     
 public:
-    CTile(std::string spriteKey); // Tile sets its sprite instantly instead of having a sprite key saved
+    CTile(std::string tileset, int posX, int posY);
     
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
+    void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance);
+    
+    void updateIndex(std::map<int, std::map<int, CTile*>>* _tiles);
+    void updateAdjecent(std::map<int, std::map<int, CTile*>>* _tiles);
+    
+    int posX, posY;
+    
+    static inline bool tileExist(std::map<int, std::map<int, CTile*>>* tiles, int posX, int posY) {
+        return tiles->find(posX) != tiles->end() && (*tiles)[posX].find(posY) != (*tiles)[posX].end();
+    }
+    
+    std::string tilesetKey;
     
 private:
-    CSprite* sprite;
+    Tileset* tileset;
+    int tileIndex;
+    
+    Position position;
     
 };
 

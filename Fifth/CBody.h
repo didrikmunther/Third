@@ -13,10 +13,6 @@
 
 #include "Define.h"
 
-struct Position {
-    int x, y;
-};
-
 class CBody {
     
 public:
