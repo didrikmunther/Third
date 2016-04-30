@@ -18,6 +18,7 @@ CInstance::CInstance(CGame* game)
     , gravity(3.0f)
     , doLoadLevel(false)
     , levelToLoad("")
+    , player(nullptr), controller(nullptr)
 {
     
 }

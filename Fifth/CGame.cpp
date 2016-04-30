@@ -154,38 +154,9 @@ void CGame::_restart() {
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
     instance.entityManager.addEntity(temp, "Controller");
     temp->addComponent(&instance, controller);
-//    auto chatController = CAssetManager::getLuaScript("Standard/ChatController");
-//    temp->addComponent(&instance, chatController);
     instance.controller = temp;
     
-    NFile::loadLevel("testlevel.level", &instance);
-    
-//    auto movable = CAssetManager::getLuaScript("Standard/Movable");
-//    auto living = CAssetManager::getLuaScript("Standard/Living");
-//    
-//    temp = new CEntity(Box{50, -500, 16 * 4, 32 * 4}, "test2");
-//    instance.entityManager.addEntity(temp, "5:Player");
-//    temp->spriteStateTypes["WALKING"] = "test7";
-//    temp->spriteStateTypes["ASCENDING"] = "test4";r
-//    temp->spriteStateTypes["DESCENDING"] = "test1";
-//    temp->addComponent(&instance, movable);
-//    temp->addComponent(&instance, living);
-//    instance.player = temp;
-//    instance.camera->setTarget(temp);
-//    
-//    temp = new CEntity(Box{100, -1000, 30 * 5, 28 * 5}, "bush");
-//    instance.entityManager.addEntity(temp, "n:bush");
-//    temp->collisionLayer = CollisionLayers::LAYER4;
-//    
-//    temp = new CEntity(Box{0, 50, 5000, 20}, Color{255, 0, 0, 255});
-//    instance.entityManager.addEntity(temp);
-//    temp->collisionLayer = -129; // all layers
-//    temp->addProperty(EntityProperty::STATIC);
-//    
-//    temp = new CEntity(Box{0, -4950, 20, 5000}, Color{255, 0, 0, 255});
-//    instance.entityManager.addEntity(temp);
-//    temp->collisionLayer = -129;
-//    temp->addProperty(EntityProperty::STATIC);
+    NFile::loadLevel("island.lvl", &instance);
     
     toRestart = false;
 }

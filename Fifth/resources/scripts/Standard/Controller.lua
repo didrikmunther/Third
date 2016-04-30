@@ -15,6 +15,8 @@ function Controller:onInit()
 
     self.component.instance:loadAssets("testMap2.map")
     self.component.instance:loadAssets("testMap1.map")
+
+    --self.component.instance:loadLevel("testlevel.lvl")
 end
 
 function Controller:onEvent(key, keyDown)
