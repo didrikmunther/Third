@@ -570,6 +570,19 @@ void CEntityManager::onDeserialize(rapidjson::Value* value, CInstance* instance)
             entity->onDeserialize(entityValue, instance);
         }
     }
+    
+    if(value->HasMember("tiles")) {
+        const rapidjson::Value& tileValues = (*value)["tiles"];
+        
+        for(rapidjson::Value::ConstMemberIterator i = tileValues.MemberBegin(); i != tileValues.MemberEnd(); i++) {
+            const rapidjson::Value* tileValue = &i->value;
+            std::string tileset = i->name.GetString();
+            std::vector<std::pair<int, int>> positions;
+            
+            for(rapidjson::SizeType position = 0; position != tileValue->Size(); position++)
+                addTile((*tileValue)[position][0].GetInt() * TILE_SIZE, (*tileValue)[position][1].GetInt() * TILE_SIZE, tileset);
+        }
+    }
 }
 
 void CEntityManager::onEvent(CInstance *instance, int key, bool keyDown) {
