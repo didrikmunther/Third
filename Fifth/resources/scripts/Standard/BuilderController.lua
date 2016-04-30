@@ -105,9 +105,10 @@ function BuilderController:tile(commands)
         do return end
     end
 
-    self.tileset = commands[2]
-    
-    self.isTiling = true
+    if(commands[2]) then
+        self.tileset = commands[2]
+        self.isTiling = true
+    end
 
 end
 

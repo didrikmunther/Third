@@ -25,7 +25,16 @@ CTile::CTile(std::string tileset, int posX, int posY)
 }
 
 void CTile::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
-    NSurface::renderSprite(posX * TILE_SIZE - camera->offsetX(), posY * TILE_SIZE - camera->offsetY(), TILE_SIZE, TILE_SIZE, CAssetManager::getSprite((*tileset)[tileIndex]), window, SDL_RendererFlip::SDL_FLIP_NONE);
+    int x = posX * TILE_SIZE - camera->offsetX();
+    int y = posY * TILE_SIZE - camera->offsetY();
+    
+    if(!camera->collision(this))
+        return;
+    
+    if(tileset)
+        NSurface::renderSprite(x, y, TILE_SIZE, TILE_SIZE, CAssetManager::getSprite((*tileset)[tileIndex]), window, SDL_RendererFlip::SDL_FLIP_NONE);
+    else
+        NSurface::renderRect(x, y, TILE_SIZE, TILE_SIZE, window, 255, 0, 255);
 }
 
 void CTile::onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance) {
