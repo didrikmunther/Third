@@ -143,9 +143,6 @@ void CGame::_restart() {
     instance.L = luaL_newstate();
     _initLua();
     
-    CBackground* background = new CBackground("background", 0.1, BackgroundOffset{0, -450, 1.75f});
-    instance.entityManager.addBackground("main", background);
-    
     CAnimation* anim = new CAnimation({"test1", "test2", "test3", "test4", "test5", "test6"}, 10);
     CAssetManager::addSprite(anim, "test7");
 
@@ -157,6 +154,7 @@ void CGame::_restart() {
     instance.controller = temp;
     
     NFile::loadLevel("island.lvl", &instance);
+    instance.loadedMap = "island.lvl";
     
     toRestart = false;
 }

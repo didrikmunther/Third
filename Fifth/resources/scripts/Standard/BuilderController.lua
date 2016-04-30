@@ -32,7 +32,7 @@ local BuilderController = class (
 
 function BuilderController:onComponentAdd(comp)
     if(comp == "Standard/ChatController") then
-        chatController = self.parent:getComponent("Standard/ChatController")
+        chatController = self.parent:getComponent(comp)
         chatController:registerCommand("build", self)
         chatController:registerCommand("place", self)
         chatController:registerCommand("move", self)
@@ -112,7 +112,7 @@ function BuilderController:tile(commands)
 
 end
 
-function BuilderController:onCommand(commands)
+function BuilderController:onChatCommand(commands)
     if(commands[1] == "build") then     self:build(commands) end
     if(commands[1] == "place") then     self:place(commands) end
     if(commands[1] == "move") then      self:move(commands) end

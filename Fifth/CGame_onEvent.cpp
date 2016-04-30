@@ -52,15 +52,19 @@ void CGame::_onEvent(SDL_Event* event) {
             break;
             
         case SDL_TEXTINPUT:
-            instance.controller->onTextInput(&instance, (std::string)event->text.text);
+            if(instance.controller)
+                instance.controller->onTextInput(&instance, (std::string)event->text.text);
             if(ignoreEvents) break;
-            instance.player->onTextInput(&instance, (std::string)event->text.text);
+            if(instance.player)
+                instance.player->onTextInput(&instance, (std::string)event->text.text);
             break;
             
         case SDL_KEYDOWN:
-            instance.controller->onEvent(&instance, event->key.keysym.sym, true);
+            if(instance.controller)
+                instance.controller->onEvent(&instance, event->key.keysym.sym, true);
             if(ignoreEvents) break;
-            instance.player->onEvent(&instance, event->key.keysym.sym, true);
+            if(instance.player)
+                instance.player->onEvent(&instance, event->key.keysym.sym, true);
             
             switch(event->key.keysym.sym) {
                     

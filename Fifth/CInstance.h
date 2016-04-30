@@ -55,6 +55,8 @@ public:
     std::string onSerialize();
     void closeInstance();
     
+    std::string loadedMap;
+    
 };
 
 #endif /* defined(__Fifth__CInstance__) */

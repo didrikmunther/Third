@@ -21,9 +21,16 @@ local Living = class (
         -- temp
         self.values[self.VALUE_HEALTH] = 750
         self.values[self.VALUE_KEVLAR] = 500
+        -- /temp
+
+        self.listeners = {}
 
     end
 )
+
+function Living:listenForHealth(component)
+    table.insert(self.listeners, component)
+end
 
 function Living:onRenderAdditional()
     if(self.parent.isDead) then
@@ -99,6 +106,10 @@ function Living:damage(amount, damager)
     damageColor = Color(255, 0, 0, 255)
     textObject = CombatText(thisX, thisY, damageColor, 20, "-" .. damageDone, "TESTFONT")
     self.parent:addCombatText(textObject)
+
+    for k,v in pairs(self.listeners) do
+        v:onLivingDamage(damageDone)
+    end
 
     return damageDone
 

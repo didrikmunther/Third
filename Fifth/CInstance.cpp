@@ -19,6 +19,7 @@ CInstance::CInstance(CGame* game)
     , doLoadLevel(false)
     , levelToLoad("")
     , player(nullptr), controller(nullptr)
+    , loadedMap("")
 {
     
 }
@@ -28,8 +29,10 @@ CInstance::~CInstance() {
 }
 
 void CInstance::onLoop() {
-    if(doLoadLevel)
+    if(doLoadLevel) {
         _loadLevel(levelToLoad);
+        levelToLoad = "";
+    }
 }
 
 void CInstance::loadAssets(std::string path) {
@@ -48,8 +51,16 @@ void CInstance::loadLevel(std::string fileName) {
 
 void CInstance::_loadLevel(std::string fileName) {
     entityManager.onCleanup();
-    NFile::loadLevel(fileName, this);
+    player = nullptr;
+    controller = nullptr;
+    camera->setTarget(nullptr);
     doLoadLevel = false;
+    if(NFile::loadLevel(fileName, this) == -1) {
+        NFile::log(LogType::ALERT, "Reverting loaded map to: \"", loadedMap, "\".");
+        NFile::loadLevel(loadedMap, this);
+    } else {
+        loadedMap = fileName;
+    }
 }
 
 std::string CInstance::onSerialize() {

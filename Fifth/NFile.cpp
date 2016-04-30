@@ -80,7 +80,7 @@ void NFile::loadAssets(std::string fileName, CInstance* instance) {
     log(LogType::SUCCESS, "Loaded map: \"", fileName.c_str(), "\" as \"", d["name"].GetString(), "\"");
 }
 
-void NFile::loadLevel(std::string fileName, CInstance* instance) {
+int NFile::loadLevel(std::string fileName, CInstance* instance) {
     fileName = "resources/level/" + fileName;
     log(LogType::ALERT, "Loading level: \"", fileName.c_str(), "\"");
     
@@ -96,7 +96,7 @@ void NFile::loadLevel(std::string fileName, CInstance* instance) {
     
     if(error != "") {
         NFile::log(LogType::ERROR, "Could not load level \"", fileName, "\". (Reason: \"", error, "\")");
-        return;
+        return -1;
     }
     
     instance->entityManager.onDeserialize(&d["this"], instance);
@@ -105,6 +105,8 @@ void NFile::loadLevel(std::string fileName, CInstance* instance) {
     instance->camera->setTarget(instance->player);
     
     NFile::log(LogType::SUCCESS, "Loaded level: \"", fileName.c_str(), "\"");
+    
+    return 0;
 }
 
 void NFile::loadFonts(rapidjson::Document* d) {
@@ -142,13 +144,29 @@ void NFile::loadSprites(rapidjson::Document* d) {
     const rapidjson::Value& sprites = (*d)["sprites"];                                 // Sprites
     for(rapidjson::SizeType i = 0; i < sprites.Size(); i++) {
         const rapidjson::Value& sprite = sprites[i];
-        if(!(sprite.HasMember("name") && sprite.HasMember("spriteSheetKey") && sprite.HasMember("offsets")))
+        if(!(sprite.HasMember("name") && sprite.HasMember("spriteSheetKey")))
             continue;
         
-        const rapidjson::Value& offsets = sprite["offsets"];
-        CAssetManager::addSprite(sprite["name"].GetString(),
-                                 sprite["spriteSheetKey"].GetString(),
-                                 Box{offsets[0].GetInt(), offsets[1].GetInt(), offsets[2].GetInt(), offsets[3].GetInt()});
+        if(sprite.HasMember("offsets")) {
+            const rapidjson::Value& offsets = sprite["offsets"];
+            CAssetManager::addSprite(sprite["name"].GetString(),
+                                     sprite["spriteSheetKey"].GetString(),
+                                     Box{offsets[0].GetInt(), offsets[1].GetInt(), offsets[2].GetInt(), offsets[3].GetInt()});
+        } else if(sprite.HasMember("tileset")) {
+            std::string name = sprite["name"].GetString();
+            std::string spriteSheetKey = sprite["spriteSheetKey"].GetString();
+            int startX = sprite["tileset"][0].GetInt();
+            int startY = sprite["tileset"][1].GetInt();
+            int tileSize = sprite["tileset"][2].GetInt();
+            
+            for(int y = 0; y < 4; y++) {
+                for(int x = 0; x < 4; x++) {
+                    CAssetManager::addSprite(name + std::to_string(y * 4 + x),
+                                             spriteSheetKey,
+                                             Box{startX + x * tileSize, startY + y * tileSize, tileSize, tileSize});
+                }
+            }
+        }
     }
 }
 
@@ -159,20 +177,30 @@ void NFile::loadTilesets(rapidjson::Document* d) {
     const rapidjson::Value& tilesets = (*d)["tilesets"];                       // Sprite sheets
     for(rapidjson::SizeType i = 0; i < tilesets.Size(); i++) {
         const rapidjson::Value& tileset = tilesets[i];
-        if(!(tileset.HasMember("name") && tileset.HasMember("sprites")))
+        if(!tileset.HasMember("name"))
             continue;
         
-        const rapidjson::Value& sprites = tileset["sprites"];
-        if(sprites.Size() < 16)
-            continue;
-        
-        Tileset* set = new Tileset;
-        
-        for(rapidjson::SizeType sprite = 0; sprite < 16; sprite++) {
-            set->spriteKeys[sprite] = sprites[sprite].GetString();
+        if(tileset.HasMember("sprites")) {
+            const rapidjson::Value& sprites = tileset["sprites"];
+            if(sprites.Size() < 16)
+                continue;
+            
+            Tileset* set = new Tileset;
+            for(rapidjson::SizeType sprite = 0; sprite < 16; sprite++) {
+                set->spriteKeys[sprite] = sprites[sprite].GetString();
+            }
+            CAssetManager::addTileset(tileset["name"].GetString(), set);
+        } else if(tileset.HasMember("spriteSequence")) {
+            std::string stem = tileset["spriteSequence"].GetString();
+            
+            Tileset* set = new Tileset;
+            for(int sprite = 0; sprite < 16; sprite++) {
+                set->spriteKeys[sprite] = stem + std::to_string(sprite);
+            }
+            CAssetManager::addTileset(tileset["name"].GetString(), set);
         }
         
-        CAssetManager::addTileset(tileset["name"].GetString(), set);
+        
     }
 }
 

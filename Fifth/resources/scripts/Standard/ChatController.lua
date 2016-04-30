@@ -91,7 +91,7 @@ function ChatController:parse(input)
         
         comp = self.registered[commands[1]]
         if(comp ~= nil) then
-            comp:onCommand(commands)
+            comp:onChatCommand(commands)
         end
 
         return ""

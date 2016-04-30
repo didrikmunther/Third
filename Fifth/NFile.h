@@ -42,7 +42,7 @@ public:
     // Load functions
     static rapidjson::Document loadJsonFile(std::string fileName);
     static void loadAssets(std::string fileName, CInstance* instance);
-    static void loadLevel(std::string fileName, CInstance* instance);
+    static int loadLevel(std::string fileName, CInstance* instance);
     
     static void execCommand(rapidjson::Document command, CInstance* instance);
     static void parseCommands(rapidjson::Document commands, CInstance* instance);
