@@ -80,7 +80,7 @@ public:
     
     // ==
     
-    CInstance* tempInstance;
+    CInstance* instance;
     
     int getRelativeMouse(lua_State* L);
     int getMouse(lua_State* L);

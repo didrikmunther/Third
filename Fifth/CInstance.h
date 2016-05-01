@@ -43,6 +43,7 @@ public:
     CGame* game;
     
     float gravity;
+    bool isPaused;
     
     void loadAssets(std::string path);
     void doLine(std::string line);

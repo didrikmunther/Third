@@ -14,10 +14,10 @@
 CComponent::CComponent(CEntity* parent, CInstance* instance, CLuaScript* script)
     : parent(parent)
     , object(parent, this, script)
+    , instance(instance)
     , tempWindow(nullptr)
     , tempCamera(nullptr)
     , tempRenderflags(nullptr)
-    , tempInstance(nullptr)
     , tempValue(nullptr)
     , tempAlloc(nullptr)
 {
@@ -32,25 +32,17 @@ void CComponent::onInit(CInstance* instance) {
     if(!object.hasReference("onInit"))
         return;
     
-    tempInstance = instance;
-    
     callSimpleFunction("onInit");
-    
-    tempInstance = nullptr;
 }
 
 void CComponent::onEvent(CInstance* instance, int key, bool keyDown) {
     if(!object.hasReference("onEvent"))
         return;
     
-    tempInstance = instance;
-    
     object.beginCall("onEvent");
     object.pushObject(key);
     object.pushObject((bool)keyDown);
     object.endCall(2, 0);
-    
-    tempInstance = nullptr;
 }
 
 void CComponent::onKeyStates(CInstance* instance, const Uint8* keystates) {
@@ -59,27 +51,21 @@ void CComponent::onKeyStates(CInstance* instance, const Uint8* keystates) {
     
     KeyState state{keystates};
     
-    tempInstance = instance;
-    
     object.beginCall("onKeyStates");
     object.pushObject(state);
     object.endCall(1, 0);
-    
-    tempInstance = nullptr;
 }
 
 void CComponent::onLoop(CInstance* instance) {
     if(!object.hasReference("onLoop"))
         return;
     
-    tempInstance = instance;
     tempCamera = instance->camera;
     tempWindow = &instance->window;
     
     
     callSimpleFunction("onLoop");
     
-    tempInstance = nullptr;
     tempCamera = nullptr;
     tempWindow = nullptr;
 }
@@ -137,67 +123,49 @@ void CComponent::onSerialize(rapidjson::Value* value, rapidjson::Document::Alloc
     
     tempValue = value;
     tempAlloc = alloc;
-    tempInstance = instance;
     
     object.beginCall("onSerialize");
     object.endCall(0, 0);
     
     tempValue = nullptr;
     tempAlloc = nullptr;
-    tempInstance = nullptr;
 }
 
 void CComponent::onDeserialize(std::string value, CInstance* instance) {
     if(!object.hasReference("onDeserialize"))
         return;
     
-    tempInstance = instance;
-    
     object.beginCall("onDeserialize");
     object.pushObject(value);
     object.endCall(1, 0);
-    
-    tempInstance = nullptr;
 }
 
 void CComponent::onClick(int x, int y, CInstance* instance) {
     if(!object.hasReference("onClick"))
         return;
     
-    tempInstance = instance;
-    
     object.beginCall("onClick");
     object.pushObject(x);
     object.pushObject(y);
     object.endCall(2, 0);
-    
-    tempInstance = nullptr;
 }
 
 void CComponent::onTextInput(CInstance* instance, std::string input) {
     if(!object.hasReference("onTextInput"))
         return;
     
-    tempInstance = instance;
-    
     object.beginCall("onTextInput");
     object.pushObject(input);
     object.endCall(1, 0);
-    
-    tempInstance = nullptr;
 }
 
 void CComponent::onComponentAdd(CInstance* instance, std::string component) {
     if(!object.hasReference("onComponentAdd"))
         return;
     
-    tempInstance = instance;
-    
     object.beginCall("onComponentAdd");
     object.pushObject(component);
     object.endCall(1, 0);
-    
-    tempInstance = nullptr;
 }
 
 void CComponent::callSimpleFunction(std::string function) {
@@ -236,9 +204,9 @@ void CComponent::renderText(int x, int y, int size, std::string text, std::strin
 
 int CComponent::getRelativeMouse(lua_State* L) {
     int x, y;
-    if(tempInstance != nullptr) {
-        x = NMouse::relativeMouseX(tempInstance->camera);
-        y = NMouse::relativeMouseY(tempInstance->camera);
+    if(instance != nullptr) {
+        x = NMouse::relativeMouseX(instance->camera);
+        y = NMouse::relativeMouseY(instance->camera);
     } else if(tempCamera != nullptr) {
         x = NMouse::relativeMouseX(tempCamera);
         y = NMouse::relativeMouseY(tempCamera);

@@ -100,7 +100,7 @@ end
 
 function BuilderController:tile(commands)
 
-    if(self.isTiling) then
+    if(not commands[2]) then
         self.isTiling = false
         do return end
     end

@@ -58,6 +58,9 @@ void CEntity::_cleanUpTextVector() {
 }
 
 void CEntity::onLoop(CInstance* instance) {
+    if(instance->isPaused && instance->player != this && instance->controller != this)
+        return;
+        
     _hasMoved = false;
     
     auto i = guiTextVector.begin();
@@ -442,6 +445,8 @@ bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities) {
 }
 
 void CEntity::move(std::vector<CEntity*>* entities, CInstance* instance) {
+    if(instance->isPaused && instance->player != this && instance->controller != this)
+        return;
     
     if(hasProperty(EntityProperty::STATIC) || isDead) {
         body->velY = body->velX = 0;

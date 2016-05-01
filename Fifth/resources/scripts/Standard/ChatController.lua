@@ -20,6 +20,15 @@ local ChatController = class (
     end
 )
 
+function ChatController:onInit()
+    self:registerCommand("restart", self)
+    self:registerCommand("pause", self)
+    self:registerCommand("script", self)
+    self:registerCommand("lua", self)
+    self:registerCommand("load", self)
+    self:registerCommand("save", self)
+end
+
 function ChatController:isKeyCode(key)
     for k, v in pairs(KeyCode) do
         if(v == key) then
@@ -40,6 +49,52 @@ function ChatController:registerCommand(command, component)
     end
 end
 
+function ChatController:onChatCommand(commands)
+    if(commands[1] == "restart") then
+        self.component.instance.game:restart()
+    elseif(commands[1] == "pause") then
+        self.component.instance.isPaused = not self.component.instance.isPaused
+    end
+
+    if(commands[2] ~= nil) then
+        if(commands[1] == "script") then
+            comp = commands[2]
+            mX, mY = self.component:getRelativeMouse()
+            temp = self.parent.entityManager:createSpriteEntity(Box(mX, mY, 16 * 4, 16 * 4), "lua")
+            self.parent.entityManager:addEntity(temp, "")
+            temp:addComponent(self.component.instance, game.getScript("Standard/GraphicScript"))
+            graphic = temp:getComponent("Standard/GraphicScript")
+            graphic:setScript(game.getScript(comp))
+            if(commands[3] ~= nil) then
+                graphic.deserialize = commands[3]
+            end
+        end
+
+        if(commands[1] == "lua") then
+            len = table.getn(commands)
+            result = ""
+            for i = 2,len do
+                result = result .. commands[i] .. " "
+            end
+            line = "return function(self) " .. result .. " end"
+            if(not pcall(function() func = loadstring(line)() end) or not pcall(function() func(self) end)) then
+            print("Error in executing: " .. result)
+            end
+        end
+
+        if(commands[1] == "load") then
+            self.component.instance:loadLevel(commands[2] .. ".lvl")
+        end
+
+        if(commands[1] == "save") then
+            path = "resources/level/" .. commands[2] .. ".lvl"
+            serialized = self.component.instance:onSerialize()
+            game.clearFile(path)
+            game.writeToFile(path, serialized)
+        end
+    end
+end
+
 function ChatController:parse(input)
     if(string.sub(input, 1, 1) == "/") then
         input = string.sub(input, 2, string.len(input))
@@ -47,48 +102,6 @@ function ChatController:parse(input)
         commands = {}
         for w in input:gmatch("%S+") do table.insert(commands, w) end
 
-        -- PARSING
-
-        if(commands[1] == "restart") then self.component.instance.game:restart() end
-
-        if(commands[2] ~= nil) then
-            if(commands[1] == "script") then
-                comp = commands[2]
-                mX, mY = self.component:getRelativeMouse()
-                temp = self.parent.entityManager:createSpriteEntity(Box(mX, mY, 16 * 4, 16 * 4), "lua")
-                self.parent.entityManager:addEntity(temp, "")
-                temp:addComponent(self.component.instance, game.getScript("Standard/GraphicScript"))
-                graphic = temp:getComponent("Standard/GraphicScript")
-                graphic:setScript(game.getScript(comp))
-                if(commands[3] ~= nil) then
-                    graphic.deserialize = commands[3]
-                end
-            end
-
-            if(commands[1] == "lua") then
-                len = table.getn(commands)
-                result = ""
-                for i = 2,len do
-                    result = result .. commands[i] .. " "
-                    end
-                line = "return function(self) " .. result .. " end"
-                if(not pcall(function() func = loadstring(line)() end) or not pcall(function() func(self) end)) then
-                    print("Error in executing: " .. result)
-                end
-            end
-
-            if(commands[1] == "load") then
-                self.component.instance:loadLevel(commands[2] .. ".lvl")
-            end
-            
-            if(commands[1] == "save") then
-                path = "resources/level/" .. commands[2] .. ".lvl"
-                serialized = self.component.instance:onSerialize()
-                game.clearFile(path)
-                game.writeToFile(path, serialized)
-            end
-        end
-        
         comp = self.registered[commands[1]]
         if(comp ~= nil) then
             comp:onChatCommand(commands)

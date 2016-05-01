@@ -25,14 +25,13 @@
         
         {"name": "smoke",               "spriteSheetKey":"MAIN",                "offsets":[48, 64, 16, 16]},
         
-        {"name": "grass",               "spriteSheetKey":"MAIN",                "tileset":[0, 96, 16]}
+        {"name": "grass",               "spriteSheetKey":"MAIN",                "tileset":[0, 96, 16]},
+        {"name": "stone",               "spriteSheetKey":"MAIN",                "tileset":[64, 96, 16]}
     ],
     
     "tilesets": [
-        {
-            "name": "dirt",
-            "spriteSequence": "grass"
-        }
+        {"name": "dirt",                "spriteSequence": "grass"},
+        {"name": "stone",               "spriteSequence": "stone"}
     ],
     
     "scripts": [
@@ -45,6 +44,7 @@
         "Standard/Serializable",
         "Standard/GraphicScript",
         "Standard/ExplodeOnDeath",
-        "Standard/BuilderController"
+        "Standard/BuilderController",
+        "Standard/BinderController"
     ]
 }
