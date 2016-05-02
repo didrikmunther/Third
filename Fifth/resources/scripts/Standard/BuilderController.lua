@@ -31,6 +31,15 @@ local BuilderController = class (
         self.pos2 = nil
                                  
         self.tileset = ""
+
+        P = Position
+        self.brushes = {
+            {P(0, 0)},
+            {P(0, 0), P(0, -1), P(-1, 0), P(1, 0), P(0, 1)},
+            {P(0, 0), P(0, -1), P(-1, 0), P(1, 0), P(0, 1), P(1, 1), P(-1, -1), P(1, -1), P(-1, 1)},
+            {P(0, 0), P(-1, -1), P(1, 1), P(-2, -2), P(2, 2)}
+        }
+        self.brush = 2
     end
 )
 
@@ -45,6 +54,7 @@ function BuilderController:onComponentAdd(comp)
 
         chatController:registerCommand("tile", self)
         chatController:registerCommand("tilearea", self)
+        chatController:registerCommand("brush", self)
     end
 end
 
@@ -130,6 +140,12 @@ function BuilderController:tilearea(commands)
 
 end
 
+function BuilderController:changeBrush(commands)
+    if(not commands[2]) then do return end end
+
+    self.brush = tonumber(commands[2])
+end
+
 function BuilderController:onChatCommand(commands)
     if(commands[1] == "build") then     self:build(commands) end
     if(commands[1] == "place") then     self:place(commands) end
@@ -138,6 +154,7 @@ function BuilderController:onChatCommand(commands)
     if(commands[1] == "color") then     self:color(commands) end
     if(commands[1] == "tile") then      self:tile(commands) end
     if(commands[1] == "tilearea") then  self:tilearea(commands) end
+    if(commands[1] == "brush") then     self:changeBrush(commands) end
 end
 
 function BuilderController:onLoop()
@@ -193,11 +210,17 @@ function BuilderController:onLoop()
     end
 
     if(self.isTiling) then
+        tileSize = game.tileSize()
+
         if(self.mouseDown) then
-            self.parent.entityManager:addTile(self.mX, self.mY, self.tileset)
+            for k, v in pairs(self.brushes[self.brush]) do
+                self.parent.entityManager:addTile(self.mX + v.x * tileSize, self.mY + v.y * tileSize, self.tileset)
+            end
         end
         if(self.rightMouseDown) then
-            self.parent.entityManager:removeTile(self.mX, self.mY)
+            for k, v in pairs(self.brushes[self.brush]) do
+                self.parent.entityManager:removeTile(self.mX + v.x * tileSize, self.mY + v.y * tileSize)
+            end
         end
     end
 
@@ -238,6 +261,18 @@ function BuilderController:onKeyStates(state)
 end
 
 function BuilderController:onRenderAdditional()
+    if(self.isTiling) then
+        tileSize = game.tileSize()
+        colorR = 0
+        colorG = 255
+        if(self.rightMouseDown) then
+            colorR = 255
+            colorG = 0
+        end
+        for k, v in pairs(self.brushes[self.brush]) do
+            self.component:renderRect(self.mX - self.component.camera:offsetX() + v.x * tileSize - tileSize / 2, self.mY - self.component.camera:offsetY() + v.y * tileSize - tileSize / 2, tileSize, tileSize, colorR, colorG, 0, 100)
+        end
+    end
     if(self.isTileArea) then
         self.component:renderRect(self.pos1.x - self.component.camera:offsetX(), self.pos1.y - self.component.camera:offsetY(), self.mX - self.pos1.x, self.mY - self.pos1.y, 255, 255, 0, 100)
     end
