@@ -57,39 +57,15 @@ int CGame::onExecute() {
         while(SDL_PollEvent(&event)){
             _onEvent(&event);
         }
-        
-        float now = SDL_GetTicks();
-        _delta += (now - _lastTime) / _ns;
-        _lastTime = now;
-        
-        while(_delta >= 1) {    // Todo implement variable time step instead of this laggy thing
-            if(_delta > 20) {       // To make sure it doesn't freeze
-                //NFile::log(LogType::WARNING, "Game exeeding delta limit (", 20, "), cleaning up particles.");
-                instance.entityManager.particleCleanup();
-            }
             
-            _handleKeyStates();
-            _onLoop();
-            
-            _updates++;
-            _delta--;
-            
-            auto sayer = instance.entityManager.getEntity("n:bush");
-            if(sayer)
-                sayer->say(_title.str() + " Gravity: " + std::to_string(instance.gravity), "TESTFONT", ChatBubbleType::INSTANT_TALK);
-        }
-        
+        _handleKeyStates();
+        _onLoop();
         _onRender();
         
-        _frames++;
+        _deltaTime = (std::clock() - _timeStart) / (double)(CLOCKS_PER_SEC / 1000);
         
-        if(SDL_GetTicks() - _timer > 1000) {
-            _timer += 1000;
-            _title.str("");
-            _title << _updates << " ups, " << _frames << " fps";
-            _updates = 0;
-            _frames = 0;
-        }
+        SDL_SetWindowTitle(instance.window.getWindow(), std::to_string(1000 / _deltaTime).c_str());
+
     }
     
     NFile::log(LogType::ALERT, "Ending game...");
