@@ -28,15 +28,23 @@
         
         {"name": "grass",               "spriteSheetKey":"MAIN",                "tileset":[0,  96, 16]},
         {"name": "stone",               "spriteSheetKey":"MAIN",                "tileset":[64, 96, 16]},
+<<<<<<< HEAD:Third/resources/map/testMap2.map
         {"name": "wood",                "spriteSheetKey":"MAIN",                "tileset":[0, 160, 16]},
         {"name": "birch",               "spriteSheetKey":"MAIN",                "tileset":[64, 160, 16]}
+=======
+        {"name": "wood",                "spriteSheetKey":"MAIN",                "tileset":[0, 160, 16]}
+>>>>>>> Malaxiz/network:Fifth/resources/map/testMap2.map
     ],
     
     "tilesets": [
         {"name": "dirt",                "spriteSequence": "grass"},
         {"name": "stone",               "spriteSequence": "stone"},
+<<<<<<< HEAD:Third/resources/map/testMap2.map
         {"name": "wood",                "spriteSequence": "wood"},
         {"name": "birch",                "spriteSequence": "birch"}
+=======
+        {"name": "wood",                "spriteSequence": "wood"}
+>>>>>>> Malaxiz/network:Fifth/resources/map/testMap2.map
     ],
     
     "scripts": [
