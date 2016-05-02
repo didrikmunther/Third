@@ -214,6 +214,7 @@ void CGame::_initLua() {
             .addFunction("writeToFile", (void (*)(std::string, std::string)) &NFile::luaWriteToFile)
             .addFunction("readFile", &NFile::readFromFile)
             .addFunction("clearFile", &NFile::clearFile)
+            .addFunction("tileSize", &CGame::tileSize)
         .endNamespace()
     
         .beginClass<CLuaObject>("LuaObject")
@@ -272,6 +273,12 @@ void CGame::_initLua() {
             .addData("y", &Box::y)
             .addData("w", &Box::w)
             .addData("h", &Box::h)
+        .endClass()
+    
+        .beginClass<Position>("Position")
+            .addConstructor<void(*) (int, int)>()
+            .addData("x", &Position::x)
+            .addData("y", &Position::y)
         .endClass()
     
         .beginClass<Color>("Color")

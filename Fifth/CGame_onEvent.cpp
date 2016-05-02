@@ -72,60 +72,16 @@ void CGame::_onEvent(SDL_Event* event) {
                     _isRunning = false;
                     break;
                     
-                case SDLK_4:
-                {
-                    if(instance.window.newWindow(_intro, 640, 480)) {
-                        NFile::log(LogType::ERROR, "Window.onInit failed: ", SDL_GetError());
-                    }
-                    instance.camera->onInit(&instance.window);
-                    instance.loadAssets("resources/map/testMap1.assets");
-                    restart();
-                }
-                    break;
-                    
-                case SDLK_g:
-                {
-//                    rapidjson::Document d;
-//                    d.Parse("{}");
-//                
-//                    rapidjson::Value entityValues(rapidjson::kObjectType);
-//                    instance.entityManager.onSerialize(&entityValues, &d.GetAllocator(), &instance);
-//                
-//                    d.AddMember("this", entityValues, d.GetAllocator());
-//                
-//                    rapidjson::StringBuffer sb;
-//                    rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
-//                    d.Accept(writer);
-//                    
-////                    std::cout << sb.GetString() << "\n---------------\n";
-////                    quickSave = sb.GetString();
-//                    NFile::clearFile("quicksave.save");
-//                    NFile::writeToFile("quicksave.save", sb.GetString());
-                }
-                    break;
-                    
-                case SDLK_h:
-                {
-//                    quickSave = NFile::readFromFile("quicksave.save");
-//                    
-//                    std::cout << quickSave << "\n--------------------\n";
-//                    
-//                    if(quickSave == "{}")
-//                        break;
-//                    
-//                    rapidjson::Document d;
-//                    d.Parse(quickSave.c_str());
-//                    
-//                    instance.entityManager.onCleanup();
-//                    
-//                    instance.entityManager.onDeserialize(&d["this"], &instance);
-//                    
-//                    instance.player = instance.entityManager.getEntity("5:Player");
-//                    instance.controller = instance.entityManager.getEntity("Controller");
-//                    
-//                    instance.camera->setTarget(instance.player, true);
-                }
-                    break;
+//                case SDLK_4:
+//                {
+//                    if(instance.window.newWindow(_intro, 640, 480)) {
+//                        NFile::log(LogType::ERROR, "Window.onInit failed: ", SDL_GetError());
+//                    }
+//                    instance.camera->onInit(&instance.window);
+//                    instance.loadAssets("resources/map/testMap1.assets");
+//                    restart();
+//                }
+//                    break;
                     
                 default:
                     break;
@@ -146,25 +102,6 @@ void CGame::_onEvent(SDL_Event* event) {
             
         case SDL_MOUSEBUTTONDOWN:
         {
-            bool type = 0;
-            
-            if(NMouse::leftMouseButtonPressed()) {
-//                auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.camera), NMouse::relativeMouseY(instance.camera));
-//                if(tempTarget != nullptr) {
-//                    std::string toSay = "Name: \"" + instance.entityManager.getNameOfEntity(tempTarget) +
-//                    "\", CollisionLayer: " + std::to_string(tempTarget->collisionLayer);
-//                    tempTarget->say(toSay, "TESTFONT", ChatBubbleType::SAY);
-//                }
-            }
-            
-            if(NMouse::rightMouseButtonPressed()) {
-                type = 1;
-                auto tempTarget = instance.entityManager.getEntityAtCoordinate(NMouse::relativeMouseX(instance.camera), NMouse::relativeMouseY(instance.camera));
-                if(tempTarget != nullptr) {
-                    tempTarget->isDead = true;
-                }
-            }
-            
             int x = NMouse::relativeMouseX(instance.camera);
             int y = NMouse::relativeMouseY(instance.camera);
             auto entities = instance.entityManager.getEntitiesAtCoordinate(x, y);

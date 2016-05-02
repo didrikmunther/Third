@@ -15,8 +15,8 @@
 
 const bool DEBUG                = false;
 
-const int SCREEN_WIDTH          = 1280;
-const int SCREEN_HEIGHT         = 720;
+const int SCREEN_WIDTH          = 1440;
+const int SCREEN_HEIGHT         = 920;
 const int SCREEN_BPP            = 32;
 
 const int GAME_INTERVAL         = 60;
@@ -26,6 +26,9 @@ const char LOG_FILE[]           = "debug.log";
 
 struct Position {
     int x, y;
+    
+    Position(int x, int y)
+    : x(x), y(y) {}
 };
 
 struct Area {

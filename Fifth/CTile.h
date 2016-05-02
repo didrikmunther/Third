@@ -54,8 +54,6 @@ private:
     Tileset* tileset;
     int tileIndex;
     
-    Position position;
-    
 };
 
 #endif /* defined(__Third__CTile__) */

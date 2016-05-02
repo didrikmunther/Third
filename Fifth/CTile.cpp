@@ -25,11 +25,11 @@ CTile::CTile(std::string tileset, int posX, int posY)
 }
 
 void CTile::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {
-    int x = posX * TILE_SIZE - camera->offsetX();
-    int y = posY * TILE_SIZE - camera->offsetY();
-    
     if(!camera->collision(this))
         return;
+    
+    int x = posX * TILE_SIZE - camera->offsetX();
+    int y = posY * TILE_SIZE - camera->offsetY();
     
     if(tileset)
         NSurface::renderSprite(x, y, TILE_SIZE, TILE_SIZE, CAssetManager::getSprite((*tileset)[tileIndex]), window, SDL_RendererFlip::SDL_FLIP_NONE);
@@ -44,13 +44,13 @@ void CTile::onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorT
 
 void CTile::updateIndex(std::map<int, std::map<int, CTile*>>* _tiles) {
     tileIndex = 0;
-    if(tileExist(_tiles, posX, posY-1))
+    if(tileExist(_tiles, posX, posY-1) && (*_tiles)[posX][posY-1]->tilesetKey == tilesetKey)
         tileIndex += 1;
-    if(tileExist(_tiles, posX+1, posY))
+    if(tileExist(_tiles, posX+1, posY) && (*_tiles)[posX+1][posY]->tilesetKey == tilesetKey)
         tileIndex += 2;
-    if(tileExist(_tiles, posX, posY+1))
+    if(tileExist(_tiles, posX, posY+1) && (*_tiles)[posX][posY+1]->tilesetKey == tilesetKey)
         tileIndex += 4;
-    if(tileExist(_tiles, posX-1, posY))
+    if(tileExist(_tiles, posX-1, posY) && (*_tiles)[posX-1][posY]->tilesetKey == tilesetKey)
         tileIndex += 8;
 }
 

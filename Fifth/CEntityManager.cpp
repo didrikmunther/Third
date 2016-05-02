@@ -21,10 +21,11 @@
 #include "CTile.h"
 
 
-CEntityManager::CEntityManager() : entityID(0), _gridSize(32) {
-    renderFlags = RenderFlags::CLEAR |
-                  RenderFlags::RENDER_COMBAT_TEXT;
-}
+CEntityManager::CEntityManager()
+    : entityID(0)
+    , _gridSize(TILE_SIZE) // Don't touch this, tile collision is dependent on it ctrl-f: TILECOL
+    , renderFlags(RenderFlags::CLEAR | RenderFlags::RENDER_COMBAT_TEXT)
+{}
 
 std::string CEntityManager::addEntity(CEntity* entity, std::string name /* = "" */) {
     if(name == "") {
@@ -356,9 +357,11 @@ void CEntityManager::onLoop(CInstance* instance) {
             for(auto &tile: tileRow.second) {
                 auto target = tile.second;
                 
-                for(auto &coords: getGrid(target, _gridSize)) {
-                    _CollisionVector[coords.y][coords.x].push_back(target);
-                }
+                _CollisionVector[target->posY][target->posX].push_back(target); // TILECOL
+                
+//                for(auto &coords: getGrid(target, _gridSize)) {
+//                    _CollisionVector[coords.y][coords.x].push_back(target);
+//                }
             }
         }
         

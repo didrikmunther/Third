@@ -122,41 +122,6 @@ function Movable:onKeyStates(state)
     if(state:hasState(ScanCode._S)) then
         self:goDown()
     end
-
-    if(game:leftMousePressed() and not self.parent.isDead) then
-        box = self.parent.body.box
-        thisX = box.x
-        thisY = box.y
-        
-        for i = 0, 0 do
-        
-            spawnX = thisX + 20
-            spawnY = thisY + 60
-            if(self.parent:hasProperty(EntityProperty.FLIP)) then
-                spawnX = thisX + 5
-            end
-
-            bullet = self.parent.entityManager:createColoredEntity(Box(spawnX, spawnY, 15, 2), Color(255, 5, 0, 255))
-            self.parent.entityManager:addParticle(bullet)
-            script = game.getScript("Standard/Projectile")
-            bullet:addComponent(self.component.instance, script)
-            bullet:getComponent("Standard/Projectile"):onDeserialize('{"owner":"' .. self.parent.entityManager:getNameOfEntity(self.parent) .. '"}')
-
-            tBody = self.parent.body
-            bBody = bullet:getComponent("Standard/Projectile").parent.body -- must do it this way
-            
-            bBody.velX = 25 + (math.random(5) - 2.5)
-            bBody.velY = -5 + (math.random(5) - 2.5)
-            if(self.parent:hasProperty(EntityProperty.FLIP)) then
-                bBody.velX = bBody.velX * -1
-            end
-            
-            bBody.velX = bBody.velX + tBody.velX
-            bBody.velY = bBody.velY + tBody.velY
-        
-        end
-
-    end
 end
 
 function Movable:onSerialize()

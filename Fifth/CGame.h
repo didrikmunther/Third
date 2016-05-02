@@ -66,6 +66,7 @@ private:
     bool toRestart;
     
     static int getTime();
+    static int tileSize() { return TILE_SIZE; }
     static int getWidth() { return SCREEN_WIDTH; }
     static int getHeight() { return SCREEN_HEIGHT; }
     

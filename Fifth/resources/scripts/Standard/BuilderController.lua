@@ -4,7 +4,7 @@ local BuilderController = class (
     function(self, parent, component)
         self.parent = parent
         self.component = component
-                                 
+
         self.mouseDown = false
         self.rightMouseDown = false
         self.initMX = 0
@@ -25,6 +25,10 @@ local BuilderController = class (
         self.isBuilding = false
         self.isMoving = false
         self.isTiling = false
+
+        self.isTileArea = false
+        self.pos1 = nil
+        self.pos2 = nil
                                  
         self.tileset = ""
     end
@@ -38,7 +42,9 @@ function BuilderController:onComponentAdd(comp)
         chatController:registerCommand("move", self)
         chatController:registerCommand("remove", self)
         chatController:registerCommand("color", self)
+
         chatController:registerCommand("tile", self)
+        chatController:registerCommand("tilearea", self)
     end
 end
 
@@ -105,10 +111,22 @@ function BuilderController:tile(commands)
         do return end
     end
 
-    if(commands[2]) then
-        self.tileset = commands[2]
-        self.isTiling = true
+    self.tileset = commands[2]
+    self.isTiling = true
+end
+
+function BuilderController:tilearea(commands)
+    if(self.isTileArea) then
+        self.isTileArea = false
+        do return end
     end
+
+    if(self.tileset == "") then
+        do return end
+    end
+
+    self.isTileArea = true
+    self.pos1 = Position(self.mX, self.mY)
 
 end
 
@@ -119,10 +137,10 @@ function BuilderController:onChatCommand(commands)
     if(commands[1] == "remove") then    self:remove(commands) end
     if(commands[1] == "color") then     self:color(commands) end
     if(commands[1] == "tile") then      self:tile(commands) end
+    if(commands[1] == "tilearea") then  self:tilearea(commands) end
 end
 
 function BuilderController:onLoop()
-
     if(self.isBuilding) then
         if(self.mouseDown and self.activeEntity == nil) then
             self.initMX = self.mX
@@ -183,13 +201,46 @@ function BuilderController:onLoop()
         end
     end
 
+    if(self.isTileArea) then
+        if(self.mouseDown) then
+            self.isTileArea = false
+            self.pos2 = Position(self.mX, self.mY)
+
+            tileSize = game.tileSize()
+
+            if(self.pos1.x > self.pos2.x) then
+                temp = self.pos1.x
+                self.pos1.x = self.pos2.x
+                self.pos2.x = temp
+            end
+            if(self.pos1.y > self.pos2.y) then
+                temp = self.pos1.y
+                self.pos1.y = self.pos2.y
+                self.pos2.y = temp
+            end
+
+            for y = self.pos1.y, self.pos2.y, tileSize do
+                for x = self.pos1.x, self.pos2.x, tileSize do
+                    self.parent.entityManager:addTile(x, y, self.tileset)
+                end
+            end
+
+            self.pos1 = nil
+            self.pos2 = nil
+        end
+    end
 end
 
 function BuilderController:onKeyStates(state)
     self.mX, self.mY = self.component:getRelativeMouse()
     self.mouseDown = game:leftMousePressed()
     self.rightMouseDown = game:rightMousePressed()
+end
 
+function BuilderController:onRenderAdditional()
+    if(self.isTileArea) then
+        self.component:renderRect(self.pos1.x - self.component.camera:offsetX(), self.pos1.y - self.component.camera:offsetY(), self.mX - self.pos1.x, self.mY - self.pos1.y, 255, 255, 0, 100)
+    end
 end
 
 function create(parent, component)

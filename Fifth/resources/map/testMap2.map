@@ -24,6 +24,7 @@
         {"name":"bunnyJump",            "spriteSheetKey":"MAIN",                "offsets":[64, 16, 16, 16]},
         
         {"name": "smoke",               "spriteSheetKey":"MAIN",                "offsets":[48, 64, 16, 16]},
+        {"name": "bullet",              "spriteSheetKey":"MAIN",                "offsets":[64, 64, 6,   3]},
         
         {"name": "grass",               "spriteSheetKey":"MAIN",                "tileset":[0, 96, 16]},
         {"name": "stone",               "spriteSheetKey":"MAIN",                "tileset":[64, 96, 16]}
@@ -45,6 +46,7 @@
         "Standard/GraphicScript",
         "Standard/ExplodeOnDeath",
         "Standard/BuilderController",
-        "Standard/BinderController"
+        "Standard/BinderController",
+        "Standard/Shooter"
     ]
 }
