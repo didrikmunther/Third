@@ -262,8 +262,8 @@ function BuilderController:onKeyStates(state)
 end
 
 function BuilderController:onRenderAdditional()
+    tileSize = game.tileSize()
     if(self.isTiling) then
-        tileSize = game.tileSize()
         colorR = 0
         colorG = 255
         if(self.rightMouseDown) then
@@ -285,7 +285,7 @@ function BuilderController:onRenderAdditional()
         end
     end
     if(self.isTileArea) then
-        self.component:renderRect(self.pos1.x - self.component.camera:offsetX(), self.pos1.y - self.component.camera:offsetY(), self.mX - self.pos1.x, self.mY - self.pos1.y, 255, 255, 0, 100)
+        self.component:renderRect(math.floor(self.pos1.x / tileSize) * tileSize - self.component.camera:offsetX(), math.floor(self.pos1.y / tileSize) * tileSize - self.component.camera:offsetY(), math.ceil((self.mX - self.pos1.x) / tileSize) * tileSize, math.ceil((self.mY - self.pos1.y) / tileSize) * tileSize, 255, 255, 0, 100)
     end
 end
 

@@ -75,7 +75,6 @@ void NFile::loadAssets(std::string fileName, CInstance* instance) {
     loadSpriteSheets(&d, instance);
     loadSprites(&d);
     loadScripts(&d, instance);
-    loadTilesets(&d);
     
     log(LogType::SUCCESS, "Loaded map: \"", fileName.c_str(), "\" as \"", d["name"].GetString(), "\"");
 }
@@ -166,41 +165,13 @@ void NFile::loadSprites(rapidjson::Document* d) {
                                              Box{startX + x * tileSize, startY + y * tileSize, tileSize, tileSize});
                 }
             }
-        }
-    }
-}
-
-void NFile::loadTilesets(rapidjson::Document* d) {
-    if(!d->HasMember("tilesets"))
-        return;
-    
-    const rapidjson::Value& tilesets = (*d)["tilesets"];                       // Sprite sheets
-    for(rapidjson::SizeType i = 0; i < tilesets.Size(); i++) {
-        const rapidjson::Value& tileset = tilesets[i];
-        if(!tileset.HasMember("name"))
-            continue;
-        
-        if(tileset.HasMember("sprites")) {
-            const rapidjson::Value& sprites = tileset["sprites"];
-            if(sprites.Size() < 16)
-                continue;
-            
-            Tileset* set = new Tileset;
-            for(rapidjson::SizeType sprite = 0; sprite < 16; sprite++) {
-                set->spriteKeys[sprite] = sprites[sprite].GetString();
-            }
-            CAssetManager::addTileset(tileset["name"].GetString(), set);
-        } else if(tileset.HasMember("spriteSequence")) {
-            std::string stem = tileset["spriteSequence"].GetString();
             
             Tileset* set = new Tileset;
             for(int sprite = 0; sprite < 16; sprite++) {
-                set->spriteKeys[sprite] = stem + std::to_string(sprite);
+                set->spriteKeys[sprite] = name + std::to_string(sprite);
             }
-            CAssetManager::addTileset(tileset["name"].GetString(), set);
+            CAssetManager::addTileset(name, set);
         }
-        
-        
     }
 }
 

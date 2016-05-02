@@ -44,9 +44,6 @@ public:
     static void loadAssets(std::string fileName, CInstance* instance);
     static int loadLevel(std::string fileName, CInstance* instance);
     
-    static void execCommand(rapidjson::Document command, CInstance* instance);
-    static void parseCommands(rapidjson::Document commands, CInstance* instance);
-    
     static std::string readFromFile(std::string fileName);
     
     // Save functions
@@ -130,7 +127,6 @@ private:
     static void loadFonts(rapidjson::Document* d);
     static void loadSpriteSheets(rapidjson::Document* d, CInstance* instance);
     static void loadSprites(rapidjson::Document* d);
-    static void loadTilesets(rapidjson::Document* d);
     static void loadScripts(rapidjson::Document* d, CInstance* instance);
     
 };
