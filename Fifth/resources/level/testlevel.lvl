@@ -49,11 +49,11 @@
 "velX":0.0,
 "velY":0.0,
 "spriteKeys":{
-"ASCENDING":"test4",
-"DESCENDING":"test1",
-"WALKING":"test7"
+"ASCENDING":"playerAscending",
+"DESCENDING":"playerDescending",
+"WALKING":"playerWalking"
 },
-"defaultSpriteKey":"test2",
+"defaultSpriteKey":"playerStanding",
 "colorR":255,
 "colorG":0,
 "colorB":255,

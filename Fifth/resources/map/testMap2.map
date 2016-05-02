@@ -11,12 +11,11 @@
     "sprites": [
         {"name":"player", 				"spriteSheetKey":"MAIN", 				"offsets":[32, 0, 16, 32]},
         
-        {"name":"test1", 				"spriteSheetKey":"MAIN3", 				"offsets":[0, 0, 16, 24]},
-        {"name":"test2", 				"spriteSheetKey":"MAIN3", 				"offsets":[16, 0, 16, 24]},
-        {"name":"test3", 				"spriteSheetKey":"MAIN3", 				"offsets":[32, 0, 16, 24]},
-        {"name":"test4", 				"spriteSheetKey":"MAIN3", 				"offsets":[48, 0, 16, 24]},
-        {"name":"test5", 				"spriteSheetKey":"MAIN3", 				"offsets":[64, 0, 16, 24]},
-        {"name":"test6", 				"spriteSheetKey":"MAIN3", 				"offsets":[80, 0, 16, 24]},
+        {"name":"playerDescending",     "spriteSheetKey":"MAIN3", 				"offsets":[0, 0, 16, 24]},
+        {"name":"playerStanding",       "spriteSheetKey":"MAIN3", 				"offsets":[16, 0, 16, 24]},
+        {"name":"playerAscending",      "spriteSheetKey":"MAIN3", 				"offsets":[48, 0, 16, 24]},
+        
+        {"name":"playerWalking",        "spriteSheetKey":"MAIN3",               "animation":{"offsets": [0, 0, 16, 24], "frames": 6, "fps": 10}},
         
         {"name":"lua",                  "spriteSheetKey":"MAIN",                "offsets":[48, 32, 16, 16]},
         

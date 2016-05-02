@@ -142,12 +142,8 @@ void CGame::_restart() {
     
     instance.L = luaL_newstate();
     _initLua();
-    
-    CAnimation* anim = new CAnimation({"test1", "test2", "test3", "test4", "test5", "test6"}, 10);
-    CAssetManager::addSprite(anim, "test7");
 
     auto controller = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Controller.lua");
-    
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
     instance.entityManager.addEntity(temp, "Controller");
     temp->addComponent(&instance, controller);

@@ -15,6 +15,7 @@
 #include "CAssetManager.h"
 #include "CEntityManager.h"
 #include "CTile.h"
+#include "CAnimation.h"
 
 
 rapidjson::Document NFile::loadJsonFile(std::string fileName) {
@@ -171,6 +172,31 @@ void NFile::loadSprites(rapidjson::Document* d) {
                 set->spriteKeys[sprite] = name + std::to_string(sprite);
             }
             CAssetManager::addTileset(name, set);
+        } else if(sprite.HasMember("animation")) {
+            const rapidjson::Value& animationValue = sprite["animation"];
+            std::string name = sprite["name"].GetString();
+            std::string spriteSheet = sprite["spriteSheetKey"].GetString();
+            if(!(animationValue.HasMember("frames") && animationValue.HasMember("fps") && animationValue.HasMember("offsets")))
+                continue;
+            
+            int frames = animationValue["frames"].GetInt();
+            int fps = animationValue["fps"].GetInt();
+            
+            const rapidjson::Value& offset = animationValue["offsets"];
+            int sX = offset[0].GetInt();
+            int sY = offset[1].GetInt();
+            int sW = offset[2].GetInt();
+            int sH = offset[3].GetInt();
+            
+            std::vector<std::string> sprites;
+            for(int i = 0; i < frames; i++) {
+                std::string spriteName = name + std::to_string(i);
+                sprites.push_back(spriteName);
+                CAssetManager::addSprite(spriteName, spriteSheet, Box(sX + i * sW, sY, sW, sH));
+            }
+            
+            CAnimation* animation = new CAnimation(sprites, fps);
+            CAssetManager::addSprite(animation, name);
         }
     }
 }
