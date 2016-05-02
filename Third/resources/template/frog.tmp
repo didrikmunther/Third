@@ -1,0 +1,36 @@
+{
+    "entity": {
+        "name": "frog",
+
+        "w":64,
+        "h":128,
+        "velX":0.0,
+        "velY":0.0,
+        "spriteKeys":{
+            "ASCENDING":"bunnyJump",
+            "DESCENDING":"bunnyJump",
+            "WALKING":"bunny"
+        },
+        "defaultSpriteKey":"bunny",
+        "colorR":255,
+        "colorG":0,
+        "colorB":255,
+        "colorA":255,
+        "properties":3,
+        "collisionLayers":1,
+        "components":{
+            "Standard/ExplodeOnDeath":{
+            },
+            "Standard/Living":{
+                "health":750,
+                "kevlar":500
+            },
+            "Standard/Movable":{
+                "walking_movement_speed":10.0,
+                "running_movement_speed":20.0,
+                "sneaking_movement_speed":5.0,
+                "isFlying":0
+            }
+        }
+    }
+}
