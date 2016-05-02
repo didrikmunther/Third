@@ -32,6 +32,7 @@ local BuilderController = class (
                                  
         self.tileset = ""
 
+        self.snap = true
         P = Position
         self.brushes = {
             {P(0, 0)},
@@ -270,7 +271,17 @@ function BuilderController:onRenderAdditional()
             colorG = 0
         end
         for k, v in pairs(self.brushes[self.brush]) do
-            self.component:renderRect(self.mX - self.component.camera:offsetX() + v.x * tileSize - tileSize / 2, self.mY - self.component.camera:offsetY() + v.y * tileSize - tileSize / 2, tileSize, tileSize, colorR, colorG, 0, 100)
+            posX = self.mX + v.x * tileSize
+            posY = self.mY + v.y * tileSize
+            if(self.snap) then
+                posX = math.floor(posX / tileSize) * tileSize
+                posY = math.floor(posY / tileSize) * tileSize
+            else
+                posX = posX - tileSize / 2
+                posY = posY - tileSize / 2
+            end
+
+            self.component:renderRect(posX - self.component.camera:offsetX(), posY - self.component.camera:offsetY(), tileSize, tileSize, colorR, colorG, 0, 100)
         end
     end
     if(self.isTileArea) then
