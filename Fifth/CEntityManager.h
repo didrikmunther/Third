@@ -72,6 +72,7 @@ public:
     void particleCleanup();
     void guiTextCleanup();
     
+    int getEntityCount();
     int entityID;
     
     int renderFlags;

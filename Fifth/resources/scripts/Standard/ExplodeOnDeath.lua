@@ -52,16 +52,11 @@ function ExplodeOnDeath:explodeParticle(sx, sy, sw, sh, tx, ty, tw, th, spriteNa
     eBox = Box(tx, ty, tw, th)
     particle = entityManager:createSpriteEntity(eBox, spriteName)
 
-    --if(parent:hasProperty(EntityProperty.FLIP)) then
-    --   particle:addProperty(EntityProperty.FLIP)
-    --end
-
     force = 20
 
     body = particle.body
     body.velX = self.parent.body.velX + math.random(force) - force / 2
     body.velY = self.parent.body.velY + -10 + -math.random(force) / 2
-
 
     particle:addComponent(self.component.instance, game.getScript("Standard/Particle"))
     particle:getComponent("Standard/Particle"):onDeserialize('{"livingTime":' .. ((math.random(50) + 25) / 10) .. '}')

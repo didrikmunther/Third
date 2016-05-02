@@ -77,6 +77,10 @@ int CEntityManager::pushEntities(lua_State* L) {
     return 1;
 }
 
+int CEntityManager::getEntityCount() {
+    return (int)_entities.size();
+}
+
 CEntity* CEntityManager::getEntityAtCoordinate(int x, int y, CEntity* except /* = nullptr */) {
     for (auto &i: _entities) {
         if(i.second->coordinateCollision(x, y, 1, 1)) {

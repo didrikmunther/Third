@@ -357,6 +357,7 @@ void CGame::_initLua() {
             .addFunction("getEntity", &CEntityManager::getEntity)
             .addFunction("getNameOfEntity", &CEntityManager::getNameOfEntity)
             .addFunction("getEntityAtCoordinate", &CEntityManager::getEntityAtCoordinate)
+            .addFunction("getEntityCount", &CEntityManager::getEntityCount)
             .addCFunction("getEntities", &CEntityManager::pushEntities)
             .addFunction("createColoredEntity", (CEntity* (CEntityManager::*)(Box, Color)) &CEntityManager::createEntity)
             .addFunction("createSpriteEntity", (CEntity* (CEntityManager::*)(Box, std::string)) &CEntityManager::createEntity)

@@ -337,6 +337,11 @@ CComponent* CEntity::addComponent(CInstance* instance, CLuaScript* script) {
     auto require = component->object.getTable("require");       // TODO: Add recursion protection, and perhaps a require depth limit.
     for(auto& i: require) {
         std::string name = i.second.cast<std::string>();
+        if(getComponent(name)) {
+            if(DEBUG)
+                NFile::log(LogType::WARNING, "Couldn't add the required component \"", name, "\" to component \"", script->getName(), "\". Because the component already exist.");
+            continue;
+        }
         auto scriptToAdd = CAssetManager::getLuaScript(name);
         if(!scriptToAdd) {
             NFile::log(LogType::WARNING, "Couldn't add the required component \"", name, "\" to component \"", script->getName(), "\". Because the script doesn't exist.");

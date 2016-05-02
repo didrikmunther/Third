@@ -50,6 +50,8 @@ void CAnimation::onRender(CEntity* entity, Box destination, bool flip, int angle
         
         if(currentFrame >= sprites.size())
             currentFrame = 0;
+        
+        _source = *CAssetManager::getSprite(sprites[currentFrame])->getSource();
     }
     
     auto sprite = CAssetManager::getSprite(sprites[currentFrame]);

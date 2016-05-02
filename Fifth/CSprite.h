@@ -33,7 +33,7 @@ public:
     
     virtual void onRender(CEntity* entity, Box destination, bool flip, int angle, int alpha, CWindow* window, CCamera* camera, RenderFlags renderFlags);
     
-private:
+protected:
     CSpriteSheet* _spriteSheet; // Don't modify from here
     Box _source;
     

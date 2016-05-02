@@ -7,7 +7,7 @@ local Npc = class (
 
         self.target = nil
         self.targetName = ""
-        self.range = 50
+        self.range = 500
         self.runSpeed = 4
 
         self.lastTime = game.getTime()

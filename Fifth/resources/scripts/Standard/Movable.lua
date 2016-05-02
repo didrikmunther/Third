@@ -18,6 +18,7 @@ local Movable = class (
         self.hasWalkedY = false
 
         self.isFlying = false
+        self.angleFactor = -1.0
 
         self.WALKING_MOVEMENT = 0
         self.SNEAKING_MOVEMENT = 1
@@ -78,7 +79,7 @@ function Movable:onLoop()
         self.parent:setSprite(self.parent:getSpriteFromState("FLYING"))
     end
 
-    self.parent.angle = -(body.velX / 2.0)
+    self.parent.angle = (body.velX / -self.angleFactor)
 
 end
 
