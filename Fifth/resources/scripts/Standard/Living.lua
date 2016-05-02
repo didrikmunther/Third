@@ -4,8 +4,7 @@ local Living = class (
     function(self, parent, component)
         self.parent = parent
         self.component = component
-
-        self.parent:addComponent(self.component.instance, game.getScript("Standard/ExplodeOnDeath"))
+        self.require = {"Standard/ExplodeOnDeath"}
 
         self.VALUE_HEALTH = 0
         self.VALUE_KEVLAR = 1

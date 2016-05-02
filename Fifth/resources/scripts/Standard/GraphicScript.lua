@@ -2,11 +2,10 @@
 
 local GraphicScript = class(
     function(self, parent, component)
-
         self.parent = parent
         self.component = component
+        self.require = {"Standard/ExplodeOnDeath"}
 
-        parent:addComponent(self.component.instance, game.getScript("Standard/ExplodeOnDeath"))
         parent:addProperty(EntityProperty.STATIC)
         parent:removeProperty(EntityProperty.COLLIDABLE)
         parent.defaultSprite = "lua"
@@ -59,13 +58,13 @@ function GraphicScript:onClick()
         entity = self.parent.entityManager:getEntityAtCoordinate(x, y, self.parent)
         if(entity ~= nil) then
             if(self.targetedScript ~= nil) then
-                if(entity:getComponent(self.targetedScript:getName()) == nil) then
+                --if(entity:getComponent(self.targetedScript:getName()) == nil) then
                     entity:addComponent(self.component.instance, self.targetedScript)
                     component = entity:getComponent(self.targetedScript:getName())
                     if(component ~= nil and component.onDeserialize ~= nil) then
                         component:onDeserialize(self.deserialize)
                     end
-                end
+                --end
             end
             self.parent.isDead = true
         end

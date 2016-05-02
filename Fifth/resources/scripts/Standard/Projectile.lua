@@ -4,6 +4,8 @@ local Projectile = class(
     function(self, parent, component)
         self.parent = parent
         self.component = component
+        self.require = {"Standard/Particle"}
+
         self.body = parent.body
         self.box = self.body.box
 
@@ -12,13 +14,15 @@ local Projectile = class(
         self.positions = {}
         self.positionsSize = 0
 
-        if(self.parent:getComponent("Standard/Particle") == nil) then
-            self.parent:addComponent(self.component.instance, game.getScript("Standard/Particle"))
-            self.parent:getComponent("Standard/Particle").livingTime = 5
-        end
-
     end
 )
+
+function Projectile:onComponentAdd(component)
+    if(component == "Standard/Particle") then
+        particle = self.parent:getComponent(component)
+        particle.livingTime = 5
+    end
+end
 
 function Projectile:onInit()
     --[[

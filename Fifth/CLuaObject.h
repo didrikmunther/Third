@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <map>
+#include <vector>
 
 #include "CLuaScript.h"
 
@@ -26,6 +27,8 @@ public:
     void beginCall(std::string function);
     void endCall(int argc, int results);
     void endCall();
+    
+    std::vector<std::pair<luabridge::LuaRef, luabridge::LuaRef>> getTable(std::string name);
     
     template<typename T>
     void callSetFunction(std::string function, T t) {

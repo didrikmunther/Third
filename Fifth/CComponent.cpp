@@ -21,7 +21,6 @@ CComponent::CComponent(CEntity* parent, CInstance* instance, CLuaScript* script)
     , tempValue(nullptr)
     , tempAlloc(nullptr)
 {
-    onInit(instance);
 }
 
 CComponent::~CComponent() {
@@ -159,7 +158,7 @@ void CComponent::onTextInput(CInstance* instance, std::string input) {
     object.endCall(1, 0);
 }
 
-void CComponent::onComponentAdd(CInstance* instance, std::string component) {
+void CComponent::onComponentAdd(CInstance* instance, std::string component) {    
     if(!object.hasReference("onComponentAdd"))
         return;
     

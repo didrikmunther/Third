@@ -36,6 +36,25 @@ void CLuaObject::endCall() {
     endCall(0, 0);
 }
 
+std::vector<std::pair<luabridge::LuaRef, luabridge::LuaRef>> CLuaObject::getTable(std::string name) {
+    std::vector<std::pair<luabridge::LuaRef, luabridge::LuaRef>> toReturn = {};
+    auto L = _script->getState();
+    
+    luabridge::LuaRef table = _object[name];
+    if(!table.isNil()) {
+        table.push(L);
+        push(L, luabridge::Nil ());
+        while(lua_next (L, -2)) {
+//            luabridge::LuaRef key = luabridge::LuaRef::fromStack (L, -2);
+//            luabridge::LuaRef val = luabridge::LuaRef::fromStack (L, -1);
+            toReturn.push_back(std::make_pair(luabridge::LuaRef::fromStack (L, -2), luabridge::LuaRef::fromStack (L, -1)));
+            lua_pop(L, 1);
+        }
+    }
+    
+    return toReturn;
+}
+
 void CLuaObject::selectScript() {
     _object.push(_script->getState());
 }
