@@ -145,6 +145,10 @@ function BuilderController:changeBrush(commands)
     if(not commands[2]) then do return end end
 
     self.brush = tonumber(commands[2])
+    if(self.brush < 1) then self.brush = 1 end
+    while (self.brush > table.getn(self.brushes)) do
+        self.brush = self.brush - 1
+    end
 end
 
 function BuilderController:onChatCommand(commands)
@@ -211,9 +215,6 @@ function BuilderController:onLoop()
     end
 
     if(self.isTiling) then
-        while (self.brush > table.getn(self.brushes)) do
-            self.brush = self.brush - 1
-        end
         tileSize = game.tileSize()
 
         if(self.mouseDown) then
