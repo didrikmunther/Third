@@ -43,6 +43,7 @@
         "Standard/ExplodeOnDeath",
         "Standard/BuilderController",
         "Standard/BinderController",
-        "Standard/Shooter"
+        "Standard/Shooter",
+        "Standard/TriggerController"
     ]
 }

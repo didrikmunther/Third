@@ -146,8 +146,8 @@ void CGame::_restart() {
     auto controller = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Controller.lua");
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
     instance.entityManager.addEntity(temp, "Controller");
-    temp->addComponent(&instance, controller);
     instance.controller = temp;
+    temp->addComponent(&instance, controller);
     
     NFile::loadLevel("island.lvl", &instance);
     instance.loadedMap = "island.lvl";
@@ -247,6 +247,7 @@ void CGame::_initLua() {
             .addFunction("setSprite", &CEntity::setSprite)
             .addFunction("getSpriteFromState", &CEntity::getSpriteFromState)
             .addData("defaultSprite", &CEntity::defaultSprite)
+            .addFunction("collision", (bool (CEntity::*)(Box)) &CEntity::coordinateCollision)
         .endClass()
     
         .beginClass<CComponent>("Component")

@@ -330,7 +330,8 @@ CComponent* CEntity::addComponent(CInstance* instance, CLuaScript* script) {
     component->onInit(instance);
     
     for(auto& i: components) {
-        component->onComponentAdd(instance, i.second->object.getScript()->getName());
+        if(i.second->object.getScript()->getName() != script->getName())
+            component->onComponentAdd(instance, i.second->object.getScript()->getName());
         i.second->onComponentAdd(instance, script->getName());
     }
     
@@ -412,6 +413,10 @@ bool CEntity::coordinateCollision(int x, int y, int w, int h, int x2, int y2, in
 
 bool CEntity::coordinateCollision(int x, int y, int w, int h) {
     return coordinateCollision(x, y, w, h, body->getX(), body->getY(), body->getW(), body->getH());
+}
+
+bool CEntity::coordinateCollision(Box box) {
+    return coordinateCollision(box.x, box.y, box.w, box.h);
 }
 
 bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities) {

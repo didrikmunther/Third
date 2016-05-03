@@ -212,7 +212,10 @@ void NFile::loadScripts(rapidjson::Document* d, CInstance* instance) {
             return;
         
         std::string path = script.GetString();
-        CAssetManager::addLuaScript(instance->L, "resources/scripts/" + path + ".lua");
+        auto luaScript = CAssetManager::addLuaScript(instance->L, "resources/scripts/" + path + ".lua");
+        if(path.substr(path.length() - 10) == "Controller" && instance->controller != nullptr) {
+            instance->controller->addComponent(instance, luaScript);
+        }
     }
 }
 
