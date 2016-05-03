@@ -211,6 +211,9 @@ function BuilderController:onLoop()
     end
 
     if(self.isTiling) then
+        while (self.brush > table.getn(self.brushes)) do
+            self.brush = self.brush - 1
+        end
         tileSize = game.tileSize()
 
         if(self.mouseDown) then
