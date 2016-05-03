@@ -11,7 +11,7 @@ function Controller:onInit()
     self.parent:addProperty(EntityProperty.STATIC)
     self.parent:addProperty(EntityProperty.HIDDEN)
     self.parent:removeProperty(EntityProperty.COLLIDABLE)
-    self.component.instance.gravity = 0.3
+    self.component.instance.gravity = 0.7
 
     self.component.instance:loadAssets("testMap2.map")
     self.component.instance:loadAssets("testMap1.map")

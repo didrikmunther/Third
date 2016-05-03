@@ -6,13 +6,11 @@ local Movable = class (
         self.component = component
         self.body = parent.body
 
-        self.jumpPower = 13.0
+        self.jumpPower = 16.0
         self.accelerationX = 1.5
         self.accelerationY = 100.0
         self.stoppingAccelerationX = 1.5
         self.stoppingAccelerationY = 100.0
-
-        self.hasJumpedOnWall = false
                        
         self.hasWalkedX = false
         self.hasWalkedY = false
@@ -225,20 +223,6 @@ function Movable:doJump()
 end
 
 function Movable:jump()
-    body = self.parent.body
-
-    if(self.parent.collisionSides.bottom) then
-        self.hasJumpedOnWall = false
-    end
-
-    if(not self.hasJumpedOnWall and not self.parent.collisionSides.bottom and (self.parent.collisionSides.left or self.parent.collisionSides.right)) then
-        self.hasJumpedOnWall = true
-
-        -- make wall jumping smoke effects here
-        
-        self:doJump()
-    end
-
 	if(self.parent.collisionSides.bottom) then
         self:doJump()
     end

@@ -433,13 +433,13 @@ bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities) {
         
         CollisionSides tmpCollisionSides;
         
-        if(y - 1 + body->getH() <= target->body->getY())
+        if(y - 1 + body->getH() <= target->body->getY() && !(body->getX() + 1 > target->body->getX() + target->body->getW() || body->getX() - 1 + body->getW() < target->body->getX()))
             tmpCollisionSides.bottom = true;
         if(y + 1 == target->body->getY() + target->body->getH())
             tmpCollisionSides.top = true;
         if(x + 1 >= target->body->getX() + target->body->getW())
             tmpCollisionSides.left = true;
-        if(x + body->getW() - 1 <= target->body->getX())
+        if(x - 1 + body->getW() <= target->body->getX())
             tmpCollisionSides.right = true;
         
         colliding = _onCollision(target, &tmpCollisionSides);
