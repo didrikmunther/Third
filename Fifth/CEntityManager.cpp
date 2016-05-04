@@ -189,7 +189,7 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
     std::vector<CTile*> foreground;
     for (auto &tileRow: _tiles) {
         for(auto &tile: tileRow.second) {
-            if(tile.second->hasProperty(EntityProperty::COLLIDABLE))
+            if(tile.second->invalid || tile.second->tileset->isBackground)
                 tile.second->onRender(window, camera, (RenderFlags)renderFlags);
             else
                 foreground.push_back(tile.second);

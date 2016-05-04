@@ -7,8 +7,10 @@ local Shooter = class(
     end
 )
 
-function Shooter:onKeyStates(state)
-    if(game:leftMousePressed() and not self.parent.isDead) then
+function Shooter:shoot()
+    -- game:leftMousePressed() and 
+
+    if(not self.parent.isDead) then
         box = self.parent.body.box
         thisX = box.x
         thisY = box.y

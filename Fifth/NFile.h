@@ -129,6 +129,9 @@ private:
     static void loadSprites(rapidjson::Document* d);
     static void loadScripts(rapidjson::Document* d, CInstance* instance);
     
+    static void loadTileset(const rapidjson::Value& value);
+    static void loadAnimation(const rapidjson::Value& value);
+    
 };
 
 #endif /* defined(__Third__NFile__) */

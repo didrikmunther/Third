@@ -20,9 +20,13 @@ CTile::CTile(std::string tileset, int posX, int posY)
     , tilesetKey(tileset)
     , posX(posX), posY(posY)
     , tileIndex(0)
+    , invalid(false)
 {
     addProperty(EntityProperty::STATIC);
-    if(!this->tileset->collide)
+    if(!this->tileset)
+        invalid = true;
+        
+    if(!invalid && !this->tileset->collide)
         removeProperty(EntityProperty::COLLIDABLE);
 }
 

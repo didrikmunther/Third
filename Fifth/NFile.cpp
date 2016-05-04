@@ -130,11 +130,72 @@ void NFile::loadSpriteSheets(rapidjson::Document* d, CInstance* instance) {
     const rapidjson::Value& spriteSheets = (*d)["spriteSheets"];                       // Sprite sheets
     for(rapidjson::SizeType i = 0; i < spriteSheets.Size(); i++) {
         const rapidjson::Value& spriteSheet = spriteSheets[i];
-        if(!(spriteSheet.HasMember("name") && spriteSheet.HasMember("path")))
+        if(!(spriteSheet.HasMember("name") && spriteSheet.HasMember("file")))
             continue;
         
-        CAssetManager::addSpriteSheet(spriteSheet["name"].GetString(), instance->window.getRenderer(), spriteSheet["path"].GetString());
+        std::string file = spriteSheet["file"].GetString();
+        CAssetManager::addSpriteSheet(spriteSheet["name"].GetString(), instance->window.getRenderer(), "resources/gfx/" + file);
     }
+}
+
+void NFile::loadTileset(const rapidjson::Value& value) {
+    std::string name = value["name"].GetString();
+    std::string spriteSheetKey = value["spriteSheetKey"].GetString();
+    int startX = value["tileset"][0].GetInt();
+    int startY = value["tileset"][1].GetInt();
+    int tileSize = value["tileset"][2].GetInt();
+    
+    for(int y = 0; y < 4; y++) {
+        for(int x = 0; x < 4; x++) {
+            CAssetManager::addSprite(name + std::to_string(y * 4 + x),
+                                     spriteSheetKey,
+                                     Box{startX + x * tileSize, startY + y * tileSize, tileSize, tileSize});
+        }
+    }
+    
+    Tileset* set = new Tileset;
+    for(int sprite = 0; sprite < 16; sprite++) {
+        set->spriteKeys[sprite] = name + std::to_string(sprite);
+    }
+    
+    bool collide = true;
+    if(value.HasMember("collide"))
+        collide = value["collide"].GetBool();
+    set->collide = collide;
+    
+    bool isBackground = true;
+    if(value.HasMember("isBackground"))
+        isBackground = value["isBackground"].GetBool();
+    set->isBackground = isBackground;
+    
+    CAssetManager::addTileset(name, set);
+}
+
+void NFile::loadAnimation(const rapidjson::Value& value) {
+    const rapidjson::Value& animationValue = value["animation"];
+    std::string name = value["name"].GetString();
+    std::string spriteSheet = value["spriteSheetKey"].GetString();
+    if(!(animationValue.HasMember("frames") && animationValue.HasMember("fps") && animationValue.HasMember("offsets")))
+        return;
+    
+    int frames = animationValue["frames"].GetInt();
+    int fps = animationValue["fps"].GetInt();
+    
+    const rapidjson::Value& offset = animationValue["offsets"];
+    int sX = offset[0].GetInt();
+    int sY = offset[1].GetInt();
+    int sW = offset[2].GetInt();
+    int sH = offset[3].GetInt();
+    
+    std::vector<std::string> sprites;
+    for(int i = 0; i < frames; i++) {
+        std::string spriteName = name + std::to_string(i);
+        sprites.push_back(spriteName);
+        CAssetManager::addSprite(spriteName, spriteSheet, Box(sX + i * sW, sY, sW, sH));
+    }
+    
+    CAnimation* animation = new CAnimation(sprites, fps);
+    CAssetManager::addSprite(animation, name);
 }
 
 void NFile::loadSprites(rapidjson::Document* d) {
@@ -152,57 +213,10 @@ void NFile::loadSprites(rapidjson::Document* d) {
             CAssetManager::addSprite(sprite["name"].GetString(),
                                      sprite["spriteSheetKey"].GetString(),
                                      Box{offsets[0].GetInt(), offsets[1].GetInt(), offsets[2].GetInt(), offsets[3].GetInt()});
-        } else if(sprite.HasMember("tileset")) {
-            std::string name = sprite["name"].GetString();
-            std::string spriteSheetKey = sprite["spriteSheetKey"].GetString();
-            int startX = sprite["tileset"][0].GetInt();
-            int startY = sprite["tileset"][1].GetInt();
-            int tileSize = sprite["tileset"][2].GetInt();
-            
-            for(int y = 0; y < 4; y++) {
-                for(int x = 0; x < 4; x++) {
-                    CAssetManager::addSprite(name + std::to_string(y * 4 + x),
-                                             spriteSheetKey,
-                                             Box{startX + x * tileSize, startY + y * tileSize, tileSize, tileSize});
-                }
-            }
-            
-            Tileset* set = new Tileset;
-            for(int sprite = 0; sprite < 16; sprite++) {
-                set->spriteKeys[sprite] = name + std::to_string(sprite);
-            }
-            
-            bool collide = true;
-            if(sprite.HasMember("collide"))
-                collide = sprite["collide"].GetBool();
-            set->collide = collide;
-            
-            CAssetManager::addTileset(name, set);
-        } else if(sprite.HasMember("animation")) {
-            const rapidjson::Value& animationValue = sprite["animation"];
-            std::string name = sprite["name"].GetString();
-            std::string spriteSheet = sprite["spriteSheetKey"].GetString();
-            if(!(animationValue.HasMember("frames") && animationValue.HasMember("fps") && animationValue.HasMember("offsets")))
-                continue;
-            
-            int frames = animationValue["frames"].GetInt();
-            int fps = animationValue["fps"].GetInt();
-            
-            const rapidjson::Value& offset = animationValue["offsets"];
-            int sX = offset[0].GetInt();
-            int sY = offset[1].GetInt();
-            int sW = offset[2].GetInt();
-            int sH = offset[3].GetInt();
-            
-            std::vector<std::string> sprites;
-            for(int i = 0; i < frames; i++) {
-                std::string spriteName = name + std::to_string(i);
-                sprites.push_back(spriteName);
-                CAssetManager::addSprite(spriteName, spriteSheet, Box(sX + i * sW, sY, sW, sH));
-            }
-            
-            CAnimation* animation = new CAnimation(sprites, fps);
-            CAssetManager::addSprite(animation, name);
+        } else if(sprite.HasMember("tileset"))
+            loadTileset(sprite); // maybe use pointer
+        else if(sprite.HasMember("animation")) {
+            loadAnimation(sprite);
         }
     }
 }
