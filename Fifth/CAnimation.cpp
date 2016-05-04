@@ -13,6 +13,7 @@
 #include "CSpriteSheet.h"
 #include "CWindow.h"
 #include "CCamera.h"
+#include "CEntity.h"
 
 #include "NSurface.h"
 
@@ -44,7 +45,7 @@ CSpriteSheet* CAnimation::getSpriteSheet() {
 
 void CAnimation::onRender(CEntity* entity, Box destination, bool flip, int angle, int alpha, CWindow* window, CCamera* camera, RenderFlags renderFlags) {
     int timePassed = SDL_GetTicks() - startTime;
-    if(timePassed >= (1.0f /_imagesPerSecond) * 1000) {
+    if(timePassed >= (1.0f / (_imagesPerSecond * entity->fpsFactor) * 1000)) {
         startTime = SDL_GetTicks();
         currentFrame++;
         

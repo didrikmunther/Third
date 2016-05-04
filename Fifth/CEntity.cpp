@@ -46,6 +46,7 @@ void CEntity::init() {
     collisionLayer = CollisionLayers::LAYER0;
     transparency = 255;
     angle = 0;
+    fpsFactor = 1;
 }
 
 void CEntity::_cleanUpTextVector() {

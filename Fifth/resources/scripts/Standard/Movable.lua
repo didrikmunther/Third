@@ -93,15 +93,18 @@ function Movable:onEvent(key, keyDown)
 
         if(key == toKeyCode(ScanCode._LSHIFT)) then
             self.movementState = self.SNEAKING_MOVEMENT
+            self.parent.fpsFactor = 0.8
         end
 
         if(key == toKeyCode(ScanCode._LALT)) then
             self.movementState = self.RUNNING_MOVEMENT
+            self.parent.fpsFactor = 2
         end
 
     else
         if(key == toKeyCode(ScanCode._LALT) or key == toKeyCode(ScanCode._LSHIFT)) then
             self.movementState = self.WALKING_MOVEMENT
+            self.parent.fpsFactor = 1
         end
     end
 end

@@ -143,6 +143,7 @@ public:
     std::string spriteKey;
     bool hasSprite();
     Color color;
+    float fpsFactor;
     
     bool hasMoved() { return _hasMoved; }
     

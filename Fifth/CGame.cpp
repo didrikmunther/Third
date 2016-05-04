@@ -247,6 +247,7 @@ void CGame::_initLua() {
             .addFunction("setSprite", &CEntity::setSprite)
             .addFunction("getSpriteFromState", &CEntity::getSpriteFromState)
             .addData("defaultSprite", &CEntity::defaultSprite)
+            .addData("fpsFactor", &CEntity::fpsFactor)
             .addFunction("collision", (bool (CEntity::*)(Box)) &CEntity::coordinateCollision)
         .endClass()
     
