@@ -83,11 +83,13 @@ function ChatController:onChatCommand(commands)
         end
 
         if(commands[1] == "load") then
+            game.log(LogType.ALERT, "Loading level \"" .. commands[2] .. "\".")
             self.component.instance:loadLevel(commands[2] .. ".lvl")
         end
 
         if(commands[1] == "save") then
             path = "resources/level/" .. commands[2] .. ".lvl"
+            game.log(LogType.ALERT, "Saving level \"" .. commands[2] .. "\" in \"" .. path .. "\".")
             serialized = self.component.instance:onSerialize()
             game.clearFile(path)
             game.writeToFile(path, serialized)
