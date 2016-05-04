@@ -123,6 +123,7 @@ function Movable:onSerialize()
     c:addFloat("walking_movement_speed", self.movementSpeeds[self.WALKING_MOVEMENT])
     c:addFloat("running_movement_speed", self.movementSpeeds[self.RUNNING_MOVEMENT])
     c:addFloat("sneaking_movement_speed", self.movementSpeeds[self.SNEAKING_MOVEMENT])
+    c:addInt("jumpPower", self.jumpPower)
 
     isFlying = 0
     if(self.isFlying) then isFlying = 1 end

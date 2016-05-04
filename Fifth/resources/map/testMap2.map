@@ -33,7 +33,8 @@
         {"name": "brick",               "spriteSheetKey":"TILES",                "tileset":[320, 0, 16]},
         {"name": "road",                "spriteSheetKey":"TILES",                "tileset":[384, 0, 16]},
         
-        {"name": "bgRoad",              "spriteSheetKey":"TILES",                "tileset":[384, 64, 16], "collide": false}
+        {"name": "bgRoad",              "spriteSheetKey":"TILES",                "tileset":[384, 64, 16], "collide": false},
+        {"name": "bgStone",             "spriteSheetKey":"TILES",                "tileset":[64,  64, 16], "collide": false}
     ],
     
     "scripts": [

@@ -29,10 +29,7 @@ local Npc = class (
 )
 
 function Npc:onComponentAdd(component)
-    if(component == "Standard/Movable") then
-        movable = self.parent:getComponent(component)
-        movable.jumpPower = 2
-    elseif(component == "Standard/Living") then
+    if(component == "Standard/Living") then
         living = self.parent:getComponent(component)
         living:listenForHealth(self)
     end
