@@ -328,13 +328,14 @@ CComponent* CEntity::addComponent(CInstance* instance, CLuaScript* script) {
     
     CComponent* component = new CComponent(this, instance, script);
     components[script->getName()] = component;
-    component->onInit(instance);
     
     for(auto& i: components) {
         if(i.second->object.getScript()->getName() != script->getName())
             component->onComponentAdd(instance, i.second->object.getScript()->getName());
         i.second->onComponentAdd(instance, script->getName());
     }
+    
+    component->onInit(instance);
     
     auto require = component->object.getTable("require");       // TODO: Add recursion protection, and perhaps a require depth limit.
     for(auto& i: require) {
@@ -353,6 +354,14 @@ CComponent* CEntity::addComponent(CInstance* instance, CLuaScript* script) {
     }
     
     return component;
+}
+
+void CEntity::removeComponent(std::string component) {
+    if(!getComponent(component))
+        return; // no such component
+    
+    delete components[component];
+    components.erase(component);
 }
 
 CComponent* CEntity::getComponent(std::string key) {

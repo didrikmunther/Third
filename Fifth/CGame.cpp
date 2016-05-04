@@ -224,6 +224,7 @@ void CGame::_initLua() {
         .beginClass<CEntity>("Entity")      // Entity doesn't need a constructor, because you should use the entityManager.create.. functions
             .addCFunction("getComponent", &CEntity::getComponent)
             .addFunction("addComponent", &CEntity::addComponent)
+            .addFunction("removeComponent", &CEntity::removeComponent)
             .addData("entityManager", &CEntity::entityManager)
             .addFunction("getThis", &CEntity::getThis)
             .addData("body", &CEntity::body)

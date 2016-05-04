@@ -17,7 +17,6 @@ function BinderController:onComponentAdd(component)
         self.chatCtrl = self.parent:getComponent(component)
         self.chatCtrl:registerCommand("bind", self)
 
-        self:loadBinds("adminbinds.cfg")
         self:loadBinds("binds.cfg")
     end
 end

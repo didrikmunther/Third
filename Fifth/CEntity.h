@@ -148,6 +148,7 @@ public:
     bool hasMoved() { return _hasMoved; }
     
     CComponent* addComponent(CInstance* instance, CLuaScript* script);
+    void removeComponent(std::string component);
     CComponent* getComponent(std::string key);
     int getComponent(lua_State* L);
     
