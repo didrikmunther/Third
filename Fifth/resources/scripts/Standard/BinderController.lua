@@ -8,25 +8,22 @@ local BinderController = class(
         self.chatCtrl = nil
         self.binds = {}
         self.commands = {}
+        self.chatBinds = {}
     end
 )
-
-
-
-function BinderController:onInit()
-    self:loadBinds("resources/config/adminbinds.cfg")
-    --self:loadBinds("resources/config/userbinds.cfg")
-end
 
 function BinderController:onComponentAdd(component)
     if(component == "Standard/ChatController") then
         self.chatCtrl = self.parent:getComponent(component)
         self.chatCtrl:registerCommand("bind", self)
-        self.chatCtrl:registerCommand("mode", self)
+
+        self:loadBinds("adminbinds.cfg")
+        self:loadBinds("binds.cfg")
     end
 end
 
 function BinderController:loadBinds(file)
+    file = "resources/config/" .. file
     decoded = json.decode(game.readFile(file))
 
     if(decoded["binds"]) then
@@ -44,9 +41,24 @@ function BinderController:loadBinds(file)
             end
         end
     end
+
+    if(decoded["chatbinds"]) then
+        for k,v in pairs(decoded["chatbinds"]) do
+            for k2,v2 in pairs(v) do
+                self.chatBinds[k2] = v2
+                commands = {}
+                for w in k2:gmatch("%S+") do table.insert(commands, w) end
+
+                if(not self.chatCtrl.registered[commands[1]]) then
+                    self.chatCtrl:registerCommand(commands[1], self)
+                end
+            end
+        end
+    end
 end
 
 function BinderController:unloadBinds(file)
+    file = "resources/config/" .. file
     decoded = json.decode(game.readFile(file))
 
     if(decoded["binds"]) then
@@ -64,6 +76,14 @@ function BinderController:unloadBinds(file)
             end
         end
     end
+
+    if(decoded["chatbinds"]) then
+        for k,v in pairs(decoded["chatbinds"]) do
+            for k2,v2 in pairs(v) do
+                self.chatBinds[k2] = nil
+            end
+        end
+    end
 end
 
 function BinderController:onChatCommand(commands)
@@ -72,15 +92,17 @@ function BinderController:onChatCommand(commands)
         
         self.binds[KeyCode[commands[2]]] = commands[3]
     end
-    if(commands[1] == "mode" and commands[2]) then
-        mode = commands[2]
-        self:unloadBinds("resources/config/adminbinds.cfg")
-        self:unloadBinds("resources/config/userbinds.cfg")
-        if(mode == "admin") then
-            self:loadBinds("resources/config/adminbinds.cfg")
-        else -- mode == self.USER
-            self:loadBinds("resources/config/userbinds.cfg")
-        end
+
+    str = ""
+    i = 1
+    while(commands[i]) do
+        str = str .. " " .. commands[i]
+        i = i + 1
+    end
+    str = string.sub(str, 2)
+
+    if(self.chatBinds[str]) then
+        self.chatCtrl:parse("/lua " .. self.chatBinds[str])
     end
 end
 
