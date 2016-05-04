@@ -83,14 +83,6 @@ end
 
 function Movable:onEvent(key, keyDown)
     if(keyDown) then
-        if(key == KeyCode._1) then
-            self:toggleNoClip()
-        end
-
-        if(key == KeyCode._2) then
-            self.parent:toggleProperty(EntityProperty.HIDDEN)
-        end
-
         if(key == toKeyCode(ScanCode._LSHIFT)) then
             self.movementState = self.SNEAKING_MOVEMENT
             self.parent.fpsFactor = 0.8

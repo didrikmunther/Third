@@ -11,8 +11,8 @@ local BinderController = class(
     end
 )
 
-function BinderController:onInit()
-    decoded = json.decode(game.readFile("resources/config/binds.cfg"))
+function BinderController:loadBinds(file)
+    decoded = json.decode(game.readFile(file))
 
     for k,v in pairs(decoded["binds"]) do
         for k2,v2 in pairs(v) do
@@ -25,6 +25,10 @@ function BinderController:onInit()
             self.commands[KeyCode[k2]] = v2
         end
     end
+end
+
+function BinderController:onInit()
+    self:loadBinds("resources/config/adminbinds.cfg")
 end
 
 function BinderController:onComponentAdd(component)

@@ -9,12 +9,13 @@
 
 	"spriteSheets": [
 		{"name":"MAIN2", 				"path":"resources/gfx/gfx.png"},
-        {"name":"BG", 					"path":"resources/gfx/bg.png"}
+        {"name":"BG", 					"path":"resources/gfx/bg.png"},
+        {"name":"MOUNTAINS", 			"path":"resources/gfx/mountains.png"}
 	],
 
 	"sprites": [
 		{"name":"bush", 				"spriteSheetKey":"MAIN2", 				"offsets":[160, 91, 30, 28]},
 		{"name":"tree", 				"spriteSheetKey":"MAIN2", 				"offsets":[7, 64, 23, 59]},
-        {"name":"background", 			"spriteSheetKey":"BG",                  "offsets":[0, 0, 1080, 720]}
+        {"name":"background", 			"spriteSheetKey":"MOUNTAINS",           "offsets":[0, 0, 1920, 1080]}
 	]
 }
