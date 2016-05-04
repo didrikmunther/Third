@@ -171,6 +171,12 @@ void NFile::loadSprites(rapidjson::Document* d) {
             for(int sprite = 0; sprite < 16; sprite++) {
                 set->spriteKeys[sprite] = name + std::to_string(sprite);
             }
+            
+            bool collide = true;
+            if(sprite.HasMember("collide"))
+                collide = sprite["collide"].GetBool();
+            set->collide = collide;
+            
             CAssetManager::addTileset(name, set);
         } else if(sprite.HasMember("animation")) {
             const rapidjson::Value& animationValue = sprite["animation"];

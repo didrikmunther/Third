@@ -186,9 +186,13 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
         }
     }
     
+    std::vector<CTile*> foreground;
     for (auto &tileRow: _tiles) {
         for(auto &tile: tileRow.second) {
-            tile.second->onRender(window, camera, (RenderFlags)renderFlags);
+            if(tile.second->hasProperty(EntityProperty::COLLIDABLE))
+                tile.second->onRender(window, camera, (RenderFlags)renderFlags);
+            else
+                foreground.push_back(tile.second);
         }
     }
     
@@ -205,6 +209,9 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
     for (auto &i: _particles)
         if(!i->toRemove)
             i->renderAdditional(window, camera, (RenderFlags)renderFlags);
+    
+    for(auto& i: foreground)
+        i->onRender(window, camera, (RenderFlags)renderFlags);
     
     for (auto &i: _deadEntities)
         if(!i.second->toRemove)
@@ -357,7 +364,8 @@ void CEntityManager::onLoop(CInstance* instance) {
             for(auto &tile: tileRow.second) {
                 auto target = tile.second;
                 
-                _CollisionVector[target->posY][target->posX].push_back(target); // TILECOL
+                if(target->hasProperty(EntityProperty::COLLIDABLE))
+                    _CollisionVector[target->posY][target->posX].push_back(target); // TILECOL
                 
 //                for(auto &coords: getGrid(target, _gridSize)) {
 //                    _CollisionVector[coords.y][coords.x].push_back(target);

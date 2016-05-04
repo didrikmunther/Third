@@ -28,7 +28,9 @@
         {"name": "stone",               "spriteSheetKey":"MAIN",                "tileset":[64, 96,  16]},
         {"name": "wood",                "spriteSheetKey":"MAIN",                "tileset":[0,  160, 16]},
         {"name": "brick",               "spriteSheetKey":"MAIN",                "tileset":[64, 160, 16]},
-        {"name": "log",                 "spriteSheetKey":"MAIN",                "tileset":[128, 96, 16]}
+        {"name": "log",                 "spriteSheetKey":"MAIN",                "tileset":[128, 96, 16]},
+        {"name": "road",                "spriteSheetKey":"MAIN",                "tileset":[128, 160, 16]},
+        {"name": "leaf",                "spriteSheetKey":"MAIN",                "tileset":[192, 96, 16], "collide": false}
     ],
     
     "scripts": [

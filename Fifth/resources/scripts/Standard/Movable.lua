@@ -6,7 +6,7 @@ local Movable = class (
         self.component = component
         self.body = parent.body
 
-        self.jumpPower = 16.0
+        self.jumpPower = 16.7
         self.accelerationX = 1.5
         self.accelerationY = 100.0
         self.stoppingAccelerationX = 1.5

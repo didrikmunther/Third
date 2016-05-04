@@ -22,6 +22,8 @@ CTile::CTile(std::string tileset, int posX, int posY)
     , tileIndex(0)
 {
     addProperty(EntityProperty::STATIC);
+    if(!this->tileset->collide)
+        removeProperty(EntityProperty::COLLIDABLE);
 }
 
 void CTile::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags) {

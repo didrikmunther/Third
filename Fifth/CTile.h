@@ -22,6 +22,7 @@ class CCamera;
 
 struct Tileset {
     std::string spriteKeys[16];
+    bool collide;
     
     std::string operator[](int i) {
         if(i <= 15 && i >= 0)
