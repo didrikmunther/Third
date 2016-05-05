@@ -14,13 +14,14 @@
 #define __Third__Define__
 
 const bool DEBUG                = false;
+const int GAME_INTERVAL         = 60;
 
 const int SCREEN_WIDTH          = 1440;
 const int SCREEN_HEIGHT         = 920;
 const int SCREEN_BPP            = 32;
 
-const int GAME_INTERVAL         = 60;
 const int TILE_SIZE             = 64;
+const bool TILE_BG_BORDERS      = false;
 
 const char LOG_FILE[]           = "debug.log";
 

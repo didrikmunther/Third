@@ -49,6 +49,13 @@ public:
     static inline bool tileExist(std::map<int, std::map<int, CTile*>>* tiles, int posX, int posY) {
         return tiles->find(posX) != tiles->end() && (*tiles)[posX].find(posY) != (*tiles)[posX].end();
     }
+    bool tileBorders(std::map<int, std::map<int, CTile*>>* tiles, int posX, int posY) {
+        if(invalid) return true;
+        if(tileset->collide || TILE_BG_BORDERS)
+            return tileExist(tiles, posX, posY) && (*tiles)[posX][posY]->tilesetKey == tilesetKey;
+        else
+            return tileExist(tiles, posX, posY);
+    }
     
     std::string tilesetKey;
     Tileset* tileset;

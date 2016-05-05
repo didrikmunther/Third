@@ -50,13 +50,13 @@ void CTile::onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorT
 
 void CTile::updateIndex(std::map<int, std::map<int, CTile*>>* _tiles) {
     tileIndex = 0;
-    if(tileExist(_tiles, posX, posY-1) && (*_tiles)[posX][posY-1]->tilesetKey == tilesetKey)
+    if(tileBorders(_tiles, posX, posY-1))
         tileIndex += 1;
-    if(tileExist(_tiles, posX+1, posY) && (*_tiles)[posX+1][posY]->tilesetKey == tilesetKey)
+    if(tileBorders(_tiles, posX+1, posY))
         tileIndex += 2;
-    if(tileExist(_tiles, posX, posY+1) && (*_tiles)[posX][posY+1]->tilesetKey == tilesetKey)
+    if(tileBorders(_tiles, posX, posY+1))
         tileIndex += 4;
-    if(tileExist(_tiles, posX-1, posY) && (*_tiles)[posX-1][posY]->tilesetKey == tilesetKey)
+    if(tileBorders(_tiles, posX-1, posY))
         tileIndex += 8;
 }
 
