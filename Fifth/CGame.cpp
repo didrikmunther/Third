@@ -63,7 +63,7 @@ int CGame::onExecute() {
         _lastTime = now;
         
         while(_delta >= 1) {
-            if(_delta > 20)       // To make sure it doesn't freeze
+            if(_delta > 20)
                 instance.entityManager.particleCleanup();
             
             _handleKeyStates();
