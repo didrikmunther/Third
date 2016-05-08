@@ -68,16 +68,21 @@ function Movable:onLoop()
     
     self.hasWalkedX = false
     self.hasWalkedY = false
+    parent = self.parent
 
-    if(body.velX ~= 0 and self.parent.collisionSides.bottom) then
-        self.parent:setSprite(self.parent:getSpriteFromState("WALKING"))
+    parent:setSprite(parent:getSpriteFromState("IDLE"))
+    if(body.velY < 0) then parent:setSprite(parent:getSpriteFromState("ASCENDING"))
+    elseif(not parent.collisionSides.bottom) then parent:setSprite(parent:getSpriteFromState("DESCENDING")) end
+
+    if(body.velX ~= 0 and parent.collisionSides.bottom) then
+        parent:setSprite(parent:getSpriteFromState("WALKING"))
     end
 
     if(self.isFlying) then
-        self.parent:setSprite(self.parent:getSpriteFromState("FLYING"))
+        parent:setSprite(parent:getSpriteFromState("FLYING"))
     end
 
-    self.parent.angle = (body.velX / -self.angleFactor)
+    parent.angle = (body.velX / -self.angleFactor)
 
 end
 

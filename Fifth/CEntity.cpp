@@ -85,15 +85,7 @@ void CEntity::onLoop(CInstance* instance) {
             addProperty(EntityProperty::FLIP);
     }
     
-    setSprite(getSpriteFromState("IDLE"));
-    
-    if(body->velY < 0)
-        setSprite(getSpriteFromState("ASCENDING"));
-    else if(!collisionSides.bottom)
-        setSprite(getSpriteFromState("DESCENDING"));
-    
     isDead |= body->getY() > 50000 || body->getY() < -50000; // Kill entity if too far down or up
-    
     
     for(auto& i: components)
         i.second->onLoop(instance);
