@@ -62,21 +62,15 @@ int CGame::onExecute() {
         _delta += (now - _lastTime) / _ns;
         _lastTime = now;
         
-        while(_delta >= 1) {    // Todo implement variable time step instead of this laggy thing
-            if(_delta > 20) {       // To make sure it doesn't freeze
-                //NFile::log(LogType::WARNING, "Game exeeding delta limit (", 20, "), cleaning up particles.");
+        while(_delta >= 1) {
+            if(_delta > 20)       // To make sure it doesn't freeze
                 instance.entityManager.particleCleanup();
-            }
             
             _handleKeyStates();
             _onLoop();
             
             _updates++;
             _delta--;
-            
-            auto sayer = instance.entityManager.getEntity("n:bush");
-            if(sayer)
-                sayer->say(_title.str() + " Gravity: " + std::to_string(instance.gravity), "TESTFONT", ChatBubbleType::INSTANT_TALK);
         }
         
         _onRender();
@@ -87,6 +81,7 @@ int CGame::onExecute() {
             _timer += 1000;
             _title.str("");
             _title << _updates << " ups, " << _frames << " fps";
+            instance.window.setTitle(_title.str());
             _updates = 0;
             _frames = 0;
         }
@@ -250,6 +245,7 @@ void CGame::_initLua() {
             .addData("defaultSprite", &CEntity::defaultSprite)
             .addData("fpsFactor", &CEntity::fpsFactor)
             .addFunction("collision", (bool (CEntity::*)(Box)) &CEntity::coordinateCollision)
+            .addData("isTile", &CEntity::isTile)
         .endClass()
     
         .beginClass<CComponent>("Component")
@@ -370,6 +366,7 @@ void CGame::_initLua() {
             .addFunction("toggleRenderFlag", (void (CEntityManager::*)(int)) &CEntityManager::toggleRenderFlag)
             .addFunction("removeRenderFlag", (void (CEntityManager::*)(int)) &CEntityManager::removeRenderFlag)
             .addFunction("addRenderFlag", (void (CEntityManager::*)(int)) &CEntityManager::addRenderFlag)
+            .addFunction("tileExists", &CEntityManager::tileExists)
         .endClass()
     
         .beginClass<CollisionSides>("CollisionSides")
@@ -378,6 +375,10 @@ void CGame::_initLua() {
             .addData("bottom", &CollisionSides::bottom)
             .addData("right", &CollisionSides::right)
             .addData("left", &CollisionSides::left)
+        .endClass()
+    
+        .beginClass<CTile>("Tile")
+    
         .endClass();
     
     lua_getglobal(instance.L, "init");

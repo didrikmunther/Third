@@ -22,6 +22,8 @@ CTile::CTile(std::string tileset, int posX, int posY)
     , tileIndex(0)
     , invalid(false)
 {
+    isTile = true;
+    
     addProperty(EntityProperty::STATIC);
     if(!this->tileset)
         invalid = true;

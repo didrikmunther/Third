@@ -242,6 +242,23 @@ function Movable:toggleNoClip()
     end
 end
 
+function Movable:onCollision(target, sides)
+    if(not target.isTile) then do return end end
+    if(sides.top or sides.bottom) then do return end end
+
+    body = self.parent.body
+    tBody = target.body
+    eManager = self.parent.entityManager
+    tileSize = game.tileSize()
+
+    if(math.abs(tBody.box.y - (body.box.y + body.box.h)) <= tileSize and not eManager:tileExists(math.floor(tBody.box.x / tileSize), math.floor((tBody.box.y - tileSize) / tileSize))) then
+        tmpJumpPower = self.jumpPower
+        self.jumpPower = 10
+        self:jump()
+        self.jumpPower = tmpJumpPower
+    end
+end
+
 function create(parent, component)
     return Movable(parent, component)
 end

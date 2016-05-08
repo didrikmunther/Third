@@ -9,6 +9,7 @@
 #include "CInstance.h"
 #include "NFile.h"
 #include "CAssetManager.h"
+#include "CTile.h"
 
 
 CInstance::CInstance(CGame* game)

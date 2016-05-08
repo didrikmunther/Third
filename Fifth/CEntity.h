@@ -178,6 +178,8 @@ public:
         return this;
     }
     
+    bool isTile;
+    
 protected:
     void _cleanUpTextVector();
     void _cleanUpComponents();

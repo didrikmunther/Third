@@ -38,6 +38,7 @@ class CTile : public CEntity {
 public:
     CTile(std::string tileset, int posX, int posY);
     
+    void onLoop();
     void onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags);
     void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance);
     

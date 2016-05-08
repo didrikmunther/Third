@@ -47,6 +47,7 @@ void CEntity::init() {
     transparency = 255;
     angle = 0;
     fpsFactor = 1;
+    isTile = false;
 }
 
 void CEntity::_cleanUpTextVector() {
@@ -461,20 +462,19 @@ bool CEntity::_collision(int x, int y, std::vector<CEntity*>* entities) {
         collisionSides |= tmpCollisionSides;
     }
     
-    if(colliding) {
-//        std::string toWrite = "";           // Write where the entity is colliding
-//        if(collisionTop)
-//            toWrite += "Top, ";
-//        if(collisionBottom)
-//            toWrite += "Bot, ";
-//        if(collisionLeft)
-//            toWrite += "Left, ";
-//        if(collisionRight)
-//            toWrite += "Right, ";
-//        say(toWrite, "TESTFONT", ChatBubbleType::INSTANT_TALK);
-        return true;
-    } else
-        return false;
+    if(colliding && DEBUG) {
+        std::string toWrite = "";           // Write where the entity is colliding
+        if(collisionSides.top)
+            toWrite += "Top, ";
+        if(collisionSides.bottom)
+            toWrite += "Bot, ";
+        if(collisionSides.left)
+            toWrite += "Left, ";
+        if(collisionSides.right)
+            toWrite += "Right, ";
+        say(toWrite, "TESTFONT", ChatBubbleType::INSTANT_TALK);
+    }
+    return colliding;
 }
 
 void CEntity::move(std::vector<CEntity*>* entities, CInstance* instance) {

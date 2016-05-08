@@ -171,6 +171,12 @@ void CEntityManager::toggleRenderFlag(RenderFlags renderFlag) {
     renderFlags ^= (int)renderFlag;
 }
 
+CTile* CEntityManager::tileExists(int posX, int posY) {
+    if(CTile::tileExist(&_tiles, posX, posY))
+        return _tiles[posX][posY];
+    return nullptr;
+}
+
 void CEntityManager::onRender(CWindow* window, CCamera* camera) {
     
     for(auto &i: _backgrounds) {

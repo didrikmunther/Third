@@ -84,6 +84,8 @@ public:
     void removeRenderFlag(int renderFlag) { removeRenderFlag((RenderFlags)renderFlag); }
     void toggleRenderFlag(int renderFlag) { toggleRenderFlag((RenderFlags)renderFlag); }
     
+    CTile* tileExists(int posX, int posY);
+    
 private:
     std::map<std::string, CEntity*> _entities;
     std::vector<CEntity*> _particles;
