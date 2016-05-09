@@ -44,6 +44,33 @@ local BuilderController = class (
     end
 )
 
+function BuilderController:perlinMap()
+    size = 5
+    tileSize = game.tileSize()
+
+    sX = 200
+    sY = 100
+
+    for i=1,sX do
+        for j=1,sY do
+            local x = noise(i/10, j/10, 0.00001)
+            x = x * j * 0.1
+
+            sum = math.abs(math.floor(x*255))
+            tilset = "dirt"
+            if(sum > 70) then
+                if(sum > 220) then
+                    self.parent.entityManager:addTile(i*tileSize, j*tileSize, "stone")
+                else
+                    self.parent.entityManager:addTile(i*tileSize, j*tileSize, "dirt")
+                end
+            end
+
+        end
+    end
+
+end
+
 function BuilderController:onComponentAdd(comp)
     if(comp == "Standard/ChatController") then
         chatController = self.parent:getComponent(comp)

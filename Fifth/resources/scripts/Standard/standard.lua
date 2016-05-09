@@ -414,6 +414,7 @@ function toKeyCode(code)
 end
 
 json = nil
+perlin = nil
 
 function init(path)
     game:setLuaPath(path)
@@ -427,8 +428,9 @@ function requireModule(path, mod)
     return toReturn
 end
 
-function initJson()
+function initPackages()
     _G.json = requireModule("json.lua", "json")
+    _G.perlin = requireModule("perlin.lua", "perlin")
 end
 
 function getVal(var, val)

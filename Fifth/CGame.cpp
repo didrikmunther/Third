@@ -385,7 +385,7 @@ void CGame::_initLua() {
     lua_pushstring(instance.L, (_path + "/resources/scripts/Standard/").c_str());
     lua_call(instance.L, 1, 0);
     
-    lua_getglobal(instance.L, "initJson");
+    lua_getglobal(instance.L, "initPackages");
     lua_call(instance.L, 0, 0);
 }
 
