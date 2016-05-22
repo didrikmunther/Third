@@ -14,6 +14,8 @@
 #include "NSurface.h"
 
 
+bool CTile::TILE_BG_BORDERS = false;
+
 CTile::CTile(std::string tileset, int posX, int posY)
     : CEntity(Box{posX * TILE_SIZE, posY * TILE_SIZE, TILE_SIZE, TILE_SIZE}, "")
     , tileset(CAssetManager::getTileset(tileset))

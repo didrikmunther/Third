@@ -62,7 +62,7 @@ CSpriteSheet* CAssetManager::addSpriteSheet(std::string name, SDL_Renderer* rend
         return _SpriteSheets[name];
     } else {
         CSpriteSheet* temp = new CSpriteSheet();
-        if(!temp->openFile(renderer, fileName)) {
+        if(temp->openFile(renderer, fileName) != 0) {
             NFile::log(LogType::WARNING, "Couldn't add spritesheet: \"", name, "\", could not open file \"", fileName, "\".");
             return nullptr;
         } else {
@@ -118,74 +118,32 @@ Tileset* CAssetManager::addTileset(std::string name, Tileset* tileSet) {
 }
 
 CSprite* CAssetManager::getSprite(std::string key) {
-    auto it = _Sprites.find(key);
-    if(it == _Sprites.end())
-        return nullptr;
-    else
-        return it->second;
+    return _get(key, &_Sprites);
 }
 
 CSpriteSheet* CAssetManager::getSpriteSheet(std::string key) {
-    auto it = _SpriteSheets.find(key);
-    if(it == _SpriteSheets.end())
-        return nullptr;
-    else
-        return it->second;
+    return _get(key, &_SpriteSheets);
 }
 
 TTF_Font* CAssetManager::getFont(std::string key) {
-    auto it = _Fonts.find(key);
-    if(it == _Fonts.end())
-        return nullptr;
-    else
-        return it->second;
+    return _get(key, &_Fonts);
 }
 
 Tileset* CAssetManager::getTileset(std::string key) {
-    auto it = _Tilesets.find(key);
-    if(it == _Tilesets.end())
-        return nullptr;
-    else
-        return it->second;
+    return _get(key, &_Tilesets);
 }
 
 CLuaScript* CAssetManager::getLuaScript(std::string key) {
-    auto it = _LuaScripts.find(key);
-    if(it == _LuaScripts.end())
-        return nullptr;
-    else
-        return it->second;
+    return _get(key, &_LuaScripts);
 }
 
 void CAssetManager::onCleanup(CLEAN_FLAGS flags /* = CLEAN_FLAGS::EVERYTHING */) {
     
     NFile::log(LogType::ALERT, "Unloading assets!");
     
-    {
-        auto i = _Sprites.begin();
-        while(i != _Sprites.end()) {
-            delete i->second;
-            i->second = nullptr;
-            _Sprites.erase(i++->first);
-        }
-        _Sprites.clear();
-    }
-    
-    {
-        std::string toWrite = "";
-        auto i = _SpriteSheets.begin();
-        while(i != _SpriteSheets.end()) {
-            i->second->onCleanup();
-            delete i->second;
-            i->second = nullptr;
-            toWrite += "\"" + i->first + "\", ";
-            _SpriteSheets.erase(i++->first);
-        }
-        _SpriteSheets.clear();
-        
-        if(toWrite != "")
-            NFile::log(LogType::SUCCESS, "Unloaded assets: ", toWrite);
-    }
+    _cleanup(&_Sprites, false);
+    _cleanup(&_SpriteSheets);
+    _cleanup(&_Tilesets);
     
     {
         std::string toWrite = "";
@@ -200,30 +158,8 @@ void CAssetManager::onCleanup(CLEAN_FLAGS flags /* = CLEAN_FLAGS::EVERYTHING */)
             NFile::log(LogType::SUCCESS, "Unloaded assets: ", toWrite);
     }
     
-    {
-        std::string toWrite = "";
-        auto i = _Tilesets.begin();
-        while(i != _Tilesets.end()) {
-            toWrite += "\"" + i->first + "\", ";
-            delete i->second;
-            _Tilesets.erase(i++->first);
-        }
-        _Tilesets.clear();
-        if(toWrite != "")
-            NFile::log(LogType::SUCCESS, "Unloaded assets: ", toWrite);
-    }
-    
     if(!(flags & CLEAN_FLAGS::NOT_LUA_SCRIPTS)) {
-        std::string toWrite = "";
-        auto i = _LuaScripts.begin();
-        while(i != _LuaScripts.end()) {
-            toWrite += "\"" + i->first + "\", ";
-            delete i->second;
-            _LuaScripts.erase(i++->first);
-        }
-        _LuaScripts.clear();
-        if(toWrite != "")
-            NFile::log(LogType::SUCCESS, "Unloaded scripts: ", toWrite);
+        _cleanup(&_LuaScripts);
     }
     
 }

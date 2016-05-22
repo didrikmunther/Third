@@ -32,6 +32,7 @@ public:
     Box* getSource() { return &_source; }
     
     virtual void onRender(CEntity* entity, Box destination, bool flip, int angle, int alpha, CWindow* window, CCamera* camera, RenderFlags renderFlags);
+    void onCleanup() {  }
     
 protected:
     CSpriteSheet* _spriteSheet; // Don't modify from here

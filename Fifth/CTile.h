@@ -31,6 +31,8 @@ struct Tileset {
         else
             return "";
     }
+    
+    void onCleanup() {  }
 };
 
 class CTile : public CEntity {
@@ -46,6 +48,8 @@ public:
     void updateAdjecent(std::map<int, std::map<int, CTile*>>* _tiles);
     
     int posX, posY;
+    
+    static bool TILE_BG_BORDERS;
     
     static inline bool tileExist(std::map<int, std::map<int, CTile*>>* tiles, int posX, int posY) {
         return tiles->find(posX) != tiles->end() && (*tiles)[posX].find(posY) != (*tiles)[posX].end();

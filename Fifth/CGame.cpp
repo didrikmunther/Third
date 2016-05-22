@@ -21,6 +21,7 @@
 #include "CCombatText.h"
 #include "CAssetManager.h"
 #include "CAnimation.h"
+#include "CTile.h"
 
 #include "NMouse.h"
 #include "NSurface.h"

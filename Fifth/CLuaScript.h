@@ -40,6 +40,8 @@ public:
     std::string getPath();
     std::string getName();
     
+    void onCleanup() {  }
+    
     bool isInvalid() { return _isInvalid; }
     
 private:

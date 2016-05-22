@@ -15,9 +15,9 @@
 #include <SDL2_ttf/SDL_ttf.h>
 
 #include "CSprite.h"
+#include "NFile.h"
 
 
-class CSpriteContainer;
 class CLuaScript;
 class lua_State;
 
@@ -36,7 +36,6 @@ public:
     static CSprite* addSprite(std::string name, std::string spriteSheetKey, Box source);
     static std::string addSprite(CSprite* sprite, std::string name = "");
     static CSprite* createSprite(CSpriteSheet* spriteSheet, Box source);
-    static std::string addSpriteContainer(CSpriteContainer* spriteContainer, std::string name = "");
     static CSpriteSheet* addSpriteSheet(std::string name, SDL_Renderer* renderer, std::string fileName);
     static TTF_Font* addFont(std::string name, std::string fileName, int size);
     static CLuaScript* addLuaScript(lua_State* L, std::string path);
@@ -48,8 +47,6 @@ public:
     static CLuaScript* getLuaScript(std::string key);
     static Tileset* getTileset(std::string key);
     
-    static void removeSpriteContainer(std::string key);
-    
     static void onCleanup(CLEAN_FLAGS flags = CLEAN_FLAGS::EVERYTHING);
     
 private:
@@ -59,6 +56,32 @@ private:
     static std::map<std::string, CLuaScript*> _LuaScripts;
     static std::map<std::string, Tileset*> _Tilesets;
     static int _assetId;
+    
+    template<typename T>
+    static T _get(std::string key, std::map<std::string, T>* m) {
+        auto it = m->find(key);
+        if(it == m->end())
+            return nullptr;
+        else
+            return it->second;
+    }
+    
+    template<typename T>
+    static void _cleanup(std::map<std::string, T>* m, bool log = true) {
+        std::string toWrite = "";
+        auto i = m->begin();
+        while(i != m->end()) {
+            i->second->onCleanup();
+            delete i->second;
+            toWrite += "\"" + i->first + "\", ";
+            m->erase(i++->first);
+        }
+        m->clear();
+        
+        if(toWrite != "" && log)
+            NFile::log(LogType::SUCCESS, "Unloaded assets: ", toWrite);
+        
+    }
     
 };
 
