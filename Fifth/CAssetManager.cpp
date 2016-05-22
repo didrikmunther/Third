@@ -18,10 +18,9 @@ std::map<std::string, CSpriteSheet*> CAssetManager::_SpriteSheets;
 std::map<std::string, TTF_Font*> CAssetManager::_Fonts;
 std::map<std::string, CLuaScript*> CAssetManager::_LuaScripts;
 std::map<std::string, Tileset*> CAssetManager::_Tilesets;
+std::map<std::string, CMusic*> CAssetManager::_Music;
+std::map<std::string, CSound*> CAssetManager::_Sounds;
 int CAssetManager::_assetId = 0;
-
-CAssetManager::CAssetManager() { }
-
 
 CSprite* CAssetManager::addSprite(std::string name, std::string spriteSheetKey, Box source) {
     if(_Sprites.find(name) != _Sprites.end()) {
@@ -117,6 +116,46 @@ Tileset* CAssetManager::addTileset(std::string name, Tileset* tileSet) {
     }
 }
 
+CMusic* CAssetManager::addMusic(std::string name, std::string fileName) {
+    fileName = "resources/mixer/" + fileName;
+    if(_Music.find(name) != _Music.end()) {
+        NFile::log(LogType::WARNING, "Couldn't add music: \"", name, "\", because it already exists");
+        return _Music[name];
+    } else {
+        CMusic* music = new CMusic();
+        music->loadMusic(fileName);
+        if(music->music == nullptr) {
+            NFile::log(LogType::WARNING, "Couldn't add music: \"", name, "\", could not open file \"", fileName, "\".");
+            delete music;
+            return nullptr;
+        } else {
+            NFile::log(LogType::SUCCESS, "Added music: \"", name, "\".");
+            _Music[name] = music;
+            return music;
+        }
+    }
+}
+
+CSound* CAssetManager::addSound(std::string name, std::string fileName) {
+    fileName = "resources/mixer/" + fileName;
+    if(_Music.find(name) != _Music.end()) {
+        NFile::log(LogType::WARNING, "Couldn't add sound: \"", name, "\", because it already exists");
+        return _Sounds[name];
+    } else {
+        CSound* sound = new CSound();
+        sound->loadSound(fileName);
+        if(sound->sound == nullptr) {
+            NFile::log(LogType::WARNING, "Couldn't add sound: \"", name, "\", could not open file \"", fileName, "\".");
+            delete sound;
+            return nullptr;
+        } else {
+            NFile::log(LogType::SUCCESS, "Added sound: \"", name, "\".");
+            _Sounds[name] = sound;
+            return sound;
+        }
+    }
+}
+
 CSprite* CAssetManager::getSprite(std::string key) {
     return _get(key, &_Sprites);
 }
@@ -137,6 +176,35 @@ CLuaScript* CAssetManager::getLuaScript(std::string key) {
     return _get(key, &_LuaScripts);
 }
 
+int CAssetManager::playMusic(std::string key, int loops /* = -1 */) {
+    auto music = _get(key, &_Music);
+    if(music == nullptr) return -1;
+    
+    music->playMusic(loops);
+    
+    return 0;
+}
+
+int CAssetManager::playSound(std::string key, int loops /* = 0 */) {
+    auto sound = _get(key, &_Sounds);
+    if(sound == nullptr) return -1;
+    
+    int i = 0;
+    for(; i <= CHANNELS; i++) {
+        if(!Mix_Playing(i))
+            break;
+    }
+    if(i == CHANNELS) {
+        i = 0;
+        Mix_HaltChannel(0); // todo: stop the sound that was started farthest back
+    }
+//    std::cout << i << "\n";
+    
+    sound->playSound(i, loops);
+    
+    return 0;
+}
+
 void CAssetManager::onCleanup(CLEAN_FLAGS flags /* = CLEAN_FLAGS::EVERYTHING */) {
     
     NFile::log(LogType::ALERT, "Unloading assets!");
@@ -144,6 +212,8 @@ void CAssetManager::onCleanup(CLEAN_FLAGS flags /* = CLEAN_FLAGS::EVERYTHING */)
     _cleanup(&_Sprites, false);
     _cleanup(&_SpriteSheets);
     _cleanup(&_Tilesets);
+    _cleanup(&_Music);
+    _cleanup(&_Sounds);
     
     {
         std::string toWrite = "";

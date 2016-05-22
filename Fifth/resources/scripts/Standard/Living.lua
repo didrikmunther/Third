@@ -110,6 +110,8 @@ function Living:damage(amount, damager)
         v:onLivingDamage(damageDone)
     end
 
+    game.playSound("hurt", 0)
+
     return damageDone
 
 end

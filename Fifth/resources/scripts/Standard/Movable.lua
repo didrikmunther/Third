@@ -221,13 +221,16 @@ function Movable:doJump()
     if(body.velY < -self.jumpPower) then
         body.velY = -self.jumpPower
     end
+
+    if(not self.parent.collisionSides.top) then
+        --game.playSound("jump", 0) -- buggy
+    end
 end
 
 function Movable:jump()
 	if(self.parent.collisionSides.bottom) then
         self:doJump()
     end
-
 end
 
 function Movable:toggleNoClip()

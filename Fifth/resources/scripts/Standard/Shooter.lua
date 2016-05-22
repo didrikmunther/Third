@@ -16,6 +16,8 @@ function Shooter:shoot()
         thisY = box.y
         thisW = box.w
 
+        game.playSound("shoot", 0)
+
         for i = 0, 0 do
             spawnX = thisX + thisW - 10
             spawnY = thisY + 68
@@ -41,7 +43,6 @@ function Shooter:shoot()
 
             bBody.velX = bBody.velX + tBody.velX
             bBody.velY = bBody.velY + tBody.velY
-
         end
     end
 end

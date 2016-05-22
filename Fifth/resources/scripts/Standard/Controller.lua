@@ -18,6 +18,8 @@ function Controller:onInit()
     self.component.instance:loadAssets("testMap2.map")
     self.component.instance:loadAssets("testMap1.map")
 
+    game.playMusic("bgMusic", -1)
+
     --self.component.instance:loadLevel("testlevel.lvl")
 end
 

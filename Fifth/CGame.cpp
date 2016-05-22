@@ -117,6 +117,13 @@ int CGame::_onInit() {
         return -1;
     }
     
+    if(Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) {
+        NFile::log(LogType::ERROR, "Mix_OpenAudio failed: ", SDL_GetError());
+        return -1;
+    }
+    Mix_AllocateChannels(CHANNELS);
+    Mix_Volume(-1, MIX_MAX_VOLUME / 2.0f);
+    
     if(instance.window.onInit(_intro, SCREEN_WIDTH, SCREEN_HEIGHT)) {
         NFile::log(LogType::ERROR, "Window initialization failed!");
         return -1;
@@ -138,6 +145,11 @@ void CGame::_restart() {
     
     instance.L = luaL_newstate();
     _initLua();
+    
+    CAssetManager::addSound("hurt", "Standard/hurt.wav"); // temp
+    CAssetManager::addSound("shoot", "Standard/shoot.wav"); // temp
+    CAssetManager::addSound("jump", "Standard/jump.wav"); // temp
+    CAssetManager::addMusic("bgMusic", "Standard/GameTrack-12 v0.2.mp3"); // temp
 
     auto controller = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Controller.lua");
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
@@ -202,6 +214,8 @@ void CGame::_initLua() {
             .addFunction("getScreenHeight", &CGame::getHeight)
             .addFunction("addSprite", (std::string (*)(CSprite*, std::string)) &CAssetManager::addSprite)
             .addFunction("createSprite", (CSprite* (*)(CSpriteSheet*, Box)) &CAssetManager::createSprite)
+            .addFunction("playMusic", &CAssetManager::playMusic)
+            .addFunction("playSound", &CAssetManager::playSound)
             .addFunction("log", (void (*)(int, std::string)) &NFile::log)
             .addFunction("writeToFile", (void (*)(std::string, std::string)) &NFile::luaWriteToFile)
             .addFunction("readFile", &NFile::readFromFile)

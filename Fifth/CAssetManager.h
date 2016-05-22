@@ -16,6 +16,8 @@
 
 #include "CSprite.h"
 #include "NFile.h"
+#include "CMusic.h"
+#include "CSound.h"
 
 
 class CLuaScript;
@@ -31,8 +33,6 @@ enum CLEAN_FLAGS {
 class CAssetManager {
     
 public:
-    CAssetManager();
-    
     static CSprite* addSprite(std::string name, std::string spriteSheetKey, Box source);
     static std::string addSprite(CSprite* sprite, std::string name = "");
     static CSprite* createSprite(CSpriteSheet* spriteSheet, Box source);
@@ -40,12 +40,17 @@ public:
     static TTF_Font* addFont(std::string name, std::string fileName, int size);
     static CLuaScript* addLuaScript(lua_State* L, std::string path);
     static Tileset* addTileset(std::string name, Tileset* tileset);
+    static CMusic* addMusic(std::string name, std::string fileName);
+    static CSound* addSound(std::string name, std::string fileName);
     
     static CSprite* getSprite(std::string key);
     static CSpriteSheet* getSpriteSheet(std::string key);
     static TTF_Font* getFont(std::string key);
     static CLuaScript* getLuaScript(std::string key);
     static Tileset* getTileset(std::string key);
+    
+    static int playMusic(std::string key, int loops = -1);
+    static int playSound(std::string key, int loops = 0);
     
     static void onCleanup(CLEAN_FLAGS flags = CLEAN_FLAGS::EVERYTHING);
     
@@ -55,6 +60,8 @@ private:
     static std::map<std::string, TTF_Font*> _Fonts;
     static std::map<std::string, CLuaScript*> _LuaScripts;
     static std::map<std::string, Tileset*> _Tilesets;
+    static std::map<std::string, CMusic*> _Music;
+    static std::map<std::string, CSound*> _Sounds;
     static int _assetId;
     
     template<typename T>

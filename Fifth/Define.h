@@ -13,12 +13,15 @@
 #ifndef __Third__Define__
 #define __Third__Define__
 
-const bool DEBUG                = false;
 const int GAME_INTERVAL         = 60;
+const bool DEBUG                = false;
 
 const int SCREEN_WIDTH          = 1440;
 const int SCREEN_HEIGHT         = 900;
 const int SCREEN_BPP            = 32;
+
+const bool PLAY_MUSIC           = true;
+const int CHANNELS              = 128;
 
 const int TILE_SIZE             = 32;
 
