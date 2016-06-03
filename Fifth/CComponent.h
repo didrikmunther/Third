@@ -77,7 +77,10 @@ public:
     void renderRect(int x, int y, int w, int h, int r, int g, int b, int a); // These are only supposed to be called during an rendering process
     void renderSprite(int x, int y, int w, int h, std::string key, int a, bool flipHorizontal, bool flipVertical);
     void renderLine(int x, int y, int x2, int y2, int r, int g, int b, int a);
-    void renderText(int x, int y, int size, std::string text, std::string fontKey, int r, int g, int b);
+    void renderFilledTriangle(int x1, int y1, int x2, int y2, int x3, int y3, Color color);
+    void renderText(int x, int y, int size, std::string text, std::string fontKey, Color color);
+    
+    Triangle tempTriangle;
     
     // ==
     

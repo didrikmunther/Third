@@ -12,6 +12,7 @@
 
 #include <SDL2_image/SDL_image.h>
 #include <SDL2_ttf/SDL_ttf.h>
+#include "SDL2_gfxPrimitives.h"
 
 #include "Define.h"
 #include "CGame.h"
@@ -264,6 +265,7 @@ void CGame::_initLua() {
             .addFunction("renderRect", &CComponent::renderRect)
             .addFunction("renderSprite", &CComponent::renderSprite)
             .addFunction("renderLine", &CComponent::renderLine)
+            .addFunction("renderFilledTriangle", &CComponent::renderFilledTriangle)
             .addFunction("renderText", &CComponent::renderText)
             .addFunction("addString", &CComponent::addString)
             .addFunction("addInt", &CComponent::addInt)
@@ -417,6 +419,8 @@ void CGame::_onRender() {
     SDL_RenderClear(instance.window.getRenderer());
     
     instance.entityManager.onRender(&instance.window, instance.camera);
+    
+    NSurface::renderFilledTriangle({0, 0}, {100, (getTime() / 10) % 100}, {100, 100}, Color(255, 0, 0, 255), instance.window.getRenderer());
     
     SDL_RenderPresent(instance.window.getRenderer());
 }

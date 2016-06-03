@@ -183,7 +183,7 @@ function ChatController:onRenderAdditional()
         x = x + 5
         y = y + 6
 
-        self.component:renderText(x, y, 1, self.buffer, "TESTFONT", 255, 255, 255)
+        self.component:renderText(x, y, 1, self.buffer, "TESTFONT", Color(255, 255, 255, 255))
         self.width = self.initWidth + (14 * string.len(self.buffer))
     end
 

@@ -21,6 +21,7 @@ CComponent::CComponent(CEntity* parent, CInstance* instance, CLuaScript* script)
     , tempRenderflags(nullptr)
     , tempValue(nullptr)
     , tempAlloc(nullptr)
+    , tempTriangle(Line(0, 0, 0, 0), Line(0, 0, 0, 0), Line(0, 0, 0, 0))
 {
 }
 
@@ -206,11 +207,18 @@ void CComponent::renderLine(int x, int y, int x2, int y2, int r, int g, int b, i
     NSurface::renderLine(Line(x, y, x2, y2, Color(r, g, b, a)), tempWindow->getRenderer(), tempCamera);
 }
 
-void CComponent::renderText(int x, int y, int size, std::string text, std::string fontKey, int r, int g, int b) {
+void CComponent::renderFilledTriangle(int x1, int y1, int x2, int y2, int x3, int y3, Color color) {
     if(tempCamera == nullptr || tempWindow == nullptr)
         return;
     
-    CText textObj(text, size, fontKey, Color(r, b, g));
+    NSurface::renderFilledTriangle(Position(x1, y1), Position(x2, y2), Position(x3, y3), color, tempWindow->getRenderer(), tempCamera);
+}
+
+void CComponent::renderText(int x, int y, int size, std::string text, std::string fontKey, Color color) {
+    if(tempCamera == nullptr || tempWindow == nullptr)
+        return;
+    
+    CText textObj(text, size, fontKey, color);
     NSurface::renderText(x, y, &textObj, tempWindow, size);
 }
 

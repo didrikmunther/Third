@@ -33,8 +33,8 @@ function BinderController:loadBinds(file)
         end
     end
 
-    if(decoded["commands"]) then
-        for k,v in pairs(decoded["commands"]) do
+    if(decoded["commandbinds"]) then
+        for k,v in pairs(decoded["commandbinds"]) do
             for k2,v2 in pairs(v) do
                 self.commands[KeyCode[k2]] = v2
             end

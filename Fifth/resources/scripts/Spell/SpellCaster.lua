@@ -6,31 +6,47 @@ local SpellCaster = class(
 		self.component = component
                           
         self.chatCtrl = nil
+                          
+        self.triangleTemplates = {
+            {0.5, 0, 1, 0, 1},
+            {1, 0, 1, 0.5, 2},
+            {1, 0.5, 1, 1, 2},
+            {1, 1, 0.5, 1, -1},
+            {0.5, 1, 0, 1, -1},
+            {0, 1, 0, 0.5, -2},
+            {0, 0.5, 0, 0, -2},
+            {0, 0, 0.5, 0, 1}
+        }
 
         self.SPELL_BEGIN_TIME = 1
         self.SPELL_DURATION_TIME = 2
         self.SPELL_COOLDOWN_TIME = 3
         self.SPELL_SPELL = 4
-        self.SPELL_IS_CASTING = 5
-        self.SPELL_IS_COOLDOWN = 6
-        self.SPELL_ICON = 7
+        self.SPELL_COMMANDS = 5
+        self.SPELL_IS_CASTING = 6
+        self.SPELL_IS_COOLDOWN = 7
+        self.SPELL_ICON = 8
                           
-        self.spells = {} -- {beginTime, durationTime, cooldownTime, spell, isCasting, isCooldown, icon} -- icon: string (sprite name)
+        self.spells = {} -- {beginTime, durationTime, cooldownTime, spell, commands, isCasting, isCooldown, icon} -- icon: string (sprite name)
 
 	end
 )
 
 function SpellCaster:onInit()
-    self:addSpell("Spell/SpellHeal", 500, 3000, "frog")
+    self:addSpell("Spell/SpellHeal", {}, 500, 3000, "frog", 1)
+    self:addSpell("Spell/SpellHeal", {}, 500, 3000, "frog", 2)
+    self:addSpell("Spell/SpellHeal", {}, 500, 3000, "frog", 3)
+    self:addSpell("Spell/SpellHeal", {}, 500, 3000, "frog", 4)
+    self:addSpell("Spell/SpellHeal", {}, 500, 3000, "frog", 5)
 end
 
-function SpellCaster:addSpell(spellName, durationTime, cooldownTime, icon)
+function SpellCaster:addSpell(spellName, commands, durationTime, cooldownTime, icon, spellIndex)
     script = game.getScript(spellName)
     if(script == nil) then do return end end
 
     spell = script:getCreationFunction()(self.parent, self.component)
 
-    table.insert(self.spells, {0, durationTime, cooldownTime, spell, false, false, icon})
+    self.spells[spellIndex] = {0, durationTime, cooldownTime, spell, commands, false, false, icon}
 end
 
 function SpellCaster:removeSpell(spellIndex)
@@ -67,7 +83,7 @@ function SpellCaster:onLoop()
             durationTime = v[self.SPELL_DURATION_TIME]
             time = game.getTime()
             
-            v[self.SPELL_SPELL]:onLoop()
+            v[self.SPELL_SPELL]:onLoop(v[self.SPELL_COMMANDS])
 
             if(time - beginTime > durationTime) then
                 v[self.SPELL_IS_CASTING] = false
@@ -90,11 +106,20 @@ function SpellCaster:onRender()
 end
 
 function SpellCaster:onRenderAdditional()
+    for k,v in pairs(self.spells) do
+        if(v[self.SPELL_IS_CASTING]) then
+            func = v[self.SPELL_SPELL].onRenderAdditional
+            if(func) then func() end
+        end
+    end
+    
+    if(not instance.player:compare(self.parent)) then do return end end
+
     sW = game.getScreenWidth()
     sH = game.getScreenHeight()
 
     numberOfSpells = 10
-    spellIconPadding = 2
+    spellIconPadding = 4
     spellIconSize = 64 + spellIconPadding * 2
     spellIconMargin = 2
     spellBarW = numberOfSpells * spellIconSize + numberOfSpells * spellIconMargin + spellIconMargin
@@ -104,25 +129,51 @@ function SpellCaster:onRenderAdditional()
 
     component = self.component
     spells = self.spells
-    for i = 0,10 do
-        component:renderRect(spellBarX + spellIconSize * i + spellIconMargin * i, spellBarY, spellIconSize, spellIconSize, 150, 150, 150, 150)
+    for i = 1,10 do
+        x = spellBarX + spellIconSize * i + spellIconMargin * i
+        y = spellBarY
         
-        spell = self.spells[i+1]
+        component:renderRect(x, y, spellIconSize, spellIconSize, 150, 150, 150, 150)
+        
+        spell = self.spells[i]
         if(spell) then
-            component:renderRect(spellBarX + spellIconSize * i + spellIconMargin * i, spellBarY, spellIconSize, spellIconSize, 255, 255, 255, 50)
+            component:renderRect(x, y, spellIconSize, spellIconSize, 255, 255, 255, 50)
             
-            spriteTransparency = 255
+            spriteTransparency = 150
             if(spell[self.SPELL_IS_CASTING]) then
-                component:renderRect(spellBarX + spellIconSize * i + spellIconMargin * i, spellBarY, spellIconSize, spellIconSize, 0, 150, 0, 150)
+                component:renderRect(x, y, spellIconSize, spellIconSize, 255, 255, 255, 50)
+                
+                time = game.getTime();
+                beginTime = spell[self.SPELL_BEGIN_TIME]
+                durationTime = spell[self.SPELL_DURATION_TIME]
+                percent =  (time - beginTime) / durationTime
+                
+                component:renderRect(x, y - (spellIconSize * percent - spellIconSize) + 1, spellIconSize, spellIconSize * percent, 0, 150, 0, 150)
+                spriteTransparency = 255
+                
             elseif(spell[self.SPELL_IS_COOLDOWN]) then
-                component:renderRect(spellBarX + spellIconSize * i + spellIconMargin * i, spellBarY, spellIconSize, spellIconSize, 150, 0, 0, 150)
-                spriteTransparency = 150
+            
+                time = game.getTime()
+                beginTime = spell[self.SPELL_BEGIN_TIME]
+                durationTime = spell[self.SPELL_DURATION_TIME]
+                cooldownTime = spell[self.SPELL_COOLDOWN_TIME]
+                timePassed = time - (beginTime + durationTime)
+                percent = (cooldownTime - timePassed) / cooldownTime
+            
+                component:renderRect(x, y - (spellIconSize * percent - spellIconSize) + 1, spellIconSize, spellIconSize * percent, 150, 0, 0, 150)
+                spriteTransparency = 50
             end
             
             if(spell[self.SPELL_ICON]) then
-                component:renderSprite(spellBarX + spellIconSize * i + spellIconMargin * i + spellIconPadding, spellBarY + spellIconPadding, spellIconSize - spellIconPadding * 2, spellIconSize - spellIconPadding * 2, spell[self.SPELL_ICON], spriteTransparency, false, false)
+                component:renderSprite(x + spellIconPadding, y + spellIconPadding, spellIconSize - spellIconPadding * 2, spellIconSize - spellIconPadding * 2, spell[self.SPELL_ICON], spriteTransparency, false, false)
             end
         end
+        
+        xOffset = x + spellIconSize - spellIconPadding * 2 - 14
+        yOffset = y + spellIconSize - spellIconPadding * 2 - 24
+        if(i >= 10) then xOffset = xOffset - 15 end
+        
+        component:renderText(xOffset, yOffset, 1, tostring(i % 10), "TESTFONT", Color(255, 255, 255, 200))
     end
 
 

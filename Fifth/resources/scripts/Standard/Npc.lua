@@ -124,6 +124,17 @@ function Npc:onLoop()
             end
         end
     end
+
+    spellCaster = self.parent:getComponent("Spell/SpellCaster")
+    if(spellCaster) then
+        living = self.parent:getComponent("Standard/Living")
+        if(living) then
+            if(living.values[living.VALUE_HEALTH] < living.maxValues[living.VALUE_HEALTH]) then
+                spellCaster:cast(1)
+            end
+        end
+    end
+
 end
 
 function Npc:onCollision(target, sides)

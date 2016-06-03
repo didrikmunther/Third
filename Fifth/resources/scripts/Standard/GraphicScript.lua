@@ -86,7 +86,7 @@ function GraphicScript:onRender()
         name = self.targetedScript:getName()
     end
 
-    self.component:renderText(box.x - camera:offsetX(), box.y + box.h + 2 - camera:offsetY(), 1, name, "TESTFONT", 255, 255, 255)
+    self.component:renderText(box.x - camera:offsetX(), box.y + box.h + 2 - camera:offsetY(), 1, name, "TESTFONT", Color(255, 255, 255, 255))
 end
 
 function create(parent, component)

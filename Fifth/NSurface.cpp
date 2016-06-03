@@ -14,12 +14,16 @@
 #include "CCamera.h"
 
 
-Triangle Triangle::normalizeWithCamera(CCamera* camera) {
-    return Triangle{a.normalizeWithCamera(camera), b.normalizeWithCamera(camera), c.normalizeWithCamera(camera)};
+Triangle Triangle::fixCamera(CCamera* camera) {
+    return Triangle{a.fixCamera(camera), b.fixCamera(camera), c.fixCamera(camera)};
 }
 
-Line Line::normalizeWithCamera(CCamera* camera) {
+Line Line::fixCamera(CCamera* camera) {
     return Line{x - camera->offsetX(), y - camera->offsetY(), x2 - camera->offsetX(), y2 - camera->offsetY(), color};
+}
+
+int NSurface::crossProduct(Position v1, Position v2) {
+    return v1.x * v2.y - v2.x * v1.y;
 }
 
 void NSurface::renderRect(int x, int y, int w, int h, CWindow* window, int r, int g, int b, int a /* = 255 */) {
@@ -42,6 +46,7 @@ void NSurface::renderText(int x, int y, CText* text, CWindow* window, float size
     SDL_Texture *texture = SDL_CreateTextureFromSurface(window->getRenderer(), surface);
     int w, h;
     SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
+    SDL_SetTextureAlphaMod(texture, text->getColor()->a);
     renderTexture(x, y, (float)w * size, (float)h * size, window->getRenderer(), texture);
     SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture);
@@ -63,7 +68,7 @@ void NSurface::renderTexture(Box destination, SDL_Rect src, SDL_Renderer* render
 
 void NSurface::renderLine(Line line, SDL_Renderer* renderer, CCamera* camera /* = nullptr */) {
     if(camera) {
-        line = line.normalizeWithCamera(camera);
+        line = line.fixCamera(camera);
 //        if(!camera->collision(line.x, line.y, line.x2, line.y2))
 //            return;
     }
@@ -74,11 +79,51 @@ void NSurface::renderLine(Line line, SDL_Renderer* renderer, CCamera* camera /* 
 
 void NSurface::renderTriangle(Triangle triangle, SDL_Renderer* renderer, CCamera* camera /* = nullptr */) {
     if(camera)
-        triangle = triangle.normalizeWithCamera(camera);
+        triangle = triangle.fixCamera(camera);
     
     renderLine(triangle.a, renderer);
     renderLine(triangle.b, renderer);
     renderLine(triangle.c, renderer);
+}
+
+void NSurface::renderPixel(int x, int y, SDL_Renderer* renderer, int r, int g, int b, int a /* = 255 */) {
+    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+    SDL_RenderDrawPoint(renderer, x, y);
+}
+
+void NSurface::renderFilledTriangle(Position v1, Position v2, Position v3, Color color, SDL_Renderer* renderer, CCamera* camera /* = nullptr */) {
+    if(camera) {
+        int ox = camera->offsetX();
+        int oy = camera->offsetY();
+        
+        v1.x -= ox;
+        v2.x -= ox;
+        v3.x -= ox;
+        v1.y -= oy;
+        v2.y -= oy;
+        v3.y -= oy;
+    }
+    
+    int maxX = max(v1.x, max(v2.x, v3.x));
+    int minX = min(v1.x, min(v2.x, v3.x));
+    int maxY = max(v1.y, max(v2.y, v3.y));
+    int minY = min(v1.y, min(v2.y, v3.y));
+    
+    Position vs1(v2.x - v1.x, v2.y - v1.y);
+    Position vs2(v3.x - v1.x, v3.y - v1.y);
+    
+    for (int x = minX; x <= maxX; x++) {
+        for (int y = minY; y <= maxY; y++) {
+            Position q(x - v1.x, y - v1.y);
+            
+            float s = (float)crossProduct(q, vs2) / crossProduct(vs1, vs2);
+            float t = (float)crossProduct(vs1, q) / crossProduct(vs1, vs2);
+            
+            if ( (s >= 0) && (t >= 0) && (s + t <= 1)) {
+                renderPixel(x, y, renderer, color.r, color.g, color.b);
+            }
+        }
+    }
 }
 
 

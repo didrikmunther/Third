@@ -8,10 +8,12 @@ local SpellHeal = class(
         self.timer = game.getTime()
         self.delay = 50
         self.healRangeTop = 50
+        self.healRangeBot = 40
 	end
 )
 
-function SpellHeal:onLoop()
+function SpellHeal:onLoop(commands)
+    if(self.parent.isDead) then do return end end
     living = self.parent:getComponent("Standard/Living")
     if(living == nil) then do return end end
 
@@ -19,7 +21,7 @@ function SpellHeal:onLoop()
 
     if(time - self.timer > self.delay) then
         self.timer = time
-        living:heal(math.floor(math.random() * self.healRangeTop % self.healRangeTop), self.parent)
+        living:heal(math.floor(math.random() * (self.healRangeTop - self.healRangeBot) + self.healRangeBot), self.parent)
     end
 end
 

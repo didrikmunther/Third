@@ -40,7 +40,7 @@ struct Line {
     Line(Position pos1, Position pos2, Color color = Color{255, 0, 0, 255})
     : x(pos1.x), y(pos1.y), x2(pos2.x), y2(pos2.y), color(color) {  }
     
-    Line normalizeWithCamera(CCamera* camera);
+    Line fixCamera(CCamera* camera);
 };
 
 struct Triangle {
@@ -49,7 +49,9 @@ struct Triangle {
     Triangle(Line a, Line b, Line c)
     : a(a), b(b), c(c) {  }
     
-    Triangle normalizeWithCamera(CCamera* camera);
+    
+    
+    Triangle fixCamera(CCamera* camera);
 };
 
 namespace NSurface {
@@ -61,6 +63,26 @@ namespace NSurface {
     void renderTexture(Box destination, SDL_Rect src, SDL_Renderer* renderer, SDL_Texture* texture, SDL_RendererFlip flip, int angle, int a = 255);
     void renderLine(Line line, SDL_Renderer* renderer, CCamera* camera = nullptr);
     void renderTriangle(Triangle triangle, SDL_Renderer* renderer, CCamera* camera = nullptr);
+    void renderPixel(int x, int y, SDL_Renderer* renderer, int r, int g, int b, int a = 255);
+    void renderFilledTriangle(Position v1, Position v2, Position v3, Color color, SDL_Renderer* renderer, CCamera* camera = nullptr);
+    
+    int crossProduct(Position v1, Position v2);
+    
+    template<typename T>
+    void swap(T& a, T& b) {
+        T temp = a;
+        a = b;
+        b = temp;
+    }
+    template<typename T>
+    T max(T a, T b) {
+        return a > b ? a : b;
+    }
+    template<typename T>
+    T min(T a, T b) {
+        return a < b ? a : b;
+    }
+    
 };
 
 
