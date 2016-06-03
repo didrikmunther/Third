@@ -76,6 +76,8 @@ void NFile::loadAssets(std::string fileName, CInstance* instance) {
     loadSpriteSheets(&d, instance);
     loadSprites(&d);
     loadScripts(&d, instance);
+    loadMusic(&d);
+    loadSounds(&d);
     
     log(LogType::SUCCESS, "Loaded map: \"", fileName.c_str(), "\" as \"", d["name"].GetString(), "\"");
 }
@@ -202,7 +204,7 @@ void NFile::loadSprites(rapidjson::Document* d) {
     if(!d->HasMember("sprites"))
         return;
     
-    const rapidjson::Value& sprites = (*d)["sprites"];                                 // Sprites
+    const rapidjson::Value& sprites = (*d)["sprites"];
     for(rapidjson::SizeType i = 0; i < sprites.Size(); i++) {
         const rapidjson::Value& sprite = sprites[i];
         if(!(sprite.HasMember("name") && sprite.HasMember("spriteSheetKey")))
@@ -236,6 +238,34 @@ void NFile::loadScripts(rapidjson::Document* d, CInstance* instance) {
         if(path.substr(path.length() - 10) == "Controller" && instance->controller != nullptr) {
             instance->controller->addComponent(instance, luaScript);
         }
+    }
+}
+
+void NFile::loadMusic(rapidjson::Document* d) {
+    if(!d->HasMember("music"))
+        return;
+    
+    const rapidjson::Value& music = (*d)["music"];
+    for(rapidjson::SizeType i = 0; i < music.Size(); i++) {
+        const rapidjson::Value& mus = music[i];
+        if(!(mus.HasMember("name") && mus.HasMember("path")))
+            continue;
+        
+        CAssetManager::addMusic(mus["name"].GetString(), mus["path"].GetString());
+    }
+}
+
+void NFile::loadSounds(rapidjson::Document* d) {
+    if(!d->HasMember("sounds"))
+        return;
+    
+    const rapidjson::Value& sounds = (*d)["sounds"];
+    for(rapidjson::SizeType i = 0; i < sounds.Size(); i++) {
+        const rapidjson::Value& sound = sounds[i];
+        if(!(sound.HasMember("name") && sound.HasMember("path")))
+            continue;
+        
+        CAssetManager::addSound(sound["name"].GetString(), sound["path"].GetString());
     }
 }
 

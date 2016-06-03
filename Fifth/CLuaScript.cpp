@@ -33,6 +33,15 @@ luabridge::LuaRef CLuaScript::init(lua_State* L, std::string path) {
     return createFunc;
 }
 
+int CLuaScript::pushCreateFunction(lua_State* L) {
+    if(_isInvalid)
+        lua_pushnil(L);
+    else
+        _objectCreationFunction.push(L);
+    
+    return 1;
+}
+
 void CLuaScript::doFile() {
     luaL_dofile(_L, _path.c_str());
 }

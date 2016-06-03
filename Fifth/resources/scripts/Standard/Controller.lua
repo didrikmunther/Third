@@ -15,6 +15,8 @@ function Controller:onInit()
     self.parent:removeProperty(EntityProperty.COLLIDABLE)
     self.component.instance.gravity = 0.7
 
+    self.defaultMode = "user"
+
     self.component.instance:loadAssets("testMap2.map")
     self.component.instance:loadAssets("testMap1.map")
 
@@ -33,7 +35,7 @@ function Controller:onLoop()
     if(self.hasInitializedAdmin) then do return end end
     if(not self.component.instance.player) then do return end end
     if(not self.binderCtrl) then do return end end
-    self.binderCtrl:onChatCommand({"mode", "admin"})
+    self.binderCtrl:onChatCommand({"mode", self.defaultMode})
     self.hasInitializedAdmin = true
 end
 

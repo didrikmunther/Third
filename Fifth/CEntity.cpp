@@ -240,10 +240,14 @@ void CEntity::_deserialize(const rapidjson::Value* value) {
     
 }
 
-void CEntity::onClick(int x, int y, CInstance* instance) {
+bool CEntity::onClick(int x, int y, CInstance* instance) {
+    bool toReturn = true;
+    
     for(auto& i: components) {
-        i.second->onClick(x, y, instance);
+        toReturn &= i.second->onClick(x, y, instance);
     }
+    
+    return toReturn;
 }
 
 bool CEntity::isOnCollisionLayer(int collisionLayer) {
@@ -355,6 +359,19 @@ void CEntity::removeComponent(std::string component) {
     
     delete components[component];
     components.erase(component);
+}
+
+std::string CEntity::getNameOfComponent(CComponent* component) {
+    std::string componentName = "";
+    
+    for(auto& i: components) {
+        if(i.second == component) {
+            componentName = i.first;
+            break;
+        }
+    }
+    
+    return componentName;
 }
 
 CComponent* CEntity::getComponent(std::string key) {

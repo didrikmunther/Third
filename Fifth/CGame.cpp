@@ -145,11 +145,6 @@ void CGame::_restart() {
     
     instance.L = luaL_newstate();
     _initLua();
-    
-    CAssetManager::addSound("hurt", "Standard/hurt.wav"); // temp
-    CAssetManager::addSound("shoot", "Standard/shoot.wav"); // temp
-    CAssetManager::addSound("jump", "Standard/jump.wav"); // temp
-    CAssetManager::addMusic("bgMusic", "Standard/GameTrack-12 v0.2.mp3"); // temp
 
     auto controller = CAssetManager::addLuaScript(instance.L, "resources/scripts/Standard/Controller.lua");
     auto temp = new CEntity(Box{0, 0, 0, 0}, Color{0, 0, 0, 0});
@@ -229,12 +224,14 @@ void CGame::_initLua() {
     
         .beginClass<CLuaScript>("LuaScript")
             .addFunction("getName", &CLuaScript::getName)
+            .addCFunction("getCreationFunction", &CLuaScript::pushCreateFunction)
         .endClass()
     
         .beginClass<CEntity>("Entity")      // Entity doesn't need a constructor, because you should use the entityManager.create.. functions
             .addCFunction("getComponent", &CEntity::getComponent)
             .addFunction("addComponent", &CEntity::addComponent)
             .addFunction("removeComponent", &CEntity::removeComponent)
+            .addFunction("getNameOfComponent", &CEntity::getNameOfComponent)
             .addData("entityManager", &CEntity::entityManager)
             .addFunction("getThis", &CEntity::getThis)
             .addData("body", &CEntity::body)
@@ -265,6 +262,7 @@ void CGame::_initLua() {
     
         .beginClass<CComponent>("Component")
             .addFunction("renderRect", &CComponent::renderRect)
+            .addFunction("renderSprite", &CComponent::renderSprite)
             .addFunction("renderLine", &CComponent::renderLine)
             .addFunction("renderText", &CComponent::renderText)
             .addFunction("addString", &CComponent::addString)

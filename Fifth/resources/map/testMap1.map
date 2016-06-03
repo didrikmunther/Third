@@ -17,5 +17,15 @@
 		{"name":"bush", 				"spriteSheetKey":"MAIN2", 				"offsets":[160, 91, 30, 28]},
 		{"name":"tree", 				"spriteSheetKey":"MAIN2", 				"offsets":[7, 64, 23, 59]},
         {"name":"background", 			"spriteSheetKey":"MOUNTAINS",           "offsets":[0, 0, 1920, 1080]}
-	]
+	],
+    
+    "music": [
+        {"name": "bgMusic",     "path": "Standard/GameTrack-12 v0.2.mp3"}
+    ],
+    
+    "sounds": [
+        {"name": "hurt",        "path": "Standard/hurt.wav"},
+        {"name": "shoot",       "path": "Standard/shoot.wav"},
+        {"name": "jump",        "path": "Standard/jump.wav"}
+    ]
 }

@@ -9,6 +9,7 @@
 #include "CComponent.h"
 #include "CEntity.h"
 #include "NMouse.h"
+#include "CAssetManager.h"
 
 
 CComponent::CComponent(CEntity* parent, CInstance* instance, CLuaScript* script)
@@ -139,14 +140,19 @@ void CComponent::onDeserialize(std::string value, CInstance* instance) {
     object.endCall(1, 0);
 }
 
-void CComponent::onClick(int x, int y, CInstance* instance) {
+bool CComponent::onClick(int x, int y, CInstance* instance) { // return true if click through
     if(!object.hasReference("onClick"))
-        return;
+        return true;
     
     object.beginCall("onClick");
     object.pushObject(x);
     object.pushObject(y);
-    object.endCall(2, 0);
+    object.endCall(2, 1);
+    
+    if(!lua_isboolean(object.getScript()->getState(), -1))
+        return true;
+    else
+        return lua_toboolean(object.getScript()->getState(), -1);
 }
 
 void CComponent::onTextInput(CInstance* instance, std::string input) {
@@ -184,6 +190,13 @@ void CComponent::renderRect(int x, int y, int w, int h, int r, int g, int b, int
         return;
     
     NSurface::renderRect(x, y, w, h, tempWindow, r, g, b, a);
+}
+
+void CComponent::renderSprite(int x, int y, int w, int h, std::string key, int a, bool flipHorizontal, bool flipVertical) {
+    if(tempCamera == nullptr || tempWindow == nullptr)
+        return;
+    
+    NSurface::renderSprite(x, y, w, h, CAssetManager::getSprite(key), tempWindow, (SDL_RendererFlip)((flipHorizontal ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) | (flipVertical ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE)), a);
 }
 
 void CComponent::renderLine(int x, int y, int x2, int y2, int r, int g, int b, int a) {

@@ -106,14 +106,15 @@ void CGame::_onEvent(SDL_Event* event) {
             int y = NMouse::relativeMouseY(instance.camera);
             auto entities = instance.entityManager.getEntitiesAtCoordinate(x, y);
             
-//            if(entities.size() > 0) {
-//                (*(entities.end() - 1))->onClick(x, y, &instance);
-//            }
+            if(instance.controller)
+                instance.controller->onClick(x, y, &instance);
             
-            for(auto& i: entities) {
-                i->onClick(x, y, &instance);
+            auto it = entities.end();
+            while(it != entities.begin()) {
+                if(!(*(it - 1))->onClick(x, y, &instance))
+                    break;
+                --it;
             }
-            
         }
             break;
     }

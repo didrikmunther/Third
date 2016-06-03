@@ -17,7 +17,6 @@
 class CSpriteSheet {
     
 public:
-    CSpriteSheet();
     int openFile(SDL_Renderer* renderer, std::string fileName);
     void onCleanup();
     

@@ -106,7 +106,7 @@ public:
     void onEvent(CInstance* instance, int key, bool keyDown);
     void onKeyStates(CInstance* instance, const Uint8* keystates);
     void onTextInput(CInstance* instance, std::string input);
-    void onClick(int x, int y, CInstance* instance);
+    bool onClick(int x, int y, CInstance* instance);
     
     int collisionLayer;
     bool isOnCollisionLayer(int collisionLayer);
@@ -149,6 +149,7 @@ public:
     
     CComponent* addComponent(CInstance* instance, CLuaScript* script);
     void removeComponent(std::string component);
+    std::string getNameOfComponent(CComponent* component);
     CComponent* getComponent(std::string key);
     int getComponent(lua_State* L);
     

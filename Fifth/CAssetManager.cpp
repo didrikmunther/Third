@@ -129,7 +129,8 @@ CMusic* CAssetManager::addMusic(std::string name, std::string fileName) {
             delete music;
             return nullptr;
         } else {
-            NFile::log(LogType::SUCCESS, "Added music: \"", name, "\".");
+            if(DEBUG)
+                NFile::log(LogType::SUCCESS, "Added music: \"", name, "\".");
             _Music[name] = music;
             return music;
         }
@@ -149,7 +150,8 @@ CSound* CAssetManager::addSound(std::string name, std::string fileName) {
             delete sound;
             return nullptr;
         } else {
-            NFile::log(LogType::SUCCESS, "Added sound: \"", name, "\".");
+            if(DEBUG)
+                NFile::log(LogType::SUCCESS, "Added sound: \"", name, "\".");
             _Sounds[name] = sound;
             return sound;
         }

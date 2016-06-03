@@ -30,6 +30,7 @@ public:
     CLuaScript(lua_State* L, std::string path);
     
     luabridge::LuaRef init(lua_State* L, std::string path);
+    int pushCreateFunction(lua_State* L);
     void funcError();
     
     void doFile();

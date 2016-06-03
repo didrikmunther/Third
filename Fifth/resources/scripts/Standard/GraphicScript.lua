@@ -73,6 +73,8 @@ function GraphicScript:onClick()
 
     self.isTargeted = not self.isTargeted
 
+    return false
+
 end
 
 function GraphicScript:onRender()

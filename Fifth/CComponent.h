@@ -55,7 +55,7 @@ public:
     void onSerialize(rapidjson::Value* value, rapidjson::Document::AllocatorType* alloc, CInstance* instance);
     void onDeserialize(std::string value, CInstance* instance);
     
-    void onClick(int x, int y, CInstance* instance);
+    bool onClick(int x, int y, CInstance* instance);
     void onEvent(CInstance* instance, int key, bool keyDown);
     void onKeyStates(CInstance* instance, const Uint8* keystates);
     void onTextInput(CInstance* instance, std::string input);
@@ -75,6 +75,7 @@ public:
     RenderFlags* tempRenderflags;
     
     void renderRect(int x, int y, int w, int h, int r, int g, int b, int a); // These are only supposed to be called during an rendering process
+    void renderSprite(int x, int y, int w, int h, std::string key, int a, bool flipHorizontal, bool flipVertical);
     void renderLine(int x, int y, int x2, int y2, int r, int g, int b, int a);
     void renderText(int x, int y, int size, std::string text, std::string fontKey, int r, int g, int b);
     

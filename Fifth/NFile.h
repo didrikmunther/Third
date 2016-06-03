@@ -128,6 +128,8 @@ private:
     static void loadSpriteSheets(rapidjson::Document* d, CInstance* instance);
     static void loadSprites(rapidjson::Document* d);
     static void loadScripts(rapidjson::Document* d, CInstance* instance);
+    static void loadMusic(rapidjson::Document* d);
+    static void loadSounds(rapidjson::Document* d);
     
     static void loadTileset(const rapidjson::Value& value);
     static void loadAnimation(const rapidjson::Value& value);
