@@ -216,7 +216,7 @@ void NFile::loadSprites(rapidjson::Document* d) {
                                      sprite["spriteSheetKey"].GetString(),
                                      Box{offsets[0].GetInt(), offsets[1].GetInt(), offsets[2].GetInt(), offsets[3].GetInt()});
         } else if(sprite.HasMember("tileset"))
-            loadTileset(sprite); // maybe use pointer
+            loadTileset(sprite);
         else if(sprite.HasMember("animation")) {
             loadAnimation(sprite);
         }

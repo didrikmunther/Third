@@ -24,20 +24,25 @@ local SpellCaster = class(
         self.SPELL_SPELL = 4
         self.SPELL_COMMANDS = 5
         self.SPELL_IS_CASTING = 6
-        self.SPELL_IS_COOLDOWN = 7
-        self.SPELL_ICON = 8
+        self.SPELL_IS_FIRST_LOOP = 7
+        self.SPELL_IS_COOLDOWN = 8
+        self.SPELL_ICON = 9
                           
-        self.spells = {} -- {beginTime, durationTime, cooldownTime, spell, commands, isCasting, isCooldown, icon} -- icon: string (sprite name)
+        self.spells = {} -- {beginTime, durationTime, cooldownTime, spell, commands, isCasting, isFirstLoop, isCooldown, icon} -- icon: string (sprite name)
 
 	end
 )
 
 function SpellCaster:onInit()
     self:addSpell("Spell/SpellHeal", {}, 500, 3000, "frog", 1)
-    self:addSpell("Spell/SpellHeal", {}, 500, 3000, "frog", 2)
-    self:addSpell("Spell/SpellHeal", {}, 500, 3000, "frog", 3)
-    self:addSpell("Spell/SpellHeal", {}, 500, 3000, "frog", 4)
-    self:addSpell("Spell/SpellHeal", {}, 500, 3000, "frog", 5)
+    self:addSpell("Spell/SpellSpeed", {}, 2000, 5000, "helicopter", 2)
+    self:addSpell("Spell/SpellCommand", {"tile dirt"}, -1, -1, "dirt14", 3)
+    self:addSpell("Spell/SpellCommand", {"tile stone"}, -1, -1, "stone14", 4)
+    self:addSpell("Spell/SpellCommand", {"tile wood"}, -1, -1, "wood14", 5)
+    self:addSpell("Spell/SpellCommand", {"tile log"}, -1, -1, "log14", 6)
+    self:addSpell("Spell/SpellCommand", {"tile brick"}, -1, -1, "brick14", 7)
+
+    self:addSpell("Spell/SpellCommand", {"tile"}, -1, -1, "noTile", 10)
 end
 
 function SpellCaster:addSpell(spellName, commands, durationTime, cooldownTime, icon, spellIndex)
@@ -46,7 +51,7 @@ function SpellCaster:addSpell(spellName, commands, durationTime, cooldownTime, i
 
     spell = script:getCreationFunction()(self.parent, self.component)
 
-    self.spells[spellIndex] = {0, durationTime, cooldownTime, spell, commands, false, false, icon}
+    self.spells[spellIndex] = {0, durationTime, cooldownTime, spell, commands, false, true, false, icon}
 end
 
 function SpellCaster:removeSpell(spellIndex)
@@ -83,11 +88,16 @@ function SpellCaster:onLoop()
             durationTime = v[self.SPELL_DURATION_TIME]
             time = game.getTime()
             
-            v[self.SPELL_SPELL]:onLoop(v[self.SPELL_COMMANDS])
+            isLastLoop = false
+            if(time - beginTime > durationTime) then isLastLoop = true end
+            
+            v[self.SPELL_SPELL]:onLoop(v[self.SPELL_IS_FIRST_LOOP], isLastLoop, v[self.SPELL_COMMANDS])
+            v[self.SPELL_IS_FIRST_LOOP] = false
 
-            if(time - beginTime > durationTime) then
+            if(isLastLoop) then
                 v[self.SPELL_IS_CASTING] = false
                 v[self.SPELL_IS_COOLDOWN] = true
+                v[self.SPELL_IS_FIRST_LOOP] = true
             end
         end
         
@@ -99,10 +109,6 @@ function SpellCaster:onLoop()
             v[self.SPELL_IS_COOLDOWN] = beginTime + durationTime + cooldownTime > time
         end
     end
-end
-
-function SpellCaster:onRender()
-
 end
 
 function SpellCaster:onRenderAdditional()
@@ -139,7 +145,7 @@ function SpellCaster:onRenderAdditional()
         if(spell) then
             component:renderRect(x, y, spellIconSize, spellIconSize, 255, 255, 255, 50)
             
-            spriteTransparency = 150
+            spriteTransparency = 225
             if(spell[self.SPELL_IS_CASTING]) then
                 component:renderRect(x, y, spellIconSize, spellIconSize, 255, 255, 255, 50)
                 
@@ -149,8 +155,6 @@ function SpellCaster:onRenderAdditional()
                 percent =  (time - beginTime) / durationTime
                 
                 component:renderRect(x, y - (spellIconSize * percent - spellIconSize) + 1, spellIconSize, spellIconSize * percent, 0, 150, 0, 150)
-                spriteTransparency = 255
-                
             elseif(spell[self.SPELL_IS_COOLDOWN]) then
             
                 time = game.getTime()

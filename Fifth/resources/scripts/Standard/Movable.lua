@@ -15,6 +15,8 @@ local Movable = class (
         self.hasWalkedX = false
         self.hasWalkedY = false
 
+        self.speedMultiplier = 1
+
         self.isFlying = false
         self.angleFactor = -1.0
 
@@ -165,8 +167,8 @@ function Movable:goRight()
 
 	body.velX = body.velX + self.accelerationX;
     
-    if(body.velX > self.movementSpeeds[self.movementState]) then
-        body.velX = self.movementSpeeds[self.movementState]
+    if(body.velX > self.movementSpeeds[self.movementState] * self.speedMultiplier) then
+        body.velX = self.movementSpeeds[self.movementState] * self.speedMultiplier
     end
     
     self.hasWalkedX = true
@@ -177,8 +179,8 @@ function Movable:goLeft()
 
 	body.velX = body.velX - self.accelerationX
     
-    if(body.velX < -self.movementSpeeds[self.movementState]) then
-        body.velX = -self.movementSpeeds[self.movementState]
+    if(body.velX < -self.movementSpeeds[self.movementState] * self.speedMultiplier) then
+        body.velX = -self.movementSpeeds[self.movementState] * self.speedMultiplier
     end
     
     self.hasWalkedX = true;
@@ -190,8 +192,8 @@ function Movable:goUp()
 	if(self.isFlying) then
         body.velY = body.velY - self.accelerationY
         
-        if(body.velY < -self.movementSpeeds[self.movementState]) then
-            body.velY = -self.movementSpeeds[self.movementState]
+        if(body.velY < -self.movementSpeeds[self.movementState] * self.speedMultiplier) then
+            body.velY = -self.movementSpeeds[self.movementState] * self.speedMultiplier
         end
     else
         self:jump()
@@ -206,8 +208,8 @@ function Movable:goDown()
 	if(self.isFlying) then
         body.velY = body.velY + self.accelerationY
         
-        if(body.velY > self.movementSpeeds[self.movementState]) then
-            body.velY = self.movementSpeeds[self.movementState]
+        if(body.velY > self.movementSpeeds[self.movementState] * self.speedMultiplier) then
+            body.velY = self.movementSpeeds[self.movementState] * self.speedMultiplier
         end
     end
     

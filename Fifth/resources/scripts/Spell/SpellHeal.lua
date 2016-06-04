@@ -12,7 +12,7 @@ local SpellHeal = class(
 	end
 )
 
-function SpellHeal:onLoop(commands)
+function SpellHeal:onLoop(isFirstLoop, isLastLoop, commands)
     if(self.parent.isDead) then do return end end
     living = self.parent:getComponent("Standard/Living")
     if(living == nil) then do return end end
