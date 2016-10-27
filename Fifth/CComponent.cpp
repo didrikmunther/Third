@@ -64,7 +64,6 @@ void CComponent::onLoop(CInstance* instance) {
     tempCamera = instance->camera;
     tempWindow = &instance->window;
     
-    
     callSimpleFunction("onLoop");
     
     tempCamera = nullptr;
@@ -220,6 +219,20 @@ void CComponent::renderText(int x, int y, int size, std::string text, std::strin
     
     CText textObj(text, size, fontKey, color);
     NSurface::renderText(x, y, &textObj, tempWindow, size);
+}
+
+CSpriteSheet* CComponent::addSpriteSheet(std::string name, std::string fileName) {
+    if(tempWindow == nullptr)
+        return nullptr;
+    
+    return CAssetManager::addSpriteSheet(name, tempWindow->getRenderer(), fileName);
+}
+
+void CComponent::setMousePosition(int x, int y) {
+    if(tempWindow == nullptr)
+        return;
+    
+    NMouse::setMousePosition(tempWindow, x, y);
 }
 
 int CComponent::getRelativeMouse(lua_State* L) {

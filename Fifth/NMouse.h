@@ -13,6 +13,7 @@
 
 
 class CCamera;
+class CWindow;
 
 namespace NMouse {
     
@@ -24,6 +25,8 @@ namespace NMouse {
     
     bool leftMouseButtonPressed();
     bool rightMouseButtonPressed();
+    
+    void setMousePosition(CWindow* window, int x, int y);
     
 };
 

@@ -22,7 +22,7 @@
 
 
 CEntityManager::CEntityManager()
-    : entityID(0)
+    : entityID(0), guiID(0)
     , _gridSize(TILE_SIZE) // Don't touch this, tile collision is dependent on it ctrl-f: TILECOL
     , renderFlags(RenderFlags::CLEAR | RenderFlags::RENDER_COMBAT_TEXT)
 {}
@@ -118,6 +118,13 @@ CBackground* CEntityManager::getBackground(std::string name) {
         return _backgrounds[name];
 }
 
+CGuiWindow* CEntityManager::getGuiWindow(int id) {
+    if(_guiWindows.find(id) == _guiWindows.end())
+        return nullptr;
+    else
+        return _guiWindows[id];
+}
+
 void CEntityManager::addParticle(CEntity *particle) {
     particle->entityManager = this;
     
@@ -130,6 +137,13 @@ void CEntityManager::addGuiText(CGuiText* guiText) {
 
 void CEntityManager::addBackground(std::string name, CBackground* background) {
     _backgrounds[name] = background;
+}
+
+int CEntityManager::addGUIWindow(CGuiWindow* guiWindow) {
+    guiID++;
+    _guiWindows[guiID] = guiWindow;
+    
+    return guiID;
 }
 
 void CEntityManager::addTile(int x, int y, std::string tileset) {
@@ -193,12 +207,19 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
     }
     
     std::vector<CTile*> foreground;
-    for (auto &tileRow: _tiles) {
-        for(auto &tile: tileRow.second) {
+    for(auto& tileRow: _tiles) {
+        for(auto& tile: tileRow.second) {
             if(tile.second->invalid || tile.second->tileset->isBackground)
                 tile.second->onRender(window, camera, (RenderFlags)renderFlags);
             else
                 foreground.push_back(tile.second);
+        }
+    }
+    
+    std::vector<CEntity*> guiElements;
+    for(auto& entity: _entities) {
+        if(entity.first.substr(2, 3) == "GUI") {
+            guiElements.push_back(entity.second);
         }
     }
     
@@ -263,6 +284,14 @@ void CEntityManager::onRender(CWindow* window, CCamera* camera) {
     
     for (auto &i: _guiTextElements)
         i->onRender(window, camera, (RenderFlags)renderFlags);
+    
+    for(auto &i: _guiWindows) {
+        i.second->onRender();
+    }
+    
+    for(auto& i: guiElements) {
+        i->onRender(window, camera, (RenderFlags)renderFlags);
+    }
 }
 
 void loopX(int x1, int x2, int y, std::vector<GridCoordinates>* toManipulate) {

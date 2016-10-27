@@ -128,7 +128,7 @@ void CEntity::onRender(CWindow* window, CCamera* camera, RenderFlags renderFlags
     if(camera->collision(this) && !(hasProperty(EntityProperty::HIDDEN))) {
         if(!hasSprite())
                 NSurface::renderRect(x, y, w, h,
-                                     window, color.r, color.g, color.b);
+                                     window, color.r, color.g, color.b, color.a);
         else {
             getSprite()->onRender(this, Box{x, y, body->getW(), body->getH()}, hasProperty(EntityProperty::FLIP), angle, transparency, window, camera, renderFlags);
         }

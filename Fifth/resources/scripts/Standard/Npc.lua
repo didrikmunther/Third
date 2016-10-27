@@ -4,6 +4,7 @@ local Npc = class (
     function(self, parent, component)
         self.parent = parent
         self.component = component
+        self.require = {"Spell/SpellCaster", "Standard/Living", "Standard/Movable"}
 
         self.target = nil
         self.targetName = ""
@@ -141,7 +142,7 @@ function Npc:onCollision(target, sides)
     if(target:compare(self.target)) then
         living = target:getComponent("Standard/Living")
         if(living ~= nil) then
-            living:damage(50, self.parent)
+            living:damage(5, self.parent)
         end
     end
 end

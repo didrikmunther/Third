@@ -28,6 +28,7 @@ class CWindow;
 class CCamera;
 class CEntity;
 class CGuiText;
+class CSpriteSheet;
 
 struct CollisionSides;
 
@@ -79,6 +80,10 @@ public:
     void renderLine(int x, int y, int x2, int y2, int r, int g, int b, int a);
     void renderFilledTriangle(int x1, int y1, int x2, int y2, int x3, int y3, Color color);
     void renderText(int x, int y, int size, std::string text, std::string fontKey, Color color);
+    
+    CSpriteSheet* addSpriteSheet(std::string name, std::string fileName);
+    
+    void setMousePosition(int x, int y);
     
     Triangle tempTriangle;
     

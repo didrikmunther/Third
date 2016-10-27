@@ -210,6 +210,7 @@ void CGame::_initLua() {
             .addFunction("getScreenHeight", &CGame::getHeight)
             .addFunction("addSprite", (std::string (*)(CSprite*, std::string)) &CAssetManager::addSprite)
             .addFunction("createSprite", (CSprite* (*)(CSpriteSheet*, Box)) &CAssetManager::createSprite)
+            .addFunction("getSpriteSheet", &CAssetManager::getSpriteSheet)
             .addFunction("playMusic", &CAssetManager::playMusic)
             .addFunction("playSound", &CAssetManager::playSound)
             .addFunction("log", (void (*)(int, std::string)) &NFile::log)
@@ -270,8 +271,10 @@ void CGame::_initLua() {
             .addFunction("addString", &CComponent::addString)
             .addFunction("addInt", &CComponent::addInt)
             .addFunction("addFloat", &CComponent::addFloat)
+            .addFunction("addSpriteSheet", &CComponent::addSpriteSheet)
             .addCFunction("getRelativeMouse", &CComponent::getRelativeMouse)
             .addCFunction("getMouse", &CComponent::getMouse)
+            .addFunction("setMousePosition", &CComponent::setMousePosition)
             .addData("instance", &CComponent::instance)
             .addData("camera", &CComponent::tempCamera)
             .addData("object", &CComponent::object)
@@ -393,7 +396,6 @@ void CGame::_initLua() {
         .endClass()
     
         .beginClass<CTile>("Tile")
-    
         .endClass();
     
     lua_getglobal(instance.L, "init");
@@ -420,7 +422,7 @@ void CGame::_onRender() {
     
     instance.entityManager.onRender(&instance.window, instance.camera);
     
-    NSurface::renderFilledTriangle({0, 0}, {100, (getTime() / 10) % 100}, {100, 100}, Color(255, 0, 0, 255), instance.window.getRenderer());
+//    NSurface::renderFilledTriangle({0, 0}, {100, (getTime() / 10) % 100}, {100, 100}, Color(255, 0, 0, 255), instance.window.getRenderer());
     
     SDL_RenderPresent(instance.window.getRenderer());
 }

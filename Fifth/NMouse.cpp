@@ -10,6 +10,7 @@
 
 #include "NMouse.h"
 #include "CCamera.h"
+#include "CWindow.h"
 
 
 int NMouse::absoluteMouseX() {
@@ -42,4 +43,8 @@ bool NMouse::leftMouseButtonPressed() {
 
 bool NMouse::rightMouseButtonPressed() {
     return SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT);
+}
+
+void NMouse::setMousePosition(CWindow* window, int x, int y) {
+    SDL_WarpMouseInWindow(window->getWindow(), x, y);
 }

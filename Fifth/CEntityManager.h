@@ -18,6 +18,7 @@
 #include "Define.h"
 #include "NSurface.h"
 #include "CSerializable.h"
+#include "CGuiWindow.h"
 
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
@@ -45,11 +46,13 @@ public:
     std::vector<CEntity*> getEntitiesAtCoordinate(int x, int y);
     std::string getNameOfEntity(CEntity* entity);
     CBackground* getBackground(std::string name);
+    CGuiWindow* getGuiWindow(int id);
     std::string addEntity(CEntity* entity, std::string name = "");
     void addTile(int x, int y, std::string tileset);
     void addParticle(CEntity* particle);
     void addGuiText(CGuiText* guiText);
     void addBackground(std::string name, CBackground* background);
+    int addGUIWindow(CGuiWindow* guiWindow);
     
     void onLoop(CInstance* instance);
     void onEvent(CInstance* instance, int key, bool keyDown);
@@ -74,6 +77,7 @@ public:
     
     int getEntityCount();
     int entityID;
+    int guiID;
     
     int renderFlags;
     void addRenderFlag(RenderFlags renderFlag);
@@ -93,8 +97,7 @@ private:
     std::map<std::string, CEntity*> _deadEntities;
     std::map<std::string, CBackground*> _backgrounds;
     std::map<int, std::map<int, CTile*>> _tiles;
-    
-    
+    std::map<int, CGuiWindow*> _guiWindows;
     
     int _gridSize;
     

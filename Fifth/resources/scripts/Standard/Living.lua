@@ -4,7 +4,7 @@ local Living = class (
     function(self, parent, component)
         self.parent = parent
         self.component = component
-        self.require = {"Standard/ExplodeOnDeath"}
+        self.require = {"Standard/ExplodeOnDeath", "Buff/BuffedEntity", "Spell/SpellCaster"}
 
         self.VALUE_HEALTH = 0
         self.VALUE_KEVLAR = 1

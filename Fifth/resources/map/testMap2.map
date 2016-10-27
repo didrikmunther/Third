@@ -6,7 +6,8 @@
     "spriteSheets": [
         {"name":"MAIN", 				"file":"sheet.png"},
         {"name":"MAIN3",                "file":"player_run.png"},
-        {"name": "TILES",               "file":"tiles.png"}
+        {"name":"TILES",                "file":"tiles.png"},
+        {"name": "StandardGUI",         "file":"standardGUI.png"}
     ],
     
     "sprites": [
@@ -55,9 +56,15 @@
         "Standard/Shooter",
         "Standard/TriggerController",
         
+        "GUI/GUIController",
+        "GUI/GUIWindow",
+        
         "Spell/SpellCaster",
         "Spell/SpellHeal",
         "Spell/SpellCommand",
-        "Spell/SpellSpeed"
+        "Spell/SpellSpeed",
+        
+        "Buff/BuffedEntity",
+        "Buff/BuffHeal"
     ]
 }

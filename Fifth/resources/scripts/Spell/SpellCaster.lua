@@ -7,7 +7,7 @@ local SpellCaster = class(
                           
         self.chatCtrl = nil
                           
-        self.triangleTemplates = {
+        --[[ self.triangleTemplates = {
             {0.5, 0, 1, 0, 1},
             {1, 0, 1, 0.5, 2},
             {1, 0.5, 1, 1, 2},
@@ -16,7 +16,7 @@ local SpellCaster = class(
             {0, 1, 0, 0.5, -2},
             {0, 0.5, 0, 0, -2},
             {0, 0, 0.5, 0, 1}
-        }
+        } --]]
 
         self.SPELL_BEGIN_TIME = 1
         self.SPELL_DURATION_TIME = 2
@@ -33,18 +33,6 @@ local SpellCaster = class(
 	end
 )
 
-function SpellCaster:onInit()
-    self:addSpell("Spell/SpellHeal", {}, 500, 3000, "frog", 1)
-    self:addSpell("Spell/SpellSpeed", {}, 2000, 5000, "helicopter", 2)
-    self:addSpell("Spell/SpellCommand", {"tile dirt"}, -1, -1, "dirt14", 3)
-    self:addSpell("Spell/SpellCommand", {"tile stone"}, -1, -1, "stone14", 4)
-    self:addSpell("Spell/SpellCommand", {"tile wood"}, -1, -1, "wood14", 5)
-    self:addSpell("Spell/SpellCommand", {"tile log"}, -1, -1, "log14", 6)
-    self:addSpell("Spell/SpellCommand", {"tile brick"}, -1, -1, "brick14", 7)
-
-    self:addSpell("Spell/SpellCommand", {"tile"}, -1, -1, "noTile", 10)
-end
-
 function SpellCaster:addSpell(spellName, commands, durationTime, cooldownTime, icon, spellIndex)
     script = game.getScript(spellName)
     if(script == nil) then do return end end
@@ -56,6 +44,12 @@ end
 
 function SpellCaster:removeSpell(spellIndex)
     self.spells[spellIndex] = nil
+end
+
+function SpellCaster:clearSpells()
+    for i = 1, 10 do
+        self:removeSpell(i)
+    end
 end
 
 function SpellCaster:cast(spellIndex)
@@ -135,7 +129,7 @@ function SpellCaster:onRenderAdditional()
 
     component = self.component
     spells = self.spells
-    for i = 1,10 do
+    for i = 1,numberOfSpells do
         x = spellBarX + spellIconSize * i + spellIconMargin * i
         y = spellBarY
         
@@ -174,8 +168,8 @@ function SpellCaster:onRenderAdditional()
         end
         
         xOffset = x + spellIconSize - spellIconPadding * 2 - 14
-        yOffset = y + spellIconSize - spellIconPadding * 2 - 24
-        if(i >= 10) then xOffset = xOffset - 15 end
+        yOffset = y + spellIconSize - spellIconPadding * 2 - 20
+        --if(i >= 10) then xOffset = xOffset - 15 end
         
         component:renderText(xOffset, yOffset, 1, tostring(i % 10), "TESTFONT", Color(255, 255, 255, 200))
     end
